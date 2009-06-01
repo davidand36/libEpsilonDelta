@@ -1,0 +1,44 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta mmbase library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSDL' )
+if useSDL:
+    Import( 'sdlIncludeDir' )
+
+includePath = [ '.', '#time', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+if useSDL:
+    includePath.append( sdlIncludeDir )
+
+sources = []
+
+if useSDL:
+    sources = ( sources
+        + [ 
+            'SDL.cpp',
+            'SDLException.cpp',
+            'SDLClock.cpp'
+          ] )
+
+lib = env.Library( 'EpsilonDelta_mmbase', sources, CPPPATH = includePath )
+
+Return( 'lib' )

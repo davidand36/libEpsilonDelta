@@ -1,0 +1,52 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestCGILib.
+#
+
+Import( 'env' )
+Import( 'platform' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useFastCGI' )
+if useFastCGI:
+    Import( 'fastCGILibDir' )
+
+includePath = [ '.', '#cgi', '#util' ]
+if ( useSTLport ):
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+libPath = [ '#' ]
+libs = [ 'EpsilonDelta_cgi', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+if useLoki:
+    libs.append( 'Loki' )
+if useFastCGI:
+    libPath.append( fastCGILibDir )
+    libs.append( 'fcgi' )
+
+sources = [ 
+            'TestCGILib.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestCGILib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

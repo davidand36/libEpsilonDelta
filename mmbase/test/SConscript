@@ -1,0 +1,55 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestMMBaseLib.
+#
+
+Import( 'env' )
+Import( 'platform' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSDL' )
+if useSDL:
+    Import( 'sdlIncludeDir' )
+    Import( 'sdlLibDir' )
+
+includePath = [ '.', '#mmbase', '#time', '#util' ]
+if ( useSTLport ):
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+libPath = [ '#' ]
+libs = [ 'EpsilonDelta_mmbase', 'EpsilonDelta_time', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+if useLoki:
+    libs.append( 'Loki' )
+if useSDL:
+    libPath.append( sdlLibDir );
+    libs.append( 'SDL' )
+    if ( platform == 'win32' ):
+        libs.append( 'SDLmain' )
+
+sources = [ 
+            'TestMMBaseLib.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestMMBaseLib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

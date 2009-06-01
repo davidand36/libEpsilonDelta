@@ -1,0 +1,47 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta time library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+
+includePath = [ '.', '#math', '#util', ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+sources = [ 
+            'TimeLibText.cpp',
+            'Time.cpp',
+            'TimeIncrement.cpp',
+            'TimeStandards.cpp',
+            'DateTime.cpp',
+            'ModifiedJulianDay.cpp',
+            'Epoch.cpp',
+            'DateJD.cpp',
+            'GregorianCalendar.cpp',
+            'GregorianDate.cpp',
+            'WesternWeek.cpp',
+            'StdTime.cpp',
+            'StdClock.cpp',
+            'Timer.cpp'
+          ]
+
+
+lib = env.Library( 'EpsilonDelta_time', sources, CPPPATH = includePath )
+
+Return( 'lib' )

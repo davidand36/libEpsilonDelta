@@ -1,0 +1,78 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestSQLLib.
+#
+
+Import( 'env' )
+Import( 'platform' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSQLite' )
+if useSQLite:
+    Import( 'sqliteIncludeDir' )
+    Import( 'sqliteLibDir' )
+Import( 'useMySQL' )
+if useMySQL:
+    Import( 'mysqlIncludeDir' )
+    Import( 'mysqlLibDir' )
+    Import( 'useEmbeddedMySQL' )
+Import( 'usePostgreSQL' )
+if usePostgreSQL:
+    Import( 'postgresqlIncludeDir' )
+    Import( 'postgresqlLibDir' )
+
+includePath = [ '.', '#sql', '#file', '#time', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+if useSQLite:
+    includePath.append( sqliteIncludeDir )
+if useMySQL:
+    includePath.append( mysqlIncludeDir )
+if usePostgreSQL:
+    includePath.append( postgresqlIncludeDir )
+
+
+libPath = [ '#' ]
+libs = [ 'EpsilonDelta_sql', 'EpsilonDelta_file', 'EpsilonDelta_time',
+         'EpsilonDelta_math', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+if useSQLite:
+    libPath.append( sqliteLibDir )
+    libs.append( 'sqlite3' )
+if useMySQL:
+    libPath.append( mysqlLibDir )
+    if useEmbeddedMySQL:
+        libs.append( 'mysqld' )
+        libs.append( 'z' )
+    else:
+        libs.append( 'mysqlclient' )
+if usePostgreSQL:
+    libPath.append( postgresqlLibDir )
+    libs.append( 'pq' )
+
+sources = [ 
+            'TestSQLLib.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestSQLLib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

@@ -1,0 +1,332 @@
+#
+# SConstruct
+# Copyright (C) 2007 David M. Anderson
+#
+# Top-level SCons "makefile" for EpsilonDelta libraries.
+#
+
+vars = Variables( 'scons_options.py' )
+vars.Add( ListVariable( 'libraries', 'List of libraries to build', 'none',
+    [ 'util', 'memory', 'math', 'time', 'file', 'cgi', 'sql',
+        'astro', 'calendar', 
+        'mmbase', 'graphics2d', 'input', 'graphics3d' ] ) )
+vars.Add( ListVariable( 'noTest', 'List of libraries not to test', 'none',
+    [ 'util', 'memory', 'math', 'time', 'file', 'cgi', 'sql',
+        'astro', 'calendar', 
+        'mmbase', 'graphics2d', 'input', 'graphics3d' ] ) )
+vars.Add( BoolVariable( 'release', 'True (1) to build for release.', 0 ) )
+vars.Add( BoolVariable( 'profile', 'True (1) to build for profiling.', 0 ) )
+vars.Add( BoolVariable( 'useSTLport', 'True (1) to use STLport', 0 ) )
+vars.Add( PathVariable( 'stlportIncludeDir', 'Path to STLport headers', '/' ) )
+vars.Add( BoolVariable( 'useBoost', 'True (1) to use Boost library', 1 ) )
+vars.Add( PathVariable( 'boostDir', 'Path to Boost files', '/' ) )
+vars.Add( BoolVariable( 'useLoki', 'True (1) to use Loki library', 0 ) )
+vars.Add( PathVariable( 'lokiDir', 'Path to Loki files', '/' ) )
+vars.Add( BoolVariable( 'useFastCGI', 'True (1) to use FastCGI', 0 ) );
+vars.Add( PathVariable( 'fastCGIIncludeDir', 'Path to FastCGI headers', '/' ) )
+vars.Add( PathVariable( 'fastCGILibDir', 'Path to FastCGI library', '/' ) )
+vars.Add( BoolVariable( 'useSQLite', 'True (1) to use SQLite', 0 ) )
+vars.Add( BoolVariable( 'buildSQLite', 'True (1) to build SQLite', 0 ) )
+vars.Add( PathVariable( 'sqliteIncludeDir', 'Path to SQLite headers', '/' ) )
+vars.Add( PathVariable( 'sqliteLibDir', 'Path to SQLite library', '/' ) )
+vars.Add( PathVariable( 'sqliteSrcDir', 'Path to SQLite source', '/' ) )
+vars.Add( BoolVariable( 'useMySQL', 'True (1) to use MySQL', 0 ) )
+vars.Add( PathVariable( 'mysqlIncludeDir', 'Path to MySQL headers', '/' ) )
+vars.Add( PathVariable( 'mysqlLibDir', 'Path to MySQL library', '/' ) )
+vars.Add( BoolVariable( 'useEmbeddedMySQL', 'True (1) to use Embedded MySQL Server', 0 ) )
+vars.Add( BoolVariable( 'usePostgreSQL', 'True (1) to use PostgreSQL', 0 ) )
+vars.Add( PathVariable( 'postgresqlIncludeDir', 'Path to PostgreSQL headers', '/' ) )
+vars.Add( PathVariable( 'postgresqlLibDir', 'Path to PostgreSQL library', '/' ) )
+vars.Add( BoolVariable( 'useSDL', 'True (1) to use SDL library', 0 ) )
+vars.Add( PathVariable( 'sdlIncludeDir', 'Path to SDL headers', '/' ) )
+vars.Add( PathVariable( 'sdlLibDir', 'Path to SDL libraries', '/' ) )
+vars.Add( BoolVariable( 'useOpenGL', 'True (1) to use OpenGL', 0 ) )
+vars.Add( PathVariable( 'openGLIncludeDir', 'Path to openGL headers', '/' ) )
+vars.Add( BoolVariable( 'useCWiiD', 'True (1) to use CWiiD Wiimote library', 0 ) )
+vars.Add( PathVariable( 'cwiidIncludeDir', 'Path to CWiiD headers', '/' ) )
+vars.Add( PathVariable( 'cwiidLibDir', 'Path to CWiiD libraries', '/' ) )
+vars.Add( BoolVariable( 'useWiiYourself', 'True (1) to use WiiYourself library', 0 ) )
+vars.Add( PathVariable( 'wiiYourselfIncludeDir', 'Path to WiiYourself headers', '/' ) )
+vars.Add( PathVariable( 'wiiYourselfLibDir', 'Path to WiiYourself libraries', '/' ) )
+vars.Add( PathVariable( 'winDDKLibDir', 'Path to WinDDK libraries', '/' ) )
+vars.Add( 'bitsPerPixel', 'Preferred color depth (8, 16, or 32)', 32 )
+
+env = Environment( options = vars )
+Export( 'env' )
+
+libraries = env[ 'libraries' ]
+noTest = env[ 'noTest' ]
+platform = env[ 'PLATFORM' ]
+compiler = env[ 'CC' ]
+release = env[ 'release' ]
+profile = env[ 'profile' ]
+useSTLport = env[ 'useSTLport' ]
+useBoost = env[ 'useBoost' ]
+useLoki = env[ 'useLoki' ]
+useFastCGI = env[ 'useFastCGI' ]
+useSQLite = env[ 'useSQLite' ]
+buildSQLite = env[ 'buildSQLite' ]
+usePostgreSQL = env[ 'usePostgreSQL' ]
+useMySQL = env[ 'useMySQL' ]
+if useMySQL:
+    useEmbeddedMySQL = env[ 'useEmbeddedMySQL' ]
+useSDL = env[ 'useSDL' ]
+useOpenGL = env[ 'useOpenGL' ]
+useCWiiD = env[ 'useCWiiD' ]
+useWiiYourself = env[ 'useWiiYourself' ]
+bitsPerPixel = env[ 'bitsPerPixel' ]
+Export( 'platform' )
+Export( 'compiler' )
+Export( 'release' )
+Export( 'profile' )
+Export( 'useSTLport' )
+Export( 'useBoost' )
+Export( 'useLoki' )
+Export( 'useFastCGI' )
+Export( 'useSQLite' )
+Export( 'buildSQLite' )
+Export( 'usePostgreSQL' )
+Export( 'useMySQL' )
+if useMySQL:
+    Export( 'useEmbeddedMySQL' )
+Export( 'useSDL' )
+Export( 'useOpenGL' )
+Export( 'useCWiiD' )
+Export( 'useWiiYourself' )
+Export( 'bitsPerPixel' )
+
+if ( compiler == 'gcc' ):   # GNU C/C++
+    cppLang = ''
+
+    cppWarnings = ( '-Wall -W -Woverloaded-virtual'
+        + ' -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings'
+	    + ' -Wconversion -Wmissing-noreturn -Winline'
+    	+ ' -Wno-sign-compare -Wno-long-long -Wno-missing-noreturn'
+#        + ' -Wshadow'
+#        + ' -Wunreachable-code'
+#	     + ' -Wundef -Wold-style-cast'
+#        + '  -Weffc++'
+        )
+    if not useCWiiD:
+        cppWarnings += ' -pedantic'
+
+    cppDefines = ''
+    if ( release == 0 ):
+        cppDefines = ( cppDefines + ' -DDEBUG' )
+        cppDefines = ( cppDefines + ' -D_DEBUG' )
+        cppOptimization = '-g'
+    else:
+        cppDefines = ( cppDefines + ' -DNDEBUG' )
+        if ( profile == 0 ):
+            cppOptimization = '-O3 -fomit-frame-pointer'
+        else:
+            cppOptimization = '-O3'
+    if useBoost:
+        cppDefines = ( cppDefines + ' -DUSE_BOOST' )
+    if useLoki:
+        cppDefines = ( cppDefines + ' -DUSE_LOKI' )
+    if useFastCGI:
+        cppDefines = ( cppDefines + ' -DUSE_FASTCGI' )
+    if useSQLite:
+        cppDefines = ( cppDefines + ' -DUSE_SQLITE' )
+    if usePostgreSQL:
+        cppDefines = ( cppDefines + ' -DUSE_POSTGRESQL' )
+    if useMySQL:
+        cppDefines = ( cppDefines + ' -DUSE_MYSQL' )
+        if useEmbeddedMySQL:
+            cppDefines = ( cppDefines + ' -DUSE_EMBEDDEDMYSQL' )
+    if useSDL:
+        cppDefines = ( cppDefines + ' -DUSE_SDL' )
+    if useOpenGL:
+        cppDefines = ( cppDefines + ' -DUSE_OPENGL' )
+    if useCWiiD:
+        cppDefines = ( cppDefines + ' -DSUPPORT_WIIMOTE' )
+        cppDefines = ( cppDefines + ' -DUSE_CWIID' )
+    if useWiiYourself:
+        cppDefines = ( cppDefines + ' -DSUPPORT_WIIMOTE' )
+        cppDefines = ( cppDefines + ' -DUSE_WIIYOURSELF' )
+    cppDefines = ( cppDefines + (' -DBITSPERPIXEL=%d' % ( bitsPerPixel)) )
+
+    cppProfile = ''
+    if ( profile == 1 ):
+        cppProfile = '-pg'
+
+    cppCPU = ''
+
+    linkFlags = ''
+    if ( profile == 1 ):
+        linkFlags = '-pg'
+
+elif ( compiler == 'cl' ):  # Microsoft Visual C/C++
+    cppLang = ( '/EHsc /GR /Zc:forScope'
+#        + ' /Za'
+        + ' /D_CRT_SECURE_NO_DEPRECATE'
+        )
+
+    cppWarnings = ( '/W4 /WL /wd4127 /nologo' )
+
+    cppDefines = '/D_USE_MATH_DEFINES'
+    if ( release == 0 ):
+        cppDefines = ( cppDefines + ' /DDEBUG' )
+        cppDefines = ( cppDefines + ' /D_DEBUG' )
+        cppOptimization = '/Od /Zi /MDd'
+    else:
+        cppDefines = ( cppDefines + ' /DNDEBUG' )
+        cppOptimization = '/Ox /MD'
+    if useBoost:
+        cppDefines = ( cppDefines + ' /DUSE_BOOST' )
+    if useLoki:
+        cppDefines = ( cppDefines + ' /DUSE_LOKI' )
+    if useFastCGI:
+        cppDefines = ( cppDefines + ' /DUSE_FASTCGI' )
+    if useSQLite:
+        cppDefines = ( cppDefines + ' /DUSE_SQLITE' )
+    if usePostgreSQL:
+        cppDefines = ( cppDefines + ' /DUSE_POSTGRESQL' )
+    if useMySQL:
+        cppDefines = ( cppDefines + ' /DUSE_MYSQL' )
+        if useEmbeddedMySQL:
+            cppDefines = ( cppDefines + ' /DUSE_EMBEDDEDMYSQL' )
+    if useSDL:
+        cppDefines = ( cppDefines + ' /DUSE_SDL' )
+    if useOpenGL:
+        cppDefines = ( cppDefines + ' /DUSE_OPENGL' )
+    if useCWiiD:
+        cppDefines = ( cppDefines + ' /DSUPPORT_WIIMOTE' )
+        cppDefines = ( cppDefines + ' /DUSE_CWIID' )
+    if useWiiYourself:
+        cppDefines = ( cppDefines + ' /DSUPPORT_WIIMOTE' )
+        cppDefines = ( cppDefines + ' /DUSE_WIIYOURSELF' )
+    cppDefines = ( cppDefines + (' /DBITSPERPIXEL=%d' % ( bitsPerPixel)) )
+
+    cppProfile = ''
+    if ( profile == 1 ):
+        cppProfile = ''
+
+    cppCPU = ''
+
+    linkFlags = '/SUBSYSTEM:CONSOLE'
+    if ( release == 0 ):
+        linkFlags = ( linkFlags + ' /DEBUG' )
+
+    env['LINKCOM'] = [env['LINKCOM'], 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1']
+    env['SHLINKCOM'] = [env['SHLINKCOM'], 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2']
+
+env.Replace( CPPFLAGS = cppDefines );
+env.Replace( CXXFLAGS = ( cppLang + ' ' + cppWarnings + ' ' + cppOptimization + ' ' + cppProfile + ' ' + cppCPU ) )
+env.Append( LINKFLAGS = linkFlags )
+
+
+if useSTLport:
+    stlportIncludeDir = env[ 'stlportIncludeDir' ]
+    Export( 'stlportIncludeDir' )
+
+if useBoost:
+    boostDir = env[ 'boostDir' ]
+    Export( 'boostDir' )
+    boostIncludeDir = boostDir
+    Export( 'boostIncludeDir' )
+
+if useLoki:
+    lokiDir = env[ 'lokiDir' ]
+    Export( 'lokiDir' )
+    lokiIncludeDir = '%s/include' % lokiDir
+    Export( 'lokiIncludeDir' )
+    lokiSrcDir = '%s/src' % lokiDir
+    Export( 'lokiSrcDir' )
+
+if useSQLite:
+    sqliteIncludeDir = env[ 'sqliteIncludeDir' ]
+    Export( 'sqliteIncludeDir' )
+    sqliteLibDir = env[ 'sqliteLibDir' ]
+    Export( 'sqliteLibDir' )
+
+if useFastCGI:
+    fastCGIIncludeDir = env[ 'fastCGIIncludeDir' ]
+    Export( 'fastCGIIncludeDir' )
+    fastCGILibDir = env[ 'fastCGILibDir' ]
+    Export( 'fastCGILibDir' )
+
+if buildSQLite:
+    sqliteSrcDir = env[ 'sqliteSrcDir' ]
+    Export( 'sqliteSrcDir' )
+
+if useMySQL:
+    mysqlIncludeDir = env[ 'mysqlIncludeDir' ]
+    Export( 'mysqlIncludeDir' )
+    mysqlLibDir = env[ 'mysqlLibDir' ]
+    Export( 'mysqlLibDir' )
+
+if usePostgreSQL:
+    postgresqlIncludeDir = env[ 'postgresqlIncludeDir' ]
+    Export( 'postgresqlIncludeDir' )
+    postgresqlLibDir = env[ 'postgresqlLibDir' ]
+    Export( 'postgresqlLibDir' )
+
+if useSDL:
+    sdlIncludeDir = env[ 'sdlIncludeDir' ]
+    Export( 'sdlIncludeDir' )
+    sdlLibDir = env[ 'sdlLibDir' ]
+    Export( 'sdlLibDir' )
+
+if useOpenGL:
+    openGLIncludeDir = env[ 'openGLIncludeDir' ]
+    Export( 'openGLIncludeDir' )
+
+if useCWiiD:
+    cwiidIncludeDir = env[ 'cwiidIncludeDir' ]
+    Export( 'cwiidIncludeDir' )
+    cwiidLibDir = env[ 'cwiidLibDir' ]
+    Export( 'cwiidLibDir' )
+
+if useWiiYourself:
+    wiiYourselfIncludeDir = env[ 'wiiYourselfIncludeDir' ]
+    Export( 'wiiYourselfIncludeDir' )
+    wiiYourselfLibDir = env[ 'wiiYourselfLibDir' ]
+    Export( 'wiiYourselfLibDir' )
+    winDDKLibDir = env[ 'winDDKLibDir' ]
+    Export( 'winDDKLibDir' )
+
+if useLoki:
+    libraries.append( 'Loki' )
+if buildSQLite:
+    libraries.append( 'SQLite' )
+    sqliteLibDir = '#'
+
+libs = []
+for dir in libraries:
+    script = '%s/SConscript' % dir
+    buildDir = 'build/%s' % dir
+    lib = SConscript( script, build_dir = buildDir, duplicate = 0 )
+    libs = libs + lib
+
+env.Install( '.', libs )
+
+if useLoki:
+    noTest.append( 'Loki' )
+if buildSQLite:
+    noTest.append( 'SQLite' )
+testdirs = []
+for dir in libraries:
+    if not (dir in noTest):
+        testdirs = testdirs + [ '%s/test' % dir ]
+
+allTests = []
+for dir in testdirs:
+    script = '%s/SConscript' % dir
+    buildDir = 'build/%s' % dir
+    tests = SConscript( script, build_dir = buildDir, duplicate = 0 )
+    allTests.append( tests )
+
+env.Install( 'tests', allTests )
+
+Help( vars.GenerateHelpText( env ) )
+
+
+# Lists all of the construction variables
+#dict = env.Dictionary()
+#keys = dict.keys()
+#keys.sort()
+#for key in keys:
+#    if ( key[0] != '_' ):    
+#        print "'%s' = '%s'" % (key, dict[key])

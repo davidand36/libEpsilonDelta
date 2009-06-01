@@ -1,0 +1,46 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for EpsilonDelta astro library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+
+includePath = [ '.', '#time', '#math', '#util', ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+
+sources = [
+            'GeodeticEllipsoid.cpp',
+            'GeodeticDatum.cpp',
+            'GeodeticLocation.cpp',
+            'SiderealTime.cpp',
+            'Equatorial.cpp',
+            'Horizontal.cpp',
+            'AstroCoordTransformations.cpp',
+            'JPLEphemeris.cpp',
+            'Precession.cpp',
+            'Obliquity.cpp',
+            'Nutation.cpp',
+            'CoordinateReduction.cpp',
+            'ApparentEphemeris.cpp',
+            'AstroPhenomena.cpp',
+            'Seasons.cpp',
+            'MoonPhases.cpp',
+            'RiseSet.cpp',
+            'LunarVisibility.cpp',
+            'EquationOfTime.cpp'
+          ]
+
+lib = env.Library( 'EpsilonDelta_astro', sources, CPPPATH = includePath )
+
+Return( 'lib' )

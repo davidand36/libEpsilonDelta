@@ -1,0 +1,66 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta sql library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useSQLite' )
+if useSQLite:
+    Import( 'sqliteIncludeDir' )
+Import( 'useMySQL' )
+if useMySQL:
+    Import( 'mysqlIncludeDir' )
+Import( 'usePostgreSQL' )
+if usePostgreSQL:
+    Import( 'postgresqlIncludeDir' )
+
+includePath = [ '.', '#file', '#time', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useSQLite:
+    includePath.append( sqliteIncludeDir )
+if useMySQL:
+    includePath.append( mysqlIncludeDir )
+if usePostgreSQL:
+    includePath.append( postgresqlIncludeDir )
+
+sources = [
+            'SQLResult.cpp',
+          ]
+if useSQLite:
+    sources = ( sources
+        + [
+            'SQLiteDatabase.cpp',
+            'SQLiteResult.cpp',
+            'SQLiteException.cpp'
+          ] )
+if useMySQL:
+    sources = ( sources
+        + [
+            'MySQLLibrary.cpp',
+            'MySQLDatabase.cpp',
+            'MySQLResult.cpp',
+            'MySQLException.cpp'
+          ] )
+if usePostgreSQL:
+    sources = ( sources
+        + [
+            'PostgreSQLDatabase.cpp',
+            'PostgreSQLResult.cpp',
+            'PostgreSQLException.cpp'
+          ] )
+
+
+lib = env.Library( 'EpsilonDelta_sql', sources, CPPPATH = includePath )
+
+Return( 'lib' )

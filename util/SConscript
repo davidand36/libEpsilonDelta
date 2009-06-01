@@ -1,0 +1,47 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta util library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+
+includePath = [ '.' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+sources = [ 
+            'Exception.cpp',
+            'Assert.cpp',
+            'TestCheck.cpp',
+            'FixEndian.cpp',
+            'CharType.cpp',
+            'StringUtil.cpp',
+            'UnicodeUtil.cpp',
+            'CSV.cpp',
+            'JSON.cpp',
+            'JSONException.cpp',
+            'SmartPtr.cpp',
+            'Array.cpp',
+            'VMap.cpp',
+            'IndexedVector.cpp',
+            'Algorithms.cpp'
+          ]
+            
+lib = env.Library( 'EpsilonDelta_util', sources, CPPPATH = includePath )
+
+Return( 'lib' )

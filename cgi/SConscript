@@ -1,0 +1,35 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for EpsilonDelta cgi library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useFastCGI' )
+if useFastCGI:
+    Import( 'fastCGIIncludeDir' )
+
+includePath = [ '.', '#util', ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useFastCGI:
+    includePath.append( fastCGIIncludeDir )
+
+sources = [ 
+            'CGIInput.cpp',
+            'CGIRawInput.cpp',
+            'CGIOutput.cpp'
+          ]
+
+lib = env.Library( 'EpsilonDelta_cgi', sources, CPPPATH = includePath )
+
+Return( 'lib' )

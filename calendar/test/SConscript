@@ -1,0 +1,46 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestCalendarLib.
+#
+
+Import( 'env' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+
+includePath = [ '.', '#calendar', '#astro', '#time', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+libPath = '#'
+libs = [ 'EpsilonDelta_calendar', 'EpsilonDelta_astro', 'EpsilonDelta_time',
+         'EpsilonDelta_math', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+if useLoki:
+    libs.append( 'Loki' )
+
+sources = [ 
+            'TestCalendarLib.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestCalendarLib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

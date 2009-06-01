@@ -1,0 +1,35 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for EpsilonDelta file library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+
+includePath = [ '.', '#time', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+
+sources = [ 
+            'FileUtil.cpp',
+            'DirUtil.cpp',
+            'ConfigFile.cpp'
+          ]
+            
+lib = env.Library( 'EpsilonDelta_file', sources, CPPPATH = includePath )
+
+Return( 'lib' )

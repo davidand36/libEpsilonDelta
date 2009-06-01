@@ -1,0 +1,73 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta input library
+#
+
+Import( 'env' )
+Import( 'release' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSDL' )
+if useSDL:
+    Import( 'sdlIncludeDir' )
+Import( 'useCWiiD' )
+if useCWiiD:
+    Import( 'cwiidIncludeDir' )
+Import( 'useWiiYourself' )
+if useWiiYourself:
+    Import( 'wiiYourselfIncludeDir' )
+
+includePath = [ '.', '#mmbase', '#math', '#util', ]
+if release == 0:
+    includePath.append( '#time' )
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+if useSDL:
+    includePath.append( sdlIncludeDir )
+if useCWiiD:
+    includePath.append( cwiidIncludeDir )
+if useWiiYourself:
+    includePath.append( wiiYourselfIncludeDir )
+
+sources = [ 
+            'Keyboard.cpp',
+            'KeyboardState.cpp',
+            'Mouse.cpp',
+            'MouseState.cpp',
+            'Joystick.cpp',
+            'JoystickState.cpp',
+          ]
+if useSDL:
+    sources = ( sources
+        + [ 
+            'SDLInput.cpp',
+          ] )
+if useCWiiD:
+   sources = ( sources
+        + [
+            'CWiiDWiimote.cpp',
+            'WiimoteState.cpp'
+          ] )
+if useWiiYourself:
+   sources = ( sources
+        + [
+            'WiiYourselfWiimote.cpp',
+            'WiimoteState.cpp'
+          ] )
+
+lib = env.Library( 'EpsilonDelta_input', sources, CPPPATH = includePath )
+
+Return( 'lib' )

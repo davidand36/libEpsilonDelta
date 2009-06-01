@@ -1,0 +1,51 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for the EpsilonDelta graphics2d library
+#
+
+Import( 'env' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSDL' )
+if useSDL:
+    Import( 'sdlIncludeDir' )
+
+includePath = [ '.', '#mmbase', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+if useSDL:
+    includePath.append( sdlIncludeDir )
+
+sources = [
+            'Color.cpp',
+            'Pixel.cpp',
+            'Point2.cpp',
+            'Line2.cpp',
+            'Rectangle.cpp',
+            'Ellipse.cpp',
+            'Circle.cpp'
+          ]
+if useSDL:
+    sdlSources = [
+                   'SDLGraphics2D.cpp',
+                   'SDLSurface.cpp',
+                   'SDLImage.cpp'
+                 ]
+    sources = sources + sdlSources
+
+lib = env.Library( 'EpsilonDelta_graphics2d', sources, CPPPATH = includePath )
+
+Return( 'lib' )

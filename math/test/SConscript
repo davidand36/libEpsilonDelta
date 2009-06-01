@@ -1,0 +1,46 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestMathLib.
+#
+
+Import( 'env' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+
+includePath = [ '.', '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+
+libPath = '#'
+libs = [ 'EpsilonDelta_math', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+
+sources = [ 
+            'TestMathLib.cpp',
+            'PrecisionTests.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestMathLib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+sources = [
+            'TestRandom.cpp'
+          ]
+prog = env.Program( 'TestRandom', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

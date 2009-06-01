@@ -1,0 +1,71 @@
+#
+# SConscript
+# Copyright (C) 2007 David M. Anderson
+#
+# SCons "makefile" for TestInputLib.
+#
+
+Import( 'env' )
+Import( 'platform' )
+Import( 'compiler' )
+Import( 'useSTLport' )
+if useSTLport:
+    Import( 'stlportIncludeDir' )
+Import( 'useBoost' )
+if useBoost:
+    Import( 'boostIncludeDir' )
+Import( 'useLoki' )
+if useLoki:
+    Import( 'lokiIncludeDir' )
+Import( 'useSDL' )
+if useSDL:
+    Import( 'sdlIncludeDir' )
+    Import( 'sdlLibDir' )
+Import( 'useCWiiD' )
+if useCWiiD:
+    Import( 'cwiidIncludeDir' )
+    Import( 'cwiidLibDir' )
+Import( 'useWiiYourself' )
+if useWiiYourself:
+    Import( 'wiiYourselfIncludeDir' )
+    Import( 'wiiYourselfLibDir' )
+
+includePath = [ '.', '#input', '#graphics2d', '#time', '#mmbase',
+                '#math', '#util' ]
+if useSTLport:
+    includePath.append( stlportIncludeDir )
+if useBoost:
+    includePath.append( boostIncludeDir )
+if useLoki:
+    includePath.append( lokiIncludeDir )
+if useSDL:
+    includePath.append( sdlIncludeDir )
+
+libPath = [ '#' ]
+libs = [ 'EpsilonDelta_input', 'EpsilonDelta_graphics2d', 'EpsilonDelta_time',
+         'EpsilonDelta_mmbase', 'EpsilonDelta_math', 'EpsilonDelta_util' ]
+if useSTLport:
+    if ( compiler == 'gcc' ):
+        libs.append( 'stlport_gcc' )
+if useLoki:
+    libs.append( 'Loki' )
+if useSDL:
+    libPath.append( sdlLibDir )
+    libs.append( 'SDL' )
+    if ( platform == 'win32' ):
+        libs.append( 'SDLmain' )
+    libs.append( 'SDL_image' )
+if useCWiiD:
+    libPath.append( cwiidLibDir )
+    libs.append( 'cwiid' )
+
+sources = [ 
+            'TestInputLib.cpp'
+          ]
+
+progs = []
+prog = env.Program( 'TestInputLib', sources, CPPPATH = includePath,
+                    LIBS = libs, LIBPATH = libPath )
+progs = progs + prog;
+
+Return( 'progs' )

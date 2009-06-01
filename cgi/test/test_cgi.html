@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+  <head>
+    <title> CGILib Test </title>
+  </head>
+
+  <body>
+
+    <h2>CGI</h2>
+
+    Regular form <br />
+    <form action="/bin/TestCGILib?Foo=Bar&Baz=Qum" method=post>
+      Text: <input type="text" name="Text" /> <br />
+      OtherText: <input type="text" name=OtherText /> <br />
+      UploadedFile: <input type="file" name="UploadedFile" /> <br />
+      <input type="submit" name="Submit" />
+    </form>
+
+    <hr />
+
+    Multipart/form-data <br />
+    <form action="/bin/TestCGILib?Foo=Bar&Baz=Qum" method=post
+      enctype=multipart/form-data>
+      Text: <input type="text" name="Text" /> <br />
+      OtherText: <input type="text" name=OtherText /> <br />
+      UploadedFile: <input type="file" name="UploadedFile" /> <br />
+      <input type="submit" name="Submit" />
+    </form>
+
+    <hr />
+
+    <a href="/bin/TestCGILib?Foo=Bar&Baz=Qum">Link to CGI</a>
+
+    <hr />
+
+    <form action="/bin/TestCGILib?ListPrimes=true" method=post>
+      Limit: <input type="text" name="Limit" value="100" />
+      <input type="submit" name="List Primes" />
+    </form>
+
+    <hr />
+
+    <h2>FastCGI</h2>
+
+    Regular form <br />
+    <form action="/fcgi/TestCGILib?Foo=Bar&Baz=Qum" method=post>
+      Text: <input type="text" name="Text" /> <br />
+      OtherText: <input type="text" name=OtherText /> <br />
+      UploadedFile: <input type="file" name="UploadedFile" /> <br />
+      <input type="submit" name="Submit" />
+    </form>
+
+    <hr />
+
+    Multipart/form-data <br />
+    <form action="/fcgi/TestCGILib?Foo=Bar&Baz=Qum" method=post
+      enctype=multipart/form-data>
+      Text: <input type="text" name="Text" /> <br />
+      OtherText: <input type="text" name=OtherText /> <br />
+      UploadedFile: <input type="file" name="UploadedFile" /> <br />
+      <input type="submit" name="Submit" />
+    </form>
+
+    <hr />
+
+    <a href="/fcgi/TestCGILib?Foo=Bar&Baz=Qum">Link to CGI</a>
+
+    <hr />
+
+    <form action="/fcgi/TestCGILib?ListPrimes=true" method=post>
+      Limit: <input type="text" name="Limit" value="100" />
+      <input type="submit" name="List Primes" />
+    </form>
+
+  </body>
+</html>

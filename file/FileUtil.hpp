@@ -25,7 +25,7 @@ DateTime FileModDate( const std::string & fileName );
 std::vector< char > LoadFile( const std::string & fileName );
 std::string LoadTextFile( const std::string & fileName );
 void SaveFile( const std::string & fileName, const char * data, int dataSize );
-void SaveTextFile( const std::string & fileName, const std::string text );
+void SaveTextFile( const std::string & fileName, const std::string & text );
 
 #ifdef DEBUG
 bool TestFileUtil( );

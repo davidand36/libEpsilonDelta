@@ -6,8 +6,11 @@
 # Compiled files (object files, libraries, executables, etc.):
 *.a
 *.o
+*.lib
+*.pdb
 build/*
 tests/*
 
 # Misc files
 .sconsign*
+test.sqlite3

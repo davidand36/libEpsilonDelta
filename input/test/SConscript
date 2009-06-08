@@ -29,6 +29,7 @@ Import( 'useWiiYourself' )
 if useWiiYourself:
     Import( 'wiiYourselfIncludeDir' )
     Import( 'wiiYourselfLibDir' )
+    Import( 'winDDKLibDir' )
 
 includePath = [ '.', '#input', '#graphics2d', '#time', '#mmbase',
                 '#math', '#util' ]
@@ -58,6 +59,10 @@ if useSDL:
 if useCWiiD:
     libPath.append( cwiidLibDir )
     libs.append( 'cwiid' )
+if useWiiYourself:
+    libPath.append( wiiYourselfLibDir )
+    libPath.append( winDDKLibDir )
+    libs.append( 'WiiYourself!_d' )
 
 sources = [ 
             'TestInputLib.cpp'

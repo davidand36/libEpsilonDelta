@@ -189,13 +189,13 @@ WiimoteImpl::Update( WiimoteState * pState,
             pPressedQueue->push( b );
     }
 
-    Vector3F acceleration( m_wyMote.Acceleration.X,
-                           m_wyMote.Acceleration.Y,
-                           m_wyMote.Acceleration.Z );
+    Vector3F acceleration( -m_wyMote.Acceleration.X,
+                           -m_wyMote.Acceleration.Z,
+                           m_wyMote.Acceleration.Y );
     pState->SetAcceleration( acceleration );
-    Vector3F gravity( m_wyMote.Acceleration.Orientation.X,
-                      m_wyMote.Acceleration.Orientation.Y,
-                      m_wyMote.Acceleration.Orientation.Z );
+    Vector3F gravity( -m_wyMote.Acceleration.Orientation.X,
+                      -m_wyMote.Acceleration.Orientation.Z,
+                      m_wyMote.Acceleration.Orientation.Y );
     pState->SetGravity( gravity );
 
     int numPointerLights = 0;
@@ -229,9 +229,12 @@ WiimoteImpl::Update( WiimoteState * pState,
         Vector2I halfSep( m_pointerSeparation.X() / 2,
                           m_pointerSeparation.Y() / 2 );
         Vector2I rawMiddle = lights[ 0 ] + halfSep;
-        Vector2F scaledMiddle(
-            (float) rawMiddle.X() / ::wiimote_state::ir::MAX_RAW_X,
-            (float) rawMiddle.Y() / ::wiimote_state::ir::MAX_RAW_Y );
+        float midX = 1.f -
+                ((float) rawMiddle.X() / ::wiimote_state::ir::MAX_RAW_X);
+        midX = max( 0.f, min( 1.f, midX ) );
+        float midY = (float) rawMiddle.Y() / ::wiimote_state::ir::MAX_RAW_Y;
+        midY = max( 0.f, min( 1.f, midY ) );
+        Vector2F scaledMiddle( midX, midY );
         if ( numPointerLights == 1 )
         {
             pState->SetPointer( 1, scaledMiddle );
@@ -250,12 +253,12 @@ WiimoteImpl::Update( WiimoteState * pState,
 
     if (  m_wyMote.ExtensionType == ::wiimote_state::NUNCHUK )
     {
-        acceleration.Set( m_wyMote.Nunchuk.Acceleration.X,
-                          m_wyMote.Nunchuk.Acceleration.Y,
-                          m_wyMote.Nunchuk.Acceleration.Z );
-        gravity.Set( m_wyMote.Nunchuk.Acceleration.Orientation.X,
-                     m_wyMote.Nunchuk.Acceleration.Orientation.Y,
-                     m_wyMote.Nunchuk.Acceleration.Orientation.Z );
+        acceleration.Set( -m_wyMote.Nunchuk.Acceleration.X,
+                          -m_wyMote.Nunchuk.Acceleration.Z,
+                          m_wyMote.Nunchuk.Acceleration.Y );
+        gravity.Set( -m_wyMote.Nunchuk.Acceleration.Orientation.X,
+                     -m_wyMote.Nunchuk.Acceleration.Orientation.Z,
+                     m_wyMote.Nunchuk.Acceleration.Orientation.Y );
         Vector2F joystick( m_wyMote.Nunchuk.Joystick.X,
                            m_wyMote.Nunchuk.Joystick.Y );
         pState->SetNunchuk( true, acceleration, gravity, joystick );

@@ -132,7 +132,7 @@ SaveFile( const std::string & fileName, const char * data, int dataSize )
 //-----------------------------------------------------------------------------
 
 void 
-SaveTextFile( const std::string & fileName, const std::string text )
+SaveTextFile( const std::string & fileName, const std::string & text )
 {
     FILE * file = fopen( fileName.c_str(), "w" );
     if ( file == 0 )

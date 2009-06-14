@@ -34,7 +34,7 @@ using boost::array;
 
 #endif
 
-#include <SmartPtr.hpp>
+#include "SmartPtr.hpp"
 
 
 namespace EpsilonDelta

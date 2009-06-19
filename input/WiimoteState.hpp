@@ -64,6 +64,7 @@ public:
         NumButtons
     };
 
+    uint32_t ButtonsDown( ) const;
     bool IsButtonDown( Button button ) const;
     Vector3F Acceleration( ) const;
     Vector3F Gravity( ) const;
@@ -147,6 +148,15 @@ WiimoteState::Nunchuk::Nunchuk( )
 }
 
 //=============================================================================
+
+inline
+uint32_t 
+WiimoteState::ButtonsDown( ) const
+{
+    return m_buttonsDown;
+}
+
+//-----------------------------------------------------------------------------
 
 inline
 bool 

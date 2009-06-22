@@ -16,7 +16,7 @@
 
 #define BITFIELDS_HIGHFIRST  0
 #define RGB_REDHIGH  1
-#define BITFIEDS_REDFIRST  ( BITFIELDS_HIGHFIRST == RGB_REDHIGH )
+#define BITFIELDS_REDFIRST  ( BITFIELDS_HIGHFIRST == RGB_REDHIGH )
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta

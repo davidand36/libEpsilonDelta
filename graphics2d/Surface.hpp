@@ -74,6 +74,12 @@ public:
     SDL_Surface * GetSDL_Surface( );
     const SDL_Surface * GetSDL_Surface( ) const;
 #endif
+#ifdef USE_PNG
+    void SavePng( const std::string & fileSpec );
+#endif
+#ifdef USE_JPEG
+    void SaveJpeg( const std::string & fileSpec );
+#endif
 
 #ifdef DEBUG
     void PrintInfo( ) const;

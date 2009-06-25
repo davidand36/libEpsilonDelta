@@ -29,7 +29,10 @@ enum EPixelType
     PixelType8,
     PixelType555,
     PixelType565,
+    PixelType888,
+    PixelType888Rev,
     PixelType0888,
+    PixelType0888Rev,
     PixelType8888,
     PixelType8888Rev,
 
@@ -133,6 +136,40 @@ private:
 //*****************************************************************************
 
 
+class Pixel888
+{
+public:
+    Pixel888( );
+    Pixel888( char value[ 3 ] );
+    Pixel888( const Color3B & color );
+    const unsigned char * Value( ) const;
+    Color3B Color( ) const;
+
+private:
+    unsigned char m_value[ 3 ];
+};
+
+
+//*****************************************************************************
+
+
+class Pixel888Rev
+{
+public:
+    Pixel888Rev( );
+    Pixel888Rev( char value[ 3 ] );
+    Pixel888Rev( const Color3B & color );
+    const unsigned char * Value( ) const;
+    Color3B Color( ) const;
+
+private:
+    unsigned char m_value[ 3 ];
+};
+
+
+//*****************************************************************************
+
+
 class Pixel0888
 {
 public:
@@ -157,6 +194,40 @@ private:
             uint32_t m_blue : 8;
             uint32_t m_green : 8;
             uint32_t m_red : 8;
+            uint32_t : 8;
+#endif
+        } m_rgb;
+    };
+};
+
+
+//*****************************************************************************
+
+
+class Pixel0888Rev
+{
+public:
+    Pixel0888Rev( );
+    Pixel0888Rev( uint32_t value );
+    Pixel0888Rev( const Color3B & color );
+    uint32_t Value( ) const;
+    Color3B Color( ) const;
+
+private:
+    union
+    {
+        uint32_t m_value;
+        struct
+        {
+#if BITFIELDS_REDFIRST
+            uint32_t : 8;
+            uint32_t m_blue : 8;
+            uint32_t m_green : 8;
+            uint32_t m_red : 8;
+#else
+            uint32_t m_red : 8;
+            uint32_t m_green : 8;
+            uint32_t m_blue : 8;
             uint32_t : 8;
 #endif
         } m_rgb;
@@ -389,6 +460,128 @@ Pixel555::Color( ) const
 //*****************************************************************************
 
 
+inline
+Pixel888::Pixel888( )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888::Pixel888( char value[ 3 ] )
+{
+    for ( int i = 0; i < 3; ++i )
+        m_value[ i ] = value[ i ];
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888::Pixel888( const Color3B & color )
+{
+#if RBG_REDHIGH
+    m_value[ 0 ] = (unsigned char)color.Red();
+    m_value[ 1 ] = (unsigned char)color.Green();
+    m_value[ 2 ] = (unsigned char)color.Blue();
+#else
+    m_value[ 0 ] = (unsigned char)color.Blue();
+    m_value[ 1 ] = (unsigned char)color.Green();
+    m_value[ 2 ] = (unsigned char)color.Red();
+#endif
+}
+
+//=============================================================================
+
+inline
+const unsigned char * 
+Pixel888::Value( ) const
+{
+    return m_value;
+}
+
+//=============================================================================
+
+inline
+Color3B 
+Pixel888::Color( ) const
+{
+#if RGB_REDHIGH
+    int r = m_value[ 0 ];
+    int g = m_value[ 1 ];
+    int b = m_value[ 2 ];
+#else
+    int r = m_value[ 2 ];
+    int g = m_value[ 1 ];
+    int b = m_value[ 0 ];
+#endif
+    return Color3B( r, g, b );
+}
+
+
+//*****************************************************************************
+
+
+inline
+Pixel888Rev::Pixel888Rev( )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888Rev::Pixel888Rev( char value[ 3 ] )
+{
+    for ( int i = 0; i < 3; ++i )
+        m_value[ i ] = value[ i ];
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888Rev::Pixel888Rev( const Color3B & color )
+{
+#if RBG_REDHIGH
+    m_value[ 0 ] = (unsigned char)color.Blue();
+    m_value[ 1 ] = (unsigned char)color.Green();
+    m_value[ 2 ] = (unsigned char)color.Red();
+#else
+    m_value[ 0 ] = (unsigned char)color.Red();
+    m_value[ 1 ] = (unsigned char)color.Green();
+    m_value[ 2 ] = (unsigned char)color.Blue();
+#endif
+}
+
+//=============================================================================
+
+inline
+const unsigned char * 
+Pixel888Rev::Value( ) const
+{
+    return m_value;
+}
+
+//=============================================================================
+
+inline
+Color3B 
+Pixel888Rev::Color( ) const
+{
+#if RGB_REDHIGH
+    int r = m_value[ 2 ];
+    int g = m_value[ 1 ];
+    int b = m_value[ 0 ];
+#else
+    int r = m_value[ 0 ];
+    int g = m_value[ 1 ];
+    int b = m_value[ 2 ];
+#endif
+    return Color3B( r, g, b );
+}
+
+
+//*****************************************************************************
+
+
 inline 
 Pixel0888::Pixel0888( )
 {
@@ -427,6 +620,52 @@ Pixel0888::Value( ) const
 inline
 Color3B 
 Pixel0888::Color( ) const
+{
+    return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
+}
+
+
+//*****************************************************************************
+
+
+inline 
+Pixel0888Rev::Pixel0888Rev( )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline 
+Pixel0888Rev::Pixel0888Rev( uint32_t value )
+    :   m_value( value )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline 
+Pixel0888Rev::Pixel0888Rev( const Color3B & color )
+    :   m_value( 0 )
+{
+    m_rgb.m_red = color.Red();
+    m_rgb.m_green = color.Green();
+    m_rgb.m_blue = color.Blue();
+}
+
+//=============================================================================
+
+inline
+uint32_t 
+Pixel0888Rev::Value( ) const
+{
+    return m_value;
+}
+
+//=============================================================================
+
+inline
+Color3B 
+Pixel0888Rev::Color( ) const
 {
     return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
 }

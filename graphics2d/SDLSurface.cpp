@@ -14,6 +14,14 @@
 #include "Graphics2D.hpp"
 #include "SDLException.hpp"
 #include <SDL_image.h>
+#if defined(USE_PNG) || defined(USE_JPEG)
+#include <cstdio>
+#include "FileException.hpp"
+#endif
+#ifdef USE_PNG
+#include <png.h>
+#include <setjmp.h>
+#endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Array.hpp"
@@ -215,6 +223,78 @@ Surface::Blit( const Rectangle & srcRect, const Point2I & destPos,
     if ( blitRslt != 0 )
         throw SDLException( "SDL_BlitSurface" );
 }
+
+//=============================================================================
+
+#ifdef USE_PNG
+
+void 
+Surface::SavePng( const std::string & fileSpec )
+{
+    FILE * file = fopen( fileSpec.c_str(), "wb" );
+    if ( file == 0 )
+        throw FileException( "Unable to open " + fileSpec + " for reading." );
+    ::png_struct * pPng = ::png_create_write_struct( PNG_LIBPNG_VER_STRING,
+                                                     0, 0, 0 );
+    Assert( pPng != 0 );
+    ::png_info * pInfo = ::png_create_info_struct( pPng );
+    Assert( pInfo != 0 );
+    if ( setjmp( pPng->jmpbuf ) )
+    {
+        ::png_destroy_write_struct( &pPng, &pInfo );
+        fclose( file );
+        throw FileException( "Error reading " + fileSpec + " as PNG." );
+    }
+    ::png_init_io( pPng, file );
+    Rectangle extent = Extent();
+    int width = extent.Width();
+    int height = extent.Height();
+    int pitch = Pitch();
+    int bitDepth = 8;
+    int colorType = PNG_COLOR_TYPE_RGB;
+    switch ( m_pixelType )
+    {
+    case PixelType8888:
+    case PixelType8888Rev:
+        colorType = PNG_COLOR_TYPE_RGB_ALPHA;
+        break;
+    default:
+        break;
+    }
+    ::png_set_IHDR( pPng, pInfo, width, height, bitDepth, colorType,
+                    PNG_INTERLACE_ADAM7, PNG_COMPRESSION_TYPE_DEFAULT,
+                    PNG_FILTER_TYPE_DEFAULT );
+    ::png_byte * rows[ height ];
+    ::png_byte * pixels = (::png_byte *)Lock( );
+    for ( int i = 0; i < height; ++i )
+    {
+        rows[ i ] = pixels;
+        pixels += pitch;
+    }
+    ::png_set_rows( pPng, pInfo, rows );
+    int transforms = PNG_TRANSFORM_IDENTITY;
+    switch ( m_pixelType )
+    {
+        //!!!
+    }
+    ::png_write_png( pPng, pInfo, transforms, 0 );
+    Unlock( );
+    ::png_destroy_write_struct( &pPng, &pInfo );
+    fclose( file );
+}
+
+#endif
+
+//=============================================================================
+
+#ifdef USE_JPEG
+
+void 
+Surface::SaveJpeg( const std::string & fileSpec )
+{
+}
+
+#endif
 
 //=============================================================================
 

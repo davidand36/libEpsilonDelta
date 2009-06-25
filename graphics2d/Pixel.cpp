@@ -26,7 +26,10 @@ static const char * const s_pixelTypeNames[ NumPixelTypes ]
         "Pixel8",
         "Pixel555",
         "Pixel565",
+        "Pixel888",
+        "Pixel888Rev",
         "Pixel0888",
+        "Pixel0888Rev",
         "Pixel8888",
         "Pixel8888Rev"
     };
@@ -124,6 +127,62 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+    case PixelType888:
+        format.palette = 0;
+        format.BitsPerPixel = 24;
+        format.BytesPerPixel = 3;
+#if RGB_REDHIGH
+        format.Rmask = 0x00FF0000;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x000000FF;
+        format.Amask = 0;
+        format.Rshift = 16;
+        format.Gshift = 8;
+        format.Bshift = 0;
+        format.Ashift = 0;
+#else   //RGB_REDLOW
+        format.Rmask = 0x000000FF;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x00FF0000;
+        format.Amask = 0;
+        format.Rshift = 0;
+        format.Gshift = 8;
+        format.Bshift = 16;
+        format.Ashift = 0;
+#endif  //RGB
+        format.Rloss = format.Gloss = format.Bloss = 0;
+        format.Aloss = 8;
+        format.colorkey = 0;
+        format.alpha = 255;
+        break;
+    case PixelType888Rev:
+        format.palette = 0;
+        format.BitsPerPixel = 24;
+        format.BytesPerPixel = 3;
+#if RGB_REDHIGH
+        format.Rmask = 0x000000FF;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x00FF0000;
+        format.Amask = 0;
+        format.Rshift = 0;
+        format.Gshift = 8;
+        format.Bshift = 16;
+        format.Ashift = 0;
+#else   //RGB_REDLOW
+        format.Rmask = 0x00FF0000;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x000000FF;
+        format.Amask = 0;
+        format.Rshift = 16;
+        format.Gshift = 8;
+        format.Bshift = 0;
+        format.Ashift = 0;
+#endif  //RGB
+        format.Rloss = format.Gloss = format.Bloss = 0;
+        format.Aloss = 8;
+        format.colorkey = 0;
+        format.alpha = 255;
+        break;
     case PixelType0888:
         format.palette = 0;
         format.BitsPerPixel = 32;
@@ -145,6 +204,34 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.Rshift = 0;
         format.Gshift = 8;
         format.Bshift = 16;
+        format.Ashift = 0;
+#endif  //RGB
+        format.Rloss = format.Gloss = format.Bloss = 0;
+        format.Aloss = 8;
+        format.colorkey = 0;
+        format.alpha = 255;
+        break;
+    case PixelType0888Rev:
+        format.palette = 0;
+        format.BitsPerPixel = 32;
+        format.BytesPerPixel = 4;
+#if RGB_REDHIGH
+        format.Rmask = 0x000000FF;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x00FF0000;
+        format.Amask = 0;
+        format.Rshift = 0;
+        format.Gshift = 8;
+        format.Bshift = 16;
+        format.Ashift = 0;
+#else   //RGB_REDLOW
+        format.Rmask = 0x00FF0000;
+        format.Gmask = 0x0000FF00;
+        format.Bmask = 0x000000FF;
+        format.Amask = 0;
+        format.Rshift = 16;
+        format.Gshift = 8;
+        format.Bshift = 0;
         format.Ashift = 0;
 #endif  //RGB
         format.Rloss = format.Gloss = format.Bloss = 0;
@@ -223,11 +310,21 @@ DeterminePixelType( const SDL_PixelFormat & pixelFormat )
 #if RGB_REDHIGH
         if ( pixelFormat.Amask == 0 )
         {
-            Assert( pixelFormat.Rmask == 0x00FF0000 );
-            Assert( pixelFormat.Gmask == 0x0000FF00 );
-            Assert( pixelFormat.Bmask == 0x000000FF );
-            Assert( pixelFormat.Amask == 0 );
-            return PixelType0888;
+            if ( pixelFormat.Rmask == 0x00FF0000 )
+            {
+                Assert( pixelFormat.Gmask == 0x0000FF00 );
+                Assert( pixelFormat.Bmask == 0x000000FF );
+                Assert( pixelFormat.Amask == 0 );
+                return PixelType0888;
+            }
+            else
+            {
+                Assert( pixelFormat.Rmask == 0x000000FF );
+                Assert( pixelFormat.Gmask == 0x0000FF00 );
+                Assert( pixelFormat.Bmask == 0x00FF0000 );
+                Assert( pixelFormat.Amask == 0 );
+                return PixelType0888Rev;
+            }
         }
         else if ( pixelFormat.Rmask == 0x00FF0000 )
         {
@@ -247,19 +344,72 @@ DeterminePixelType( const SDL_PixelFormat & pixelFormat )
 #else   //RGB_REDLOW
         if ( pixelFormat.Amask == 0 )
         {
-            Assert( pixelFormat.Rmask == 0x000000FF );
+            if ( pixelFormat.Rmask == 0x000000FF )
+            {
+                Assert( pixelFormat.Gmask == 0x0000FF00 );
+                Assert( pixelFormat.Bmask == 0x00FF0000 );
+                Assert( pixelFormat.Amask == 0 );
+                return PixelType0888;
+            }
+            else
+            {
+                Assert( pixelFormat.Rmask == 0x00FF0000 );
+                Assert( pixelFormat.Gmask == 0x0000FF00 );
+                Assert( pixelFormat.Bmask == 0x000000FF );
+                Assert( pixelFormat.Amask == 0 );
+                return PixelType0888Rev;
+            }
+        }
+        else if ( pixelFormat.Rmask == 0x000000FF )
+        {
             Assert( pixelFormat.Gmask == 0x0000FF00 );
             Assert( pixelFormat.Bmask == 0x00FF0000 );
+            Assert( pixelFormat.Amask == 0xFF000000 );
+            return PixelType8888;
+        }
+        else
+        {
+            Assert( pixelFormat.Rmask == 0x00FF0000 );
+            Assert( pixelFormat.Gmask == 0x0000FF00 );
+            Assert( pixelFormat.Bmask == 0x000000FF );
+            Assert( pixelFormat.Amask == 0xFF000000 );
+            return PixelType8888Rev;
+        }
+#endif  //RGB
+    }
+    else if ( pixelFormat.BitsPerPixel == 24 )
+    {
+#if RGB_REDHIGH
+        if ( pixelFormat.Rmask == 0x00FF0000 )
+        {
+            Assert( pixelFormat.Gmask == 0x0000FF00 );
+            Assert( pixelFormat.Bmask == 0x000000FF );
             Assert( pixelFormat.Amask == 0 );
-            return PixelType0888;
+            return PixelType888;
         }
         else
         {
             Assert( pixelFormat.Rmask == 0x000000FF );
             Assert( pixelFormat.Gmask == 0x0000FF00 );
             Assert( pixelFormat.Bmask == 0x00FF0000 );
-            Assert( pixelFormat.Amask == 0xFF000000 );
-            return PixelType8888;
+            Assert( pixelFormat.Amask == 0 );
+            return PixelType888Rev;
+        }
+#else   //RGB_REDLOW
+        if ( pixelFormat.Rmask == 0x000000FF )
+        {
+            Assert( pixelFormat.Gmask == 0x0000FF00 );
+            Assert( pixelFormat.Bmask == 0x00FF0000 );
+            Assert( pixelFormat.Amask == 0 );
+            return PixelType888;
+        }
+        else
+        {
+            Assert( pixelFormat.Rmask == 0x00FF0000 );
+            Assert( pixelFormat.Gmask == 0x0000FF00 );
+            Assert( pixelFormat.Bmask == 0x000000FF );
+            Assert( pixelFormat.Amask == 0 );
+            return PixelType888Rev;
         }
 #endif  //RGB
     }

@@ -233,8 +233,11 @@ Input::Test( )
 
         cout << "Number of joysticks: " << Input::Instance().NumJoysticks()
              << endl;
+
+#ifdef SUPPORT_WIIMOTE
         cout << "Number of wiimotes: " << Input::Instance().NumWiimotes()
              << endl;
+#endif
 
         Timer realTime;
         while ( true )
@@ -284,7 +287,7 @@ Input::Test( )
                                  << jsState.AxisPosition( a ) << endl;
                         break;
                     }
-#if defined(SUPPORT_WIIMOTE)
+#ifdef SUPPORT_WIIMOTE
                     case InputDevice::WiimoteDevice:
                     {
                         cout << " Device type = WiimoteDevice" << endl;

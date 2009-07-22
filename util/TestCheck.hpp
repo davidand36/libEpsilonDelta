@@ -122,10 +122,9 @@ bool DoTestCheck( size_t value, int expected, const char * valStr, bool * pOK,
 
 template < typename T >
 bool DoTestCheckF( T value, T expected, const char * valStr, bool * pOK,
-                 T epsilon = 1e-6,
-                 TestCheck::EDetails details = TestCheck::PrintAll );
+                 T epsilon, TestCheck::EDetails details = TestCheck::PrintAll );
 bool DoTestCheckF( double value, double expected, const char * valStr,
-                 bool * pOK, double epsilon = 1e-6,
+                 bool * pOK, double epsilon,
                  TestCheck::EDetails details = TestCheck::PrintAll );
 
 
@@ -238,7 +237,8 @@ DoTestCheckF( T value, T expected, const char * valStr, bool * pOK, T epsilon,
 
 
 #define TESTCHECK( val, exp, ok )  (DoTestCheck( (val), (exp), #val, (ok) ))
-#define TESTCHECKF( val, exp, ok )  (DoTestCheckF( (val), (exp), #val, (ok) ))
+#define TESTCHECKF( val, exp, ok )  \
+        (DoTestCheckF( (val), (exp), #val, (ok), 1e-6 ))
 #define TESTCHECKFE( val, exp, ok, eps )  \
         (DoTestCheckF( (val), (exp), #val, (ok), (eps) ))
 #define TESTCHECKD( val, exp, ok, details )  \

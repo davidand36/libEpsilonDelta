@@ -25,6 +25,7 @@
 #include "LunarVisibility.hpp"
 #include "EquationOfTime.hpp"
 #include "GeodeticLocation.hpp"
+#include "Platform.hpp"
 using namespace std;
 using namespace EpsilonDelta;
 
@@ -77,6 +78,9 @@ int Main( int /*argc*/, char ** argv )
     else
         libBasePath.erase( slashPos + 1 );
     libBasePath += "../";
+#ifdef COMPILER_MSC
+    libBasePath += "../";
+#endif
 
     JPLEphemeris de200( libBasePath + "astrodata/JPL_DE200.be", true );
     if ( ! de200.Test( libBasePath + "astro/test/testpo.200" ) )

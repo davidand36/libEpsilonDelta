@@ -34,6 +34,7 @@
 #include "MayanHaabDate.hpp"
 #include "MayanTzolkinCalendar.hpp"
 #include "FrenchRevolutionaryDate.hpp"
+#include "Platform.hpp"
 using namespace std;
 using namespace EpsilonDelta;
 
@@ -84,6 +85,9 @@ int Main( int /*argc*/, char ** argv )
     else
         libBasePath.erase( slashPos + 1 );
     libBasePath += "../";
+#ifdef COMPILER_MSC
+    libBasePath += "../";
+#endif
     JPLEphemeris de405( libBasePath + "astrodata/JPL_DE405.be", false );
     JPLEphemeris de406( libBasePath + "astrodata/JPL_DE406.be", false );
     JPLEphemeris::RegisterEphemeris( de405 );

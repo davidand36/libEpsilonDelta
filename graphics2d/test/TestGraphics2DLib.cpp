@@ -18,6 +18,7 @@
 #include "Graphics2D.hpp"
 #include "Surface.hpp"
 #include "Image.hpp"
+#include "Platform.hpp"
 #include <cstdio>
 #include <iostream>
 using namespace std;
@@ -68,6 +69,9 @@ int Main( int /*argc*/, char ** argv )
     else
         libBasePath.erase( slashPos + 1 );
     libBasePath += "../";
+#ifdef COMPILER_MSC
+    libBasePath += "../";
+#endif
 
     if ( ! TestColor( ) )
         ok = false;

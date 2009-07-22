@@ -353,6 +353,8 @@ TestUnicodeUtil( )
     TESTCHECK( EncodeUTF8( utf16_4 ) == utf8_4, true, &ok );
     if ( sizeof( wchar_t ) > 2 )
     {
+        //This will produce a warning if sizeof(wchar_t)<=2;
+        // it can safely be ignored.
         wchar_t u32_4[] = { 0xFEFF, static_cast< wchar_t >( 0x233B4 ) };
         wstring utf32_4 = wstring( u32_4, ARRAYSIZE( u32_4 ) );
         TESTCHECK( DecodeUTF8( utf8_4 ) == utf32_4, true, &ok );

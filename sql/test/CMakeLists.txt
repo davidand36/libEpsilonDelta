@@ -19,16 +19,5 @@ foreach( lib ${EpsilonDeltaLibs} )
     set( libs  ${libs} EpsilonDelta_${lib} )
 endforeach( lib )
 
-if ( useSQLite )
-    set( libs  ${libs} sqlite3 )
-endif ( useSQLite )
-if ( useMySQL )
-    set( libs  ${libs} mysqlclient )
-endif ( useMySQL )
-if ( usePostgreSQL )
-    set( libs  ${libs} pq )
-endif ( usePostgreSQL )
-
-
 add_executable( TestSQLLib  ${sources} )
 target_link_libraries( TestSQLLib  ${libs} )

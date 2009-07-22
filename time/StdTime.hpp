@@ -52,7 +52,7 @@ inline
 double 
 StdTime::MaxSeconds( ) const
 {
-    return std::numeric_limits< std::time_t >::max();
+    return (double)std::numeric_limits< std::time_t >::max();
 }
 
 

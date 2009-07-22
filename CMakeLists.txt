@@ -5,6 +5,7 @@
 # Top-level CMake script for EpsilonDelta libraries.
 #
 #
+cmake_minimum_required( VERSION 2.4 )
 
 project( libEpsilonDelta )
 
@@ -21,8 +22,15 @@ set( tests
      )
 
 
+set( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules )
 include( CheckIncludeFile )
 include( CheckLibraryExists )
+
+if ( ${CMAKE_CXX_COMPILER} MATCHES "cl" )
+    add_definitions( -D_USE_MATH_DEFINES )
+    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+    add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+endif ( ${CMAKE_CXX_COMPILER} MATCHES "cl" )
 
 option( release  "Build for release"  false )
 if ( release )
@@ -62,22 +70,22 @@ endif ( useFastCGI )
 
 option( useSQLite  "True to use SQLite"  true )
 if ( useSQLite )
-    check_include_file( sqlite3.h  haveSQLite_H )
-    if ( haveSQLite_H )
+    find_package( SQLite  REQUIRED )
+    if ( SQLite_FOUND )
         add_definitions( -DUSE_SQLITE )
-        #? include_directories
-        #? link_directories
-    endif ( haveSQLite_H )
+        include_directories( SQLite_INCLUDE_DIR )
+        link_directories( SQLite_LIBRARIES )
+    endif ( SQLite_FOUND )
 endif ( useSQLite )
 
 option( useMySQL  "True to use MySQL"  false )
 if ( useMySQL )
-    check_include_file( mysql.h  haveMySQL_H )
-    if ( haveMySQL_H )
+    find_package( MySQL  REQUIRED )
+    if ( MYSQL_FOUND )
         add_definitions( -DUSE_MYSQL )
-        #? include_directories
-        #? link_directories
-    endif ( haveMySQL_H )
+        include_directories( MYSQL_INCLUDE_DIR )
+        link_directories( MYSQL_LIBRARIES )
+    endif ( MYSQL_FOUND )
 endif ( useMySQL )
 
 option( usePostgreSQL  "True to use PostgreSQL"  false )
@@ -122,19 +130,21 @@ if ( supportWiimote )
         #? include_directories
         #? link_directories
     else ( haveCWiiD_H )
-        check_include_file( wiimote.h  haveWiiYourself_H )
-        if ( haveWiiYourself_H )
-            set( useWiiYourself  true )
+        find_package( WiiYourself  REQUIRED )
+        if ( WiiYourself_FOUND )
             add_definitions( -DSUPPORT_WIIMOTE )
             add_definitions( -DUSE_WIIYOURSELF )
-            #? include_directories
-            #? link_directories
-        endif ( haveWiiYourself_H )
+            include_directories( WiiYourself_INCLUDE_DIR )
+            link_directories( WiiYourself_LIBRARIES )
+        endif ( WiiYourself_FOUND )
     endif ( haveCWiiD_H )
 endif ( supportWiimote )
 
 add_definitions( -DBITSPERPIXEL=32 )    #!!!
 
+
+set( LIBRARY_OUTPUT_PATH, ${CMAKE_SOURCE_DIR} )
+set( EXECUTABLE_OUTPUT_PATH, ${CMAKE_SOURCE_DIR}/tests )
 
 foreach ( lib ${libraries} )
     add_subdirectory( ${lib} )

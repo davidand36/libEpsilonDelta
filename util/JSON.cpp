@@ -321,7 +321,7 @@ FromJSON( const string & json, uint64_t * pI )
 void 
 FromJSON( const string & json, float * pR )
 {
-    *pR = strtof( json.c_str(), 0 );
+    *pR = (float)strtof( json.c_str(), 0 );
 }
 
 //.............................................................................

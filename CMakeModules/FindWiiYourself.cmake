@@ -10,11 +10,25 @@ find_path( WiiYourself_INCLUDE_DIR wiimote.h)
 set( WiiYourself_NAMES  ${WiiYourself_NAMES} WiiYourself! )
 find_library( WiiYourself_LIBRARY NAMES ${WiiYourself_NAMES} )
 
-# handle the QUIETLY and REQUIRED arguments and set WiiYourself_FOUND to TRUE
-# if all listed variables are TRUE
-INCLUDE( FindPackageHandleStandardArgs )
-find_package_handle_standard_args( WiiYourself  DEFAULT_MSG
-                                  WiiYourself_LIBRARY  WiiYourself_INCLUDE_DIR )
+#This is for CMake 2.6:
+## handle the QUIETLY and REQUIRED arguments and set WiiYourself_FOUND to TRUE
+## if all listed variables are TRUE
+#INCLUDE( FindPackageHandleStandardArgs )
+#find_package_handle_standard_args( WiiYourself  DEFAULT_MSG
+#                                  WiiYourself_LIBRARY  WiiYourself_INCLUDE_DIR )
+#This is for CMake 2.4:
+if ( WiiYourself_INCLUDE_DIR  AND  WiiYourself_LIBRARY )
+    set( WiiYourself_LIBRARIES  ${WiiYourself_LIBRARY} )
+    set( WiiYourself_FOUND  "YES" )
+    if ( NOT WiiYourself_FIND_QUIETLY )
+        message( STATUS  "Found WiiYourself: ${WiiYourself_LIBRARIES}" )
+    endif ( NOT WiiYourself_FIND_QUIETLY )
+else ( WiiYourself_INCLUDE_DIR  AND  WiiYourself_LIBRARY )
+    set( WiiYourself_FOUND  "NO" )
+    if ( WiiYourself_FIND_REQUIRED )
+        message( FATAL_ERROR  "Could not find WiiYourself library" )
+    endif ( WiiYourself_FIND_REQUIRED )
+endif ( WiiYourself_INCLUDE_DIR  AND  WiiYourself_LIBRARY )
 
 if( WiiYourself_FOUND )
     set( WiiYourself_LIBRARIES  ${WiiYourself_LIBRARY} )

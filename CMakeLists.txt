@@ -60,12 +60,12 @@ endif ( useBoost )
 
 option( useFastCGI  "True to use FastCGI"  true )
 if ( useFastCGI )
-    check_include_file( fastcgi.h  haveFastCGI_H )
-    if ( haveFastCGI_H )
-        add_definitions( -DUSE_FASTCGI )
-        #? include_directories
-        #? link_directories
-    endif ( haveFastCGI_H )
+    find_package( SQLite  REQUIRED )
+    if ( FastCGI_FOUND )
+        add_definitions( -DUSE_SQLITE )
+        include_directories( ${FastCGI_INCLUDE_DIR} )
+        link_directories( ${FastCGI_LIBRARIES} )
+    endif ( FastCGI_FOUND )
 endif ( useFastCGI )
 
 option( useSQLite  "True to use SQLite"  true )

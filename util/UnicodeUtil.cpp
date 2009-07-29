@@ -322,32 +322,32 @@ TestUnicodeUtil( )
 
     unsigned char u8_1[] = { 0x41, 0xE2, 0x89, 0xA2, 0xCE, 0x91, 0x2E };
     string utf8_1 = string( reinterpret_cast< char * >( u8_1 ),
-                            ARRAYSIZE( u8_1 ) );
+                            ARRAY_LENGTH( u8_1 ) );
     wchar_t u16_1[] = { 0x0041, 0x2262, 0x0391, 0x002E };
-    wstring utf16_1 = wstring( u16_1, ARRAYSIZE( u16_1 ) );
+    wstring utf16_1 = wstring( u16_1, ARRAY_LENGTH( u16_1 ) );
     TESTCHECK( DecodeUTF8( utf8_1 ) == utf16_1, true, &ok );
     TESTCHECK( EncodeUTF8( utf16_1 ) == utf8_1, true, &ok );
     unsigned char u8_2[] = { 0xED, 0x95, 0x9C, 0xEA, 0xB5, 0xAD, 0xEC, 0x96,
                              0xB4 };
     string utf8_2 = string( reinterpret_cast< char * >( u8_2 ),
-                            ARRAYSIZE( u8_2 ) );
+                            ARRAY_LENGTH( u8_2 ) );
     wchar_t u16_2[] = { 0xD55C, 0xAD6D, 0xC5B4 };
-    wstring utf16_2 = wstring( u16_2, ARRAYSIZE( u16_2 ) );
+    wstring utf16_2 = wstring( u16_2, ARRAY_LENGTH( u16_2 ) );
     TESTCHECK( DecodeUTF8( utf8_2 ) == utf16_2, true, &ok );
     TESTCHECK( EncodeUTF8( utf16_2 ) == utf8_2, true, &ok );
     unsigned char u8_3[] = { 0xE6, 0x97, 0xA5, 0xE6, 0x9C, 0xAC, 0xE8, 0xAA,
                              0x9E };
     string utf8_3 = string( reinterpret_cast< char * >( u8_3 ),
-                            ARRAYSIZE( u8_3 ) );
+                            ARRAY_LENGTH( u8_3 ) );
     wchar_t u16_3[] = { 0x65E5, 0x672C, 0x8A9E };
-    wstring utf16_3 = wstring( u16_3, ARRAYSIZE( u16_3 ) );
+    wstring utf16_3 = wstring( u16_3, ARRAY_LENGTH( u16_3 ) );
     TESTCHECK( DecodeUTF8( utf8_3 ) == utf16_3, true, &ok );
     TESTCHECK( EncodeUTF8( utf16_3 ) == utf8_3, true, &ok );
     unsigned char u8_4[] = { 0xEF, 0xBB, 0xBF, 0xF0, 0xA3, 0x8E, 0xB4 };
     string utf8_4 = string( reinterpret_cast< char * >( u8_4 ),
-                            ARRAYSIZE( u8_4 ) );
+                            ARRAY_LENGTH( u8_4 ) );
     wchar_t u16_4[] = { 0xFEFF, 0xD84C, 0xDFB4 };
-    wstring utf16_4 = wstring( u16_4, ARRAYSIZE( u16_4 ) );
+    wstring utf16_4 = wstring( u16_4, ARRAY_LENGTH( u16_4 ) );
     if ( sizeof( wchar_t ) <= 2 )
         TESTCHECK( DecodeUTF8( utf8_4 ) == utf16_4, true, &ok );
     TESTCHECK( EncodeUTF8( utf16_4 ) == utf8_4, true, &ok );
@@ -356,7 +356,7 @@ TestUnicodeUtil( )
         //This will produce a warning if sizeof(wchar_t)<=2;
         // it can safely be ignored.
         wchar_t u32_4[] = { 0xFEFF, static_cast< wchar_t >( 0x233B4 ) };
-        wstring utf32_4 = wstring( u32_4, ARRAYSIZE( u32_4 ) );
+        wstring utf32_4 = wstring( u32_4, ARRAY_LENGTH( u32_4 ) );
         TESTCHECK( DecodeUTF8( utf8_4 ) == utf32_4, true, &ok );
         TESTCHECK( EncodeUTF8( utf32_4 ) == utf8_4, true, &ok );
     }
@@ -366,14 +366,14 @@ TestUnicodeUtil( )
                              0xC4, 0xB1, 0xC4, 0x9F };
     const char * c8_5 = reinterpret_cast< char * >( u8_5 );
     TESTCHECK( IdentifyBOM( c8_5 ), UTF8_BOM, &ok );
-    string utf8_5( c8_5, ARRAYSIZE( u8_5 ) );
+    string utf8_5( c8_5, ARRAY_LENGTH( u8_5 ) );
     TESTCHECK( RemoveBOM( utf8_5 ) ==
-               string( (c8_5 + 3), ARRAYSIZE( u8_5 ) - 3 ), true, &ok );
-    vector< char > charVec1( c8_5, c8_5 + ARRAYSIZE( u8_5 ) );
+               string( (c8_5 + 3), ARRAY_LENGTH( u8_5 ) - 3 ), true, &ok );
+    vector< char > charVec1( c8_5, c8_5 + ARRAY_LENGTH( u8_5 ) );
     wchar_t u16_5[] = { 0x0054, 0x0065, 0x0073, 0x0074, 0x0020, 0x0066,
                         0x0069, 0x006C, 0x0065, 0x000D, 0x000A, 0x00C7,
                         0x0131, 0x011F };
-    wstring utf16_5( u16_5, ARRAYSIZE( u16_5 ) );
+    wstring utf16_5( u16_5, ARRAY_LENGTH( u16_5 ) );
     TESTCHECK( DecodeUnicodeWithBOM( charVec1 ) == utf16_5, true, &ok );
     unsigned char u8_6[] = { 0xFE, 0xFF, 0x00, 0x54, 0x00, 0x65, 0x00, 0x73,
                              0x00, 0x74, 0x00, 0x20, 0x00, 0x66, 0x00, 0x69,
@@ -381,7 +381,7 @@ TestUnicodeUtil( )
                              0x00, 0xC7, 0x01, 0x31, 0x01, 0x1F };
     const char * c8_6 = reinterpret_cast< char * >( u8_6 );
     TESTCHECK( IdentifyBOM( c8_6 ), UTF16BE_BOM, &ok );
-    vector< char > charVec2( c8_6, c8_6 + ARRAYSIZE( u8_6 ) );
+    vector< char > charVec2( c8_6, c8_6 + ARRAY_LENGTH( u8_6 ) );
     TESTCHECK( DecodeUnicodeWithBOM( charVec2 ) == utf16_5, true, &ok );
     unsigned char u8_7[] = { 0xFF, 0xFE, 0x54, 0x00, 0x65, 0x00, 0x73, 0x00,
                              0x74, 0x00, 0x20, 0x00, 0x66, 0x00, 0x69, 0x00,
@@ -389,7 +389,7 @@ TestUnicodeUtil( )
                              0xC7, 0x00, 0x31, 0x01, 0x1F, 0x01 };
     const char * c8_7 = reinterpret_cast< char * >( u8_7 );
     TESTCHECK( IdentifyBOM( c8_7 ), UTF16LE_BOM, &ok );
-    vector< char > charVec3( c8_7, c8_7 + ARRAYSIZE( u8_7 ) );
+    vector< char > charVec3( c8_7, c8_7 + ARRAY_LENGTH( u8_7 ) );
     TESTCHECK( DecodeUnicodeWithBOM( charVec3 ) == utf16_5, true, &ok );
     
     if ( ok )

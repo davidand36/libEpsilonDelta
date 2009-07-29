@@ -2,7 +2,7 @@
   Array.cpp
   Copyright (C) 2007 David M. Anderson
 
-  ARRAYSIZE macro for built-in arrays.
+  ARRAY_LENGTH macro for built-in arrays.
   array template class: STL-compatible container using a built-in array.
   Allocators for 2-dimensional and 3-dimensional arrays.
 */
@@ -120,7 +120,7 @@ bool TestArray( )
 
     cout << "TestClass plainArray[3]  [plain array]" << endl;
     TestClass plainArray[3];
-    TESTCHECK( ARRAYSIZE( plainArray ), 3, &ok );
+    TESTCHECK( ARRAY_LENGTH( plainArray ), 3, &ok );
 
     cout << "array< TestClass, 3 > array0  [default c'tor]" << endl;
     array< TestClass, 3 > array0

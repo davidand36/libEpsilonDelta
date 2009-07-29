@@ -4,7 +4,7 @@
   Array.hpp
   Copyright (C) 2007 David M. Anderson
 
-  ARRAYSIZE macro for built-in arrays.
+  ARRAY_LENGTH macro for built-in arrays.
   array template class: STL-compatible container using a built-in array.
   TwoDArray and ThreeDArray template classes: simple, heap-allocated
   arrays.
@@ -43,7 +43,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-#define ARRAYSIZE( array )  (sizeof(array) / sizeof(array[0]))
+#define ARRAY_LENGTH( array )  (sizeof(array) / sizeof(array[0]))
 
 
 //#############################################################################

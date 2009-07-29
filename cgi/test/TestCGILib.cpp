@@ -134,7 +134,7 @@ WriteHttpResponse( )
     const char * envKeys[]
             = { "REQUEST_METHOD", "CONTENT_TYPE", "CONTENT_LENGTH",
                 "QUERY_STRING" };
-    for ( int i = 0; i < ARRAYSIZE( envKeys ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( envKeys ); ++i )
     {
         response += envKeys[i];
         response += " = \'";

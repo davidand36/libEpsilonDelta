@@ -529,7 +529,7 @@ TestStatisticalTests( )
             = { 6., 9., 10., 12., 13., 14., 14., 15., 16., 16.,
                 16., 17., 17., 18., 18., 19., 20., 21., 22., 24. };
     vector< double > estsSample( estsSampleArr,
-                            estsSampleArr + ARRAYSIZE( estsSampleArr ) );
+                            estsSampleArr + ARRAY_LENGTH( estsSampleArr ) );
     TESTCHECKF( Mean( estsSample ), 15.85, &ok );
     TESTCHECKF( Variance( estsSample, 15.85 ), 19.923684, &ok );
     TESTCHECK( Median( estsSample ), 16., &ok );
@@ -549,8 +549,8 @@ TestStatisticalTests( )
     TESTCHECKFE( chiSquare, 2.765, &ok, 0.001 );
     //!!!KolmogorovSmirnovTest
     int digitsSampleArr[] = { 0, 15, 0, 76, 479, 183,8, 23, 0 };
-    vector< int > digitsSample( digitsSampleArr,
-                              digitsSampleArr + ARRAYSIZE( digitsSampleArr ) );
+    vector< int > digitsSample( digitsSampleArr, digitsSampleArr
+                                + ARRAY_LENGTH( digitsSampleArr ) );
 #if 0
     vector< double > expectedDigits( 9 );
     for ( int i = 1; i <= 9; ++i )  //Benford's law (of leading digits)
@@ -558,8 +558,8 @@ TestStatisticalTests( )
 #else
     double expectedDigitsArr[] = { 0.301, 0.176, 0.125, 0.097, 0.079,
                                    0.067, 0.058, 0.051, 0.046 };
-    vector< double > expectedDigits( expectedDigitsArr,
-                          expectedDigitsArr + ARRAYSIZE( expectedDigitsArr ) );
+    vector< double > expectedDigits( expectedDigitsArr, expectedDigitsArr
+                                     + ARRAY_LENGTH( expectedDigitsArr ) );
 #endif
     cout << "ChiSquareGoodnessOfFitTest( digitsSample, expectedDigits )"
          << endl;
@@ -608,7 +608,7 @@ TestStatisticalTests( )
                 {{ 76., 54. }}, {{ 81., 67. }}, {{ 83., 82. }},
                 {{ 84., 78 }} };
     vector< array< double, 2 > > corrVec;
-    for ( int i = 0; i < ARRAYSIZE( corrSampleArr ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( corrSampleArr ); ++i )
         corrVec.push_back( corrSampleArr[i] );
     cout << "LinearCorrelationTest( corrVec )" << endl;
     double r;
@@ -621,7 +621,7 @@ TestStatisticalTests( )
                 {{ 72., 128. }}, {{ 70., 119. }}, {{ 70., 127. }},
                 {{ 66.5, 105. }}, {{ 70., 123. }}, {{ 71., 115. }} };
     vector< array< double, 2 > > rankCorrVec;
-    for ( int i = 0; i < ARRAYSIZE( rankCorrSampleArr ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( rankCorrSampleArr ); ++i )
         rankCorrVec.push_back( rankCorrSampleArr[i] );
     cout << "SpearmansRankCorrelationTest( rankCorrVec )" << endl;
     prob = SpearmansRankCorrelationTest( rankCorrVec, &r, &t );

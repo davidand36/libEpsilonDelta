@@ -35,9 +35,9 @@ TestIndexedVector( )
     string types[] = { "even", "odd" };
     int nameIndices[] = { 5, 4, 3, 2 };
     array< unsigned int, 6 > typeIndices = { { 0, 1, 0, 1, 0, 1 } };
-    vector< string > namesVec( names, names + ARRAYSIZE( names ) );
+    vector< string > namesVec( names, names + ARRAY_LENGTH( names ) );
     vector< int > nameIndicesVec( nameIndices,
-                                  nameIndices + ARRAYSIZE( nameIndices ) );
+                                  nameIndices + ARRAY_LENGTH( nameIndices ) );
     cout << "IndexedVector< string >( namesVec, nameIndicesVec )" << endl;
     IndexedVector< string > namesIV( namesVec, nameIndicesVec );
     TESTCHECK( namesIV.size(), 4, &ok );

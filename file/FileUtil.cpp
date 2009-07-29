@@ -161,10 +161,10 @@ TestFileUtil( )
     for ( int i = 0; i < 256; ++i )
         testData[ i + 10 ] = static_cast< char >( i );
     cout << "SaveFile()" << endl;
-    SaveFile( testDataFileName, testData, ARRAYSIZE( testData ) );
+    SaveFile( testDataFileName, testData, ARRAY_LENGTH( testData ) );
     TESTCHECK( FileExists( testDataFileName ), true, &ok );
     TESTCHECK( FileSize( testDataFileName ),
-               static_cast<int>(ARRAYSIZE( testData )), &ok );
+               static_cast<int>(ARRAY_LENGTH( testData )), &ok );
     DateTime now( true );
     DateTime then = now;
     then.Increment( 0, 0, 0, 0, -1 );
@@ -172,8 +172,8 @@ TestFileUtil( )
     TESTCHECK( (then < FileModDate( testDataFileName )), true, &ok );
     cout << "LoadFile()" << endl;
     std::vector< char > testData1 = LoadFile( testDataFileName );
-    TESTCHECK( testData1.size(), ARRAYSIZE( testData ), &ok );
-    TESTCHECK( memcmp( &testData1[0], testData, ARRAYSIZE( testData ) ),
+    TESTCHECK( testData1.size(), ARRAY_LENGTH( testData ), &ok );
+    TESTCHECK( memcmp( &testData1[0], testData, ARRAY_LENGTH( testData ) ),
                0, &ok );
     int rmvRslt = remove( testDataFileName.c_str() );
     Assert( rmvRslt == 0 );

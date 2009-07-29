@@ -14,7 +14,7 @@
 
 #include "SQLDatabase.hpp"
 #include <string>
-#include <libpq-fe.h>
+#include <postgresql/libpq-fe.h>
 
 
 namespace EpsilonDelta

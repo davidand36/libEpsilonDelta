@@ -26,7 +26,7 @@ if ( useMySQL )
     set( libs  ${libs} ${MYSQL_LIBRARIES} )
 endif ( useMySQL )
 if ( usePostgreSQL )
-#!!!    set( libs  ${libs} ${PostgreSQL_LIBRARIES} )
+    set( libs  ${libs} ${PostgreSQL_LIBRARIES} )
 endif ( usePostgreSQL )
 
 add_executable( TestSQLLib  ${sources} )

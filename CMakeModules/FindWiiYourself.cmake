@@ -1,4 +1,4 @@
-# - Find WiiYourself
+# - FindWiiYourself
 # Find the native WiiYourself! includes and library
 # This module defines
 #  WiiYourself_FOUND, If false, do not try to use WiiYourself.

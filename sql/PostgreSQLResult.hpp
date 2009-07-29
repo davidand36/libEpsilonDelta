@@ -12,8 +12,8 @@
 #ifdef USE_POSTGRESQL
 
 
-#include <libpq-fe.h>
 #include "SQLResult.hpp"
+#include <postgresql/libpq-fe.h>
 
 
 namespace EpsilonDelta

@@ -20,7 +20,7 @@ foreach( lib ${EpsilonDeltaLibs} )
 endforeach( lib )
 
 if ( useFastCGI )
-    set( libs  ${libs} fcgi )
+    set( libs  ${libs} ${FastCGI_LIBRARIES} )
 endif ( useFastCGI )
 
 add_executable( TestCGILib  ${sources} )

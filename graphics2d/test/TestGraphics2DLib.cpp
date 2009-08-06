@@ -10,8 +10,8 @@
 #include "TestCheck.hpp"
 #include "Color.hpp"
 #include "Pixel.hpp"
-#include "Point2.hpp"
-#include "Line2.hpp"
+#include "Dot2.hpp"
+#include "LineSegment2.hpp"
 #include "Rectangle.hpp"
 #include "Ellipse.hpp"
 #include "Circle.hpp"
@@ -77,9 +77,9 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! TestPixel( ) )
         ok = false;
-    if ( ! Point2I::Test( ) )
+    if ( ! Dot2I::Test( ) )
         ok = false;
-    if ( ! Line2I::Test( ) )
+    if ( ! LineSegment2I::Test( ) )
         ok = false;
     if ( ! Rectangle::Test( ) )
         ok = false;
@@ -105,8 +105,8 @@ int Main( int /*argc*/, char ** argv )
 
             do
             {
-                Point2I::TestDraw( );
-                Line2I::TestDraw( );
+                Dot2I::TestDraw( );
+                LineSegment2I::TestDraw( );
                 Rectangle::TestDraw( );
                 Ellipse::TestDraw( );
                 Circle::TestDraw( );

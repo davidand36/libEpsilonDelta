@@ -9,8 +9,8 @@
 set( sources
      Color.cpp
      Pixel.cpp
-     Point2.cpp
-     Line2.cpp
+     Dot2.cpp
+     LineSegment2.cpp
      Rectangle.cpp
      Ellipse.cpp
      Circle.cpp

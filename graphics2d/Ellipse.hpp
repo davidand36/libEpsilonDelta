@@ -9,6 +9,8 @@
 
 
 #include "Point2.hpp"
+#include "Rectangle.hpp"
+#include "Dot2.hpp"
 #include "Color.hpp"
 #include "Assert.hpp"
 #include <utility>
@@ -202,7 +204,7 @@ Ellipse::Draw( Pxl pxl, DrawingSurface< Pxl > * pDrawingSurface ) const
     Rectangle bounds = Bounds();
     if ( (bounds.Width() == 1) || (bounds.Height() == 1) )  //degenerate
     {
-        Line2I line( bounds.TopLeft(), bounds.BottomRight() );
+        LineSegment2I line( bounds.TopLeft(), bounds.BottomRight() );
         line.Draw( pxl, pDrawingSurface );
         return;
     }
@@ -329,14 +331,14 @@ void
 Ellipse::Draw4Pixels( Pxl pxl, int x, int y,
                       DrawingSurface< Pxl > * pDrawingSurface ) const
 {
-    Point2I point( m_center.X() - x,  m_center.Y() - y );
-    point.Draw( pxl, pDrawingSurface );
-    point.Set( m_center.X() + x,  m_center.Y() - y );
-    point.Draw( pxl, pDrawingSurface );
-    point.Set( m_center.X() - x,  m_center.Y() + y );
-    point.Draw( pxl, pDrawingSurface );
-    point.Set( m_center.X() + x,  m_center.Y() + y );
-    point.Draw( pxl, pDrawingSurface );
+    Dot2I dot( Point2I( m_center.X() - x,  m_center.Y() - y ) );
+    dot.Draw( pxl, pDrawingSurface );
+    dot.Point().Set( m_center.X() + x,  m_center.Y() - y );
+    dot.Draw( pxl, pDrawingSurface );
+    dot.Point().Set( m_center.X() - x,  m_center.Y() + y );
+    dot.Draw( pxl, pDrawingSurface );
+    dot.Point().Set( m_center.X() + x,  m_center.Y() + y );
+    dot.Draw( pxl, pDrawingSurface );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -371,7 +373,7 @@ Ellipse::Fill( Pxl pxl,
     Rectangle bounds = Bounds();
     if ( (bounds.Width() == 1) || (bounds.Height() == 1) )  //degenerate
     {
-        Line2I line( bounds.TopLeft(), bounds.BottomRight() );
+        LineSegment2I line( bounds.TopLeft(), bounds.BottomRight() );
         line.Draw( pxl, pDrawingSurface );
         return;
     }
@@ -386,7 +388,7 @@ Ellipse::Fill( Pxl pxl,
     int d = BSq  -  ASq * B  +  ASq / 4;
     int dx = 0;
     int dy = ASq2 * B;
-    Line2I line;
+    LineSegment2I line;
 
     while ( dx < dy )
     {

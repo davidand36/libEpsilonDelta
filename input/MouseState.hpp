@@ -9,7 +9,7 @@
 
 
 #include "InputDeviceState.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 #include "StdInt.hpp"
 
 
@@ -26,14 +26,14 @@ public:
     virtual ~MouseState( );
 
 #ifdef USE_SDL
-    void Set( Vector2I position, uint8_t buttonState );
+    void Set( const Point2I & position, uint8_t buttonState );
 #endif
-    Vector2I Position( ) const;
+    const Point2I & Position( ) const;
     bool IsButtonDown( int button ) const;
 
 private:
 #ifdef USE_SDL
-    Vector2I m_position;
+    Point2I m_position;
     uint8_t m_buttonState;
 #endif
 };

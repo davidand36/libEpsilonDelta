@@ -21,7 +21,7 @@
 #endif
 #include "KeyPressEvent.hpp"
 #include "MouseClickEvent.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 #include <SDL.h>
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -131,7 +131,7 @@ Input::CheckEvent( )
         {
             shared_ptr< InputDevice > pDevice = m_pMouse;
             int button = sdlEvent.button.button;
-            Vector2I position( sdlEvent.button.x, sdlEvent.button.y );
+            Point2I position( sdlEvent.button.x, sdlEvent.button.y );
             return  InputEventSPtr(
                 new MouseClickEvent( pDevice, button, position ) );
         }
@@ -310,7 +310,7 @@ Input::Test( )
                              << grav.Y() << ", " << grav.Z() << " )" << endl;
                         cout << " Pointer: NumLights: "
                              << wmState.NumPointerLights() << endl;
-                        Vector2F pos = wmState.PointerPos();
+                        Point2F pos = wmState.PointerPos();
                         cout << "          Position: (" << pos.X() << ", "
                              << pos.Y() << " )"
                              << " Angle: " << wmState.PointerAngle().Degrees()
@@ -326,7 +326,7 @@ Input::Test( )
                             cout << " Gravity: (" << grav.X() << ", "
                                  << grav.Y() << ", " << grav.Z() << " )"
                                  << endl;
-                            Vector2F joystick = wmState.NunchukJoystickPos();
+                            Point2F joystick = wmState.NunchukJoystickPos();
                             cout << "           Joystick: (" << joystick.X()
                                  << ", " << joystick.Y() << " )";
                             cout << endl;
@@ -347,7 +347,7 @@ Input::Test( )
                 {
                     cout << "MouseClickEvent button = " << pMCEvt->Button()
                          << endl;
-                    Vector2I pos = pMCEvt->Position();
+                    Point2I pos = pMCEvt->Position();
                     cout << "                position = ( " << pos.X() << ", "
                          << pos.Y() << " )" << endl;
                     shared_ptr< InputDevice > pDev = pMCEvt->Device();

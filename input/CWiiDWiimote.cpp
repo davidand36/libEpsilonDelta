@@ -74,8 +74,8 @@ private:
         bool        m_isNunchukCalibrated;
         Vector3I    m_nkAcc0;
         Vector3I    m_nkAcc1;
-        Vector2I    m_nkJoyMid;
-        Vector2I    m_nkJoyRange;
+        Point2I     m_nkJoyMid;
+        Point2I     m_nkJoyRange;
     };
     CalibrationData     m_cal;
     GravityEstimator    m_gravityEstimator;
@@ -258,7 +258,7 @@ WiimoteImpl::Update( WiimoteState * pState,
     pState->SetGravity( gravity );
 
     int numPointerLights = 0;
-    Vector2I lights[ 2 ];
+    Point2I lights[ 2 ];
     if ( cwiidState.ir_src[ 0 ].valid )
     {
         ++numPointerLights;
@@ -287,8 +287,8 @@ WiimoteImpl::Update( WiimoteState * pState,
     {
         Vector2I halfSep( m_pointerSeparation.X() / 2,
                           m_pointerSeparation.Y() / 2 );
-        Vector2I rawMiddle = lights[ 0 ] + halfSep;
-        Vector2F scaledMiddle( (float) rawMiddle.X() / CWIID_IR_X_MAX,
+        Point2I rawMiddle = lights[ 0 ] + halfSep;
+        Point2F scaledMiddle( (float) rawMiddle.X() / CWIID_IR_X_MAX,
                                (float) rawMiddle.Y() / CWIID_IR_Y_MAX );
         if ( numPointerLights == 1 )
         {
@@ -316,7 +316,7 @@ WiimoteImpl::Update( WiimoteState * pState,
             ((float) cwiidState.ext.nunchuk.acc[ 1 ] - m_cal.m_nkAcc0[ 1 ])
             / m_cal.m_nkAcc1[ 1 ] );
         gravity = m_nkGravityEstimator( acceleration );
-        Vector2F joystick(
+        Point2F joystick(
             ((float) cwiidState.ext.nunchuk.stick[ 0 ] - m_cal.m_nkJoyMid[ 0 ])
             / m_cal.m_nkJoyRange[ 0 ],
             ((float) cwiidState.ext.nunchuk.stick[ 1 ] - m_cal.m_nkJoyMid[ 1 ])

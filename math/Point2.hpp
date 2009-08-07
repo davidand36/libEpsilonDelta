@@ -64,6 +64,8 @@ public:
     Point2 & operator+=( const Vector2<T> & rhs );
     Point2 & operator-=( const Vector2<T> & rhs );
 
+    static const Point2 Zero;
+
 private:
     array< T, 2 >   m_coords;
 
@@ -314,6 +316,11 @@ operator-( const Point2<T> & lhs, const Point2<T> & rhs )
 {
     return Vector2<T>( lhs[0] - rhs[0], lhs[1] - rhs[1] );
 }
+
+//=============================================================================
+
+template <typename T>
+const Point2<T> Point2<T>::Zero( static_cast<T>( 0 ), static_cast<T>( 0 ) );
 
 //=============================================================================
 

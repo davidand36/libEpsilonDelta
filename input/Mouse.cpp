@@ -24,7 +24,7 @@ Mouse::State( )
 #ifdef USE_SDL
     int x, y;
     Uint8 buttonState = SDL_GetMouseState( &x, &y );
-    m_state.Set( Vector2I( x, y ), buttonState );
+    m_state.Set( Point2I( x, y ), buttonState );
 #endif
     return m_state;
 }

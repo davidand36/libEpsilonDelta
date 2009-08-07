@@ -24,7 +24,7 @@ MouseState::~MouseState( )
 #ifdef USE_SDL
 
 void 
-MouseState::Set( Vector2I position, uint8_t buttonState )
+MouseState::Set( const Point2I & position, uint8_t buttonState )
 {
     m_position = position;
     m_buttonState = buttonState;
@@ -34,7 +34,7 @@ MouseState::Set( Vector2I position, uint8_t buttonState )
 
 //=============================================================================
 
-Vector2I
+const Point2I &
 MouseState::Position( ) const
 {
     return m_position;

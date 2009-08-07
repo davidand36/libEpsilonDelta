@@ -28,7 +28,7 @@
 
 #include "InputDeviceState.hpp"
 #include "StdInt.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 #include "Vector3.hpp"
 
 
@@ -69,24 +69,24 @@ public:
     Vector3F Acceleration( ) const;
     Vector3F Gravity( ) const;
     int NumPointerLights( ) const;
-    Vector2F PointerPos( ) const;
+    Point2F PointerPos( ) const;
     Angle PointerAngle( ) const;
     float PointerDistance( ) const;
     bool IsNunchukConnected( ) const;
     Vector3F NunchukAcceleration( ) const;
     Vector3F NunchukGravity( ) const;
-    Vector2F NunchukJoystickPos( ) const;
+    Point2F NunchukJoystickPos( ) const;
 
 private:
     void SetButtons( uint32_t buttonsDown );
     void SetAcceleration( const Vector3F & acceleration );
     void SetGravity( const Vector3F & gravity );
-    void SetPointer( int numLights, const Vector2F & position = Vector2F::Zero,
+    void SetPointer( int numLights, const Point2F & position = Point2F::Zero,
                      Angle angle = 0.f, float distance = 0.f );
     void SetNunchuk( bool connected,
                      const Vector3F & acceleration = -Vector3F::UnitY,
                      const Vector3F & gravity = -Vector3F::UnitY,
-                     const Vector2F & joystickPos = Vector2F::Zero );
+                     const Point2F & joystickPos = Point2F::Zero );
 
     uint32_t    m_buttonsDown;
     Vector3F    m_acceleration;
@@ -96,7 +96,7 @@ private:
     {
         Pointer( );
         int         m_numLights;
-        Vector2F    m_position;
+        Point2F     m_position;
         Angle       m_angle;
         float       m_distance;
     };
@@ -108,7 +108,7 @@ private:
         bool        m_connected;
         Vector3F    m_acceleration;
         Vector3F    m_gravity;
-        Vector2F    m_joystickPos;
+        Point2F     m_joystickPos;
     };
     Nunchuk     m_nunchuk;
 
@@ -131,7 +131,7 @@ WiimoteState::WiimoteState( )
 inline
 WiimoteState::Pointer::Pointer( )
     :   m_numLights( 0 ),
-        m_position( Vector2F::Zero ),
+        m_position( Point2F::Zero ),
         m_angle( 0.f ),
         m_distance( 1.f )
 {
@@ -143,7 +143,7 @@ inline
 WiimoteState::Nunchuk::Nunchuk( )
     :   m_connected( false ),
         m_acceleration( Vector3F::Zero ),
-        m_joystickPos( Vector2F::Zero )
+        m_joystickPos( Point2F::Zero )
 {
 }
 
@@ -195,7 +195,7 @@ WiimoteState::NumPointerLights( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-Vector2F 
+Point2F 
 WiimoteState::PointerPos( ) const
 {
     return m_pointer.m_position;
@@ -240,7 +240,7 @@ WiimoteState::NunchukAcceleration( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-Vector2F 
+Point2F 
 WiimoteState::NunchukJoystickPos( ) const
 {
     return m_nunchuk.m_joystickPos;
@@ -277,7 +277,7 @@ WiimoteState::SetGravity( const Vector3F & gravity )
 
 inline
 void 
-WiimoteState::SetPointer( int numLights, const Vector2F & position,
+WiimoteState::SetPointer( int numLights, const Point2F & position,
                           Angle angle, float distance )
 {
     switch ( numLights )
@@ -305,7 +305,7 @@ void
 WiimoteState::SetNunchuk( bool connected,
                           const Vector3F & acceleration,
                           const Vector3F & gravity,
-                          const Vector2F & joystickPos )
+                          const Point2F & joystickPos )
 {
     m_nunchuk.m_connected = connected;
     if ( connected )

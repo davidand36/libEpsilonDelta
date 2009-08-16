@@ -13,6 +13,14 @@
      At() asserts that index is in the proper range.
   3. The Array() methods provide direct access to the internal representation,
      primarily for efficient interaction with other libraries.
+  4. The distinction between points and vectors, while useful for physics
+     and related applications, cannot always be conveniently maintained, so
+     explicit conversions between the two classes are provided here.
+     ToVector() can be regarded as a shorthand for (*this - Zero), and
+     Set( Vector vec ) can be regarded as (Zero + vec).
+  5. The difference between two points (operator-) yields a vector. However,
+     operator-=, as well as Translate() can be used to change the coordinates
+     of a point to correspond to a new origin (rhs), also a point.
 */
 
 
@@ -47,8 +55,10 @@ public:
     Point2( );
     Point2( T x, T y );
     Point2( const T * pCoords );
+    explicit Point2( const Vector2<T> & vec );
     void Set( T x = T(), T y = T() );
     void Set( const T * pCoords );
+    void Set( const Vector2<T> & vec );
     T X( ) const;
     T Y( ) const;
     void SetX( T x );
@@ -59,10 +69,13 @@ public:
     T & At( int index );
     const T * Array( ) const;
     T * Array( );
+    Vector2<T> ToVector( ) const;
     bool operator==( const Point2 & rhs ) const;
     bool operator!=( const Point2 & rhs ) const;
     Point2 & operator+=( const Vector2<T> & rhs );
     Point2 & operator-=( const Vector2<T> & rhs );
+    Point2 & operator-=( const Point2 & rhs );
+    Point2 & operator*=( const Matrix2<T> & m );
 
     static const Point2 Zero;
 
@@ -81,6 +94,12 @@ template <typename T>
 Point2<T> operator-( const Point2<T> & lhs, const Vector2<T> & rhs );
 template <typename T>
 Vector2<T> operator-( const Point2<T> & lhs, const Point2<T> & rhs );
+template <typename T>
+Point2<T> Translate( const Point2<T> & pt, const Point2<T> & newOrigin );
+template <typename T>
+Point2<T> operator*( const Matrix2<T> & m, const Point2<T> & pt );
+template <typename T>
+Point2<T> operator*( const Point2<T> & pt, const Matrix2<T> & m );
 
 #ifdef DEBUG
 bool TestPoint2( );
@@ -121,6 +140,15 @@ Point2<T>::Point2( const T * pCoords )
     Set( pCoords );
 }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+inline
+Point2<T>::Point2( const Vector2<T> & vec )
+{
+    Set( vec );
+}
+
 //=============================================================================
 
 template <typename T>
@@ -139,6 +167,16 @@ void
 Point2<T>::Set( const T * pCoords )
 {
     memcpy( m_coords.c_array(), pCoords, sizeof( m_coords ) );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+inline
+void 
+Point2<T>::Set( const Vector2<T> & vec )
+{
+    Set( vec.X(), vec.Y() );
 }
 
 //=============================================================================
@@ -245,6 +283,16 @@ Point2<T>::Array( )
 
 template <typename T>
 inline 
+Vector2<T> 
+Point2<T>::ToVector( ) const
+{
+    return Vector2<T>( m_coords[0], m_coords[1] );
+}
+
+//=============================================================================
+
+template <typename T>
+inline 
 bool 
 Point2<T>::operator==( const Point2 & rhs ) const
 {
@@ -286,6 +334,30 @@ Point2<T>::operator-=( const Vector2<T> & rhs )
     return *this;
 }
 
+//-----------------------------------------------------------------------------
+
+template <typename T>
+inline 
+Point2<T> & 
+Point2<T>::operator-=( const Point2 & rhs )
+{
+    m_coords[0] -= rhs[0];
+    m_coords[1] -= rhs[1];
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+Point2<T> & 
+Point2<T>::operator*=( const Matrix2<T> & m )
+{
+    T pt0 = m_coords[0];
+    m_coords[0] = m(0,0) * pt0  +  m(0,1) * m_coords[1];
+    m_coords[1] = m(1,0) * pt0  +  m(1,1) * m_coords[1];
+    return *this;
+}
+
 //=============================================================================
 
 template <typename T>
@@ -315,6 +387,36 @@ Vector2<T>
 operator-( const Point2<T> & lhs, const Point2<T> & rhs )
 {
     return Vector2<T>( lhs[0] - rhs[0], lhs[1] - rhs[1] );
+}
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+Point2<T> 
+Translate( const Point2<T> & pt, const Point2<T> & newOrigin )
+{
+    Point2<T> newPt = pt;
+    return newPt -= newOrigin;
+}
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+Point2<T> 
+operator*( const Matrix2<T> & m, const Point2<T> & pt )
+{
+    return Point2<T>( (m(0,0) * pt[0]  +  m(0,1) * pt[1]),
+                       (m(1,0) * pt[0]  +  m(1,1) * pt[1]) );
+}
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+Point2<T> 
+operator*( const Point2<T> & pt, const Matrix2<T> & m )
+{
+    return Vector2<T>( (m(0,0) * pt[0]  +  m(1,0) * pt[1]),
+                       (m(0,1) * pt[0]  +  m(1,1) * pt[1]) );
 }
 
 //=============================================================================

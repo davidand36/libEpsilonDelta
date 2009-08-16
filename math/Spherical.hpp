@@ -14,7 +14,7 @@
 
 
 #include "Angle.hpp"
-#include "Vector3.hpp"
+#include "Point3.hpp"
 #include "Assert.hpp"
 #include <iostream>
 
@@ -30,16 +30,16 @@ class Spherical
 public:
     Spherical( );
     Spherical( Angle longitude, Angle latitude, double distance = 1. );
-    Spherical( const Vector3D & rectangular );
+    Spherical( const Point3D & rectangular );
     void Set( );
     void Set( Angle longitude, Angle latitude, double distance = 1. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Normalize( );
     void NormalizeSemiPositive( );
     Angle Longitude( ) const;
     Angle Latitude( ) const;
     double Distance( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
 #ifdef DEBUG
     static bool Test( );
 #endif
@@ -99,7 +99,7 @@ Spherical::Spherical( Angle longitude, Angle latitude, double distance )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Spherical::Spherical( const Vector3D & rectangular )
+Spherical::Spherical( const Point3D & rectangular )
 {
     Set( rectangular );
 }

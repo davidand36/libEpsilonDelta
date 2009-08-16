@@ -275,7 +275,7 @@ GalacticToEquatorialMatrix( )
 //=============================================================================
 
 Angle 
-EclipticalLongitude( const Vector3D & equatorialRect, Angle obliquity )
+EclipticalLongitude( const Point3D & equatorialRect, Angle obliquity )
 {
     double x = equatorialRect.X();
     double y = obliquity.Cos() * equatorialRect.Y()
@@ -318,10 +318,10 @@ TestAstroCoordTransformations( )
     TESTCHECKF( ecliptPollux.Longitude().Degrees(), 113.21562958, &ok );
     TESTCHECKF( ecliptPollux.Latitude().Degrees(), 6.6841698, &ok );
     TESTCHECKF( ecliptPollux.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
-    Vector3D equatPolluxV = equatPollux.Rectangular();
+    cout << "Same test, using points and matrices" << endl;
+    Point3D equatPolluxV = equatPollux.Rectangular();
     Matrix3D equat2eclipt = EquatorialToEclipticalMatrix( obliquity );
-    Vector3D ecliptPolluxV = equat2eclipt * equatPolluxV;
+    Point3D ecliptPolluxV = equat2eclipt * equatPolluxV;
     ecliptPollux.Set( ecliptPolluxV );
     TESTCHECKF( ecliptPollux.Longitude().Degrees(), 113.215630, &ok );
     TESTCHECKF( ecliptPollux.Latitude().Degrees(), 6.684170, &ok );
@@ -333,7 +333,7 @@ TestAstroCoordTransformations( )
     TESTCHECKF( equatPollux.RightAscension().Degrees(), 116.328942, &ok );
     TESTCHECKF( equatPollux.Declination().Degrees(), 28.026183, &ok );
     TESTCHECKF( equatPollux.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
+    cout << "Same test, using points and matrices" << endl;
     Matrix3D eclipt2equat = EclipticalToEquatorialMatrix( obliquity );
     equatPolluxV = eclipt2equat * ecliptPolluxV;
     equatPollux.Set( equatPolluxV );
@@ -371,10 +371,10 @@ TestAstroCoordTransformations( )
     TESTCHECKF( horizVenus.Azimuth().Degrees(), 248.03369608, &ok );
     TESTCHECKF( horizVenus.Altitude().Degrees(), 15.12487568, &ok );
     TESTCHECKF( horizVenus.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
-    Vector3D equatVenusV = equatVenus.Rectangular();
+    cout << "Same test, using points and matrices" << endl;
+    Point3D equatVenusV = equatVenus.Rectangular();
     Matrix3D equat2horiz = EquatorialToHorizontalMatrix( lst, latUSNO );
-    Vector3D horizVenusV = equat2horiz * equatVenusV;
+    Point3D horizVenusV = equat2horiz * equatVenusV;
     horizVenus.Set( horizVenusV );
     TESTCHECKF( horizVenus.Azimuth().Degrees(), 248.03369608, &ok );
     TESTCHECKF( horizVenus.Altitude().Degrees(), 15.12487568, &ok ); 
@@ -384,7 +384,7 @@ TestAstroCoordTransformations( )
     TESTCHECKF( equatVenus.RightAscension().Degrees(), 347.3193375, &ok );
     TESTCHECKF( equatVenus.Declination().Degrees(), -6.71988889, &ok );
     TESTCHECKF( equatVenus.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
+    cout << "Same test, using points and matrices" << endl;
     horizVenusV = horizVenus.Rectangular();
     Matrix3D horiz2equat = HorizontalToEquatorialMatrix( lst, latUSNO );
     equatVenusV = horiz2equat * horizVenusV;
@@ -411,10 +411,10 @@ TestAstroCoordTransformations( )
     TESTCHECKF( galNovaSer.Longitude().Degrees(), 12.95925004, &ok );
     TESTCHECKF( galNovaSer.Latitude().Degrees(), 6.0462985, &ok );
     TESTCHECKF( galNovaSer.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
-    Vector3D equatNovaSerV = equatNovaSer.Rectangular();
+    cout << "Same test, using points and matrices" << endl;
+    Point3D equatNovaSerV = equatNovaSer.Rectangular();
     Matrix3D equat2gal = EquatorialToGalacticMatrix( );
-    Vector3D galNovaSerV = equat2gal * equatNovaSerV;
+    Point3D galNovaSerV = equat2gal * equatNovaSerV;
     galNovaSer.Set( galNovaSerV );
     TESTCHECKF( galNovaSer.Longitude().Degrees(), 12.95925004, &ok );
     TESTCHECKF( galNovaSer.Latitude().Degrees(), 6.0462985, &ok );
@@ -424,7 +424,7 @@ TestAstroCoordTransformations( )
     TESTCHECKF( equatNovaSer.RightAscension().Degrees(), 267.248917, &ok );
     TESTCHECKF( equatNovaSer.Declination().Degrees(), -14.7189444, &ok );
     TESTCHECKF( equatNovaSer.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
+    cout << "Same test, using points and matrices" << endl;
     galNovaSerV = galNovaSer.Rectangular();
     Matrix3D gal2equat = GalacticToEquatorialMatrix( );
     equatNovaSerV = gal2equat * galNovaSerV;
@@ -468,10 +468,10 @@ TestAstroCoordTransformations( )
     TESTCHECK( dmsTest1Alt.Minutes(), 55, &ok );
     TESTCHECKFE( dmsTest1Alt.Seconds(), 27.7358, &ok, 1e-3 );
     TESTCHECKF( horizTest1.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
-    Vector3D equatTest1V = equatTest1.Rectangular();
+    cout << "Same test, using points and matrices" << endl;
+    Point3D equatTest1V = equatTest1.Rectangular();
     equat2horiz = EquatorialToHorizontalMatrix( lst, latTest1 );
-    Vector3D horizTest1V = equat2horiz * equatTest1V;
+    Point3D horizTest1V = equat2horiz * equatTest1V;
     horizTest1.Set( horizTest1V );
     dmsTest1Az.Set( horizTest1.Azimuth() );
     TESTCHECK( dmsTest1Az.Positive(), true, &ok );
@@ -496,7 +496,7 @@ TestAstroCoordTransformations( )
     TESTCHECK( dmsTest1Dec.Minutes(), 13, &ok );
     TESTCHECKFE( dmsTest1Dec.Seconds(), 38.68, &ok, 1e-3 );
     TESTCHECKF( equatTest1.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
+    cout << "Same test, using points and matrices" << endl;
     horizTest1V = horizTest1.Rectangular();
     horiz2equat = HorizontalToEquatorialMatrix( lst, latTest1 );
     equatTest1V = horiz2equat * horizTest1V;
@@ -541,10 +541,10 @@ TestAstroCoordTransformations( )
     TESTCHECK( dmsTest2Lat.Minutes(), 27, &ok );
     TESTCHECKFE( dmsTest2Lat.Seconds(), 57.59, &ok, 1e-3 );
     TESTCHECKF( ecliptTest2.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
-    Vector3D equatTest2V = equatTest2.Rectangular();
+    cout << "Same test, using points and matrices" << endl;
+    Point3D equatTest2V = equatTest2.Rectangular();
     equat2eclipt = EquatorialToEclipticalMatrix( obliquity );
-    Vector3D ecliptTest2V = equat2eclipt * equatTest2V;
+    Point3D ecliptTest2V = equat2eclipt * equatTest2V;
     ecliptTest2.Set( ecliptTest2V );
     dmsTest2Long.Set( ecliptTest2.Longitude() );
     TESTCHECK( dmsTest2Long.Positive(), true, &ok );
@@ -569,7 +569,7 @@ TestAstroCoordTransformations( )
     TESTCHECK( dmsTest2Dec.Minutes(), 13, &ok );
     TESTCHECKFE( dmsTest2Dec.Seconds(), 38.39, &ok, 1e-3 );
     TESTCHECKF( equatTest2.Distance(), 1., &ok );
-    cout << "Same test, using vectors and matrices" << endl;
+    cout << "Same test, using points and matrices" << endl;
     ecliptTest2V = ecliptTest2.Rectangular();
     eclipt2equat = EclipticalToEquatorialMatrix( obliquity );
     equatTest2V = eclipt2equat * ecliptTest2V;

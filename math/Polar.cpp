@@ -23,7 +23,7 @@ namespace EpsilonDelta
 
 
 void 
-Polar::Set( Vector2D rectangular )
+Polar::Set( Point2D rectangular )
 {
     if ( (rectangular.X() == 0.) && (rectangular.Y() == 0.) )
     {
@@ -40,10 +40,11 @@ Polar::Set( Vector2D rectangular )
 
 //=============================================================================
 
-Vector2D 
+Point2D 
 Polar::Rectangular( ) const
 {
-    return Vector2D( m_bearing.Cos() * m_distance, m_bearing.Sin() * m_distance );
+    return Point2D( m_bearing.Cos() * m_distance,
+                    m_bearing.Sin() * m_distance );
 }
 
 //=============================================================================
@@ -95,7 +96,7 @@ Polar::Test( )
     polar0.Set( );
     TESTCHECK( polar0.Bearing().Radians(), 0., &ok );
     TESTCHECK( polar0.Distance(), 0., &ok );
-    Vector2D rect0 = polar0.Rectangular();
+    Point2D rect0 = polar0.Rectangular();
     TESTCHECK( rect0.X(), 0., &ok );
     TESTCHECK( rect0.Y(), 0., &ok );
     double rads = - M_PI / 2;
@@ -105,7 +106,7 @@ Polar::Test( )
     Polar polar1( bearing, dist );
     TESTCHECK( polar1.Bearing().Radians(), rads, &ok );
     TESTCHECK( polar1.Distance(), dist, &ok );
-    Vector2D rect = polar1.Rectangular();
+    Point2D rect = polar1.Rectangular();
     TESTCHECKF( rect.X(), 0., &ok );
     TESTCHECKF( rect.Y(), -2., &ok );
     rads = 3 * M_PI / 4;
@@ -125,7 +126,7 @@ Polar::Test( )
     double x = 3.;
     double y = 4.;
     rect.Set( x, y );
-    cout << "Polar( Vector2D(" << x << ", " << y << ") ) [rectangular constructor]" << endl;
+    cout << "Polar( Point2D(" << x << ", " << y << ") ) [rectangular constructor]" << endl;
     Polar polar2( rect );
     TESTCHECKF( polar2.Bearing().Radians(), 0.927295218, &ok );
     TESTCHECKF( polar2.Distance(), 5., &ok );
@@ -135,7 +136,7 @@ Polar::Test( )
     x = 12.;
     y = 5.;
     rect.Set( x, y );
-    cout << "Set( Vector2D(" << x << ", " << y << ") )" << endl;
+    cout << "Set( Point2D(" << x << ", " << y << ") )" << endl;
     polar2.Set( rect );
     TESTCHECKF( polar2.Bearing().Radians(), 0.39479112, &ok );
     TESTCHECKF( polar2.Distance(), 13., &ok );

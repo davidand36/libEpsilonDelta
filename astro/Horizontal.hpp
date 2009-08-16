@@ -35,15 +35,15 @@ class Horizontal
 public:
     Horizontal( );
     Horizontal( Angle azimuth, Angle altitude, double distance = 1. );
-    Horizontal( const Vector3D & rectangular );
+    Horizontal( const Point3D & rectangular );
     void Set( Angle azimuth, Angle altitude, double distance = 1. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Normalize( );
     Angle Azimuth( ) const;
     Angle Altitude( ) const;
     Angle ZenithDistance( ) const;
     double Distance( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
 
 private:
     Spherical m_spherical;
@@ -84,7 +84,7 @@ Horizontal::Set( Angle azimuth, Angle altitude, double distance )
 
 inline 
 void 
-Horizontal::Set( const Vector3D & rectangular )
+Horizontal::Set( const Point3D & rectangular )
 {
     m_spherical.Set( rectangular );
     Normalize( );
@@ -108,7 +108,7 @@ Horizontal::Horizontal( Angle azimuth, Angle altitude, double distance )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Horizontal::Horizontal( const Vector3D & rectangular )
+Horizontal::Horizontal( const Point3D & rectangular )
     :    m_spherical( rectangular )
 {
     Normalize( );
@@ -153,7 +153,7 @@ Horizontal::Distance( ) const
 //=============================================================================
 
 inline 
-Vector3D 
+Point3D 
 Horizontal::Rectangular( ) const
 {
     return m_spherical.Rectangular();

@@ -42,7 +42,7 @@ TestApparentEphemeris( JPLEphemeris & de200, JPLEphemeris & de405 )
     Nutation nutation;
     Matrix3D nutationMatrix;
     Matrix3D nutAndPrecMatrix;
-    Vector3D bodyPos;
+    Point3D bodyPos;
     Equatorial bodyEquatorial;
 
     //Paul J. Heafner, "Fundamental Ephemeris Computations", p. 183

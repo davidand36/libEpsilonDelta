@@ -10,7 +10,7 @@
 
 
 #include "Angle.hpp"
-#include "Vector3.hpp"
+#include "Point3.hpp"
 #include "Matrix3.hpp"
 #include "Equatorial.hpp"
 #include "SolarSystem.hpp"
@@ -29,7 +29,7 @@ class JPLEphemeris;
 
 
 bool GetEarthBarycentric( double julianDay,
-                          Vector3D * pEarthBarycentric,
+                          Point3D * pEarthBarycentric,
                           Vector3D * pEarthBarycentricVelocity,
                           JPLEphemeris * pEphemeris );
 bool GetNutPrecAndObliquity( double julianDay,
@@ -38,7 +38,7 @@ bool GetNutPrecAndObliquity( double julianDay,
                              JPLEphemeris * pEphemeris );
 
 Equatorial SolarEquatorialPosition( double julianDay,
-                                    const Vector3D & earthBarycentric,
+                                    const Point3D & earthBarycentric,
                                     const Vector3D & earthBarycentricVelocity,
                                     const Matrix3D & nutAndPrecMatrix,
                                     JPLEphemeris * pEphemeris );
@@ -51,8 +51,8 @@ Equatorial LunarEquatorialPosition( double julianDay );
 
 Equatorial PlanetEquatorialPosition( double julianDay,
                                      SolarSystem::EBody body,
-                                     const Vector3D & earthBarycentric,
-                                     const Vector3D & earthHeliocentric,
+                                     const Point3D & earthBarycentric,
+                                     const Point3D & earthHeliocentric,
                                      const Vector3D & earthBarycentricVelocity,
                                      const Matrix3D & nutAndPrecMatrix,
                                      JPLEphemeris * pEphemeris );
@@ -60,7 +60,7 @@ Equatorial PlanetEquatorialPosition( double julianDay,
                                      SolarSystem::EBody body );
                                      
 Angle SolarLongitude( double julianDay,
-                      const Vector3D & earthBarycentric,
+                      const Point3D & earthBarycentric,
                       const Vector3D & earthBarycentricVelocity,
                       const Matrix3D & nutAndPrecMatrix,
                       Angle obliquity, 

@@ -67,7 +67,7 @@ BodyEquatorialPos::operator()( double julianDay )
     {
     case SolarSystem::Sun:
     {
-        Vector3D earthBarycentric;
+        Point3D earthBarycentric;
         Vector3D earthBarycentricVelocity;
 #ifdef DEBUG
         bool earthRslt =
@@ -86,7 +86,7 @@ BodyEquatorialPos::operator()( double julianDay )
     }
     default:
     {
-        Vector3D earthBarycentric;
+        Point3D earthBarycentric;
         Vector3D earthBarycentricVelocity;
 #ifdef DEBUG
         bool earthRslt =
@@ -94,7 +94,7 @@ BodyEquatorialPos::operator()( double julianDay )
                 GetEarthBarycentric( julianDay, &earthBarycentric,
                                      &earthBarycentricVelocity, m_pEphemeris );
         Assert( earthRslt );
-        Vector3D sunBarycentric;
+        Point3D sunBarycentric;
 #ifdef DEBUG
         bool sunRslt =
 #endif
@@ -102,7 +102,8 @@ BodyEquatorialPos::operator()( double julianDay )
                                            JPLEphemeris::SolarSystemBarycenter,
                                            &sunBarycentric );
         Assert( sunRslt );
-        Vector3D earthHeliocentric = earthBarycentric - sunBarycentric;
+        Point3D earthHeliocentric
+                = Translate( earthBarycentric, sunBarycentric );
         return  PlanetEquatorialPosition( julianDay, m_body,
                                           earthBarycentric,
                                           earthHeliocentric,

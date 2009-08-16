@@ -31,7 +31,7 @@ namespace EpsilonDelta
 
 bool
 GetEarthBarycentric( double julianDay,
-                     Vector3D * pEarthBarycentric,
+                     Point3D * pEarthBarycentric,
                      Vector3D * pEarthBarycentricVelocity,
                      JPLEphemeris * pEphemeris )
 {
@@ -78,16 +78,16 @@ GetNutPrecAndObliquity( double julianDay,
 
 Equatorial 
 SolarEquatorialPosition( double julianDay,
-                         const Vector3D & earthBarycentric,
+                         const Point3D & earthBarycentric,
                          const Vector3D & earthBarycentricVelocity,
                          const Matrix3D & nutAndPrecMatrix,
                          JPLEphemeris * pEphemeris )
 {
     JPLBarycentricEphemeris sunEphem( pEphemeris, JPLEphemeris::Sun );
-    Vector3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
-                                           earthBarycentric,
-                                           earthBarycentricVelocity,
-                                           nutAndPrecMatrix );
+    Point3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
+                                          earthBarycentric,
+                                          earthBarycentricVelocity,
+                                          nutAndPrecMatrix );
     return  Equatorial( sunPos );
 }
 
@@ -98,7 +98,7 @@ SolarEquatorialPosition( double julianDay )
 {
     JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
     Assert( pEphemeris );
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
 #ifdef DEBUG
     bool earthRslt = 
@@ -126,8 +126,8 @@ LunarEquatorialPosition( double julianDay,
                          JPLEphemeris * pEphemeris )
 {
     JPLGeocentricEphemeris moonEphem( pEphemeris, JPLEphemeris::Moon );
-    Vector3D moonPos = GetMoonApparentPlace( julianDay, moonEphem,
-                                             nutAndPrecMatrix );
+    Point3D moonPos = GetMoonApparentPlace( julianDay, moonEphem,
+                                            nutAndPrecMatrix );
     return  Equatorial( moonPos );
 }
 
@@ -153,8 +153,8 @@ LunarEquatorialPosition( double julianDay )
 Equatorial 
 PlanetEquatorialPosition( double julianDay,
                           SolarSystem::EBody body,
-                          const Vector3D & earthBarycentric,
-                          const Vector3D & earthHeliocentric,
+                          const Point3D & earthBarycentric,
+                          const Point3D & earthHeliocentric,
                           const Vector3D & earthBarycentricVelocity,
                           const Matrix3D & nutAndPrecMatrix,
                           JPLEphemeris * pEphemeris )
@@ -163,10 +163,10 @@ PlanetEquatorialPosition( double julianDay,
     JPLEphemeris::EBody jplBody = JPLEphemeris::SolarSystemToJPLBody( body );
     JPLBarycentricEphemeris bodyEphem( pEphemeris, jplBody );
     JPLBarycentricEphemeris sunEphem( pEphemeris, JPLEphemeris::Sun );
-    Vector3D bodyPos = GetApparentPlace( julianDay, bodyEphem, sunEphem,
-                                         earthBarycentric, earthHeliocentric,
-                                         earthBarycentricVelocity,
-                                         nutAndPrecMatrix );
+    Point3D bodyPos = GetApparentPlace( julianDay, bodyEphem, sunEphem,
+                                        earthBarycentric, earthHeliocentric,
+                                        earthBarycentricVelocity,
+                                        nutAndPrecMatrix );
     return  Equatorial( bodyPos );
 }
 
@@ -178,7 +178,7 @@ PlanetEquatorialPosition( double julianDay,
 {
     JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
     Assert( pEphemeris );
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
 #ifdef DEBUG
     bool earthRslt =
@@ -186,7 +186,7 @@ PlanetEquatorialPosition( double julianDay,
             GetEarthBarycentric( julianDay, &earthBarycentric,
                                  &earthBarycentricVelocity, pEphemeris );
     Assert( earthRslt );
-    Vector3D sunBarycentric;
+    Point3D sunBarycentric;
 #ifdef DEBUG
     bool sunRslt =
 #endif
@@ -194,7 +194,7 @@ PlanetEquatorialPosition( double julianDay,
                                          JPLEphemeris::SolarSystemBarycenter,
                                          &sunBarycentric );
     Assert( sunRslt );
-    Vector3D earthHeliocentric = earthBarycentric - sunBarycentric;
+    Point3D earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     Matrix3D nutAndPrecMatrix;
 #ifdef DEBUG
     bool nutPrecRslt =
@@ -213,17 +213,17 @@ PlanetEquatorialPosition( double julianDay,
 
 Angle
 SolarLongitude( double julianDay,
-                const Vector3D & earthBarycentric,
+                const Point3D & earthBarycentric,
                 const Vector3D & earthBarycentricVelocity,
                 const Matrix3D & nutAndPrecMatrix,
                 Angle obliquity, 
                 JPLEphemeris * pEphemeris )
 {
     JPLBarycentricEphemeris sunEphem( pEphemeris, JPLEphemeris::Sun );
-    Vector3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
-                                           earthBarycentric,
-                                           earthBarycentricVelocity,
-                                           nutAndPrecMatrix );
+    Point3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
+                                          earthBarycentric,
+                                          earthBarycentricVelocity,
+                                          nutAndPrecMatrix );
     return EclipticalLongitude( sunPos, obliquity );
 }
 
@@ -235,7 +235,7 @@ SolarLongitude( double julianDay )
     JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
     if ( pEphemeris == 0 )
         return Angle( 0. ); //!!!
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     Matrix3D nutAndPrecMatrix;
     Angle obliquity;
@@ -282,8 +282,8 @@ LunarLongitude( double julianDay,
                 JPLEphemeris * pEphemeris )
 {
     JPLGeocentricEphemeris moonEphem( pEphemeris, JPLEphemeris::Moon );
-    Vector3D moonPos = GetMoonApparentPlace( julianDay, moonEphem,
-                                             nutAndPrecMatrix );
+    Point3D moonPos = GetMoonApparentPlace( julianDay, moonEphem,
+                                            nutAndPrecMatrix );
     return EclipticalLongitude( moonPos, obliquity );
 }
 
@@ -295,7 +295,7 @@ LunarPhase( double julianDay )
     JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
     if ( pEphemeris == 0 )
         return Angle( 0. ); //!!!
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     Matrix3D nutAndPrecMatrix;
     Angle obliquity;
@@ -328,7 +328,7 @@ LunarArcOfLight( double julianDay )
     JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
     if ( pEphemeris == 0 )
         return Angle( 0. ); //!!!
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     Matrix3D nutAndPrecMatrix;
 #ifdef DEBUG

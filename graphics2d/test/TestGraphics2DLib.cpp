@@ -18,7 +18,10 @@
 #include "Graphics2D.hpp"
 #include "Surface.hpp"
 #include "Image.hpp"
+#include "Sprite.hpp"
+#include "SimpleSpriteSystem.hpp"
 #include "Platform.hpp"
+#include "StdClock.hpp"
 #include <cstdio>
 #include <iostream>
 using namespace std;
@@ -87,6 +90,10 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! Circle::Test( ) )
         ok = false;
+    if ( ! Sprite::Test( ) )
+        ok = false;
+    if ( ! SimpleSpriteSystem::Test( ) )
+        ok = false;
     if ( ! Graphics2D::Instance().Test( ) )
         ok = false;
     if ( ok )
@@ -101,10 +108,12 @@ int Main( int /*argc*/, char ** argv )
         if ( ok )
         {
             int frames = 0;
-            Uint32 start = SDL_GetTicks();
+            double start = StdClock::Instance().Seconds();
 
+            bool done = false;
             do
             {
+                Surface::Current()->Extent().Fill( Color3B( 0, 0, 0 ) );
                 Dot2I::TestDraw( );
                 LineSegment2I::TestDraw( );
                 Rectangle::TestDraw( );
@@ -112,11 +121,13 @@ int Main( int /*argc*/, char ** argv )
                 Circle::TestDraw( );
                 Surface::TestDraw( );
                 Image::TestDraw( );
+                done = SimpleSpriteSystem::TestUpdate( );
 
                 Graphics2D::Instance().ShowScreen( );
                 ++frames;
             }
-            while ( SDL_GetTicks() < start + 5000 );
+            while ( (! done)
+                    || (StdClock::Instance().Seconds() <= start + 10.) );
 
             float fps = frames / 5.f;
             cout << "FPS: " << fps << endl;

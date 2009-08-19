@@ -5,6 +5,10 @@
   Copyright (C) 2007 David M. Anderson
 
   Input class: user input subsystem.
+  NOTES:
+  1. If SUPPORT_WIIMOTE is defined, but an application doesn't want to support
+     Wiimotes (especially waiting for a connection at startup with CWiiD),
+     call SupportWiimotes( false ) before calling Init().
 */
 
 
@@ -47,6 +51,7 @@ public:
     int NumJoysticks( ) const;
     shared_ptr< Joystick > GetJoystick( int i );
 #if defined(SUPPORT_WIIMOTE)
+    void SupportWiimotes( bool supportWiimotes );
     int NumWiimotes( ) const;
     shared_ptr< Wiimote > GetWiimote( int i );
 #endif
@@ -59,14 +64,15 @@ private:
     Input( );
     ~Input( );
 
-    shared_ptr< Keyboard > m_pKeyboard;
-    shared_ptr< Mouse > m_pMouse;
-    std::vector< shared_ptr< Joystick > > m_joysticks;
+    shared_ptr< Keyboard >                  m_pKeyboard;
+    shared_ptr< Mouse >                     m_pMouse;
+    std::vector< shared_ptr< Joystick > >   m_joysticks;
 #if defined(SUPPORT_WIIMOTE)
-    std::vector< shared_ptr< Wiimote > > m_wiimotes;
+    bool                                    m_supportWiimotes;
+    std::vector< shared_ptr< Wiimote > >    m_wiimotes;
 #endif
 
-    QuitHandler m_quitHandler;
+    QuitHandler                             m_quitHandler;
 
     friend class Singleton< Input >;
 };

@@ -40,6 +40,9 @@ namespace EpsilonDelta
 
 Input::Input( )
     :   m_quitHandler( 0 )
+#if defined(SUPPORT_WIIMOTE)
+    ,   m_supportWiimotes( true )
+#endif
 {
     SDL::Instance();    //to force construction
 }
@@ -57,10 +60,13 @@ void
 Input::Init( )
 {
 #if defined(SUPPORT_WIIMOTE)
-    //WiiYourself! needs to connect before SDL inits joysticks.
-    shared_ptr< Wiimote > pWiimote( new Wiimote );
-    if ( pWiimote->IsConnected() )
-        m_wiimotes.push_back( pWiimote );
+    if ( m_supportWiimotes )
+    {
+        //WiiYourself! needs to connect before SDL inits joysticks.
+        shared_ptr< Wiimote > pWiimote( new Wiimote );
+        if ( pWiimote->IsConnected() )
+            m_wiimotes.push_back( pWiimote );
+    }
 #endif
 
     SDL::Instance().Init( );
@@ -196,6 +202,14 @@ Input::GetJoystick( int i )
 //-----------------------------------------------------------------------------
 
 #if defined(SUPPORT_WIIMOTE)
+
+void 
+Input::SupportWiimotes( bool supportWiimotes )
+{
+    m_supportWiimotes = supportWiimotes;
+}
+
+//-----------------------------------------------------------------------------
 
 int 
 Input::NumWiimotes( ) const

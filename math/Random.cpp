@@ -77,9 +77,16 @@ RandomNumberGenerator::RandomNumberGenerator( )
     m_pImpl->Reseed( m_seed );
 }
 
+//-----------------------------------------------------------------------------
+
+RandomNumberGenerator::~RandomNumberGenerator( )
+{
+    delete m_pImpl;
+}
+
 //=============================================================================
 
- void 
+void 
 RandomNumberGenerator::Reseed( int seed )
 {
     m_seed = seed;

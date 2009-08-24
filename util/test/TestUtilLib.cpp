@@ -8,6 +8,7 @@
 
 #include "Exception.hpp"
 #include "TestCheck.hpp"
+#include "Logger.hpp"
 #include "FixEndian.hpp"
 #include "StringUtil.hpp"
 #include "UnicodeUtil.hpp"
@@ -70,6 +71,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     bool ok = true;
 
 #ifdef DEBUG
+    if ( ! Logger::Test( ) )
+        ok = false;
     if ( ! TestFixEndian( ) )
         ok = false;
     if ( ! TestStringUtil( ) )

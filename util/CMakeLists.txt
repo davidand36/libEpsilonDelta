@@ -10,6 +10,7 @@ set( sources
      Exception.cpp
      Assert.cpp
      TestCheck.cpp
+     Logger.cpp
      FixEndian.cpp
      CharType.cpp
      StringUtil.cpp

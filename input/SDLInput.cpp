@@ -177,58 +177,6 @@ Input::CheckEvent( )
 
 //=============================================================================
 
-void 
-Input::SetQuitHandler( QuitHandler quitHandler )
-{
-    m_quitHandler = quitHandler;
-}
-
-//=============================================================================
-
-int 
-Input::NumJoysticks( ) const
-{
-    return static_cast<int>( m_joysticks.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-shared_ptr< Joystick >
-Input::GetJoystick( int i )
-{
-    return m_joysticks.at( i );
-}
-
-//-----------------------------------------------------------------------------
-
-#if defined(SUPPORT_WIIMOTE)
-
-void 
-Input::SupportWiimotes( bool supportWiimotes )
-{
-    m_supportWiimotes = supportWiimotes;
-}
-
-//-----------------------------------------------------------------------------
-
-int 
-Input::NumWiimotes( ) const
-{
-    return static_cast<int>( m_wiimotes.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-shared_ptr< Wiimote >
-Input::GetWiimote( int i )
-{
-    return m_wiimotes.at( i );
-}
-
-#endif
-
-//=============================================================================
-
 #ifdef DEBUG
 
 bool 

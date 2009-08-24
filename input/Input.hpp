@@ -48,6 +48,8 @@ public:
     typedef void (*QuitHandler)( );
     void SetQuitHandler( QuitHandler quitHandler );
 
+    shared_ptr< Keyboard > GetKeyboard( );
+    shared_ptr< Mouse > GetMouse( );
     int NumJoysticks( ) const;
     shared_ptr< Joystick > GetJoystick( int i );
 #if defined(SUPPORT_WIIMOTE)
@@ -76,6 +78,85 @@ private:
 
     friend class Singleton< Input >;
 };
+
+
+//*****************************************************************************
+
+
+inline
+void 
+Input::SetQuitHandler( QuitHandler quitHandler )
+{
+    m_quitHandler = quitHandler;
+}
+
+//=============================================================================
+
+inline
+shared_ptr< Keyboard > 
+Input::GetKeyboard( )
+{
+    return m_pKeyboard;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Mouse > 
+Input::GetMouse( )
+{
+    return m_pMouse;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int 
+Input::NumJoysticks( ) const
+{
+    return static_cast<int>( m_joysticks.size() );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Joystick >
+Input::GetJoystick( int i )
+{
+    return m_joysticks.at( i );
+}
+
+//-----------------------------------------------------------------------------
+
+#if defined(SUPPORT_WIIMOTE)
+
+inline
+void 
+Input::SupportWiimotes( bool supportWiimotes )
+{
+    m_supportWiimotes = supportWiimotes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int 
+Input::NumWiimotes( ) const
+{
+    return static_cast<int>( m_wiimotes.size() );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Wiimote >
+Input::GetWiimote( int i )
+{
+    return m_wiimotes.at( i );
+}
+
+#endif
+
 
 
 //*****************************************************************************

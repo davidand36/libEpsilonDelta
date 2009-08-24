@@ -39,7 +39,7 @@ if ( useWiiYourself )
 endif ( useWiiYourself )
 
 set( EpsilonDeltaLibs
-     mmbase time math util
+     graphic2d mmbase time math util
    )
 foreach( lib ${EpsilonDeltaLibs} )
      include_directories( "${CMAKE_SOURCE_DIR}/${lib}" )

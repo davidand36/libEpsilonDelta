@@ -10,7 +10,6 @@
 #include "Platform.hpp"
 #include "FileException.hpp"
 #include "StringUtil.hpp"
-#include "FileUtil.hpp"
 #include "SmartPtr.hpp"
 #include <vector>
 #include <errno.h>
@@ -25,6 +24,7 @@
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "File.hpp"
 #include <iostream>
 #endif
 using namespace std;
@@ -230,10 +230,16 @@ TestDirUtil( )
             cout << "MakeDirectory( " << newDir << " )" << endl;
             MakeDirectory( newDir );
             string fileSpec = newDir + "Mine";
-            scoped_array< char > buff( new char[1000] );
-            SaveFile( fileSpec, buff.get(), 1000 );
+            scoped_array< char > chars( new char[1000] );
+            DataBuffer buff;
+            buff.Add( chars.get(), 1000 );
+            bool saveRslt = File::Save( fileSpec, buff );
+            Assert( saveRslt );
             fileSpec = newDir + "Dave";
-            SaveFile( fileSpec, buff.get(), 100 );
+            buff.Clear();
+            buff.Add( chars.get(), 100 );
+            saveRslt = File::Save( fileSpec, buff );
+            Assert( saveRslt );
             string dir = baseDirs[i] + "DirUtilTest1";
             cout << "ListFiles( " << dir << " )" << endl;
             vector< string > files = ListFiles( dir );
@@ -253,8 +259,8 @@ TestDirUtil( )
             dirs = ListSubdirectories( dir );
             TESTCHECK( dirs.size(), 0, &ok );
             fileSpec = newDir + "Dave";
-            int rmvRslt = remove( fileSpec.c_str() );
-            Assert( rmvRslt == 0 );
+            bool delRslt = File::Delete( fileSpec );
+            Assert( delRslt );
             cout << "ListFiles( " << dir << " )" << endl;
             files = ListFiles( dir );
             TESTCHECK( files.size(), 1, &ok );
@@ -272,8 +278,8 @@ TestDirUtil( )
                 cout << except.Description( ) << endl;
             }
             fileSpec = newDir + "Mine";
-            rmvRslt = remove( fileSpec.c_str() );
-            Assert( rmvRslt == 0 );
+            delRslt = File::Delete( fileSpec );
+            Assert( delRslt );
             cout << "ListFiles( " << dir << " )" << endl;
             files = ListFiles( dir );
             TESTCHECK( files.size(), 0, &ok );

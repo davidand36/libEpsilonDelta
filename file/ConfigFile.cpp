@@ -8,7 +8,7 @@
 
 #include "ConfigFile.hpp"
 #include "Assert.hpp"
-#include "FileUtil.hpp"
+#include "File.hpp"
 #include "StringUtil.hpp"
 #include "SmartPtr.hpp"
 #include <stdio.h>
@@ -32,7 +32,8 @@ namespace EpsilonDelta
 ConfigFile::ConfigFile( const string & fileName )
     :    m_fileName( fileName )
 {
-    string rawInput = LoadTextFile( fileName );
+    string rawInput;
+    File::Load( fileName, &rawInput );
     ParseInput( rawInput );
 }
 
@@ -122,7 +123,9 @@ ConfigFile::Test( )
             ;
     cout << confFileName << " contents:" << endl << "--------" << endl
          << testContents << endl << "--------" << endl;
-    SaveFile( confFileName, testContents, sizeof( testContents ) );
+    DataBuffer buff;
+    buff.Add( testContents, sizeof( testContents ) );
+    File::Save( confFileName, buff );
 
     ConfigFile confFile( confFileName );
     TESTCHECK( confFile.Value( "SingleKey" ), string( "Single Value" ), &ok );
@@ -139,8 +142,8 @@ ConfigFile::Test( )
     TESTCHECK( confFile.Value( "NoKey" ), string( "" ), &ok );
     TESTCHECK( confFile.Values( "NoKey" ).size(), 0, &ok );
 
-    int unlnkRslt = remove( confFileName );
-    Assert( unlnkRslt == 0 );
+    bool delRslt = File::Delete( confFileName );
+    Assert( delRslt );
 
     if ( ok )
         cout << "ConfigFile PASSED." << endl << endl;

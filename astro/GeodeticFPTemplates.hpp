@@ -14,7 +14,7 @@
 
 
 #include "Angle.hpp"
-#include "Vector3.hpp"
+#include "Point3.hpp"
 #include "Spherical.hpp"
 
 
@@ -30,15 +30,15 @@ class Geodetic
 public:
     Geodetic( );
     Geodetic( Angle longitude, Angle latitude, double height = 0. );
-    Geodetic( const Vector3D & rectangular );
+    Geodetic( const Point3D & rectangular );
     Geodetic( const Spherical & geocentric );
     void Set( Angle longitude, Angle latitude, double height = 0. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Set( const Spherical & geocentric );
     Angle Longitude( ) const;
     Angle Latitude( ) const;
     double Height( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
     Spherical Geocentric( ) const;
 
 private:
@@ -101,7 +101,7 @@ Geodetic::Geodetic( Angle longitude, Angle latitude, double height )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < double radius, double flattening >
-Geodetic::Geodetic( const Vector3D & rectangular )
+Geodetic::Geodetic( const Point3D & rectangular )
 {
     Set( rectangular );
 }
@@ -130,7 +130,7 @@ Geodetic::Set( Angle longitude, Angle latitude, double height )
 
 template < double radius, double flattening >
 void 
-Geodetic::Set( const Vector3D & rectangular )
+Geodetic::Set( const Point3D & rectangular )
 {
     //Explanatory Supplement (4.22-11 to 4.22-24)
     double X = rectangular.X();
@@ -187,7 +187,7 @@ template < double radius, double flattening >
 void 
 Geodetic::Set( const Spherical & geocentric )
 {
-    Vector3D rectangular = geocentric.Rectangular( );
+    Point3D rectangular = geocentric.Rectangular( );
     Set( rectangular );
 }
 
@@ -224,7 +224,7 @@ Geodetic::Height( ) const
 //=============================================================================
 
 template < double radius, double flattening >
-Vector3D 
+Point3D 
 Geodetic::Rectangular( ) const
 {
     double sinLat = m_latitude.Sin( );
@@ -236,9 +236,9 @@ Geodetic::Rectangular( ) const
     double eccentSqr = eccentricity * eccentricity;
     double radCurv = radius
             / sqrt( 1.  -  eccentSqr * sinLat * sinLat );
-    return Vector3D( (radCurv + m_height) * cosLat * cosLong,
-                     (radCurv + m_height) * cosLat * sinLong,
-                     ((1 + eccentSqr) * radCurv  +  m_height) * sinLat );
+    return Point3D( (radCurv + m_height) * cosLat * cosLong,
+                    (radCurv + m_height) * cosLat * sinLong,
+                    ((1 + eccentSqr) * radCurv  +  m_height) * sinLat );
 }
 
 //-----------------------------------------------------------------------------

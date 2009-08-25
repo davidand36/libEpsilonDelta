@@ -32,7 +32,7 @@
 #include "Horizontal.hpp"
 #include "Galactic.hpp"
 #include "Matrix3.hpp"
-#include "Vector3.hpp"
+#include "Point3.hpp"
 
 
 namespace EpsilonDelta
@@ -73,7 +73,7 @@ Matrix3D HorizontalToEquatorialMatrix( double localSiderealTime,
 Matrix3D EquatorialToGalacticMatrix( );
 Matrix3D GalacticToEquatorialMatrix( );
 
-Angle EclipticalLongitude( const Vector3D & equatorialRect, Angle obliquity );
+Angle EclipticalLongitude( const Point3D & equatorialRect, Angle obliquity );
 
 #ifdef DEBUG
 bool TestAstroCoordTransformations( );

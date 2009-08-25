@@ -30,14 +30,14 @@ class Ecliptical
 public:
     Ecliptical( );
     Ecliptical( Angle longitude, Angle latitude, double distance = 1. );
-    Ecliptical( const Vector3D & rectangular );
+    Ecliptical( const Point3D & rectangular );
     void Set( Angle longitude, Angle latitude, double distance = 1. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Normalize( );
     Angle Longitude( ) const;
     Angle Latitude( ) const;
     double Distance( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
 
 private:
     Spherical m_spherical;
@@ -81,7 +81,7 @@ Ecliptical::Set( Angle longitude, Angle latitude, double distance )
 
 inline 
 void 
-Ecliptical::Set( const Vector3D & rectangular )
+Ecliptical::Set( const Point3D & rectangular )
 {
     m_spherical.Set( rectangular );
     Normalize( );
@@ -105,7 +105,7 @@ Ecliptical::Ecliptical( Angle longitude, Angle latitude, double distance )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Ecliptical::Ecliptical( const Vector3D & rectangular )
+Ecliptical::Ecliptical( const Point3D & rectangular )
     :    m_spherical( rectangular )
 {
     Normalize( );
@@ -141,7 +141,7 @@ Ecliptical::Distance( ) const
 //=============================================================================
 
 inline 
-Vector3D 
+Point3D 
 Ecliptical::Rectangular( ) const
 {
     return m_spherical.Rectangular();

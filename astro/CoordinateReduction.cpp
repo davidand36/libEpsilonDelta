@@ -30,32 +30,32 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-Vector3D GetAstrometricPlace( double julianDay,
-                              const Vector3D & starBarycentric,
-                              const Vector3D & starVelocity,
-                              const Vector3D & earthBarycentric,
-                              double epoch )
+Point3D GetAstrometricPlace( double julianDay,
+                             const Point3D & starBarycentric,
+                             const Vector3D & starVelocity,
+                             const Point3D & earthBarycentric,
+                             double epoch )
 {
     Vector3D starGeocentric = starBarycentric - earthBarycentric;
     starGeocentric += (julianDay - epoch) * starVelocity;
-    return starGeocentric;
+    return Point3D( starGeocentric );
 }
 
 //-----------------------------------------------------------------------------
 
-Vector3D GetVirtualPlace( double julianDay,
-                          const Vector3D & starBarycentric,
-                          const Vector3D & starVelocity,
-                          const Vector3D & earthBarycentric,
-                          const Vector3D & earthHeliocentric, 
-                          const Vector3D & earthBarycentricVelocity,
-                          double epoch )
+Point3D GetVirtualPlace( double julianDay,
+                         const Point3D & starBarycentric,
+                         const Vector3D & starVelocity,
+                         const Point3D & earthBarycentric,
+                         const Point3D & earthHeliocentric, 
+                         const Vector3D & earthBarycentricVelocity,
+                         double epoch )
 {
-    Vector3D starGeocentric = GetAstrometricPlace( julianDay,
-                                                   starBarycentric,
-                                                   starVelocity,
-                                                   earthBarycentric,
-                                                   epoch );
+    Point3D starGeocentric = GetAstrometricPlace( julianDay,
+                                                  starBarycentric,
+                                                  starVelocity,
+                                                  earthBarycentric,
+                                                  epoch );
     starGeocentric = CorrectForLightDeflection( starGeocentric,
                                                 earthHeliocentric );
     starGeocentric = CorrectForAberration( starGeocentric,
@@ -65,22 +65,22 @@ Vector3D GetVirtualPlace( double julianDay,
 
 //-----------------------------------------------------------------------------
 
-Vector3D GetApparentPlace( double julianDay,
-                           const Vector3D & starBarycentric,
-                           const Vector3D & starVelocity,
-                           const Vector3D & earthBarycentric,
-                           const Vector3D & earthHeliocentric, 
-                           const Vector3D & earthBarycentricVelocity,
-                           const Matrix3D & nutAndPrecMatrix, 
-                           double epoch )
+Point3D GetApparentPlace( double julianDay,
+                          const Point3D & starBarycentric,
+                          const Vector3D & starVelocity,
+                          const Point3D & earthBarycentric,
+                          const Point3D & earthHeliocentric, 
+                          const Vector3D & earthBarycentricVelocity,
+                          const Matrix3D & nutAndPrecMatrix, 
+                          double epoch )
 {
-    Vector3D starGeocentric = GetVirtualPlace( julianDay,
-                                               starBarycentric,
-                                               starVelocity,
-                                               earthBarycentric,
-                                               earthHeliocentric, 
-                                               earthBarycentricVelocity,
-                                               epoch );
+    Point3D starGeocentric = GetVirtualPlace( julianDay,
+                                              starBarycentric,
+                                              starVelocity,
+                                              earthBarycentric,
+                                              earthHeliocentric, 
+                                              earthBarycentricVelocity,
+                                              epoch );
     starGeocentric = CorrectForNutationAndPrecession( starGeocentric,
                                                       nutAndPrecMatrix );
     return starGeocentric;
@@ -88,85 +88,89 @@ Vector3D GetApparentPlace( double julianDay,
 
 //=============================================================================
 
-Vector3D 
-CorrectForLightDeflection( const Vector3D & bodyGeocentric,
-                                    const Vector3D & bodyHeliocentric,
-                                    const Vector3D & earthHeliocentric )
+Point3D 
+CorrectForLightDeflection( const Point3D & bodyGeocentric,
+                           const Point3D & bodyHeliocentric,
+                           const Point3D & earthHeliocentric )
 {
-    const double bgLen = bodyGeocentric.Length();
+    double bgLen = bodyGeocentric.ToVector().Length();
     if ( bgLen == 0.)
         return bodyGeocentric;
-    const Vector3D bgu = bodyGeocentric * (1. / bgLen);
-    const double bhLen = bodyHeliocentric.Length();
+    Vector3D bgu = bodyGeocentric.ToVector() * (1. / bgLen);
+    double bhLen = bodyHeliocentric.ToVector().Length();
     if ( bhLen == 0.)
         return bodyGeocentric;
-    const Vector3D bhu = bodyHeliocentric * (1. / bhLen);
-    const double ehLen = earthHeliocentric.Length();
-    const Vector3D ehu = earthHeliocentric * (1. / ehLen);
+    Vector3D bhu = bodyHeliocentric.ToVector() * (1. / bhLen);
+    double ehLen = earthHeliocentric.ToVector().Length();
+    Vector3D ehu = earthHeliocentric.ToVector() * (1. / ehLen);
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double g1
+    double g1
             = 2. * AstroConst::HeliocentricGravitationalConstant()
             / (c * c * ehLen);
-    const double g2 = 1.  +  bhu * ehu;
+    double g2 = 1.  +  bhu * ehu;
     if ( g2 == 0. )
         return bodyGeocentric;
-    return  bgLen
+    Vector3D corrPos = bgLen
            * (bgu  +  (g1 / g2) * ( (bgu * bhu) * ehu  -  (bgu * ehu) * bhu ));
+    return Point3D( corrPos );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Vector3D 
-CorrectForLightDeflection( const Vector3D & starGeocentric,
-                           const Vector3D & earthHeliocentric )
+Point3D 
+CorrectForLightDeflection( const Point3D & starGeocentric,
+                           const Point3D & earthHeliocentric )
 {
-    const double sgLen = starGeocentric.Length();
+    double sgLen = starGeocentric.ToVector().Length();
     Assert( sgLen > 0. );
     if ( sgLen == 0. )
         return starGeocentric;
-    const Vector3D sgu = starGeocentric * (1. / sgLen);
-    const double ehLen = earthHeliocentric.Length();
+    Vector3D sgu = starGeocentric.ToVector() * (1. / sgLen);
+    double ehLen = earthHeliocentric.ToVector().Length();
     Assert( ehLen > 0. );
-    const Vector3D ehu = earthHeliocentric * (1. / ehLen);
+    Vector3D ehu = earthHeliocentric.ToVector() * (1. / ehLen);
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double g1
+    double g1
             = 2. * AstroConst::HeliocentricGravitationalConstant()
             / (c * c * ehLen);
     double den = 1.  +  sgu * ehu;
     if ( den == 0. )
         return starGeocentric;
-    return  sgLen
+    Vector3D corrPos = sgLen
             * (sgu  +  g1 * (ehu  -  (sgu * ehu) * sgu) * (1. / den));
+    return Point3D( corrPos );
 }
 
 //-----------------------------------------------------------------------------
 
-Vector3D
-CorrectForAberration( const Vector3D & bodyGeocentric,
+Point3D
+CorrectForAberration( const Point3D & bodyGeocentric,
                       const Vector3D & earthBarycentricVelocity )
 {
-    const double bgLen = bodyGeocentric.Length();
+    double bgLen = bodyGeocentric.ToVector().Length();
     if ( bgLen == 0. )
         return bodyGeocentric;
-    const Vector3D bgu = bodyGeocentric * (1. / bgLen);
+    Vector3D bgu = bodyGeocentric.ToVector() * (1. / bgLen);
     static const double cInv = 1.
             / (AstroConst::SpeedOfLight() * (86400. / 1000.));  //day / km
-    const Vector3D ebv = earthBarycentricVelocity * cInv;
-    const double ebvLen = ebv.Length();
+    Vector3D ebv = earthBarycentricVelocity * cInv;
+    double ebvLen = ebv.Length();
     Assert( ebvLen <= 1. );
-    const double betaInv = sqrt( 1.  -  ebvLen * ebvLen );
-    const double f1 = bgu * ebv;
-    const double f2 = 1.  +  f1 / (1. + betaInv);
-    return  (betaInv * bodyGeocentric  +  f2 * bodyGeocentric.Length() * ebv)
+    double betaInv = sqrt( 1.  -  ebvLen * ebvLen );
+    double f1 = bgu * ebv;
+    double f2 = 1.  +  f1 / (1. + betaInv);
+    Vector3D corrPos = (betaInv * bodyGeocentric.ToVector()
+                        +  f2 * bodyGeocentric.ToVector().Length() * ebv)
             * (1. / (1. + f1));
+    return Point3D( corrPos );
 }
 
 //-----------------------------------------------------------------------------
 
-Vector3D
-CorrectForPrecession( const Vector3D & bodyGeocentric,
+Point3D
+CorrectForPrecession( const Point3D & bodyGeocentric,
                       const Matrix3D & precessionMatrix )
 {
     return precessionMatrix * bodyGeocentric;
@@ -174,8 +178,8 @@ CorrectForPrecession( const Vector3D & bodyGeocentric,
 
 //-----------------------------------------------------------------------------
 
-Vector3D
-CorrectForNutation( const Vector3D & bodyGeocentric,
+Point3D
+CorrectForNutation( const Point3D & bodyGeocentric,
                     const Matrix3D & nutationMatrix )
 {
     return nutationMatrix * bodyGeocentric;
@@ -183,8 +187,8 @@ CorrectForNutation( const Vector3D & bodyGeocentric,
 
 //-----------------------------------------------------------------------------
 
-Vector3D
-CorrectForNutationAndPrecession( const Vector3D & bodyGeocentric,
+Point3D
+CorrectForNutationAndPrecession( const Point3D & bodyGeocentric,
                                  const Matrix3D & nutAndPrecMatrix )
 {
     return nutAndPrecMatrix * bodyGeocentric;
@@ -203,15 +207,15 @@ TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
 
     const double astroUnit = AstroConst::AstronomicalUnit() / 1000.; //km
 //    const double astroUnit = de200.AUinKM();
-    Vector3D earthBarycentric;
-    Vector3D earthHeliocentric;
+    Point3D earthBarycentric;
+    Point3D earthHeliocentric;
     Vector3D earthBarycentricVelocity;
-    Vector3D sunBarycentric;
+    Point3D sunBarycentric;
     Matrix3D precessionMatrix;
     Nutation nutation;
     Matrix3D nutationMatrix;
     Matrix3D nutAndPrecMatrix;
-    Vector3D bodyPos;
+    Point3D bodyPos;
     Equatorial bodyEquatorial;
 
     //Paul J. Heafner, "Fundamental Ephemeris Computations", p. 183
@@ -235,7 +239,7 @@ TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
                                           &earthBarycentricVelocity );
     Assert( ephRslt );
     sunBarycentric = sunEphem200( jd );
-    earthHeliocentric = earthBarycentric - sunBarycentric;
+    earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     precessionMatrix = Precession( jd ).Matrix( );
     ephRslt = de200.GetNutation( jd, &nutation );
     Assert( ephRslt );
@@ -367,7 +371,7 @@ TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
                                      &earthBarycentricVelocity );
     Assert( ephRslt );
     sunBarycentric = sunEphem405( jd );
-    earthHeliocentric = earthBarycentric - sunBarycentric;
+    earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     precessionMatrix = Precession( jd ).Matrix( );
     ephRslt = de405.GetNutation( jd, &nutation );
     Assert( ephRslt );

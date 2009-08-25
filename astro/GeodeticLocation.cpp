@@ -24,7 +24,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-GeodeticLocation::GeodeticLocation( const Vector3D & rectangular,
+GeodeticLocation::GeodeticLocation( const Point3D & rectangular,
                                     const GeodeticDatum * pDatum )
 {
     Set( rectangular, pDatum );
@@ -41,7 +41,7 @@ GeodeticLocation::GeodeticLocation( const Spherical & geocentric,
 //-----------------------------------------------------------------------------
 
 void 
-GeodeticLocation::Set( const Vector3D & rectangular,
+GeodeticLocation::Set( const Point3D & rectangular,
                        const GeodeticDatum * pDatum )
 {
     m_pDatum = pDatum;
@@ -104,13 +104,13 @@ void
 GeodeticLocation::Set( const Spherical & geocentric,
                        const GeodeticDatum * pDatum )
 {
-    Vector3D rectangular = geocentric.Rectangular( );
+    Point3D rectangular = geocentric.Rectangular( );
     Set( rectangular, pDatum );
 }
 
 //=============================================================================
 
-Vector3D 
+Point3D 
 GeodeticLocation::Rectangular( ) const
 {
     double radius = m_pDatum->Ellipsoid().EquatorialRadius();
@@ -124,9 +124,9 @@ GeodeticLocation::Rectangular( ) const
     double eccentSqr = eccentricity * eccentricity;
     double radCurv = radius
             / sqrt( 1.  -  eccentSqr * sinLat * sinLat );
-    return Vector3D( (radCurv + m_height) * cosLat * cosLong,
-                     (radCurv + m_height) * cosLat * sinLong,
-                     ((1 - eccentSqr) * radCurv  +  m_height) * sinLat );
+    return Point3D( (radCurv + m_height) * cosLat * cosLong,
+                    (radCurv + m_height) * cosLat * sinLong,
+                    ((1 - eccentSqr) * radCurv  +  m_height) * sinLat );
 }
 
 //-----------------------------------------------------------------------------

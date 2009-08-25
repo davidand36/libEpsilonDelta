@@ -1,16 +1,16 @@
-#ifndef LINE2_HPP
-#define LINE2_HPP
+#ifndef LINESEGMENT2_HPP
+#define LINESEGMENT2_HPP
 /*
-  Line2.hpp
+  LineSegment2.hpp
   Copyright (C) 2007 David M. Anderson
 
-  Line2I class: Two-dimensional line.
+  LineSegment2I class: Two-dimensional line segment.
   NOTES:
   1. Coordinates are integers. Typically used for screen coordinates and such.
-  2. Actually, this represents a line segment, not an infinite line.
 */
 
 
+#include "Point2.hpp"
 #include "Color.hpp"
 #include <utility>
 
@@ -20,20 +20,21 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
-class Point2I;
+
 class Rectangle;
 template < typename Pxl > class DrawingSurface;
 class Surface;
 
-//=============================================================================
+
+//*****************************************************************************
 
 
-class Line2I
+class LineSegment2I
 {
 public:
-    Line2I( );
-    Line2I( int x, int y, int dx, int dy );
-    Line2I( const Point2I & pt0, const Point2I & pt1 );
+    LineSegment2I( );
+    LineSegment2I( int x, int y, int dx, int dy );
+    LineSegment2I( const Point2I & pt0, const Point2I & pt1 );
     void Set( int x, int y, int dx, int dy );
     void Set( const Point2I & pt0, const Point2I & pt1 );
     int X( ) const;
@@ -46,8 +47,8 @@ public:
     void SetDY( int dy );
     typedef std::pair< Point2I, Point2I >  PointPair;
     PointPair Endpoints( ) const;
-    bool operator==( const Line2I & rhs ) const;
-    bool operator!=( const Line2I & rhs ) const;
+    bool operator==( const LineSegment2I & rhs ) const;
+    bool operator!=( const LineSegment2I & rhs ) const;
     int LengthSquared( ) const;
     bool Clip( const Rectangle & rect );
     template < typename Pxl >
@@ -93,7 +94,7 @@ namespace EpsilonDelta
 
 inline
 void 
-Line2I::Fixup( )
+LineSegment2I::Fixup( )
 {
     if ( m_dx < 0 )
     {
@@ -113,7 +114,7 @@ Line2I::Fixup( )
 
 inline 
 void 
-Line2I::Set( int x, int y, int dx, int dy )
+LineSegment2I::Set( int x, int y, int dx, int dy )
 {
     m_x = x;
     m_y = y;
@@ -126,7 +127,7 @@ Line2I::Set( int x, int y, int dx, int dy )
 
 inline 
 void 
-Line2I::Set( const Point2I & pt0, const Point2I & pt1 )
+LineSegment2I::Set( const Point2I & pt0, const Point2I & pt1 )
 {
     m_x = pt0.X();
     m_y = pt0.Y();
@@ -138,14 +139,14 @@ Line2I::Set( const Point2I & pt0, const Point2I & pt1 )
 //=============================================================================
 
 inline 
-Line2I::Line2I( )
+LineSegment2I::LineSegment2I( )
 {
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Line2I::Line2I( int x, int y, int dx, int dy )
+LineSegment2I::LineSegment2I( int x, int y, int dx, int dy )
     :   m_x( x ),
         m_y( y ),
         m_dx( dx ),
@@ -157,7 +158,7 @@ Line2I::Line2I( int x, int y, int dx, int dy )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline
-Line2I::Line2I( const Point2I & pt0, const Point2I & pt1 )
+LineSegment2I::LineSegment2I( const Point2I & pt0, const Point2I & pt1 )
 {
     Set( pt0, pt1 );
 }
@@ -166,7 +167,7 @@ Line2I::Line2I( const Point2I & pt0, const Point2I & pt1 )
 
 inline 
 int 
-Line2I::X( ) const
+LineSegment2I::X( ) const
 {
     return m_x;
 }
@@ -175,7 +176,7 @@ Line2I::X( ) const
 
 inline
 int
-Line2I::Y( ) const
+LineSegment2I::Y( ) const
 {
     return m_y;
 }
@@ -184,7 +185,7 @@ Line2I::Y( ) const
 
 inline 
 int 
-Line2I::DX( ) const
+LineSegment2I::DX( ) const
 {
     return m_dx;
 }
@@ -193,7 +194,7 @@ Line2I::DX( ) const
 
 inline
 int 
-Line2I::DY( ) const
+LineSegment2I::DY( ) const
 {
     return m_dy;
 }
@@ -202,7 +203,7 @@ Line2I::DY( ) const
 
 inline
 void 
-Line2I::SetX( int x )
+LineSegment2I::SetX( int x )
 {
     m_x = x;
 }
@@ -211,7 +212,7 @@ Line2I::SetX( int x )
 
 inline 
 void 
-Line2I::SetY( int y )
+LineSegment2I::SetY( int y )
 {
     m_y = y;
 }
@@ -220,7 +221,7 @@ Line2I::SetY( int y )
 
 inline
 void 
-Line2I::SetDX( int dx )
+LineSegment2I::SetDX( int dx )
 {
     m_dx = dx;
     Fixup( );
@@ -230,7 +231,7 @@ Line2I::SetDX( int dx )
 
 inline
 void 
-Line2I::SetDY( int dy )
+LineSegment2I::SetDY( int dy )
 {
     m_dy = dy;
     Fixup( );
@@ -239,8 +240,8 @@ Line2I::SetDY( int dy )
 //=============================================================================
 
 inline 
-Line2I::PointPair  
-Line2I::Endpoints( ) const
+LineSegment2I::PointPair  
+LineSegment2I::Endpoints( ) const
 {
     Point2I pt0( m_x, m_y );
     Point2I pt1( m_x + m_dx, m_y + m_dy );
@@ -251,7 +252,7 @@ Line2I::Endpoints( ) const
 
 inline 
 bool 
-Line2I::operator==( const Line2I & rhs ) const
+LineSegment2I::operator==( const LineSegment2I & rhs ) const
 {
     return  ((m_x == rhs.m_x) && (m_y == rhs.m_y)
              && (m_dx == rhs.m_dx) && (m_dy == rhs.m_dy));
@@ -261,7 +262,7 @@ Line2I::operator==( const Line2I & rhs ) const
 
 inline
 bool 
-Line2I::operator!=( const Line2I & rhs ) const
+LineSegment2I::operator!=( const LineSegment2I & rhs ) const
 {
     return ! (*this == rhs);
 }
@@ -270,7 +271,7 @@ Line2I::operator!=( const Line2I & rhs ) const
 
 inline
 int 
-Line2I::LengthSquared( ) const
+LineSegment2I::LengthSquared( ) const
 {
     return  (m_dx * m_dx  +  m_dy * m_dy);
 }
@@ -279,9 +280,9 @@ Line2I::LengthSquared( ) const
 
 template < typename Pxl >
 void 
-Line2I::Draw( Pxl pxl, DrawingSurface< Pxl > * pDrawingSurface ) const
+LineSegment2I::Draw( Pxl pxl, DrawingSurface< Pxl > * pDrawingSurface ) const
 {                                                                      /*Draw*/
-    Line2I ln = *this;
+    LineSegment2I ln = *this;
     if ( ! ln.Clip( pDrawingSurface->ClippingRect() ) )
         return;
 
@@ -358,8 +359,8 @@ Line2I::Draw( Pxl pxl, DrawingSurface< Pxl > * pDrawingSurface ) const
 
 template < typename Pxl >
 void 
-Line2I::Draw( const Color3B & color,
-              DrawingSurface< Pxl > * pDrawingSurface ) const
+LineSegment2I::Draw( const Color3B & color,
+                     DrawingSurface< Pxl > * pDrawingSurface ) const
 {
     Pxl pxl( color );
     Draw( pxl, pDrawingSurface );
@@ -369,8 +370,8 @@ Line2I::Draw( const Color3B & color,
 
 template < typename Pxl >
 void 
-Line2I::Draw( const Color4B & color,
-              DrawingSurface< Pxl > * pDrawingSurface ) const
+LineSegment2I::Draw( const Color4B & color,
+                     DrawingSurface< Pxl > * pDrawingSurface ) const
 {
     Pxl pxl( color );
     Draw( pxl, pDrawingSurface );

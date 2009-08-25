@@ -24,7 +24,7 @@ namespace EpsilonDelta
 
 
 void 
-Spherical::Set( const Vector3D & rectangular )
+Spherical::Set( const Point3D & rectangular )
 {
     if ( (rectangular.X() == 0.) && (rectangular.Y() == 0.) )
         m_longitude.Set( 0. );
@@ -42,12 +42,12 @@ Spherical::Set( const Vector3D & rectangular )
 
 //=============================================================================
 
-Vector3D 
+Point3D 
 Spherical::Rectangular( ) const
 {
-    return Vector3D( m_longitude.Cos() * m_latitude.Cos() * m_distance,
-                     m_longitude.Sin() * m_latitude.Cos() * m_distance,
-                     m_latitude.Sin() * m_distance );
+    return Point3D( m_longitude.Cos() * m_latitude.Cos() * m_distance,
+                    m_longitude.Sin() * m_latitude.Cos() * m_distance,
+                    m_latitude.Sin() * m_distance );
 }
 
 //=============================================================================
@@ -114,7 +114,7 @@ Spherical::Test( )
     TESTCHECK( spherical0.Longitude().Radians(), 0., &ok );
     TESTCHECK( spherical0.Latitude().Radians(), 0., &ok );
     TESTCHECK( spherical0.Distance(), 0., &ok );
-    Vector3D rect0 = spherical0.Rectangular();
+    Point3D rect0 = spherical0.Rectangular();
     TESTCHECK( rect0.X(), 0., &ok );
     TESTCHECK( rect0.Y(), 0., &ok );
     TESTCHECK( rect0.Z(), 0., &ok );
@@ -128,7 +128,7 @@ Spherical::Test( )
     TESTCHECK( spherical1.Longitude().Radians(), lng, &ok );
     TESTCHECK( spherical1.Latitude().Radians(), lat, &ok );
     TESTCHECK( spherical1.Distance(), dist, &ok );
-    Vector3D rect = spherical1.Rectangular();
+    Point3D rect = spherical1.Rectangular();
     TESTCHECKF( rect.X(), 0., &ok );
     TESTCHECKF( rect.Y(), -1., &ok );
     TESTCHECKF( rect.Z(), 1., &ok );
@@ -154,7 +154,7 @@ Spherical::Test( )
     double y = 4.;
     double z = 0.;
     rect.Set( x, y, z );
-    cout << "Spherical( Vector3D(" << x << ", " << y <<  ", " << z << ") ) [rectangular constructor]" << endl;
+    cout << "Spherical( Point3D(" << x << ", " << y <<  ", " << z << ") ) [rectangular constructor]" << endl;
     Spherical spherical2( rect );
     TESTCHECKF( spherical2.Longitude().Radians(), 0.927295218, &ok );
     TESTCHECKF( spherical2.Latitude().Radians(), 0., &ok );
@@ -167,7 +167,7 @@ Spherical::Test( )
     y = 0.;
     z = -5.;
     rect.Set( x, y, z );
-    cout << "Set( Vector3D(" << x << ", " << y <<  ", " << z << ") )" << endl;
+    cout << "Set( Point3D(" << x << ", " << y <<  ", " << z << ") )" << endl;
     spherical2.Set( rect );
     TESTCHECKF( spherical2.Longitude().Radians(), 0., &ok );
     TESTCHECKF( spherical2.Latitude().Radians(), -0.39479112, &ok );

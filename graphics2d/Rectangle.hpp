@@ -9,6 +9,7 @@
 
 
 #include "Color.hpp"
+#include "Point2.hpp"
 #include "Assert.hpp"
 #ifdef USE_SDL
 #include <SDL.h>
@@ -20,9 +21,10 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
-class Point2I;
+
 template < typename Pxl > class DrawingSurface;
 class Surface;
+
 
 //*****************************************************************************
 
@@ -116,7 +118,7 @@ Rectangle BoundingRectangle( const Rectangle & rect1,
 }                                                      //namespace EpsilonDelta
 
 #include "Point2.hpp"
-#include "Line2.hpp"
+#include "LineSegment2.hpp"
 #include "DrawingSurface.hpp"
 
 namespace EpsilonDelta
@@ -389,13 +391,13 @@ void
 Rectangle::Draw( Pxl pxl, DrawingSurface< Pxl > * pDrawingSurface ) const
 {
 #if 0
-    Line2I( Left(), Top(), Width(), 0 ).Draw( pxl, pDrawingSurface );
-    Line2I( Left(), Top(), 0, Height() ).Draw( pxl, pDrawingSurface );
-    Line2I( Left(), Bottom(), Width(), 0 ).Draw( pxl, pDrawingSurface );
-    Line2I( Right(), Top(), 0, Height() ).Draw( pxl, pDrawingSurface );
+    LineSegment2I( Left(), Top(), Width(), 0 ).Draw( pxl, pDrawingSurface );
+    LineSegment2I( Left(), Top(), 0, Height() ).Draw( pxl, pDrawingSurface );
+    LineSegment2I( Left(), Bottom(), Width(), 0 ).Draw( pxl, pDrawingSurface );
+    LineSegment2I( Right(), Top(), 0, Height() ).Draw( pxl, pDrawingSurface );
 #else
     int pitch = pDrawingSurface->Pitch();
-    Line2I ln( Left(), Top(), Width(), 0 );
+    LineSegment2I ln( Left(), Top(), Width(), 0 );
     if ( ln.Clip( pDrawingSurface->ClippingRect() ) )
     {
         Pxl * pPxl = pDrawingSurface->PixelAt( ln.Endpoints().first );

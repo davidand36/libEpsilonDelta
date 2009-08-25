@@ -199,7 +199,7 @@ WiimoteImpl::Update( WiimoteState * pState,
     pState->SetGravity( gravity );
 
     int numPointerLights = 0;
-    Vector2I lights[ 2 ];
+    Point2I lights[ 2 ];
     if ( m_wyMote.IR.Dot[ 0 ].bVisible )
     {
         ++numPointerLights;
@@ -228,13 +228,13 @@ WiimoteImpl::Update( WiimoteState * pState,
     {
         Vector2I halfSep( m_pointerSeparation.X() / 2,
                           m_pointerSeparation.Y() / 2 );
-        Vector2I rawMiddle = lights[ 0 ] + halfSep;
+        Point2I rawMiddle = lights[ 0 ] + halfSep;
         float midX = 1.f -
                 ((float) rawMiddle.X() / ::wiimote_state::ir::MAX_RAW_X);
         midX = max( 0.f, min( 1.f, midX ) );
         float midY = (float) rawMiddle.Y() / ::wiimote_state::ir::MAX_RAW_Y;
         midY = max( 0.f, min( 1.f, midY ) );
-        Vector2F scaledMiddle( midX, midY );
+        Point2F scaledMiddle( midX, midY );
         if ( numPointerLights == 1 )
         {
             pState->SetPointer( 1, scaledMiddle );
@@ -259,8 +259,8 @@ WiimoteImpl::Update( WiimoteState * pState,
         gravity.Set( -m_wyMote.Nunchuk.Acceleration.Orientation.X,
                      -m_wyMote.Nunchuk.Acceleration.Orientation.Z,
                      m_wyMote.Nunchuk.Acceleration.Orientation.Y );
-        Vector2F joystick( m_wyMote.Nunchuk.Joystick.X,
-                           m_wyMote.Nunchuk.Joystick.Y );
+        Point2F joystick( m_wyMote.Nunchuk.Joystick.X,
+                          m_wyMote.Nunchuk.Joystick.Y );
         pState->SetNunchuk( true, acceleration, gravity, joystick );
     }
     else

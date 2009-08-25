@@ -47,9 +47,9 @@
   3. (i) The BodyBaryFunc and SunBaryFunc template parameters allow for the use
      of either ordinary functions or function objects, such as instances of
      the JPLBarycentricPosition class. They should be of the form
-     Vector3D func( double julianDay ),
+     Point3D func( double julianDay ),
      or (for higher precision)
-     Vector3D func( double julianDay0, double julianDay1 ),
+     Point3D func( double julianDay0, double julianDay1 ),
      and return the mean barycentric place of the body or Sun.
      (ii) The MoonGeoFunc template parameter is the same, except that it
      returns the mean geocentric place of the Moon.
@@ -69,7 +69,7 @@
 */
 
 
-#include "Vector3.hpp"
+#include "Point3.hpp"
 #include "Matrix3.hpp"
 #include "AstroConst.hpp"
 #include "Epoch.hpp"
@@ -86,131 +86,131 @@ class JPLEphemeris;
 
 //Sun:
 template < typename SunBaryFunc >
-Vector3D GetSunAstrometricPlace( double julianDay,
-                                 SunBaryFunc sunBaryFunc,
-                                 const Vector3D & earthBarycentric );
+Point3D GetSunAstrometricPlace( double julianDay,
+                                SunBaryFunc sunBaryFunc,
+                                const Point3D & earthBarycentric );
 template < typename SunBaryFunc >
-Vector3D GetSunAstrometricPlace( double julianDay0, double julianDay1,
-                                 SunBaryFunc sunBaryFunc,
-                                 const Vector3D & earthBarycentric );
+Point3D GetSunAstrometricPlace( double julianDay0, double julianDay1,
+                                SunBaryFunc sunBaryFunc,
+                                const Point3D & earthBarycentric );
 template < typename SunBaryFunc >
-Vector3D GetSunVirtualPlace( double julianDay,
+Point3D GetSunVirtualPlace( double julianDay,
+                            SunBaryFunc sunBaryFunc,
+                            const Point3D & earthBarycentric,
+                            const Vector3D & earthBarycentricVelocity );
+template < typename SunBaryFunc >
+Point3D GetSunVirtualPlace( double julianDay0, double julianDay1,
+                            SunBaryFunc sunBaryFunc,
+                            const Point3D & earthBarycentric,
+                            const Vector3D & earthBarycentricVelocity );
+template < typename SunBaryFunc >
+Point3D GetSunApparentPlace( double julianDay,
                              SunBaryFunc sunBaryFunc,
-                             const Vector3D & earthBarycentric,
-                             const Vector3D & earthBarycentricVelocity );
+                             const Point3D & earthBarycentric,
+                             const Vector3D & earthBarycentricVelocity, 
+                             const Matrix3D & nutAndPrecMatrix );
 template < typename SunBaryFunc >
-Vector3D GetSunVirtualPlace( double julianDay0, double julianDay1,
+Point3D GetSunApparentPlace( double julianDay0, double julianDay1,
                              SunBaryFunc sunBaryFunc,
-                             const Vector3D & earthBarycentric,
-                             const Vector3D & earthBarycentricVelocity );
-template < typename SunBaryFunc >
-Vector3D GetSunApparentPlace( double julianDay,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthBarycentricVelocity, 
-                              const Matrix3D & nutAndPrecMatrix );
-template < typename SunBaryFunc >
-Vector3D GetSunApparentPlace( double julianDay0, double julianDay1,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthBarycentricVelocity, 
-                              const Matrix3D & nutAndPrecMatrix );
+                             const Point3D & earthBarycentric,
+                             const Vector3D & earthBarycentricVelocity, 
+                             const Matrix3D & nutAndPrecMatrix );
 
 //Moon:
 template < typename MoonGeoFunc >
-Vector3D GetMoonAstrometricPlace( double julianDay,
-                                  MoonGeoFunc moonGeoFunc );
+Point3D GetMoonAstrometricPlace( double julianDay,
+                                 MoonGeoFunc moonGeoFunc );
 template < typename MoonGeoFunc >
-Vector3D GetMoonAstrometricPlace( double julianDay0, double julianDay1,
-                                  MoonGeoFunc moonGeoFunc );
+Point3D GetMoonAstrometricPlace( double julianDay0, double julianDay1,
+                                 MoonGeoFunc moonGeoFunc );
 template < typename MoonGeoFunc >
-Vector3D GetMoonApparentPlace( double julianDay,
-                               MoonGeoFunc moonGeoFunc, 
-                               const Matrix3D & nutAndPrecMatrix );
+Point3D GetMoonApparentPlace( double julianDay,
+                              MoonGeoFunc moonGeoFunc, 
+                              const Matrix3D & nutAndPrecMatrix );
 template < typename MoonGeoFunc >
-Vector3D GetMoonApparentPlace( double julianDay0, double julianDay1,
-                               MoonGeoFunc moonGeoFunc, 
-                               const Matrix3D & nutAndPrecMatrix );
+Point3D GetMoonApparentPlace( double julianDay0, double julianDay1,
+                              MoonGeoFunc moonGeoFunc, 
+                              const Matrix3D & nutAndPrecMatrix );
                                   
 //Planets and other bodies:
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetAstrometricPlace( double julianDay,
-                              BodyBaryFunc bodyBaryFunc,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthHeliocentric, 
-                              Vector3D * pBodyHeliocentric = 0 );
+Point3D GetAstrometricPlace( double julianDay,
+                             BodyBaryFunc bodyBaryFunc,
+                             SunBaryFunc sunBaryFunc,
+                             const Point3D & earthBarycentric,
+                             const Point3D & earthHeliocentric, 
+                             Point3D * pBodyHeliocentric = 0 );
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetAstrometricPlace( double julianDay0, double julianDay1, 
-                              BodyBaryFunc bodyBaryFunc,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthHeliocentric, 
-                              Vector3D * pBodyHeliocentric = 0 );
+Point3D GetAstrometricPlace( double julianDay0, double julianDay1, 
+                             BodyBaryFunc bodyBaryFunc,
+                             SunBaryFunc sunBaryFunc,
+                             const Point3D & earthBarycentric,
+                             const Point3D & earthHeliocentric, 
+                             Point3D * pBodyHeliocentric = 0 );
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetVirtualPlace( double julianDay,
+Point3D GetVirtualPlace( double julianDay,
+                         BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
+                         const Point3D & earthBarycentric,
+                         const Point3D & earthHeliocentric,
+                         const Vector3D & earthBarycentricVelocity );
+template < typename BodyBaryFunc, typename SunBaryFunc >
+Point3D GetVirtualPlace( double julianDay0, double julianDay1, 
+                         BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
+                         const Point3D & earthBarycentric,
+                         const Point3D & earthHeliocentric, 
+                         const Vector3D & earthBarycentricVelocity );
+template < typename BodyBaryFunc, typename SunBaryFunc >
+Point3D GetApparentPlace( double julianDay,
                           BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                          const Vector3D & earthBarycentric,
-                          const Vector3D & earthHeliocentric,
-                          const Vector3D & earthBarycentricVelocity );
+                          const Point3D & earthBarycentric,
+                          const Point3D & earthHeliocentric,
+                          const Vector3D & earthBarycentricVelocity, 
+                          const Matrix3D & nutAndPrecMatrix );
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetVirtualPlace( double julianDay0, double julianDay1, 
+Point3D GetApparentPlace( double julianDay0, double julianDay1, 
                           BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                          const Vector3D & earthBarycentric,
-                          const Vector3D & earthHeliocentric, 
-                          const Vector3D & earthBarycentricVelocity );
-template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetApparentPlace( double julianDay,
-                           BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                           const Vector3D & earthBarycentric,
-                           const Vector3D & earthHeliocentric,
-                           const Vector3D & earthBarycentricVelocity, 
-                           const Matrix3D & nutAndPrecMatrix );
-template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D GetApparentPlace( double julianDay0, double julianDay1, 
-                           BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                           const Vector3D & earthBarycentric,
-                           const Vector3D & earthHeliocentric, 
-                           const Vector3D & earthBarycentricVelocity, 
-                           const Matrix3D & nutAndPrecMatrix );
+                          const Point3D & earthBarycentric,
+                          const Point3D & earthHeliocentric, 
+                          const Vector3D & earthBarycentricVelocity, 
+                          const Matrix3D & nutAndPrecMatrix );
 
 //Stars:
-Vector3D GetAstrometricPlace( double julianDay,
-                              const Vector3D & starBarycentric,
-                              const Vector3D & starVelocity,
-                              const Vector3D & earthBarycentric,
-                              double epoch = J2000 );
-Vector3D GetVirtualPlace( double julianDay,
-                          const Vector3D & starBarycentric,
+Point3D GetAstrometricPlace( double julianDay,
+                             const Point3D & starBarycentric,
+                             const Vector3D & starVelocity,
+                             const Point3D & earthBarycentric,
+                             double epoch = J2000 );
+Point3D GetVirtualPlace( double julianDay,
+                         const Point3D & starBarycentric,
+                         const Vector3D & starVelocity,
+                         const Point3D & earthBarycentric,
+                         const Point3D & earthHeliocentric, 
+                         const Vector3D & earthBarycentricVelocity,
+                         double epoch = J2000 );
+Point3D GetApparentPlace( double julianDay,
+                          const Point3D & starBarycentric,
                           const Vector3D & starVelocity,
-                          const Vector3D & earthBarycentric,
-                          const Vector3D & earthHeliocentric, 
+                          const Point3D & earthBarycentric,
+                          const Point3D & earthHeliocentric, 
                           const Vector3D & earthBarycentricVelocity,
+                          const Matrix3D & nutAndPrecMatrix, 
                           double epoch = J2000 );
-Vector3D GetApparentPlace( double julianDay,
-                           const Vector3D & starBarycentric,
-                           const Vector3D & starVelocity,
-                           const Vector3D & earthBarycentric,
-                           const Vector3D & earthHeliocentric, 
-                           const Vector3D & earthBarycentricVelocity,
-                           const Matrix3D & nutAndPrecMatrix, 
-                           double epoch = J2000 );
 
 //Underlying reduction routines: (Correction for light-time is made in the
 // GetAstrometricPlace() functions.)
-Vector3D CorrectForLightDeflection( const Vector3D & bodyGeocentric,
-                                    const Vector3D & bodyHeliocentric,
-                                    const Vector3D & earthHeliocentric );
-Vector3D CorrectForLightDeflection( const Vector3D & starGeocentric,
-                                    const Vector3D & earthHeliocentric );
-Vector3D CorrectForAberration( const Vector3D & bodyGeocentric,
-                               const Vector3D & earthBarycentricVelocity );
-Vector3D CorrectForPrecession( const Vector3D & bodyGeocentric,
-                               const Matrix3D & precessionMatrix );
-Vector3D CorrectForNutation( const Vector3D & bodyGeocentric,
-                             const Matrix3D & nutationMatrix );
-Vector3D CorrectForNutationAndPrecession( const Vector3D & bodyGeocentric,
-                                          const Matrix3D & nutAndPrecMatrix );
+Point3D CorrectForLightDeflection( const Point3D & bodyGeocentric,
+                                   const Point3D & bodyHeliocentric,
+                                   const Point3D & earthHeliocentric );
+Point3D CorrectForLightDeflection( const Point3D & starGeocentric,
+                                   const Point3D & earthHeliocentric );
+Point3D CorrectForAberration( const Point3D & bodyGeocentric,
+                              const Vector3D & earthBarycentricVelocity );
+Point3D CorrectForPrecession( const Point3D & bodyGeocentric,
+                              const Matrix3D & precessionMatrix );
+Point3D CorrectForNutation( const Point3D & bodyGeocentric,
+                            const Matrix3D & nutationMatrix );
+Point3D CorrectForNutationAndPrecession( const Point3D & bodyGeocentric,
+                                         const Matrix3D & nutAndPrecMatrix );
 
 #ifdef DEBUG
 bool TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 );
@@ -221,62 +221,65 @@ bool TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 );
 
 
 template < typename SunBaryFunc >
-Vector3D GetSunAstrometricPlace( double julianDay,
-                                 SunBaryFunc sunBaryFunc,
-                                 const Vector3D & earthBarycentric )
+Point3D 
+GetSunAstrometricPlace( double julianDay,
+                        SunBaryFunc sunBaryFunc,
+                        const Point3D & earthBarycentric )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double epsilon = 1.e-8;
-    Vector3D sunBarycentric = sunBaryFunc( julianDay );
-    Vector3D sunGeocentric = sunBarycentric - earthBarycentric;
-    double lightTime = sunGeocentric.Length() / c;
+    double epsilon = 1.e-8;
+    Point3D sunBarycentric = sunBaryFunc( julianDay );
+    Vector3D sunGeoVec = sunBarycentric - earthBarycentric;
+    double lightTime = sunGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         sunBarycentric = sunBaryFunc( julianDay - lightTime );
-        sunGeocentric = sunBarycentric - earthBarycentric;
-        lightTime = sunGeocentric.Length() / c;
+        sunGeoVec = sunBarycentric - earthBarycentric;
+        lightTime = sunGeoVec.Length() / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
-    return sunGeocentric;
+    return Point3D( sunGeoVec );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename SunBaryFunc >
-Vector3D GetSunAstrometricPlace( double julianDay0, double julianDay1,
-                                 SunBaryFunc sunBaryFunc,
-                                 const Vector3D & earthBarycentric )
+Point3D 
+GetSunAstrometricPlace( double julianDay0, double julianDay1,
+                        SunBaryFunc sunBaryFunc,
+                        const Point3D & earthBarycentric )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double epsilon = 1.e-8;
-    Vector3D sunBarycentric = sunBaryFunc( julianDay0, julianDay1 );
-    Vector3D sunGeocentric = sunBarycentric - earthBarycentric;
-    double lightTime = sunGeocentric.Length() / c;
+    double epsilon = 1.e-8;
+    Point3D sunBarycentric = sunBaryFunc( julianDay0, julianDay1 );
+    Vector3D sunGeoVec = sunBarycentric - earthBarycentric;
+    double lightTime = sunGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         sunBarycentric = sunBaryFunc( julianDay0, julianDay1 - lightTime );
-        sunGeocentric = sunBarycentric - earthBarycentric;
-        lightTime = sunGeocentric.Length() / c;
+        sunGeoVec = sunBarycentric - earthBarycentric;
+        lightTime = sunGeoVec.Length() / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
-    return sunGeocentric;
+    return Point3D( sunGeoVec );
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename SunBaryFunc >
-Vector3D GetSunVirtualPlace( double julianDay,
-                             SunBaryFunc sunBaryFunc,
-                             const Vector3D & earthBarycentric,
-                             const Vector3D & earthBarycentricVelocity )
+Point3D 
+GetSunVirtualPlace( double julianDay,
+                    SunBaryFunc sunBaryFunc,
+                    const Point3D & earthBarycentric,
+                    const Vector3D & earthBarycentricVelocity )
 {
-    Vector3D sunGeocentric = GetSunAstrometricPlace( julianDay,
-                                                     sunBaryFunc,
-                                                     earthBarycentric );
+    Point3D sunGeocentric = GetSunAstrometricPlace( julianDay,
+                                                    sunBaryFunc,
+                                                    earthBarycentric );
     sunGeocentric = CorrectForAberration( sunGeocentric,
                                           earthBarycentricVelocity );
     return sunGeocentric;
@@ -285,14 +288,15 @@ Vector3D GetSunVirtualPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename SunBaryFunc >
-Vector3D GetSunVirtualPlace( double julianDay0, double julianDay1,
-                             SunBaryFunc sunBaryFunc,
-                             const Vector3D & earthBarycentric,
-                             const Vector3D & earthBarycentricVelocity )
+Point3D 
+GetSunVirtualPlace( double julianDay0, double julianDay1,
+                    SunBaryFunc sunBaryFunc,
+                    const Point3D & earthBarycentric,
+                    const Vector3D & earthBarycentricVelocity )
 {
-    Vector3D sunGeocentric = GetSunAstrometricPlace( julianDay0, julianDay1, 
-                                                     sunBaryFunc,
-                                                     earthBarycentric );
+    Point3D sunGeocentric = GetSunAstrometricPlace( julianDay0, julianDay1, 
+                                                    sunBaryFunc,
+                                                    earthBarycentric );
     sunGeocentric = CorrectForAberration( sunGeocentric,
                                           earthBarycentricVelocity );
     return sunGeocentric;
@@ -301,16 +305,17 @@ Vector3D GetSunVirtualPlace( double julianDay0, double julianDay1,
 //-----------------------------------------------------------------------------
 
 template < typename SunBaryFunc >
-Vector3D GetSunApparentPlace( double julianDay,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthBarycentricVelocity, 
-                              const Matrix3D & nutAndPrecMatrix )
+Point3D 
+GetSunApparentPlace( double julianDay,
+                     SunBaryFunc sunBaryFunc,
+                     const Point3D & earthBarycentric,
+                     const Vector3D & earthBarycentricVelocity, 
+                     const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D sunGeocentric = GetSunVirtualPlace( julianDay,
-                                                 sunBaryFunc,
-                                                 earthBarycentric,
-                                                 earthBarycentricVelocity );
+    Point3D sunGeocentric = GetSunVirtualPlace( julianDay,
+                                                sunBaryFunc,
+                                                earthBarycentric,
+                                                earthBarycentricVelocity );
     sunGeocentric = CorrectForNutationAndPrecession( sunGeocentric,
                                                      nutAndPrecMatrix );
     return sunGeocentric;
@@ -319,16 +324,17 @@ Vector3D GetSunApparentPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename SunBaryFunc >
-Vector3D GetSunApparentPlace( double julianDay0, double julianDay1,
-                              SunBaryFunc sunBaryFunc,
-                              const Vector3D & earthBarycentric,
-                              const Vector3D & earthBarycentricVelocity, 
-                              const Matrix3D & nutAndPrecMatrix )
+Point3D 
+GetSunApparentPlace( double julianDay0, double julianDay1,
+                     SunBaryFunc sunBaryFunc,
+                     const Point3D & earthBarycentric,
+                     const Vector3D & earthBarycentricVelocity, 
+                     const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D sunGeocentric = GetSunVirtualPlace( julianDay0, julianDay1, 
-                                                 sunBaryFunc,
-                                                 earthBarycentric,
-                                                 earthBarycentricVelocity );
+    Point3D sunGeocentric = GetSunVirtualPlace( julianDay0, julianDay1, 
+                                                sunBaryFunc,
+                                                earthBarycentric,
+                                                earthBarycentricVelocity );
     sunGeocentric = CorrectForNutationAndPrecession( sunGeocentric,
                                                      nutAndPrecMatrix );
     return sunGeocentric;
@@ -337,20 +343,23 @@ Vector3D GetSunApparentPlace( double julianDay0, double julianDay1,
 //=============================================================================
 
 template < typename MoonGeoFunc >
-Vector3D GetMoonAstrometricPlace( double julianDay,
-                                  MoonGeoFunc moonGeoFunc )
+Point3D 
+GetMoonAstrometricPlace( double julianDay,
+                         MoonGeoFunc moonGeoFunc )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double epsilon = 1.e-8;
-    Vector3D moonGeocentric = moonGeoFunc( julianDay );
-    double lightTime = moonGeocentric.Length() / c;
+    double epsilon = 1.e-8;
+    Point3D moonGeocentric = moonGeoFunc( julianDay );
+    Vector3D moonGeoVec = moonGeocentric.ToVector();
+    double lightTime = moonGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         moonGeocentric = moonGeoFunc( julianDay - lightTime );
-        lightTime = moonGeocentric.Length() / c;
+        moonGeoVec = moonGeocentric.ToVector();
+        lightTime = moonGeoVec.Length() / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
     return moonGeocentric;
 }
@@ -358,20 +367,23 @@ Vector3D GetMoonAstrometricPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename MoonGeoFunc >
-Vector3D GetMoonAstrometricPlace( double julianDay0, double julianDay1,
-                                  MoonGeoFunc moonGeoFunc )
+Point3D 
+GetMoonAstrometricPlace( double julianDay0, double julianDay1,
+                         MoonGeoFunc moonGeoFunc )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
-    const double epsilon = 1.e-8;
-    Vector3D moonGeocentric = moonGeoFunc( julianDay0, julianDay1 );
-    double lightTime = moonGeocentric.Length() / c;
+    double epsilon = 1.e-8;
+    Point3D moonGeocentric = moonGeoFunc( julianDay0, julianDay1 );
+    Vector3D moonGeoVec = moonGeocentric.ToVector();
+    double lightTime = moonGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         moonGeocentric = moonGeoFunc( julianDay0, julianDay1 - lightTime );
-        lightTime = moonGeocentric.Length() / c;
+        moonGeoVec = moonGeocentric.ToVector();
+        lightTime = moonGeoVec.Length() / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
     return moonGeocentric;
 }
@@ -379,12 +391,13 @@ Vector3D GetMoonAstrometricPlace( double julianDay0, double julianDay1,
 //-----------------------------------------------------------------------------
 
 template < typename MoonGeoFunc >
-Vector3D GetMoonApparentPlace( double julianDay,
-                               MoonGeoFunc moonGeoFunc, 
-                               const Matrix3D & nutAndPrecMatrix )
+Point3D 
+GetMoonApparentPlace( double julianDay,
+                              MoonGeoFunc moonGeoFunc, 
+                              const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D moonGeocentric = GetMoonAstrometricPlace( julianDay,
-                                                       moonGeoFunc );
+    Point3D moonGeocentric = GetMoonAstrometricPlace( julianDay,
+                                                      moonGeoFunc );
     moonGeocentric = CorrectForNutationAndPrecession( moonGeocentric,
                                                       nutAndPrecMatrix );
     return moonGeocentric;
@@ -393,12 +406,13 @@ Vector3D GetMoonApparentPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename MoonGeoFunc >
-Vector3D GetMoonApparentPlace( double julianDay0, double julianDay1,
-                               MoonGeoFunc moonGeoFunc, 
-                               const Matrix3D & nutAndPrecMatrix )
+Point3D 
+GetMoonApparentPlace( double julianDay0, double julianDay1,
+                      MoonGeoFunc moonGeoFunc, 
+                      const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D moonGeocentric = GetMoonAstrometricPlace( julianDay0, julianDay1,
-                                                       moonGeoFunc );
+    Point3D moonGeocentric = GetMoonAstrometricPlace( julianDay0, julianDay1,
+                                                      moonGeoFunc );
     moonGeocentric = CorrectForNutationAndPrecession( moonGeocentric,
                                                       nutAndPrecMatrix );
     return moonGeocentric;
@@ -407,99 +421,99 @@ Vector3D GetMoonApparentPlace( double julianDay0, double julianDay1,
 //=============================================================================
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetAstrometricPlace( double julianDay,
                      BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                     const Vector3D & earthBarycentric,
-                     const Vector3D & earthHeliocentric, 
-                     Vector3D * pBodyHeliocentric )
+                     const Point3D & earthBarycentric,
+                     const Point3D & earthHeliocentric, 
+                     Point3D * pBodyHeliocentric )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
     static const double m
             = 2. * AstroConst::HeliocentricGravitationalConstant() / (c * c);
-    const double e = earthHeliocentric.Length();
-    const double epsilon = 1.e-8;
-    Vector3D bodyBarycentric = bodyBaryFunc( julianDay );
-    Vector3D bodyGeocentric = bodyBarycentric - earthBarycentric;
-    Vector3D bodyHeliocentric;
-    double lightTime = bodyGeocentric.Length() / c;
+    double e = earthHeliocentric.ToVector().Length();
+    double epsilon = 1.e-8;
+    Point3D bodyBarycentric = bodyBaryFunc( julianDay );
+    Vector3D bodyGeoVec = bodyBarycentric - earthBarycentric;
+    Vector3D bodyHelioVec;
+    double lightTime = bodyGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         bodyBarycentric = bodyBaryFunc( julianDay - lightTime );
-        bodyGeocentric = bodyBarycentric - earthBarycentric;
-        bodyHeliocentric = bodyBarycentric
+        bodyGeoVec = bodyBarycentric - earthBarycentric;
+        bodyHelioVec = bodyBarycentric
                 - sunBaryFunc( julianDay - lightTime );
-        double u = bodyGeocentric.Length();
-        double q = bodyHeliocentric.Length();
+        double u = bodyGeoVec.Length();
+        double q = bodyHelioVec.Length();
         double lightDist = u;
         if ( q != 0. )
             lightDist += m * log( (e + u + q) / (e - u + q) );
         lightTime = lightDist / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
     if ( pBodyHeliocentric )
-        *pBodyHeliocentric = bodyHeliocentric;
-    return bodyGeocentric;
+        pBodyHeliocentric->Set( bodyHelioVec );
+    return Point3D( bodyGeoVec );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetAstrometricPlace( double julianDay0, double julianDay1, 
                      BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                     const Vector3D & earthBarycentric,
-                     const Vector3D & earthHeliocentric, 
-                     Vector3D * pBodyHeliocentric )
+                     const Point3D & earthBarycentric,
+                     const Point3D & earthHeliocentric, 
+                     Point3D * pBodyHeliocentric )
 {
     static const double c = AstroConst::SpeedOfLight()
             * (86400. / 1000.);  //km / day
     static const double m
             = 2. * AstroConst::HeliocentricGravitationalConstant() / (c * c);
-    const double e = earthHeliocentric.Length();
-    const double epsilon = 1.e-8;
-    Vector3D bodyBarycentric = bodyBaryFunc( julianDay0, julianDay1 );
-    Vector3D bodyGeocentric = bodyBarycentric - earthBarycentric;
-    Vector3D bodyHeliocentric;
-    double lightTime = bodyGeocentric.Length() / c;
+    double e = earthHeliocentric.ToVector().Length();
+    double epsilon = 1.e-8;
+    Point3D bodyBarycentric = bodyBaryFunc( julianDay0, julianDay1 );
+    Vector3D bodyGeoVec = bodyBarycentric - earthBarycentric;
+    Vector3D bodyHelioVec;
+    double lightTime = bodyGeoVec.Length() / c;
     double oldLightTime;
     do
     {
         oldLightTime = lightTime;
         bodyBarycentric = bodyBaryFunc( julianDay0, julianDay1 - lightTime );
-        bodyGeocentric = bodyBarycentric - earthBarycentric;
-        bodyHeliocentric = bodyBarycentric
+        bodyGeoVec = bodyBarycentric - earthBarycentric;
+        bodyHelioVec = bodyBarycentric
                 - sunBaryFunc( julianDay0, julianDay1 - lightTime );
-        double u = bodyGeocentric.Length();
-        double q = bodyHeliocentric.Length();
+        double u = bodyGeoVec.Length();
+        double q = bodyHelioVec.Length();
         double lightDist = u;
         if ( q != 0. )
             lightDist += m * log( (e + u + q) / (e - u + q) );
         lightTime = lightDist / c;
     } while ( fabs( lightTime - oldLightTime ) > epsilon );
     if ( pBodyHeliocentric )
-        *pBodyHeliocentric = bodyHeliocentric;
-    return bodyGeocentric;
+        pBodyHeliocentric->Set( bodyHelioVec );
+    return Point3D( bodyGeoVec );
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetVirtualPlace( double julianDay,
                  BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                 const Vector3D & earthBarycentric,
-                 const Vector3D & earthHeliocentric,
+                 const Point3D & earthBarycentric,
+                 const Point3D & earthHeliocentric,
                  const Vector3D & earthBarycentricVelocity )
 {
-    Vector3D bodyHeliocentric;
-    Vector3D bodyGeocentric = GetAstrometricPlace( julianDay,
-                                                   bodyBaryFunc, sunBaryFunc,
-                                                   earthBarycentric,
-                                                   earthHeliocentric,
-                                                   &bodyHeliocentric );
+    Point3D bodyHeliocentric;
+    Point3D bodyGeocentric = GetAstrometricPlace( julianDay,
+                                                  bodyBaryFunc, sunBaryFunc,
+                                                  earthBarycentric,
+                                                  earthHeliocentric,
+                                                  &bodyHeliocentric );
     bodyGeocentric = CorrectForLightDeflection( bodyGeocentric,
                                                 bodyHeliocentric,
                                                 earthHeliocentric );
@@ -511,19 +525,19 @@ GetVirtualPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetVirtualPlace( double julianDay0, double julianDay1, 
                  BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                 const Vector3D & earthBarycentric,
-                 const Vector3D & earthHeliocentric, 
+                 const Point3D & earthBarycentric,
+                 const Point3D & earthHeliocentric, 
                  const Vector3D & earthBarycentricVelocity )
 {
-    Vector3D bodyHeliocentric;
-    Vector3D bodyGeocentric = GetAstrometricPlace( julianDay0, julianDay1, 
-                                                   bodyBaryFunc, sunBaryFunc,
-                                                   earthBarycentric,
-                                                   earthHeliocentric,
-                                                   &bodyHeliocentric );
+    Point3D bodyHeliocentric;
+    Point3D bodyGeocentric = GetAstrometricPlace( julianDay0, julianDay1, 
+                                                  bodyBaryFunc, sunBaryFunc,
+                                                  earthBarycentric,
+                                                  earthHeliocentric,
+                                                  &bodyHeliocentric );
     bodyGeocentric = CorrectForLightDeflection( bodyGeocentric,
                                                 bodyHeliocentric,
                                                 earthHeliocentric );
@@ -535,19 +549,19 @@ GetVirtualPlace( double julianDay0, double julianDay1,
 //-----------------------------------------------------------------------------
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetApparentPlace( double julianDay,
                   BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                  const Vector3D & earthBarycentric,
-                  const Vector3D & earthHeliocentric,
+                  const Point3D & earthBarycentric,
+                  const Point3D & earthHeliocentric,
                   const Vector3D & earthBarycentricVelocity, 
                   const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D bodyGeocentric = GetVirtualPlace( julianDay,
-                                               bodyBaryFunc, sunBaryFunc, 
-                                               earthBarycentric,
-                                               earthHeliocentric,
-                                               earthBarycentricVelocity );
+    Point3D bodyGeocentric = GetVirtualPlace( julianDay,
+                                              bodyBaryFunc, sunBaryFunc, 
+                                              earthBarycentric,
+                                              earthHeliocentric,
+                                              earthBarycentricVelocity );
     bodyGeocentric = CorrectForNutationAndPrecession( bodyGeocentric,
                                                       nutAndPrecMatrix );
     return bodyGeocentric;
@@ -556,19 +570,19 @@ GetApparentPlace( double julianDay,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename BodyBaryFunc, typename SunBaryFunc >
-Vector3D 
+Point3D 
 GetApparentPlace( double julianDay0, double julianDay1, 
                   BodyBaryFunc bodyBaryFunc, SunBaryFunc sunBaryFunc,
-                  const Vector3D & earthBarycentric,
-                  const Vector3D & earthHeliocentric, 
+                  const Point3D & earthBarycentric,
+                  const Point3D & earthHeliocentric, 
                   const Vector3D & earthBarycentricVelocity, 
                   const Matrix3D & nutAndPrecMatrix )
 {
-    Vector3D bodyGeocentric = GetVirtualPlace( julianDay0, julianDay1, 
-                                               bodyBaryFunc, sunBaryFunc, 
-                                               earthBarycentric,
-                                               earthHeliocentric,
-                                               earthBarycentricVelocity );
+    Point3D bodyGeocentric = GetVirtualPlace( julianDay0, julianDay1, 
+                                              bodyBaryFunc, sunBaryFunc, 
+                                              earthBarycentric,
+                                              earthHeliocentric,
+                                              earthBarycentricVelocity );
     bodyGeocentric = CorrectForNutationAndPrecession( bodyGeocentric,
                                                       nutAndPrecMatrix );
     return bodyGeocentric;

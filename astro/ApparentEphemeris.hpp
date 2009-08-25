@@ -10,18 +10,18 @@
   1. (i) The BodyBaryFunc and SunBaryFunc template parameters allow for the use
      of either ordinary functions or function objects, such as instances of
      the JPLBarycentricPosition class. They should be of the form
-     Vector3D func( double julianDay ),
+     Point3D func( double julianDay ),
      or (for higher precision)
-     Vector3D func( double julianDay0, double julianDay1 ),
+     Point3D func( double julianDay0, double julianDay1 ),
      and return the mean barycentric place of the body or Sun.
      (ii) The MoonGeoFunc template parameter is the same, except that it
      returns the mean geocentric place of the Moon.
      (iii) The EarthBaryFunc template parameters are similar, but should be
      of the form
-     void func( double julianDay, Vector3D & pPosition, Vector3D & pVelocity ),
+     void func( double julianDay, Point3D & pPosition, Vector3D & pVelocity ),
      or
      void func( double julianDay0, double julianDay1,
-                Vector3D & pPosition, Vector3D & pVelocity ).
+                Point3D & pPosition, Vector3D & pVelocity ).
 */
 
 
@@ -42,8 +42,8 @@ public:
     SunApparentEphemeris( SunBaryFunc sunBaryFunc,
                           EarthBaryFunc earthBaryFunc,
                           const Matrix3D & nutAndPrecMatrix );
-    Vector3D operator()( double julianDay );
-    Vector3D operator()( double julianDay0, double julianDay1 );
+    Point3D operator()( double julianDay );
+    Point3D operator()( double julianDay0, double julianDay1 );
 
 private:
     //Undefined, to avoid warning:
@@ -64,8 +64,8 @@ class MoonApparentEphemeris
 public:
     MoonApparentEphemeris( MoonGeoFunc moonGeoFunc,
                            const Matrix3D & nutAndPrecMatrix );
-    Vector3D operator()( double julianDay );
-    Vector3D operator()( double julianDay0, double julianDay1 );
+    Point3D operator()( double julianDay );
+    Point3D operator()( double julianDay0, double julianDay1 );
 
 private:
     //Undefined, to avoid warning:
@@ -88,8 +88,8 @@ public:
                        SunBaryFunc sunBaryFunc,
                        EarthBaryFunc earthBaryFunc,
                        const Matrix3D & nutAndPrecMatrix );
-    Vector3D operator()( double julianDay );
-    Vector3D operator()( double julianDay0, double julianDay1 );
+    Point3D operator()( double julianDay );
+    Point3D operator()( double julianDay0, double julianDay1 );
 
 private:
     //Undefined, to avoid warning:
@@ -141,11 +141,11 @@ SunApparentEphemeris< SunBaryFunc, EarthBaryFunc >
 //=============================================================================
 
 template < typename SunBaryFunc, typename EarthBaryFunc >
-Vector3D 
+Point3D 
 SunApparentEphemeris< SunBaryFunc, EarthBaryFunc >
         ::operator()( double julianDay )
 {
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     m_earthBaryFunc( julianDay, &earthBarycentric, &earthBarycentricVelocity );
     return GetSunApparentPlace( julianDay, m_sunBaryFunc,
@@ -156,11 +156,11 @@ SunApparentEphemeris< SunBaryFunc, EarthBaryFunc >
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename SunBaryFunc, typename EarthBaryFunc >
-Vector3D 
+Point3D 
 SunApparentEphemeris< SunBaryFunc, EarthBaryFunc >
         ::operator()( double julianDay0, double julianDay1 )
 {
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     m_earthBaryFunc( julianDay0, julianDay1,
                      &earthBarycentric, &earthBarycentricVelocity );
@@ -185,7 +185,7 @@ MoonApparentEphemeris< MoonGeoFunc >
 //=============================================================================
 
 template < typename MoonGeoFunc >
-Vector3D 
+Point3D 
 MoonApparentEphemeris< MoonGeoFunc >
         ::operator()( double julianDay )
 {
@@ -196,7 +196,7 @@ MoonApparentEphemeris< MoonGeoFunc >
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template < typename MoonGeoFunc >
-Vector3D 
+Point3D 
 MoonApparentEphemeris< MoonGeoFunc >
         ::operator()( double julianDay0, double julianDay1 )
 {
@@ -226,15 +226,15 @@ ApparentEphemeris< BodyBaryFunc, SunBaryFunc, EarthBaryFunc >
 
 template < typename BodyBaryFunc, typename SunBaryFunc,
            typename EarthBaryFunc >
-Vector3D 
+Point3D 
 ApparentEphemeris< BodyBaryFunc, SunBaryFunc, EarthBaryFunc >
         ::operator()( double julianDay )
 {
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     m_earthBaryFunc( julianDay, &earthBarycentric, &earthBarycentricVelocity );
-    Vector3D sunBarycentric = m_sunBaryFunc( julianDay );
-    Vector3D earthHeliocentric = earthBarycentric - sunBarycentric;
+    Point3D sunBarycentric = m_sunBaryFunc( julianDay );
+    Point3D earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     return GetApparentPlace( julianDay,
                              m_bodyBaryFunc, m_sunBaryFunc,
                              earthBarycentric, earthHeliocentric,
@@ -246,16 +246,16 @@ ApparentEphemeris< BodyBaryFunc, SunBaryFunc, EarthBaryFunc >
 
 template < typename BodyBaryFunc, typename SunBaryFunc,
            typename EarthBaryFunc >
-Vector3D 
+Point3D 
 ApparentEphemeris< BodyBaryFunc, SunBaryFunc, EarthBaryFunc >
         ::operator()( double julianDay0, double julianDay1 )
 {
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
     m_earthBaryFunc( julianDay0, julianDay1,
                      &earthBarycentric, &earthBarycentricVelocity );
-    Vector3D sunBarycentric = m_sunBaryFunc( julianDay0, julianDay1 );
-    Vector3D earthHeliocentric = earthBarycentric - sunBarycentric;
+    Point3D sunBarycentric = m_sunBaryFunc( julianDay0, julianDay1 );
+    Point3D earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     return GetApparentPlace( julianDay0, julianDay1, 
                              m_bodyBaryFunc, m_sunBaryFunc,
                              earthBarycentric, earthHeliocentric,

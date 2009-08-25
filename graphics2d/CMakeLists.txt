@@ -9,11 +9,13 @@
 set( sources
      Color.cpp
      Pixel.cpp
-     Point2.cpp
-     Line2.cpp
+     Dot2.cpp
+     LineSegment2.cpp
      Rectangle.cpp
      Ellipse.cpp
      Circle.cpp
+     Sprite.cpp
+     SimpleSpriteSystem.cpp
    )
 
 if ( useSDL )
@@ -26,7 +28,7 @@ if ( useSDL )
 endif ( useSDL )
 
 set( EpsilonDeltaLibs
-     mmbase math util
+     mmbase time math util
    )
 foreach( lib ${EpsilonDeltaLibs} )
      include_directories( "${CMAKE_SOURCE_DIR}/${lib}" )

@@ -9,7 +9,7 @@
 
 
 #include "Angle.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 #include "Assert.hpp"
 #include <string>
 #include <iostream>
@@ -26,13 +26,13 @@ class Polar
 public:
     Polar( );
     Polar( Angle bearing, double distance = 1. );
-    Polar( Vector2D rectangular );
+    Polar( Point2D rectangular );
     void Set( );
     void Set( Angle bearing, double distance = 1. );
-    void Set( Vector2D rectangular );
+    void Set( Point2D rectangular );
     Angle Bearing( ) const;
     double Distance( ) const;
-    Vector2D Rectangular( ) const;
+    Point2D Rectangular( ) const;
 #ifdef DEBUG
     static bool Test( );
 #endif
@@ -90,7 +90,7 @@ Polar::Polar( Angle bearing, double distance )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Polar::Polar( Vector2D rectangular )
+Polar::Polar( Point2D rectangular )
 {
     Set( rectangular );
 }

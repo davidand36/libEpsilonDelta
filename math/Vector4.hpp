@@ -22,15 +22,15 @@
   6. Homogenize() and Project() divide all coordinates by the last (W).
      If W=0, Project() simply drops the last coordinate, but Homogenize()
      fails, asserting and returning a zero vector.
-  7. The Vector3 forms of the constructor and Set() set W=1 by default
-     (treating the coordinates as those of a point), and set W=0 if
-     asPoint=false (treating the coordinates as those of a vector).
+  7. The Vector3 forms of the constructor and Set() set W=0.
+     The Point3 forms set W=1.
 */
 
 
 #include "Assert.hpp"
 #include "NullVectorException.hpp"
 #include "Vector3.hpp"
+#include "Point3.hpp"
 #include "JSON.hpp"
 #include <cmath>
 #include <iostream>
@@ -60,10 +60,12 @@ public:
     Vector4( );
     Vector4( T x, T y, T z, T w );
     Vector4( const T * pCoords );
-    Vector4( const Vector3<T> & v3, bool asPoint = true );
+    Vector4( const Vector3<T> & vec3 );
+    Vector4( const Point3<T> & pt3 );
     void Set( T x = T(), T y = T(), T z = T(), T w = T() );
     void Set( const T * pCoords );
-    void Set( const Vector3<T> & v3, bool asPoint = true );
+    void Set( const Vector3<T> & vec3 );
+    void Set( const Point3<T> & pt3 );
     T X( ) const;
     T Y( ) const;
     T Z( ) const;
@@ -157,9 +159,18 @@ Vector4<T>::Vector4( const T * pCoords )
 
 template <typename T>
 inline 
-Vector4<T>::Vector4( const Vector3<T> & v3, bool asPoint )
+Vector4<T>::Vector4( const Vector3<T> & vec3 )
 {
-    Set( v3, asPoint );
+    Set( vec3 );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+inline 
+Vector4<T>::Vector4( const Point3<T> & pt3 )
+{
+    Set( pt3 );
 }
 
 //=============================================================================
@@ -189,9 +200,19 @@ Vector4<T>::Set( const T * pCoords )
 template <typename T>
 inline 
 void 
-Vector4<T>::Set( const Vector3<T> & v3, bool asPoint )
+Vector4<T>::Set( const Vector3<T> & vec3 )
 {
-    Set( v3[0], v3[1], v3[2], static_cast<T>( asPoint  ?  1  :  0 ) );
+    Set( vec3[0], vec3[1], vec3[2], 0 );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+inline 
+void 
+Vector4<T>::Set( const Point3<T> & pt3 )
+{
+    Set( pt3[0], pt3[1], pt3[2], 1 );
 }
 
 //=============================================================================

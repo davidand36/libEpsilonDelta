@@ -35,14 +35,14 @@ class Galactic
 public:
     Galactic( );
     Galactic( Angle longitude, Angle latitude, double distance = 1. );
-    Galactic( const Vector3D & rectangular );
+    Galactic( const Point3D & rectangular );
     void Set( Angle longitude, Angle latitude, double distance = 1. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Normalize( );
     Angle Longitude( ) const;
     Angle Latitude( ) const;
     double Distance( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
 
 private:
     Spherical m_spherical;
@@ -86,7 +86,7 @@ Galactic::Set( Angle longitude, Angle latitude, double distance )
 
 inline 
 void 
-Galactic::Set( const Vector3D & rectangular )
+Galactic::Set( const Point3D & rectangular )
 {
     m_spherical.Set( rectangular );
     Normalize( );
@@ -110,7 +110,7 @@ Galactic::Galactic( Angle longitude, Angle latitude, double distance )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Galactic::Galactic( const Vector3D & rectangular )
+Galactic::Galactic( const Point3D & rectangular )
     :    m_spherical( rectangular )
 {
     Normalize( );
@@ -146,7 +146,7 @@ Galactic::Distance( ) const
 //=============================================================================
 
 inline 
-Vector3D 
+Point3D 
 Galactic::Rectangular( ) const
 {
     return m_spherical.Rectangular();

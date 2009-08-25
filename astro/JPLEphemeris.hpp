@@ -70,8 +70,8 @@
 */
 
 
-#include "Vector2.hpp"
 #include "Vector3.hpp"
+#include "Point3.hpp"
 #include "Angle.hpp"
 #include "Nutation.hpp"
 #include "SolarSystem.hpp"
@@ -105,10 +105,10 @@ public:
 
     bool GetBodyPosition( double julianDay,
                           EBody body, EBody origin,
-                          Vector3D * pPosition, Vector3D * pVelocity = 0 );
+                          Point3D * pPosition, Vector3D * pVelocity = 0 );
     bool GetBodyPosition( double julianDay0, double julianDay1,
                           EBody body, EBody origin,
-                          Vector3D * pPosition, Vector3D * pVelocity = 0 );
+                          Point3D * pPosition, Vector3D * pVelocity = 0 );
     bool GetNutation( double julianDay,
                       Nutation * pNutation, Nutation * pDerivative = 0 );
     bool GetNutation( double julianDay0, double julianDay1,
@@ -119,21 +119,21 @@ public:
     bool GetLibration( double julianDay0, double julianDay1,
                        Vector3< Angle > * pComponents,
                        Vector3< Angle > * pVelocity = 0 );
-    void GetEarthBarycentric( Vector3D * pEarthPos,
-                              const Vector3D & moonGeoPos,
-                              const Vector3D & embPos ) const;
-    void GetEarthBarycentric( Vector3D * pEarthPos,
-                              const Vector3D & moonGeoPos,
-                              const Vector3D & embPos,
+    void GetEarthBarycentric( Point3D * pEarthPos,
+                              const Point3D & moonGeoPos,
+                              const Point3D & embPos ) const;
+    void GetEarthBarycentric( Point3D * pEarthPos,
+                              const Point3D & moonGeoPos,
+                              const Point3D & embPos,
                               Vector3D * pEarthVelocity,
                               const Vector3D & moonGeoVel,
                               const Vector3D & embVel ) const;
-    void GetMoonBarycentric( Vector3D * pMoonPos,
-                             const Vector3D & moonGeoPos,
-                             const Vector3D & embPos ) const;
-    void GetMoonBarycentric( Vector3D * pMoonPos,
-                             const Vector3D & moonGeoPos,
-                             const Vector3D & embPos,
+    void GetMoonBarycentric( Point3D * pMoonPos,
+                             const Point3D & moonGeoPos,
+                             const Point3D & embPos ) const;
+    void GetMoonBarycentric( Point3D * pMoonPos,
+                             const Point3D & moonGeoPos,
+                             const Point3D & embPos,
                              Vector3D * pMoonVelocity,
                              const Vector3D & moonGeoVel,
                              const Vector3D & embVel ) const;
@@ -230,12 +230,12 @@ class JPLBarycentricEphemeris
 public:
     JPLBarycentricEphemeris( JPLEphemeris * pEphemeris,
                              JPLEphemeris::EBody body );
-    Vector3D operator()( double julianDay );
-    Vector3D operator()( double julianDay0, double julianDay1 );
+    Point3D operator()( double julianDay );
+    Point3D operator()( double julianDay0, double julianDay1 );
     void operator()( double julianDay,
-                     Vector3D * pPosition, Vector3D * pVelocity );
+                     Point3D * pPosition, Vector3D * pVelocity );
     void operator()( double julianDay0, double julianDay1, 
-                     Vector3D * pPosition, Vector3D * pVelocity );
+                     Point3D * pPosition, Vector3D * pVelocity );
 
 private:
     JPLEphemeris * m_pEphemeris;
@@ -251,12 +251,12 @@ class JPLGeocentricEphemeris
 public:
     JPLGeocentricEphemeris( JPLEphemeris * pEphemeris,
                             JPLEphemeris::EBody body );
-    Vector3D operator()( double julianDay );
-    Vector3D operator()( double julianDay0, double julianDay1 );
+    Point3D operator()( double julianDay );
+    Point3D operator()( double julianDay0, double julianDay1 );
     void operator()( double julianDay,
-                     Vector3D * pPosition, Vector3D * pVelocity );
+                     Point3D * pPosition, Vector3D * pVelocity );
     void operator()( double julianDay0, double julianDay1, 
-                     Vector3D * pPosition, Vector3D * pVelocity );
+                     Point3D * pPosition, Vector3D * pVelocity );
 
 private:
     JPLEphemeris * m_pEphemeris;

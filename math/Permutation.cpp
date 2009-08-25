@@ -251,11 +251,24 @@ Permutation::FactorIntoTranspositions( ) const
 bool 
 Permutation::Even( ) const
 {
-    vector< Cycle > cycles = FactorIntoCycles( );
-    int numTrans = 0;
-    for ( size_t i = 0; i < cycles.size(); ++i )
-        numTrans += cycles[i].Length() - 1;
-    return ( (numTrans & 1) == 0 );
+    bool even = true;
+    int degree = Degree();
+    vector< bool > v( degree, false );
+    for ( int i = 0; i < degree; ++i )
+    {
+        if ( v[ i ] )
+            even = ! even;
+        else
+        {
+            int j = i;
+            do
+            {
+                j = m_perm[ j ];
+                v[ j ] = true;
+            } while ( j != i );
+        }
+    }
+    return even;
 }
 
 //=============================================================================
@@ -535,6 +548,7 @@ Permutation::Test( )
     TESTCHECK( perm0[1], 3, &ok );
     TESTCHECK( ToJSON( perm0 ), string( "[ 0, 3, 2, 1 ]" ), &ok );
     TESTCHECK( perm0.Rank( ), 5ULL, &ok );
+    TESTCHECK( perm0.Even(), false, &ok );
     TESTCHECK( ToJSON( perm0.Inverse() ), string( "[ 0, 3, 2, 1 ]" ), &ok );
     cout << "Set( 10, 999999 ) [999,999th permutation]" << endl;
     perm0.Set( 10, 999999 );
@@ -544,6 +558,7 @@ Permutation::Test( )
     TESTCHECK( ToJSON( perm0 ), string( "[ 2, 7, 8, 3, 9, 1, 5, 4, 6, 0 ]" ),
                                         &ok );
     TESTCHECK( perm0.Rank( ), 999999ULL, &ok );
+    TESTCHECK( perm0.Even(), true, &ok );   //parity of perm != parity of rank
     TESTCHECK( ToJSON( perm0.Inverse() ),
                        string( "[ 9, 5, 0, 3, 7, 6, 8, 1, 2, 4 ]" ), &ok );
     TESTCHECK( ( perm0 * perm0.Inverse() == Permutation( 10 ) ), true, &ok );
@@ -571,6 +586,14 @@ Permutation::Test( )
     TESTCHECK( ToJSON( perm0 ), string( "[ 2, 1, 4, 0, 3, 5 ]" ), &ok );
     TESTCHECK( perm0.Previous(), true, &ok );
     TESTCHECK( ToJSON( perm0 ), string( "[ 2, 1, 3, 5, 4, 0 ]" ), &ok );
+
+    perm0.Set( 8 );
+    for ( int i = 0; i < 10; ++i )
+    {
+        //Not always true: TESTCHECK( perm0.Even(), ((i & 1) == 0), &ok );
+        TESTCHECK( perm0.Rank(), (uint16_t)i, &ok );
+        perm0.Next( );
+    }
 
     array< int, 4 > arr1 = {{ 2, 0, 4, 1 }};
     vec0.assign( arr1.begin(), arr1.end() );

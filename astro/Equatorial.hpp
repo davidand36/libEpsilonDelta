@@ -33,14 +33,14 @@ public:
     Equatorial( );
     Equatorial( Angle rightAscension, Angle declination,
                 double distance = 1. );
-    Equatorial( const Vector3D & rectangular );
+    Equatorial( const Point3D & rectangular );
     void Set( Angle rightAscension, Angle declination, double distance = 1. );
-    void Set( const Vector3D & rectangular );
+    void Set( const Point3D & rectangular );
     void Normalize( );
     Angle RightAscension( ) const;
     Angle Declination( ) const;
     double Distance( ) const;
-    Vector3D Rectangular( ) const;
+    Point3D Rectangular( ) const;
 
 private:
     Spherical m_spherical;
@@ -81,7 +81,7 @@ Equatorial::Set( Angle rightAscension, Angle declination, double distance )
 
 inline 
 void 
-Equatorial::Set( const Vector3D & rectangular )
+Equatorial::Set( const Point3D & rectangular )
 {
     m_spherical.Set( rectangular );
     Normalize( );
@@ -106,7 +106,7 @@ Equatorial::Equatorial( Angle rightAscension, Angle declination,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-Equatorial::Equatorial( const Vector3D & rectangular )
+Equatorial::Equatorial( const Point3D & rectangular )
     :    m_spherical( rectangular )
 {
     Normalize( );
@@ -142,7 +142,7 @@ Equatorial::Distance( ) const
 //=============================================================================
 
 inline 
-Vector3D 
+Point3D 
 Equatorial::Rectangular( ) const
 {
     return m_spherical.Rectangular();

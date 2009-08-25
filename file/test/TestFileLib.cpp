@@ -8,7 +8,8 @@
 
 #include "Exception.hpp"
 #include "TestCheck.hpp"
-#include "FileUtil.hpp"
+#include "DataBuffer.hpp"
+#include "File.hpp"
 #include "DirUtil.hpp"
 #include "ConfigFile.hpp"
 #include <cstdio>
@@ -53,7 +54,9 @@ int Main( int /*argc*/, char ** /*argv*/ )
     bool ok = true;
 
 #ifdef DEBUG
-    if ( ! TestFileUtil( ) )
+    if ( ! DataBuffer::Test( ) )
+        ok = false;
+    if ( ! File::Test( ) )
         ok = false;
     if ( ! TestDirUtil( ) )
         ok = false;

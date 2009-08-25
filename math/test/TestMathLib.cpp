@@ -15,6 +15,8 @@
 #include "Angle.hpp"
 #include "AngleDMS.hpp"
 #include "AngleHMS.hpp"
+#include "Point2.hpp"
+#include "Point3.hpp"
 #include "Vector2.hpp"
 #include "Vector3.hpp"
 #include "Vector4.hpp"
@@ -88,6 +90,10 @@ int Main( int /*argc*/, char ** /*argv*/ )
     if ( ! AngleDMS::Test( ) )
         ok = false;
     if ( ! AngleHMS::Test( ) )
+        ok = false;
+    if ( ! TestPoint2( ) )
+        ok = false;
+    if ( ! TestPoint3( ) )
         ok = false;
     if ( ! TestVector2( ) )
         ok = false;

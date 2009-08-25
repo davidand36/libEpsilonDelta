@@ -21,7 +21,7 @@
 #endif
 #include "KeyPressEvent.hpp"
 #include "MouseClickEvent.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 #include <SDL.h>
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -40,6 +40,9 @@ namespace EpsilonDelta
 
 Input::Input( )
     :   m_quitHandler( 0 )
+#if defined(SUPPORT_WIIMOTE)
+    ,   m_supportWiimotes( true )
+#endif
 {
     SDL::Instance();    //to force construction
 }
@@ -57,10 +60,13 @@ void
 Input::Init( )
 {
 #if defined(SUPPORT_WIIMOTE)
-    //WiiYourself! needs to connect before SDL inits joysticks.
-    shared_ptr< Wiimote > pWiimote( new Wiimote );
-    if ( pWiimote->IsConnected() )
-        m_wiimotes.push_back( pWiimote );
+    if ( m_supportWiimotes )
+    {
+        //WiiYourself! needs to connect before SDL inits joysticks.
+        shared_ptr< Wiimote > pWiimote( new Wiimote );
+        if ( pWiimote->IsConnected() )
+            m_wiimotes.push_back( pWiimote );
+    }
 #endif
 
     SDL::Instance().Init( );
@@ -131,7 +137,7 @@ Input::CheckEvent( )
         {
             shared_ptr< InputDevice > pDevice = m_pMouse;
             int button = sdlEvent.button.button;
-            Vector2I position( sdlEvent.button.x, sdlEvent.button.y );
+            Point2I position( sdlEvent.button.x, sdlEvent.button.y );
             return  InputEventSPtr(
                 new MouseClickEvent( pDevice, button, position ) );
         }
@@ -168,50 +174,6 @@ Input::CheckEvent( )
 #endif
     return  InputEventSPtr(); //0 = no event
 }
-
-//=============================================================================
-
-void 
-Input::SetQuitHandler( QuitHandler quitHandler )
-{
-    m_quitHandler = quitHandler;
-}
-
-//=============================================================================
-
-int 
-Input::NumJoysticks( ) const
-{
-    return static_cast<int>( m_joysticks.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-shared_ptr< Joystick >
-Input::GetJoystick( int i )
-{
-    return m_joysticks.at( i );
-}
-
-//-----------------------------------------------------------------------------
-
-#if defined(SUPPORT_WIIMOTE)
-
-int 
-Input::NumWiimotes( ) const
-{
-    return static_cast<int>( m_wiimotes.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-shared_ptr< Wiimote >
-Input::GetWiimote( int i )
-{
-    return m_wiimotes.at( i );
-}
-
-#endif
 
 //=============================================================================
 
@@ -310,7 +272,7 @@ Input::Test( )
                              << grav.Y() << ", " << grav.Z() << " )" << endl;
                         cout << " Pointer: NumLights: "
                              << wmState.NumPointerLights() << endl;
-                        Vector2F pos = wmState.PointerPos();
+                        Point2F pos = wmState.PointerPos();
                         cout << "          Position: (" << pos.X() << ", "
                              << pos.Y() << " )"
                              << " Angle: " << wmState.PointerAngle().Degrees()
@@ -326,7 +288,7 @@ Input::Test( )
                             cout << " Gravity: (" << grav.X() << ", "
                                  << grav.Y() << ", " << grav.Z() << " )"
                                  << endl;
-                            Vector2F joystick = wmState.NunchukJoystickPos();
+                            Point2F joystick = wmState.NunchukJoystickPos();
                             cout << "           Joystick: (" << joystick.X()
                                  << ", " << joystick.Y() << " )";
                             cout << endl;
@@ -347,7 +309,7 @@ Input::Test( )
                 {
                     cout << "MouseClickEvent button = " << pMCEvt->Button()
                          << endl;
-                    Vector2I pos = pMCEvt->Position();
+                    Point2I pos = pMCEvt->Position();
                     cout << "                position = ( " << pos.X() << ", "
                          << pos.Y() << " )" << endl;
                     shared_ptr< InputDevice > pDev = pMCEvt->Device();

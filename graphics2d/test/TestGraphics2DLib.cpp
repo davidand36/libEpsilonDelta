@@ -10,15 +10,18 @@
 #include "TestCheck.hpp"
 #include "Color.hpp"
 #include "Pixel.hpp"
-#include "Point2.hpp"
-#include "Line2.hpp"
+#include "Dot2.hpp"
+#include "LineSegment2.hpp"
 #include "Rectangle.hpp"
 #include "Ellipse.hpp"
 #include "Circle.hpp"
 #include "Graphics2D.hpp"
 #include "Surface.hpp"
 #include "Image.hpp"
+#include "Sprite.hpp"
+#include "SimpleSpriteSystem.hpp"
 #include "Platform.hpp"
+#include "StdClock.hpp"
 #include <cstdio>
 #include <iostream>
 using namespace std;
@@ -77,15 +80,19 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! TestPixel( ) )
         ok = false;
-    if ( ! Point2I::Test( ) )
+    if ( ! Dot2I::Test( ) )
         ok = false;
-    if ( ! Line2I::Test( ) )
+    if ( ! LineSegment2I::Test( ) )
         ok = false;
     if ( ! Rectangle::Test( ) )
         ok = false;
     if ( ! Ellipse::Test( ) )
         ok = false;
     if ( ! Circle::Test( ) )
+        ok = false;
+    if ( ! Sprite::Test( ) )
+        ok = false;
+    if ( ! SimpleSpriteSystem::Test( ) )
         ok = false;
     if ( ! Graphics2D::Instance().Test( ) )
         ok = false;
@@ -101,22 +108,26 @@ int Main( int /*argc*/, char ** argv )
         if ( ok )
         {
             int frames = 0;
-            Uint32 start = SDL_GetTicks();
+            double start = StdClock::Instance().Seconds();
 
+            bool done = false;
             do
             {
-                Point2I::TestDraw( );
-                Line2I::TestDraw( );
+                Surface::Current()->Extent().Fill( Color3B( 0, 0, 0 ) );
+                Dot2I::TestDraw( );
+                LineSegment2I::TestDraw( );
                 Rectangle::TestDraw( );
                 Ellipse::TestDraw( );
                 Circle::TestDraw( );
                 Surface::TestDraw( );
                 Image::TestDraw( );
+                done = SimpleSpriteSystem::TestUpdate( );
 
                 Graphics2D::Instance().ShowScreen( );
                 ++frames;
             }
-            while ( SDL_GetTicks() < start + 5000 );
+            while ( (! done)
+                    || (StdClock::Instance().Seconds() <= start + 10.) );
 
             float fps = frames / 5.f;
             cout << "FPS: " << fps << endl;

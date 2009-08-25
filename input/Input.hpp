@@ -5,6 +5,10 @@
   Copyright (C) 2007 David M. Anderson
 
   Input class: user input subsystem.
+  NOTES:
+  1. If SUPPORT_WIIMOTE is defined, but an application doesn't want to support
+     Wiimotes (especially waiting for a connection at startup with CWiiD),
+     call SupportWiimotes( false ) before calling Init().
 */
 
 
@@ -44,9 +48,12 @@ public:
     typedef void (*QuitHandler)( );
     void SetQuitHandler( QuitHandler quitHandler );
 
+    shared_ptr< Keyboard > GetKeyboard( );
+    shared_ptr< Mouse > GetMouse( );
     int NumJoysticks( ) const;
     shared_ptr< Joystick > GetJoystick( int i );
 #if defined(SUPPORT_WIIMOTE)
+    void SupportWiimotes( bool supportWiimotes );
     int NumWiimotes( ) const;
     shared_ptr< Wiimote > GetWiimote( int i );
 #endif
@@ -59,17 +66,97 @@ private:
     Input( );
     ~Input( );
 
-    shared_ptr< Keyboard > m_pKeyboard;
-    shared_ptr< Mouse > m_pMouse;
-    std::vector< shared_ptr< Joystick > > m_joysticks;
+    shared_ptr< Keyboard >                  m_pKeyboard;
+    shared_ptr< Mouse >                     m_pMouse;
+    std::vector< shared_ptr< Joystick > >   m_joysticks;
 #if defined(SUPPORT_WIIMOTE)
-    std::vector< shared_ptr< Wiimote > > m_wiimotes;
+    bool                                    m_supportWiimotes;
+    std::vector< shared_ptr< Wiimote > >    m_wiimotes;
 #endif
 
-    QuitHandler m_quitHandler;
+    QuitHandler                             m_quitHandler;
 
     friend class Singleton< Input >;
 };
+
+
+//*****************************************************************************
+
+
+inline
+void 
+Input::SetQuitHandler( QuitHandler quitHandler )
+{
+    m_quitHandler = quitHandler;
+}
+
+//=============================================================================
+
+inline
+shared_ptr< Keyboard > 
+Input::GetKeyboard( )
+{
+    return m_pKeyboard;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Mouse > 
+Input::GetMouse( )
+{
+    return m_pMouse;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int 
+Input::NumJoysticks( ) const
+{
+    return static_cast<int>( m_joysticks.size() );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Joystick >
+Input::GetJoystick( int i )
+{
+    return m_joysticks.at( i );
+}
+
+//-----------------------------------------------------------------------------
+
+#if defined(SUPPORT_WIIMOTE)
+
+inline
+void 
+Input::SupportWiimotes( bool supportWiimotes )
+{
+    m_supportWiimotes = supportWiimotes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int 
+Input::NumWiimotes( ) const
+{
+    return static_cast<int>( m_wiimotes.size() );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+shared_ptr< Wiimote >
+Input::GetWiimote( int i )
+{
+    return m_wiimotes.at( i );
+}
+
+#endif
+
 
 
 //*****************************************************************************

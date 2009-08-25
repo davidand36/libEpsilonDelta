@@ -9,7 +9,7 @@
 
 
 #include "InputEvent.hpp"
-#include "Vector2.hpp"
+#include "Point2.hpp"
 
 
 namespace EpsilonDelta
@@ -23,15 +23,15 @@ class MouseClickEvent
 {
 public:
     MouseClickEvent( shared_ptr< InputDevice > device,
-                     int button, Vector2I position );
+                     int button, const Point2I & position );
     virtual ~MouseClickEvent( );
 
     int Button( ) const;
-    Vector2I Position( ) const;
+    const Point2I & Position( ) const;
 
 private:
-    int m_button;
-    Vector2I m_position;
+    int         m_button;
+    Point2I     m_position;
 };
 
 
@@ -40,7 +40,7 @@ private:
 
 inline 
 MouseClickEvent::MouseClickEvent( shared_ptr< InputDevice > device,
-                                  int button, Vector2I position )
+                                  int button, const Point2I & position )
     :   InputEvent( device ),
         m_button( button ),
         m_position( position )
@@ -66,7 +66,7 @@ MouseClickEvent::Button( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-Vector2I 
+const Point2I &
 MouseClickEvent::Position( ) const
 {
     return m_position;

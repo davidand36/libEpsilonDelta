@@ -7,7 +7,8 @@
 #
 
 set( sources
-     FileUtil.cpp
+     DataBuffer.cpp
+     File.cpp
      DirUtil.cpp
      ConfigFile.cpp
    )

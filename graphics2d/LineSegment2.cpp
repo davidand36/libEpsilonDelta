@@ -1,12 +1,12 @@
 /*
-  Line2.cpp
+  LineSegment2.cpp
   Copyright (C) 2007 David M. Anderson
 
-  Line2I class: Two-dimensional line.
+  LineSegment2I class: Two-dimensional line segment.
 */
 
 
-#include "Line2.hpp"
+#include "LineSegment2.hpp"
 #include "Surface.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -31,7 +31,7 @@ static EClip ComputeLocationCode( const Point2I & pt, const Rectangle & rect );
 //.............................................................................
 
 bool 
-Line2I::Clip( const Rectangle & rect )
+LineSegment2I::Clip( const Rectangle & rect )
 {                                                                      /*Clip*/
     PointPair endpoints = Endpoints();
     Point2I pt0 = endpoints.first;
@@ -117,7 +117,7 @@ static EClip ComputeLocationCode( const Point2I & pt, const Rectangle & rect )
 //=============================================================================
 
 void 
-Line2I::Draw( uint32_t pxl, Surface * pSurface ) const
+LineSegment2I::Draw( uint32_t pxl, Surface * pSurface ) const
 {
     if ( pSurface == 0 )
         pSurface = Surface::Current();
@@ -127,7 +127,7 @@ Line2I::Draw( uint32_t pxl, Surface * pSurface ) const
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-Line2I::Draw( const Color3B & color, Surface * pSurface ) const
+LineSegment2I::Draw( const Color3B & color, Surface * pSurface ) const
 {
     if ( pSurface == 0 )
         pSurface = Surface::Current();
@@ -137,7 +137,7 @@ Line2I::Draw( const Color3B & color, Surface * pSurface ) const
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-Line2I::Draw( const Color4B & color, Surface * pSurface ) const
+LineSegment2I::Draw( const Color4B & color, Surface * pSurface ) const
 {
     if ( pSurface == 0 )
         pSurface = Surface::Current();
@@ -149,18 +149,19 @@ Line2I::Draw( const Color4B & color, Surface * pSurface ) const
 #ifdef DEBUG
 
 bool 
-Line2I::Test( )
+LineSegment2I::Test( )
 {
     bool ok = true;
-    cout << "Testing Line2I" << endl;
+    cout << "Testing LineSegment2I" << endl;
 
     int x = 60;
     int y = 20;
     int dx = 100;
     int dy = 80;
-    cout << "Line2I( " << x << ", " << y << ", " << dx << ", " << dy << " )"
+    cout << "LineSegment2I( " << x << ", " << y
+         << ", " << dx << ", " << dy << " )"
          << endl; 
-    Line2I ln1( x, y, dx, dy );
+    LineSegment2I ln1( x, y, dx, dy );
     TESTCHECK( ln1.X(), x, &ok );
     TESTCHECK( ln1.Y(), y, &ok );
     TESTCHECK( ln1.DX(), dx, &ok );
@@ -177,9 +178,9 @@ Line2I::Test( )
     int y1 = 20;
     int x2 = 60;
     int y2 = 100;
-    cout << "Line2I( Point2I( " << x1 << ", " << y1 <<" ), "
+    cout << "LineSegment2I( Point2I( " << x1 << ", " << y1 <<" ), "
          << "Point2I( " << x2 << ", " << y2 << " ) )" << endl;
-    Line2I ln2( Point2I( x1, y1 ), Point2I( x2, y2 ) );
+    LineSegment2I ln2( Point2I( x1, y1 ), Point2I( x2, y2 ) );
     cout << "ln2.Endpoints()" << endl;
     endpoints = ln2.Endpoints();
     TESTCHECK( endpoints.first.X(), x2, &ok );
@@ -196,16 +197,16 @@ Line2I::Test( )
     TESTCHECK( (ln1 != ln2), true, &ok );
 
     if ( ok )
-        cout << "Line2I PASSED." << endl << endl;
+        cout << "LineSegment2I PASSED." << endl << endl;
     else
-        cout << "Line2I FAILED." << endl << endl;
+        cout << "LineSegment2I FAILED." << endl << endl;
     return ok;
 }
 
 //-----------------------------------------------------------------------------
 
 void
-Line2I::TestDraw( )
+LineSegment2I::TestDraw( )
 {
     Color3B gray( 100, 100, 100 );
     Color3B yellow( 255, 255, 0 );
@@ -216,12 +217,12 @@ Line2I::TestDraw( )
     int y = 20;
     int dx = 100;
     int dy = 80;
-    Line2I ln1( x, y, dx, dy );
+    LineSegment2I ln1( x, y, dx, dy );
     int x1 = 160;
     int y1 = 20;
     int x2 = 60;
     int y2 = 100;
-    Line2I ln2( Point2I( x1, y1 ), Point2I( x2, y2 ) );
+    LineSegment2I ln2( Point2I( x1, y1 ), Point2I( x2, y2 ) );
 
     Rectangle oldClip = Surface::Current()->ClippingRect();
     ln1.Draw( gray );

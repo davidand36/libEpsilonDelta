@@ -45,6 +45,7 @@ class RandomNumberGenerator
 {
 public:
     RandomNumberGenerator( );
+    ~RandomNumberGenerator( );
     void Reseed( int seed );
     int Seed( ) const;
 
@@ -71,7 +72,7 @@ public:
 private:
     double Uni01( );    //operator()(0.,1.)
 
-    scoped_ptr< RandomNumberGeneratorImpl > m_pImpl;
+    RandomNumberGeneratorImpl * m_pImpl;
     int     m_seed;
 };
 

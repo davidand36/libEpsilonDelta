@@ -15,11 +15,13 @@ set( sources
      AngleHMS.cpp
      NullVectorException.cpp
      SingularMatrixException.cpp
+     Point2.cpp
      Vector.cpp
      Vector2.cpp
      Matrix2.cpp
      RotationMatrix2.cpp
      Polar.cpp
+     Point3.cpp
      Vector3.cpp
      Matrix3.cpp
      RotationMatrix3.cpp

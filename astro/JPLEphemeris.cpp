@@ -26,6 +26,7 @@
 #include "JPLEphemeris.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
+#include "Vector3.hpp"
 #include "StringUtil.hpp"
 #include "FixEndian.hpp"
 #ifdef DEBUG
@@ -300,7 +301,7 @@ JPLEphemeris::JPLToSolarSystemBody( EBody body )
 bool 
 JPLEphemeris::GetBodyPosition( double julianDay,
                                EBody body, EBody origin,
-                               Vector3D * pPosition, Vector3D * pVelocity )
+                               Point3D * pPosition, Vector3D * pVelocity )
 {
     return GetBodyPosition( julianDay, 0.0, body, origin,
                             pPosition, pVelocity );
@@ -311,7 +312,7 @@ JPLEphemeris::GetBodyPosition( double julianDay,
 bool 
 JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                                EBody body, EBody origin,
-                               Vector3D * pPosition, Vector3D * pVelocity )
+                               Point3D * pPosition, Vector3D * pVelocity )
 {                                                           /*GetBodyPosition*/
     Assert( pPosition != 0 );
 
@@ -330,9 +331,10 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
          || ((body == EarthMoonBarycenter)
              && (origin != SolarSystemBarycenter) && (origin != Earth)) )
     {
+        Point3D origPos;
         bool posRslt = GetBodyPosition( julianDay0, julianDay1, origin, body,
-                                        pPosition, pVelocity );
-        *pPosition = - *pPosition;
+                                        &origPos, pVelocity );
+        pPosition->Set( - origPos.ToVector() );
         if ( pVelocity != 0 )
             *pVelocity = - *pVelocity;
         return posRslt;
@@ -359,7 +361,8 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
             compRslt = ComputeComponents( julianDay0, julianDay1,
                                           EMBary, &embPos );
             Assert( compRslt );
-            GetEarthBarycentric( pPosition, moonPos, embPos );
+            GetEarthBarycentric( pPosition,
+                                 Point3D( moonPos ), Point3D( embPos ) );
         }
         else
         {
@@ -370,15 +373,21 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
             compRslt = ComputeComponents( julianDay0, julianDay1,
                                           EMBary, &embPos, &embVel );
             Assert(  compRslt );
-            GetEarthBarycentric( pPosition, moonPos, embPos,
+            GetEarthBarycentric( pPosition,
+                                 Point3D( moonPos ), Point3D( embPos ),
                               pVelocity, moonVel, embVel );
         }
     }
     else if ( body == Moon )
     {
         if ( origin == Earth )
-            return ComputeComponents( julianDay0, julianDay1, MoonGeo,
-                                      pPosition, pVelocity );
+        {
+            bool compRslt =  ComputeComponents( julianDay0, julianDay1, MoonGeo,
+                                                &moonPos, pVelocity );
+            if ( compRslt )
+                pPosition->Set( moonPos );
+            return compRslt;
+        }
         if ( pVelocity == 0 )
         {
             bool compRslt = ComputeComponents( julianDay0, julianDay1,
@@ -387,8 +396,8 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 return false;
             if ( origin == EarthMoonBarycenter )
             {
-                *pPosition = moonPos
-                        * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
+                moonPos *= (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
+                pPosition->Set( moonPos );
             }
             else
             {
@@ -396,7 +405,8 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 compRslt = ComputeComponents( julianDay0, julianDay1,
                                               EMBary, &embPos );
                 Assert( compRslt );
-                GetMoonBarycentric( pPosition, moonPos, embPos );
+                GetMoonBarycentric( pPosition,
+                                    Point3D( moonPos ), Point3D( embPos ) );
             }
         }
         else
@@ -407,10 +417,10 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 return false;
             if ( origin == EarthMoonBarycenter )
             {
-                *pPosition = moonPos
-                        * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
-                *pVelocity = moonVel
-                        * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
+                double emrr = m_earthMoonRatio / (1.0 + m_earthMoonRatio);
+                moonPos *= emrr;
+                pPosition->Set( moonPos );
+                *pVelocity = moonVel * emrr;
             }
             else
             {
@@ -418,16 +428,23 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 compRslt = ComputeComponents( julianDay0, julianDay1,
                                               EMBary, &embPos, &embVel );
                 Assert( compRslt );
-                GetMoonBarycentric( pPosition, moonPos, embPos,
-                                 pVelocity, moonVel, embVel );
+                GetMoonBarycentric( pPosition,
+                                    Point3D( moonPos ), Point3D( embPos ),
+                                    pVelocity, moonVel, embVel );
             }
         }
     }
     else if ( body == EarthMoonBarycenter )
     {
         if ( origin == SolarSystemBarycenter )
-            return ComputeComponents( julianDay0, julianDay1, EMBary,
-                                      pPosition, pVelocity );
+        {
+            
+            bool compRslt = ComputeComponents( julianDay0, julianDay1, EMBary,
+                                               &bodyPos, pVelocity );
+            if ( compRslt )
+                pPosition->Set( bodyPos );
+            return compRslt;
+        }
         Assert( origin == Earth );
         if ( pVelocity == 0 )
         {
@@ -435,7 +452,8 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                                                MoonGeo, &moonPos );
             if ( ! compRslt )
                 return false;
-            *pPosition = moonPos * (1.0 / (1.0 + m_earthMoonRatio));
+            moonPos *= (1.0 / (1.0 + m_earthMoonRatio));
+            pPosition->Set( moonPos );
         }
         else
         {
@@ -443,8 +461,10 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                                                MoonGeo, &moonPos, &moonVel );
             if ( ! compRslt )
                 return false;
-            *pPosition = moonPos * (1.0 / (1.0 + m_earthMoonRatio));
-            *pVelocity = moonVel * (1.0 / (1.0 + m_earthMoonRatio));
+            double emrr = 1.0 / (1.0 + m_earthMoonRatio);
+            moonPos *= emrr;
+            pPosition->Set( moonPos );
+            *pVelocity = moonVel * emrr;
         }
     }
     else
@@ -455,8 +475,13 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
         ETarget target = bodyToTarget[ body ];
         Assert( target < NumTargets );
         if ( origin == SolarSystemBarycenter )
-            return ComputeComponents( julianDay0, julianDay1, target,
-                                      pPosition, pVelocity );
+        {
+            bool compRslt = ComputeComponents( julianDay0, julianDay1, target,
+                                               &bodyPos, pVelocity );
+            if ( compRslt )
+                pPosition->Set( bodyPos );
+            return compRslt;
+        }
         if ( pVelocity == 0 )
         {
             bool compRslt = ComputeComponents( julianDay0, julianDay1, target,
@@ -478,17 +503,21 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 compRslt = ComputeComponents( julianDay0, julianDay1,
                                               EMBary, &embPos );
                 Assert( compRslt );
+                Point3D pos;
                 if ( origin == Earth )
                 {
-                    GetEarthBarycentric( &originPos, moonPos, embPos );
+                    GetEarthBarycentric( &pos, Point3D( moonPos ),
+                                         Point3D( embPos ) );
                 }
                 else
                 {
                     Assert( origin == Moon );
-                    GetMoonBarycentric( &originPos, moonPos, embPos );
+                    GetMoonBarycentric( &pos,
+                                        Point3D( moonPos ), Point3D( embPos ) );
                 }
+                originPos = pos.ToVector();
             }
-            *pPosition = bodyPos - originPos;
+            pPosition->Set( bodyPos - originPos );
         }
         else
         {
@@ -511,19 +540,24 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
                 compRslt = ComputeComponents( julianDay0, julianDay1,
                                               EMBary, &embPos, &embVel );
                 Assert( compRslt );
+                Point3D pos;
                 if ( origin == Earth )
                 {
-                    GetEarthBarycentric( &originPos, moonPos, embPos,
+
+                    GetEarthBarycentric( &pos,
+                                         Point3D( moonPos ), Point3D( embPos ),
                                          &originVel, moonVel, embVel );
                 }
                 else
                 {
                     Assert( origin == Moon );
-                    GetMoonBarycentric( &originPos, moonPos, embPos, 
+                    GetMoonBarycentric( &pos,
+                                        Point3D( moonPos ), Point3D( embPos ), 
                                         &originVel, moonVel, embVel );
                 }
+                originPos = pos.ToVector();
             }
-            *pPosition = bodyPos - originPos;
+            pPosition->Set( bodyPos - originPos );
             *pVelocity = bodyVel - originVel;
         }
     }
@@ -611,52 +645,53 @@ JPLEphemeris::GetLibration( double julianDay0, double julianDay1,
 //-----------------------------------------------------------------------------
 
 void 
-JPLEphemeris::GetEarthBarycentric( Vector3D * pEarthPos,
-                                   const Vector3D & moonGeoPos,
-                                   const Vector3D & embPos ) const
+JPLEphemeris::GetEarthBarycentric( Point3D * pEarthPos,
+                                   const Point3D & moonGeoPos,
+                                   const Point3D & embPos ) const
 {
-    *pEarthPos = embPos  -  moonGeoPos * (1.0 / (1.0 + m_earthMoonRatio));
+    double emrr = 1.0 / (1.0 + m_earthMoonRatio);
+    pEarthPos->Set( embPos.ToVector()  -  moonGeoPos.ToVector() * emrr );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-JPLEphemeris::GetEarthBarycentric( Vector3D * pEarthPos,
-                                   const Vector3D & moonGeoPos,
-                                   const Vector3D & embPos,
+JPLEphemeris::GetEarthBarycentric( Point3D * pEarthPos,
+                                   const Point3D & moonGeoPos,
+                                   const Point3D & embPos,
                                    Vector3D * pEarthVelocity,
                                    const Vector3D & moonGeoVel,
                                    const Vector3D & embVel ) const
 {
-    *pEarthPos = embPos  -  moonGeoPos * (1.0 / (1.0 + m_earthMoonRatio));
-    *pEarthVelocity = embVel  -  moonGeoVel * (1.0 / (1.0 + m_earthMoonRatio));
+    double emrr = 1.0 / (1.0 + m_earthMoonRatio);
+    pEarthPos->Set( embPos.ToVector()  -  moonGeoPos.ToVector() * emrr );
+    *pEarthVelocity = embVel  -  moonGeoVel * emrr;
 }
 
 //-----------------------------------------------------------------------------
 
 void 
-JPLEphemeris::GetMoonBarycentric( Vector3D * pMoonPos,
-                                  const Vector3D & moonGeoPos,
-                                  const Vector3D & embPos ) const
+JPLEphemeris::GetMoonBarycentric( Point3D * pMoonPos,
+                                  const Point3D & moonGeoPos,
+                                  const Point3D & embPos ) const
 {
-    *pMoonPos = embPos
-            +  moonGeoPos * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
+    double emrr = m_earthMoonRatio / (1.0 + m_earthMoonRatio);
+    pMoonPos->Set( embPos.ToVector()  +  moonGeoPos.ToVector() * emrr );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-JPLEphemeris::GetMoonBarycentric( Vector3D * pMoonPos,
-                                  const Vector3D & moonGeoPos,
-                                  const Vector3D & embPos,
+JPLEphemeris::GetMoonBarycentric( Point3D * pMoonPos,
+                                  const Point3D & moonGeoPos,
+                                  const Point3D & embPos,
                                   Vector3D * pMoonVelocity,
                                   const Vector3D & moonGeoVel,
                                   const Vector3D & embVel ) const
 {
-    *pMoonPos = embPos
-            +  moonGeoPos * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
-    *pMoonVelocity = embVel
-            +  moonGeoVel * (m_earthMoonRatio / (1.0 + m_earthMoonRatio));
+    double emrr = m_earthMoonRatio / (1.0 + m_earthMoonRatio);
+    pMoonPos->Set( embPos.ToVector()  +  moonGeoPos.ToVector() * emrr );
+    *pMoonVelocity = embVel  +  moonGeoVel * emrr;
 }
 
 //=============================================================================
@@ -942,10 +977,10 @@ JPLEphemeris::GetEphemeris( double jd )
 //*****************************************************************************
 
 
-Vector3D 
+Point3D 
 JPLBarycentricEphemeris::operator()( double julianDay )
 {
-    Vector3D bodyPos;
+    Point3D bodyPos;
     bool posRslt
             = m_pEphemeris->GetBodyPosition( julianDay, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
@@ -957,10 +992,10 @@ JPLBarycentricEphemeris::operator()( double julianDay )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Vector3D 
+Point3D 
 JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
-    Vector3D bodyPos;
+    Point3D bodyPos;
     bool posRslt
             = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
@@ -974,7 +1009,7 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1 )
 
 void 
 JPLBarycentricEphemeris::operator()( double julianDay,
-                                     Vector3D * pPosition,
+                                     Point3D * pPosition,
                                      Vector3D * pVelocity )
 {
     bool posRslt
@@ -989,7 +1024,7 @@ JPLBarycentricEphemeris::operator()( double julianDay,
 
 void 
 JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1, 
-                                     Vector3D * pPosition,
+                                     Point3D * pPosition,
                                      Vector3D * pVelocity )
 {
     bool posRslt
@@ -1004,10 +1039,10 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1,
 //*****************************************************************************
 
 
-Vector3D 
+Point3D 
 JPLGeocentricEphemeris::operator()( double julianDay )
 {
-    Vector3D bodyPos;
+    Point3D bodyPos;
     bool posRslt
             = m_pEphemeris->GetBodyPosition( julianDay, m_body,
                                              JPLEphemeris::Earth, 
@@ -1019,10 +1054,10 @@ JPLGeocentricEphemeris::operator()( double julianDay )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Vector3D 
+Point3D 
 JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
-    Vector3D bodyPos;
+    Point3D bodyPos;
     bool posRslt
             = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
                                              JPLEphemeris::Earth, 
@@ -1036,7 +1071,7 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1 )
 
 void 
 JPLGeocentricEphemeris::operator()( double julianDay,
-                                    Vector3D * pPosition,
+                                    Point3D * pPosition,
                                     Vector3D * pVelocity )
 {
     bool posRslt
@@ -1051,7 +1086,7 @@ JPLGeocentricEphemeris::operator()( double julianDay,
 
 void 
 JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1, 
-                                    Vector3D * pPosition,
+                                    Point3D * pPosition,
                                     Vector3D * pVelocity )
 {
     bool posRslt
@@ -1206,7 +1241,7 @@ JPLEphemeris::Test( const std::string & testFileName, bool verbose )
             EBody origin = numToBody[ origNum - 1 ];
             Assert( origin < NumBodies );
 
-            Vector3D position;
+            Point3D position;
             if ( component < 3 )
             {
                 rslt = GetBodyPosition( julianDay, body, origin,

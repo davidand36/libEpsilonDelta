@@ -36,7 +36,7 @@ EquationOfTime( double julianDay )
     if ( ephem == 0 )
         return TimeIncrement( 0 );
     Angle meanSolarLong = MeanSolarLongitude( julianDay );
-    Vector3D earthBarycentric;
+    Point3D earthBarycentric;
     Vector3D earthBarycentricVelocity;
 #ifdef DEBUG
     bool earthRslt =
@@ -59,10 +59,10 @@ EquationOfTime( double julianDay )
     Matrix3D nutAndPrecMatrix = nutation.Matrix( meanObliquity )
             * precessionMatrix;
     JPLBarycentricEphemeris sunEphem( ephem, JPLEphemeris::Sun );
-    Vector3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
-                                           earthBarycentric,
-                                           earthBarycentricVelocity,
-                                           nutAndPrecMatrix );
+    Point3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
+                                          earthBarycentric,
+                                          earthBarycentricVelocity,
+                                          nutAndPrecMatrix );
     Equatorial sunEquatorial( sunPos );
     Angle eotAngle = meanSolarLong  -  Angle( 0.0057183, Angle::Degree )
             -  sunEquatorial.RightAscension()

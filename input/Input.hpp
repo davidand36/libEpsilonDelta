@@ -46,7 +46,7 @@ public:
 
     int NumDevices( ) const;
     const shared_ptr< InputDevice > Device( int index ) const;
-    int DeviceIndex( InputDevice::Type type ) const;
+    int DeviceIndex( InputDevice::EType type ) const;
 
     typedef void (*QuitHandler)( );
     void SetQuitHandler( QuitHandler quitHandler );

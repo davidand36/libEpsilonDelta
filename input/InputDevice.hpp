@@ -23,17 +23,17 @@ namespace EpsilonDelta
 class InputDevice
 {
 public:
-    enum Type { Keyboard  = 1 << 0,
-                Mouse     = 1 << 1,
-                Tablet    = 1 << 2,
-                Gamepad   = 1 << 3,
-                Wiimote   = 1 << 8
-              };
+    enum EType { Keyboard  = 1 << 0,
+                 Mouse     = 1 << 1,
+                 Tablet    = 1 << 2,
+                 Gamepad   = 1 << 3,
+                 Wiimote   = 1 << 8
+               };
 
-    InputDevice( Type type, const std::string & name );
+    InputDevice( EType type, const std::string & name );
     virtual ~InputDevice( );
 
-    Type GetType( ) const;
+    EType Type( ) const;
     const std::string & Name( ) const;
 
     virtual int NumButtons( ) const;
@@ -55,8 +55,8 @@ protected:
 private:
     virtual void Update( );
 
-    Type                        m_type;
-    std::string                 m_name;
+    EType           m_type;
+    std::string     m_name;
 
     friend class Input;
 };
@@ -66,7 +66,7 @@ private:
 
 
 inline
-InputDevice::InputDevice( Type type, const std::string & name )
+InputDevice::InputDevice( EType type, const std::string & name )
     :   m_type( type ),
         m_name( name )
 {
@@ -75,8 +75,8 @@ InputDevice::InputDevice( Type type, const std::string & name )
 //=============================================================================
 
 inline
-InputDevice::Type 
-InputDevice::GetType( ) const
+InputDevice::EType 
+InputDevice::Type( ) const
 {
     return m_type;
 }

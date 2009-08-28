@@ -43,7 +43,7 @@ public:
 
     int NumDevices( ) const;
     const shared_ptr< InputDevice > Device( int index ) const;
-    int DeviceIndex( InputDevice::Type type ) const;
+    int DeviceIndex( InputDevice::EType type ) const;
 
     void SetTextInput( bool on );
 
@@ -128,7 +128,7 @@ Input::Device( int index ) const
 //-----------------------------------------------------------------------------
 
 int 
-Input::DeviceIndex( InputDevice::Type type ) const
+Input::DeviceIndex( InputDevice::EType type ) const
 {
     return m_pImpl->DeviceIndex( type );
 }
@@ -169,7 +169,7 @@ Input::SetTextInput( bool on )
 namespace
 {                                                                   //namespace
 
-string DeviceTypeName( InputDevice::Type type );
+string DeviceTypeName( InputDevice::EType type );
 
 }                                                                   //namespace
 
@@ -196,7 +196,7 @@ Input::Test( )
         {
             const shared_ptr< InputDevice > pDev =  input.Device( i );
             Assert( pDev != 0 );
-            cout << i << ")" << " Type=" << DeviceTypeName( pDev->GetType() )
+            cout << i << ")" << " Type=" << DeviceTypeName( pDev->Type() )
                  << " Name=\"" << pDev->Name() << "\""
                  << " NumButtons=" << pDev->NumButtons()
                  << " NumPointers=" << pDev->NumPointers()
@@ -216,7 +216,7 @@ Input::Test( )
                 const shared_ptr< InputDevice > pDev = pEvent->Device();
                 int button = pEvent->Button();
                 cout << "Button=" << button
-                     << "  Device: Type=" << DeviceTypeName( pDev->GetType() )
+                     << "  Device: Type=" << DeviceTypeName( pDev->Type() )
                      << " Name=\"" << pDev->Name() << "\"" << endl;
                 cout << "  Buttons down: ";
                 for ( int i = 0; i < pDev->NumButtons(); ++i )
@@ -269,7 +269,7 @@ namespace
 {                                                                   //namespace
 
 string 
-DeviceTypeName( InputDevice::Type type )
+DeviceTypeName( InputDevice::EType type )
 {
     switch ( type )
     {
@@ -473,7 +473,7 @@ InputImpl::Device( int index ) const
 //-----------------------------------------------------------------------------
 
 int 
-InputImpl::DeviceIndex( InputDevice::Type type ) const
+InputImpl::DeviceIndex( InputDevice::EType type ) const
 {
     if ( type == InputDevice::Keyboard )
         return 0;

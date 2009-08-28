@@ -94,7 +94,6 @@ File::~File( )
 {
     if ( m_pImpl->IsOpen() )
         Close( );
-    delete m_pImpl;
 }
 
 //=============================================================================
@@ -325,6 +324,7 @@ LoadBuff( const string & fileName, char ** pBuffer, int * pBufferSize,
 
 
 #ifdef USE_CSTD_FILE
+
 //=============================================================================
 
 
@@ -460,6 +460,7 @@ FileImpl::ModDate( const std::string & fileName )
 }
 
 //=============================================================================
+
 #endif //USE_CSTD_FILE
 
 

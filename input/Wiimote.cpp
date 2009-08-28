@@ -33,27 +33,8 @@ class WiimoteState
 public:
     WiimoteState( );
 
-    enum Button
-    {
-        A_Button,
-        B_Button,
-        Up_Button,
-        Down_Button,
-        Left_Button,
-        Right_Button,
-        Minus_Button,
-        Plus_Button,
-        Home_Button,
-        One_Button,
-        Two_Button,
-        //on nunchuk:
-        C_Button,
-        Z_Button,
-        NumButtons
-    };
-
     uint32_t ButtonsDown( ) const;
-    bool IsButtonDown( Button button ) const;
+    bool IsButtonDown( int button ) const;
     Vector3F Acceleration( ) const;
     Vector3F Gravity( ) const;
     int NumPointerLights( ) const;
@@ -361,8 +342,9 @@ WiimoteState::ButtonsDown( ) const
 //-----------------------------------------------------------------------------
 
 bool 
-WiimoteState::IsButtonDown( Button button ) const
+WiimoteState::IsButtonDown( int button ) const
 {
+    Assert( (button >= 0) && (button < Wiimote::MaxButtons) )
     return (m_buttonsDown & (1 << button)) != 0;
 }
 
@@ -583,7 +565,9 @@ WiimoteImpl::NumButtons( ) const
 bool 
 WiimoteImpl::ButtonDown( int button ) const
 {
-    return m_state.IsButtonDown( (WiimoteState::Button)button );
+    if ( (button < 0) || (button > Wiimote::MaxButtons) )
+        throw std::out_of_range( "Wiimote::ButtonDown()" );
+    return m_state.IsButtonDown( button );
 }
 
 //=============================================================================
@@ -712,19 +696,18 @@ WiimoteImpl::Update( )
                 CWIID_BTN_LEFT, CWIID_BTN_RIGHT, CWIID_BTN_MINUS,
                 CWIID_BTN_PLUS, CWIID_BTN_HOME, CWIID_BTN_1, CWIID_BTN_2,
                 CWIID_NUNCHUK_BTN_C, CWIID_NUNCHUK_BTN_Z };
-    for ( int i = WiimoteState::A_Button; i <= WiimoteState::Two_Button; ++i )
+    for ( int i = Wiimote::A_Button; i <= Wiimote::Two_Button; ++i )
         if ( (cwiidState.buttons & cwiidButtons[ i ]) != 0 )
             buttons |= (1 << i);
     if ( cwiidState.ext_type == ::CWIID_EXT_NUNCHUK )
-        for ( int i = WiimoteState::C_Button; i <= WiimoteState::Z_Button; ++i )
+        for ( int i = Wiimote::C_Button; i <= Wiimote::Z_Button; ++i )
             if ( (cwiidState.ext.nunchuk.buttons & cwiidButtons[ i ]) != 0 )
                 buttons |= (1 << i);
     m_state.SetButtons( buttons );
-    for ( int i = 0; i < WiimoteState::NumButtons; ++i )
+    for ( int i = 0; i < Wiimote::MaxButtons; ++i )
     {
-        WiimoteState::Button b = WiimoteState::Button( i );
-        if ( m_state.IsButtonDown( b ) && ! prevState.IsButtonDown( b ) )
-            m_buttonQueue.push( b );
+        if ( m_state.IsButtonDown( i ) && ! prevState.IsButtonDown( i ) )
+            m_buttonQueue.push( i );
     }
 
 

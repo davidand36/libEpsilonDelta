@@ -30,13 +30,8 @@ public:
     Wiimote( const std::string & name );
     virtual ~Wiimote( );
 
-    bool IsConnected( );
-
     virtual int NumButtons( ) const;
     virtual bool ButtonDown( int button ) const;
-
-    bool WasButtonPressed( );
-    int GetButtonPressed( );
 
     virtual int NumPointers( ) const;
     virtual Point2I Pointer( int index = 0 ) const;
@@ -48,10 +43,33 @@ public:
     virtual Vector3D Acceleration( int index = 0 ) const;
     virtual Vector3D Gravity( int index = 0 ) const;
 
-    static void FindAll( std::vector< shared_ptr< Wiimote > > * pWiimotes );
+    enum Button
+    {
+        A_Button,
+        B_Button,
+        Up_Button,
+        Down_Button,
+        Left_Button,
+        Right_Button,
+        Minus_Button,
+        Plus_Button,
+        Home_Button,
+        One_Button,
+        Two_Button,
+        //on nunchuk:
+        C_Button,
+        Z_Button,
+        MaxButtons
+    };
 
 private:
+    bool IsConnected( );
     virtual void Update( );
+    bool WasButtonPressed( );
+    int GetButtonPressed( );
+
+    static void FindAll( std::vector< shared_ptr< Wiimote > > * pWiimotes );
+
 
     shared_ptr< WiimoteImpl >  m_pImpl;
 

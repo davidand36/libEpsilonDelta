@@ -7,6 +7,8 @@
 
 
 #include "Wiimote.hpp"
+#include "Graphics2D.hpp"
+#include "Surface.hpp"
 #include <vector>
 #ifdef USE_CWIID
 #include <cwiid.h>
@@ -617,7 +619,13 @@ Point2I
 WiimoteImpl::Pointer( int index ) const
 {
     Point2F propPos = m_state.PointerPos();
-    return Point2I( (int)(propPos.X() * 100), (int)(propPos.Y() * 100) ); //!!!
+    //Convert to screen coordinates
+    Rectangle screenRect = Graphics2D::Instance().Screen()->Extent();
+    int w = screenRect.Width();
+    int h = screenRect.Height();
+    int x = (int)( (1.f - propPos.X()) * w );
+    int y = (int)( propPos.Y() * h );
+    return Point2I( x, y );
 }
 
 //=============================================================================

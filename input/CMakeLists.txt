@@ -16,7 +16,7 @@ set( sources
    )
 
 set( EpsilonDeltaLibs
-     graphic2d mmbase time math util
+     graphics2d mmbase time math util
    )
 foreach( lib ${EpsilonDeltaLibs} )
      include_directories( "${CMAKE_SOURCE_DIR}/${lib}" )

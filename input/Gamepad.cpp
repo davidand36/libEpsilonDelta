@@ -1,15 +1,17 @@
 /*
-  Mouse.cpp
+  Gamepad.cpp
   Copyright (C) 2009 David M. Anderson
 
-  Mouse class: a standard mouse.
+  Gamepad class: a standard gamepad, a.k.a. joystick.
 */
 
 
-#include "Mouse.hpp"
+#include "Gamepad.hpp"
 #ifdef USE_SDL
+#include "SDLException.hpp"
 #include <SDL.h>
 #endif
+using namespace std;
 
 
 namespace EpsilonDelta
@@ -18,21 +20,24 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class MouseImpl
+class GamepadImpl
 {
 public:
-    MouseImpl( );
-    ~MouseImpl( );
+    GamepadImpl( int index );
+    ~GamepadImpl( );
 
     int NumButtons( ) const;
     bool ButtonDown( int button ) const;
 
-    int NumPointers( ) const;
-    Point2I Pointer( int index ) const;
+    int NumAxes( ) const;
+    double Axis( int index ) const;
     
 private:
 #ifdef USE_SDL
-    static const int MaxButtons = 5;   //SDL defines five buttons.
+    int m_index;
+    ::SDL_Joystick *    m_pSDL_Joystick;
+    int                 m_numButtons;
+    int                 m_numAxes;
 #endif
 };
 
@@ -40,22 +45,22 @@ private:
 //*****************************************************************************
 
 
-Mouse::Mouse( const std::string & name )
-    :   InputDevice( InputDevice::Mouse, name ),
-        m_pImpl( new MouseImpl )
+Gamepad::Gamepad( const std::string & name, int index )
+    :   InputDevice( InputDevice::Gamepad, name ),
+        m_pImpl( new GamepadImpl( index ) )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-Mouse::~Mouse( )
+Gamepad::~Gamepad( )
 {
 }
 
 //=============================================================================
 
 int 
-Mouse::NumButtons( ) const
+Gamepad::NumButtons( ) const
 {
     return m_pImpl->NumButtons();
 }
@@ -63,7 +68,7 @@ Mouse::NumButtons( ) const
 //-----------------------------------------------------------------------------
 
 bool 
-Mouse::ButtonDown( int button ) const
+Gamepad::ButtonDown( int button ) const
 {
     return m_pImpl->ButtonDown( button );
 }
@@ -71,17 +76,17 @@ Mouse::ButtonDown( int button ) const
 //=============================================================================
 
 int 
-Mouse::NumPointers( ) const
+Gamepad::NumAxes( ) const
 {
-    return m_pImpl->NumPointers();
+    return m_pImpl->NumAxes();
 }
 
 //-----------------------------------------------------------------------------
 
-Point2I 
-Mouse::Pointer( int index ) const
+double 
+Gamepad::Axis( int index ) const
 {
-    return m_pImpl->Pointer( index );
+    return m_pImpl->Axis( index );
 }
 
 
@@ -93,59 +98,57 @@ Mouse::Pointer( int index ) const
 //=============================================================================
 
 
-MouseImpl::MouseImpl( )
+GamepadImpl::GamepadImpl( int index )
 {
+    m_pSDL_Joystick = ::SDL_JoystickOpen( index );
+    if ( m_pSDL_Joystick == 0 )
+        throw SDLException( "SDL_JoystickOpen" );
+    m_numButtons = ::SDL_JoystickNumButtons( m_pSDL_Joystick );
+    m_numAxes = ::SDL_JoystickNumAxes( m_pSDL_Joystick );
 }
 
 //-----------------------------------------------------------------------------
 
-MouseImpl::~MouseImpl( )
+GamepadImpl::~GamepadImpl( )
 {
+    ::SDL_JoystickClose( m_pSDL_Joystick );
 }
 
 //=============================================================================
 
 int 
-MouseImpl::NumButtons( ) const
+GamepadImpl::NumButtons( ) const
 {
-    return MaxButtons;
+    return m_numButtons;
 }
 
 //-----------------------------------------------------------------------------
 
 bool 
-MouseImpl::ButtonDown( int button ) const
+GamepadImpl::ButtonDown( int button ) const
 {
-    if ( (button < 0) || (button >= MaxButtons) )
-        throw std::out_of_range( "Mouse::ButtonDown()" );
-    Uint8 buttonState = ::SDL_GetMouseState( 0, 0 );
-    return ((buttonState & (1 << button)) != 0);
+    return (::SDL_JoystickGetButton( m_pSDL_Joystick, button ) != 0);
 }
 
 //=============================================================================
 
 int 
-MouseImpl::NumPointers( ) const
+GamepadImpl::NumAxes( ) const
 {
-    return 1;
+    return m_numAxes;
 }
 
 //-----------------------------------------------------------------------------
 
-Point2I 
-MouseImpl::Pointer( int index ) const
+double 
+GamepadImpl::Axis( int index ) const
 {
-    if ( index != 0 )
-        throw std::out_of_range( "Mouse::Pointer()" );
-    int x, y;
-    ::SDL_GetMouseState( &x, &y );
-    return Point2I( x, y );
+    return (::SDL_JoystickGetAxis( m_pSDL_Joystick, index ) / 32768.);
 }
 
 //=============================================================================
 
 #endif //USE_SDL
-
 
 //*****************************************************************************
 

@@ -2,20 +2,24 @@
 #define INPUT_HPP
 /*
   Input.hpp
-  Copyright (C) 2007 David M. Anderson
+  Copyright (C) 2009 David M. Anderson
 
-  Input class: user input subsystem.
+  Input class: Manager of the input devices.
   NOTES:
-  1. If SUPPORT_WIIMOTE is defined, but an application doesn't want to support
-     Wiimotes (especially waiting for a connection at startup with CWiiD),
-     call SupportWiimotes( false ) before calling Init().
+  1. Update should be called regularly (each frame, typically).
+  2. DeviceIndex() returns the first device of the specified type,
+     or -1 if none is present.
+  3. IgnoreDeviceTypes() can be called to avoid detecting and using devices of
+     the specified types. (E.g., Wiimotes, which take some time to check for
+     with the CWiiD library.) It needs to be called before Init().
+  4. When TextInput is true, keyboard events are returned as the Unicode
+     characters they represent. This is off by default.
 */
 
 
+#include "InputDevice.hpp"
 #include "InputEvent.hpp"
 #include "Singleton.hpp"
-#include "SmartPtr.hpp"
-#include <vector>
 
 
 namespace EpsilonDelta
@@ -23,13 +27,8 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
-class InputEvent;
-class Keyboard;
-class Mouse;
-class Joystick;
-#if defined(SUPPORT_WIIMOTE)
-class Wiimote;
-#endif
+
+class InputImpl;
 
 
 //*****************************************************************************
@@ -42,41 +41,36 @@ public:
     void Init( );
     void Shutdown( );
 
-    void Pump( );
-    InputEventSPtr CheckEvent( );
+    void Update( );
+    const shared_ptr< InputEvent > CheckEvent( );
+
+    int NumDevices( ) const;
+    const shared_ptr< InputDevice > Device( int index ) const;
+    int DeviceIndex( InputDevice::Type type ) const;
 
     typedef void (*QuitHandler)( );
     void SetQuitHandler( QuitHandler quitHandler );
 
-    shared_ptr< Keyboard > GetKeyboard( );
-    shared_ptr< Mouse > GetMouse( );
-    int NumJoysticks( ) const;
-    shared_ptr< Joystick > GetJoystick( int i );
-#if defined(SUPPORT_WIIMOTE)
-    void SupportWiimotes( bool supportWiimotes );
-    int NumWiimotes( ) const;
-    shared_ptr< Wiimote > GetWiimote( int i );
-#endif
+    void IgnoreDeviceTypes( uint32_t typeBits );
+
+    void SetTextInput( bool on );
 
 #ifdef DEBUG
-    bool Test( );
+    static bool Test( );
 #endif
 
 private:
     Input( );
     ~Input( );
+    void HandleQuit( );
+    uint32_t IgnoreTypes( ) const;
 
-    shared_ptr< Keyboard >                  m_pKeyboard;
-    shared_ptr< Mouse >                     m_pMouse;
-    std::vector< shared_ptr< Joystick > >   m_joysticks;
-#if defined(SUPPORT_WIIMOTE)
-    bool                                    m_supportWiimotes;
-    std::vector< shared_ptr< Wiimote > >    m_wiimotes;
-#endif
-
-    QuitHandler                             m_quitHandler;
+    QuitHandler                                 m_quitHandler;
+    uint32_t                                    m_ignoreTypes;
+    shared_ptr< InputImpl >                     m_pImpl;
 
     friend class Singleton< Input >;
+    friend class InputImpl;
 };
 
 
@@ -90,73 +84,14 @@ Input::SetQuitHandler( QuitHandler quitHandler )
     m_quitHandler = quitHandler;
 }
 
-//=============================================================================
-
-inline
-shared_ptr< Keyboard > 
-Input::GetKeyboard( )
-{
-    return m_pKeyboard;
-}
-
 //-----------------------------------------------------------------------------
-
-inline
-shared_ptr< Mouse > 
-Input::GetMouse( )
-{
-    return m_pMouse;
-}
-
-//-----------------------------------------------------------------------------
-
-inline
-int 
-Input::NumJoysticks( ) const
-{
-    return static_cast<int>( m_joysticks.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-inline
-shared_ptr< Joystick >
-Input::GetJoystick( int i )
-{
-    return m_joysticks.at( i );
-}
-
-//-----------------------------------------------------------------------------
-
-#if defined(SUPPORT_WIIMOTE)
 
 inline
 void 
-Input::SupportWiimotes( bool supportWiimotes )
+Input::IgnoreDeviceTypes( uint32_t typeBits )
 {
-    m_supportWiimotes = supportWiimotes;
+    m_ignoreTypes = typeBits;
 }
-
-//-----------------------------------------------------------------------------
-
-inline
-int 
-Input::NumWiimotes( ) const
-{
-    return static_cast<int>( m_wiimotes.size() );
-}
-
-//-----------------------------------------------------------------------------
-
-inline
-shared_ptr< Wiimote >
-Input::GetWiimote( int i )
-{
-    return m_wiimotes.at( i );
-}
-
-#endif
-
 
 
 //*****************************************************************************

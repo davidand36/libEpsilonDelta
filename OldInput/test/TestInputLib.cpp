@@ -60,7 +60,7 @@ int Main( int /*argc*/, char ** /*argv*/ )
     Graphics2D::Instance().Init( );
     Graphics2D::Instance().SetupScreen( 640, 480, "Test Input Lib" );
 
-    if ( ! Input::Test( ) )
+    if ( ! Input::Instance().Test( ) )
         ok = false;
 #endif //DEBUG
 

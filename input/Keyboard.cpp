@@ -1,8 +1,8 @@
 /*
   Keyboard.cpp
-  Copyright (C) 2007 David M. Anderson
+  Copyright (C) 2009 David M. Anderson
 
-  Keyboard class: the keyboard input device.
+  Keyboard class: a standard keyboard.
 */
 
 
@@ -18,19 +18,96 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-const KeyboardState & 
-Keyboard::State( )
+class KeyboardImpl
 {
+public:
+    KeyboardImpl( );
+    ~KeyboardImpl( );
+
+    int NumButtons( ) const;
+    bool ButtonDown( int button ) const;
+    
+private:
 #ifdef USE_SDL
-    int numKeys;
-    Uint8 * stateArray = SDL_GetKeyState( &numKeys );
-    m_state.Set( stateArray, numKeys );
+    int                 m_numKeys;
+    const uint8_t *     m_keyArray; //Note: this belongs to SDL.
 #endif
-    return m_state;
+};
+
+
+//*****************************************************************************
+
+
+Keyboard::Keyboard( const std::string & name )
+    :   InputDevice( InputDevice::Keyboard, name ),
+        m_pImpl( new KeyboardImpl )
+{
+}
+
+//-----------------------------------------------------------------------------
+
+Keyboard::~Keyboard( )
+{
+}
+
+//=============================================================================
+
+int 
+Keyboard::NumButtons( ) const
+{
+    return m_pImpl->NumButtons();
+}
+
+//-----------------------------------------------------------------------------
+
+bool 
+Keyboard::ButtonDown( int button ) const
+{
+    return m_pImpl->ButtonDown( button );
 }
 
 
 //*****************************************************************************
 
-}                                                      //namespace EpsilonDelta
 
+#ifdef USE_SDL
+
+//=============================================================================
+
+
+KeyboardImpl::KeyboardImpl( )
+{
+    m_keyArray = ::SDL_GetKeyState( &m_numKeys );
+}
+
+//-----------------------------------------------------------------------------
+
+KeyboardImpl::~KeyboardImpl( )
+{
+}
+
+//=============================================================================
+
+int 
+KeyboardImpl::NumButtons( ) const
+{
+    return m_numKeys;
+}
+
+//-----------------------------------------------------------------------------
+
+bool 
+KeyboardImpl::ButtonDown( int button ) const
+{
+    if ( (button < 0) || (button >= m_numKeys) )
+        throw std::out_of_range( "Keyboard::ButtonDown()" );
+    return (int)m_keyArray[ button ];
+}
+
+//=============================================================================
+
+#endif //USE_SDL
+
+//*****************************************************************************
+
+}                                                      //namespace EpsilonDelta

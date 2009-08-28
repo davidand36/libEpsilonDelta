@@ -1,10 +1,10 @@
-#ifndef MOUSE_HPP
-#define MOUSE_HPP
+#ifndef GAMEPAD_HPP
+#define GAMEPAD_HPP
 /*
-  Mouse.hpp
+  Gamepad.hpp
   Copyright (C) 2009 David M. Anderson
 
-  Mouse class: a standard mouse.
+  Gamepad class: a standard gamepad, a.k.a. joystick.
 */
 
 
@@ -17,27 +17,27 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class MouseImpl;
+class GamepadImpl;
 
 
 //*****************************************************************************
 
 
-class Mouse
+class Gamepad
     :   public InputDevice
 {
 public:
-    Mouse( const std::string & name );
-    virtual ~Mouse( );
+    Gamepad( const std::string & name, int index );
+    virtual ~Gamepad( );
 
     virtual int NumButtons( ) const;
     virtual bool ButtonDown( int button ) const;
 
-    virtual int NumPointers( ) const;
-    virtual Point2I Pointer( int index = 0 ) const;
+    virtual int NumAxes( ) const;
+    virtual double Axis( int index = 0 ) const;
 
 private:
-    shared_ptr< MouseImpl >  m_pImpl;
+    shared_ptr< GamepadImpl >  m_pImpl;
 };
 
 
@@ -45,4 +45,4 @@ private:
 
 }                                                      //namespace EpsilonDelta
 
-#endif //MOUSE_HPP
+#endif //GAMEPAD_HPP

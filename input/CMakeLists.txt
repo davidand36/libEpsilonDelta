@@ -7,36 +7,13 @@
 #
 
 set( sources
+     Input.cpp
+     InputDevice.cpp
      Keyboard.cpp
-     KeyboardState.cpp
      Mouse.cpp
-     MouseState.cpp
-     Joystick.cpp
-     JoystickState.cpp
+     Gamepad.cpp
+     Wiimote.cpp
    )
-
-if ( useSDL )
-    set( sources
-         ${sources}
-         SDLInput.cpp         
-       )
-    set( sources  ${sources} ${sdlSources} )
-endif ( useSDL )
-
-if ( useCWiiD )
-    set( sources
-         ${sources}
-         CWiiDWiimote.cpp
-         WiimoteState.cpp
-       )
-endif ( useCWiiD )
-if ( useWiiYourself )
-    set( sources
-         ${sources}
-         WiiYourselfWiimote.cpp
-         WiimoteState.cpp
-       )
-endif ( useWiiYourself )
 
 set( EpsilonDeltaLibs
      graphic2d mmbase time math util

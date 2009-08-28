@@ -1,14 +1,15 @@
-#ifndef INPUTEVENT_HPP
-#define INPUTEVENT_HPP
+#ifndef KEYBOARD_HPP
+#define KEYBOARD_HPP
 /*
-  InputEvent.hpp
-  Copyright (C) 2009 David M. Anderson
+  Keyboard.hpp
+  Copyright (C) 2007 David M. Anderson
 
-  InputEvent class:
+  Keyboard class: the keyboard input device.
 */
 
 
 #include "InputDevice.hpp"
+#include "KeyboardState.hpp"
 
 
 namespace EpsilonDelta
@@ -17,46 +18,46 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class InputEvent
+class Keyboard
+    :   public InputDevice
 {
 public:
-    InputEvent( const shared_ptr< InputDevice > device, int button );
+    virtual ~Keyboard( );
 
-    const shared_ptr< InputDevice > Device( ) const;
-    int Button( ) const;
+    virtual EDeviceType Type( ) const;
+    virtual std::string Name( ) const;
+
+    virtual const KeyboardState & State( );
 
 private:
-    const shared_ptr< InputDevice > m_device;
-    int                             m_button;
+    KeyboardState m_state;
 };
 
 
 //*****************************************************************************
 
 
-inline
-InputEvent::InputEvent( const shared_ptr< InputDevice > device, int button )
-    :   m_device( device ),
-        m_button( button )
+inline 
+Keyboard::~Keyboard( )
 {
 }
 
 //=============================================================================
 
 inline
-const shared_ptr< InputDevice > 
-InputEvent::Device( ) const
+InputDevice::EDeviceType 
+Keyboard::Type( ) const
 {
-    return m_device;
+    return KeyboardDevice;
 }
 
 //-----------------------------------------------------------------------------
 
 inline
-int 
-InputEvent::Button( ) const
+std::string 
+Keyboard::Name( ) const
 {
-    return m_button;
+    return "keyboard";
 }
 
 
@@ -64,4 +65,4 @@ InputEvent::Button( ) const
 
 }                                                      //namespace EpsilonDelta
 
-#endif //INPUTEVENT_HPP
+#endif //KEYBOARD_HPP

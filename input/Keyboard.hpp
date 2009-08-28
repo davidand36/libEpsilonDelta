@@ -2,14 +2,13 @@
 #define KEYBOARD_HPP
 /*
   Keyboard.hpp
-  Copyright (C) 2007 David M. Anderson
+  Copyright (C) 2009 David M. Anderson
 
-  Keyboard class: the keyboard input device.
+  Keyboard class: a standard keyboard.
 */
 
 
 #include "InputDevice.hpp"
-#include "KeyboardState.hpp"
 
 
 namespace EpsilonDelta
@@ -18,47 +17,25 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class Keyboard
-    :   public InputDevice
-{
-public:
-    virtual ~Keyboard( );
-
-    virtual EDeviceType Type( ) const;
-    virtual std::string Name( ) const;
-
-    virtual const KeyboardState & State( );
-
-private:
-    KeyboardState m_state;
-};
+class KeyboardImpl;
 
 
 //*****************************************************************************
 
 
-inline 
-Keyboard::~Keyboard( )
+class Keyboard
+    :   public InputDevice
 {
-}
+public:
+    Keyboard( const std::string & name );
+    virtual ~Keyboard( );
 
-//=============================================================================
+    virtual int NumButtons( ) const;
+    virtual bool ButtonDown( int button ) const;
 
-inline
-InputDevice::EDeviceType 
-Keyboard::Type( ) const
-{
-    return KeyboardDevice;
-}
-
-//-----------------------------------------------------------------------------
-
-inline
-std::string 
-Keyboard::Name( ) const
-{
-    return "keyboard";
-}
+private:
+    shared_ptr< KeyboardImpl >  m_pImpl;
+};
 
 
 //*****************************************************************************

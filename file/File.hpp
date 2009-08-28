@@ -60,10 +60,10 @@ public:
 #endif
 
 private:
-    std::string     m_fileName;
-    FileImpl *      m_pImpl;
+    std::string             m_fileName;
+    shared_ptr< FileImpl >  m_pImpl;
 
-    static Logger   ms_log;
+    static Logger           ms_log;
 };
 
 

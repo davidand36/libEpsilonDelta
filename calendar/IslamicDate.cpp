@@ -193,7 +193,7 @@ TestIslamicDate( )
                 { 2486077,   5,  3, 1518 }
             };
 
-    for ( int i = 0; i < ARRAYSIZE( testDatesArithmetic ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( testDatesArithmetic ); ++i )
     {
         jd = testDatesArithmetic[i].julianDay;
         d = testDatesArithmetic[i].day;
@@ -273,7 +273,7 @@ TestIslamicDate( )
                 { 2486077,   5,  3, 1518 }
             };
 
-    for ( int i = 0; i < ARRAYSIZE( testDatesShaukat1996 ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( testDatesShaukat1996 ); ++i )
     {
         jd = testDatesShaukat1996[i].julianDay;
         d = testDatesShaukat1996[i].day;
@@ -464,7 +464,7 @@ TestIslamicDate( )
                 { 10, 12, 1449,  5,  5, 2028 },
                 { 10, 12, 1450, 24,  4, 2029 }
             };
-    for ( int i = 0; i < ARRAYSIZE( testDatesUmmAlQura ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( testDatesUmmAlQura ); ++i )
     {
         int id = testDatesUmmAlQura[i].id;
         int im = testDatesUmmAlQura[i].im;
@@ -659,7 +659,7 @@ TestIslamicDate( )
                 { 10, 12, 1449,  5,  5, 2028 },
                 { 10, 12, 1450, 24,  4, 2029 }
             };
-    for ( int i = 0; i < ARRAYSIZE( testDatesISNA_Hijri ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( testDatesISNA_Hijri ); ++i )
     {
         int id = testDatesISNA_Hijri[i].id;
         int im = testDatesISNA_Hijri[i].im;

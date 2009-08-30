@@ -337,7 +337,7 @@ Surface::PrintInfo( ) const
                 { SDL_PREALLOC, "SDL_PREALLOC" },
             };
     bool first = true;
-    for ( int i = 0; i < ARRAYSIZE( flagTable ); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( flagTable ); ++i )
         if ( flags & flagTable[i].flag )
         {
             if ( ! first )

@@ -27,7 +27,7 @@ public:
                  Mouse     = 1 << 1,
                  Tablet    = 1 << 2,
                  Gamepad   = 1 << 3,
-                 Wiimote   = 1 << 8
+                 Wiimote   = 1 << 4
                };
 
     InputDevice( EType type, const std::string & name );

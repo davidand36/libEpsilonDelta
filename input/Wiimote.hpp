@@ -27,7 +27,7 @@ class Wiimote
     :   public InputDevice
 {
 public:
-    Wiimote( const std::string & name );
+    Wiimote( const std::string & name, shared_ptr< WiimoteImpl > pImpl );
     virtual ~Wiimote( );
 
     virtual int NumButtons( ) const;

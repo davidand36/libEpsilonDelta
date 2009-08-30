@@ -101,7 +101,7 @@ KeyboardImpl::ButtonDown( int button ) const
 {
     if ( (button < 0) || (button >= m_numKeys) )
         throw std::out_of_range( "Keyboard::ButtonDown()" );
-    return (int)m_keyArray[ button ];
+    return (m_keyArray[ button ] != 0);
 }
 
 //=============================================================================

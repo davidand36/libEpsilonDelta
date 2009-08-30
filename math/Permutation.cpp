@@ -591,7 +591,7 @@ Permutation::Test( )
     for ( int i = 0; i < 10; ++i )
     {
         //Not always true: TESTCHECK( perm0.Even(), ((i & 1) == 0), &ok );
-        TESTCHECK( perm0.Rank(), (uint16_t)i, &ok );
+        TESTCHECK( perm0.Rank(), (uint64_t)i, &ok );
         perm0.Next( );
     }
 

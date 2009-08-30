@@ -8,9 +8,11 @@
 
 #include "Wiimote.hpp"
 #include <vector>
-#ifdef USE_CWIID
+#if defined(USE_CWIID)
 #include <cwiid.h>
 #include <queue>
+#elif defined(USE_WIIYOURSELF)
+#include <wiimote.h>
 #endif
 using namespace std;
 
@@ -105,7 +107,7 @@ private:
 //=============================================================================
 
 
-const float s_PointerMeterSeparation = 250.f;
+const float s_PointerMeterSeparation = 250.f;   //!!!
 
 
 //=============================================================================
@@ -118,7 +120,11 @@ const float s_PointerMeterSeparation = 250.f;
 class WiimoteImpl
 {
 public:
-    WiimoteImpl( );
+#if defined(USE_CWIID)
+    WiimoteImpl( ::bdaddr_t * pBDaddr );
+#elif defined(USE_WIIYOURSELF)
+    WiimoteImpl( int index );
+#endif
     ~WiimoteImpl( );
 
     bool IsConnected( ) const;
@@ -142,8 +148,10 @@ public:
 
     void Update( );
 
+    static void FindAll( vector< shared_ptr< WiimoteImpl > > * pImpls );
+
 private:
-#ifdef USE_CWIID
+#if defined(USE_CWIID)
     struct CalibrationData
     {
         CalibrationData( );
@@ -178,6 +186,16 @@ private:
     GravityEstimator    m_gravityEstimator;
     GravityEstimator    m_nkGravityEstimator;
     Vector2I            m_pointerSeparation;
+
+#elif defined(USE_WIIYOURSELF)
+    void Connect( );
+
+    int             m_index;
+    ::wiimote       m_wyMote;
+    WiimoteState    m_state;
+    queue< int >    m_buttonQueue;
+    Vector2I        m_pointerSeparation;
+    static const int MaxWiimotes = 10;  //arbitrary, but plenty
 #endif
 };
 
@@ -185,11 +203,10 @@ private:
 //*****************************************************************************
 
 
-Wiimote::Wiimote( const std::string & name )
-    :   InputDevice( InputDevice::Wiimote, name ),
-        m_pImpl( new WiimoteImpl( ) )
+Wiimote::Wiimote( const std::string & name, shared_ptr< WiimoteImpl > pImpl )
+    :   InputDevice( InputDevice::Wiimote, pImpl->Name() ),
+        m_pImpl( pImpl )
 {
-    SetName( m_pImpl->Name() );
 }
 
 //-----------------------------------------------------------------------------
@@ -299,11 +316,15 @@ Wiimote::Gravity( int index ) const
 void 
 Wiimote::FindAll( std::vector< shared_ptr< Wiimote > > * pWiimotes )
 {
-    pWiimotes->clear( );
-    //!!!At most one, for now anyway.
-    Wiimote * pWiimote = new Wiimote( "Wiimote" );
-    if ( pWiimote->IsConnected() )
-        pWiimotes->push_back( shared_ptr< Wiimote >( pWiimote ) );
+    vector< shared_ptr< WiimoteImpl > > impls;
+    WiimoteImpl::FindAll( &impls );
+    for ( size_t i = 0; i < impls.size(); ++i )
+        if ( impls[ i ]->IsConnected() )
+        {
+            const string & name = impls[ i ]->Name();
+            shared_ptr< Wiimote > pWiimote( new Wiimote( name, impls[ i ] ) );
+            pWiimotes->push_back( pWiimote );
+        }
 }
 
 //=============================================================================
@@ -517,13 +538,13 @@ WiimoteState::SetNunchuk( bool connected,
 //*****************************************************************************
 
 
-#ifdef USE_CWIID
+#if defined(USE_CWIID)
 
 //*****************************************************************************
 
 
-WiimoteImpl::WiimoteImpl( )
-    :   m_bdaddr( *BDADDR_ANY ),
+WiimoteImpl::WiimoteImpl( ::bdaddr_t * pBDaddr )
+    :   m_bdaddr( pBDaddr ),
         m_pCWiiD( 0 )
 {
     m_pCWiiD = ::cwiid_open( &m_bdaddr, 0 );
@@ -802,6 +823,16 @@ WiimoteImpl::Update( )
 
 //=============================================================================
 
+void 
+WiimoteImpl::FindAll( vector< shared_ptr< WiimoteImpl > > * pImpls )
+{
+    //Just the default wiimote for now
+    shared_ptr< WiimoteImpl > pImpl( new WiimoteImpl( *BDADDR_ANY ) );
+    pImpls->push_back( pImpl );
+}
+
+//=============================================================================
+
 WiimoteImpl::CalibrationData::CalibrationData( )
     :   m_isCalibrated( false ),
         m_acc0( 134, 134, 134 ),
@@ -898,9 +929,313 @@ WiimoteImpl::GravityEstimator::operator()( const Vector3F & curAccel )
 }
 
 
+//*****************************************************************************
+
+
+#elif defined(USE_WIIYOURSELF)
+
+//*****************************************************************************
+
+
+WiimoteImpl::WiimoteImpl( int index )
+    :   m_index( index )
+{
+    Connect( );
+}
+
+//-----------------------------------------------------------------------------
+
+WiimoteImpl::~WiimoteImpl( )
+{
+    if ( m_wyMote.IsConnected() )
+        m_wyMote.Disconnect( );
+}
+
 //=============================================================================
 
-#endif //USE_CWIID
+void 
+WiimoteImpl::Connect( )
+{
+    m_wyMote.Connect( ::wiimote::FIRST_AVAILABLE );
+    if ( m_wyMote.IsConnected( ) )
+    {
+        m_wyMote.SetReportType( wiimote::IN_BUTTONS_ACCEL_IR_EXT );
+        m_pointerSeparation.Set( 300, 0 );    //!!!
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool 
+WiimoteImpl::IsConnected( ) const
+{
+    return m_wyMote.IsConnected();
+}
+
+//-----------------------------------------------------------------------------
+
+string 
+WiimoteImpl::Name( ) const
+{
+    return "Wii remote " + IntToString( m_index );
+}
+
+//=============================================================================
+
+int 
+WiimoteImpl::NumButtons( ) const
+{
+    int numButtons = 11;    //on main controller
+    if ( m_state.IsNunchukConnected() )
+        numButtons += 2;
+    return numButtons;
+}
+
+//-----------------------------------------------------------------------------
+
+bool 
+WiimoteImpl::ButtonDown( int button ) const
+{
+    return m_state.IsButtonDown( (WiimoteState::Button)button );
+}
+
+//=============================================================================
+
+bool 
+WiimoteImpl::WasButtonPressed( )
+{
+    return ! m_buttonQueue.empty();
+}
+
+//-----------------------------------------------------------------------------
+
+int 
+WiimoteImpl::GetButtonPressed( )
+{
+    Assert( ! m_buttonQueue.empty() );
+    int button = m_buttonQueue.front();
+    m_buttonQueue.pop( );
+    return button;
+}
+
+//=============================================================================
+
+int 
+WiimoteImpl::NumPointers( ) const
+{
+    return 1;
+}
+
+//-----------------------------------------------------------------------------
+
+Point2I 
+WiimoteImpl::Pointer( int index ) const
+{
+    Point2F propPos = m_state.PointerPos();
+    return Point2I( (int)(propPos.X() * 100), (int)(propPos.Y() * 100) ); //!!!
+}
+
+//=============================================================================
+
+int 
+WiimoteImpl::NumAxes( ) const
+{
+    int numAxes = 0;
+    if ( m_state.IsNunchukConnected() )
+        numAxes += 2;
+    return numAxes;
+}
+
+//-----------------------------------------------------------------------------
+
+double 
+WiimoteImpl::Axis( int index ) const
+{
+    if ( (index >= 0) && (index < NumAxes()) )
+        return m_state.NunchukJoystickPos().At( index );
+    else
+        throw std::out_of_range( "Wiimote::Axis()" );
+}
+
+//=============================================================================
+
+int 
+WiimoteImpl::NumAccelerometers( ) const
+{
+    int numAcc = 1;
+    if ( m_state.IsNunchukConnected() )
+        numAcc += 1;
+    return numAcc;
+}
+
+//-----------------------------------------------------------------------------
+
+Vector3D 
+WiimoteImpl::Acceleration( int index ) const
+{
+    Vector3F accF;
+    if ( index == 0 )
+        accF = m_state.Acceleration();
+    else if ( (index == 1) && m_state.IsNunchukConnected() )
+        accF = m_state.NunchukAcceleration();
+    else
+        throw std::out_of_range( "Wiimote::Acceleration()" );
+    return Vector3D( accF.X(), accF.Y(), accF.Z() );
+}
+
+//-----------------------------------------------------------------------------
+
+Vector3D 
+WiimoteImpl::Gravity( int index ) const
+{
+    Vector3F gravF;
+    if ( index == 0 )
+        gravF = m_state.Gravity();
+    else if ( (index == 1) && m_state.IsNunchukConnected() )
+        gravF = m_state.NunchukGravity();
+    else
+        throw std::out_of_range( "Wiimote::Gravity()" );
+    return Vector3D( gravF.X(), gravF.Y(), gravF.Z() );
+}
+
+//=============================================================================
+
+void
+WiimoteImpl::Update( )
+{
+    WiimoteState prevState = m_state;
+
+    if ( m_wyMote.RefreshState() == ::NO_CHANGE )
+        return;
+    if ( (! m_wyMote.IsConnected()) || m_wyMote.ConnectionLost() )
+    {
+        Connect( );
+        if ( ! m_wyMote.IsConnected() )
+            return;
+    }
+
+    uint32_t buttons = 0;
+    static const uint16_t wyButtons[]
+            = { ::wiimote_state::buttons::_A, ::wiimote_state::buttons::_B,
+                ::wiimote_state::buttons::UP, ::wiimote_state::buttons::DOWN,
+                ::wiimote_state::buttons::LEFT, ::wiimote_state::buttons::RIGHT,
+                ::wiimote_state::buttons::MINUS, ::wiimote_state::buttons::PLUS,
+                ::wiimote_state::buttons::HOME, ::wiimote_state::buttons::ONE,
+                ::wiimote_state::buttons::TWO };
+    for ( int i = WiimoteState::A_Button; i <= WiimoteState::Two_Button; ++i )
+        if ( (m_wyMote.Button.Bits & wyButtons[ i ]) != 0 )
+            buttons |= (1 << i);
+    if (  m_wyMote.ExtensionType == ::wiimote_state::NUNCHUK )
+    {
+        if ( m_wyMote.Nunchuk.C )
+            buttons |= (1 << WiimoteState::C_Button);
+        if ( m_wyMote.Nunchuk.Z )
+            buttons |= (1 << WiimoteState::Z_Button);
+    }
+    m_state.SetButtons( buttons );
+    for ( int i = 0; i < WiimoteState::NumButtons; ++i )
+    {
+        WiimoteState::Button b = WiimoteState::Button( i );
+        if ( m_state.IsButtonDown( b ) && ! prevState.IsButtonDown( b ) )
+            m_buttonQueue.push( b );
+    }
+
+    Vector3F acceleration( -m_wyMote.Acceleration.X,
+                           -m_wyMote.Acceleration.Z,
+                           m_wyMote.Acceleration.Y );
+    m_state.SetAcceleration( acceleration );
+    Vector3F gravity( -m_wyMote.Acceleration.Orientation.X,
+                      -m_wyMote.Acceleration.Orientation.Z,
+                      m_wyMote.Acceleration.Orientation.Y );
+    m_state.SetGravity( gravity );
+
+    int numPointerLights = 0;
+    Point2I lights[ 2 ];
+    if ( m_wyMote.IR.Dot[ 0 ].bVisible )
+    {
+        ++numPointerLights;
+        lights[ 0 ].Set( m_wyMote.IR.Dot[ 0 ].RawX,
+                         m_wyMote.IR.Dot[ 0 ].RawY );
+        if ( m_wyMote.IR.Dot[ 1 ].bVisible )
+        {
+            ++numPointerLights;
+            lights[ 1 ].Set( m_wyMote.IR.Dot[ 1 ].RawX,
+                             m_wyMote.IR.Dot[ 1 ].RawY );
+            m_pointerSeparation = lights[ 1 ] - lights[ 0 ];
+        }
+    }
+    else if ( m_wyMote.IR.Dot[ 1 ].bVisible )
+    {
+        ++numPointerLights;
+        lights[ 1 ].Set( m_wyMote.IR.Dot[ 1 ].RawX,
+                         m_wyMote.IR.Dot[ 1 ].RawY );
+        lights[ 0 ] = lights[ 1 ] - m_pointerSeparation;  //best guess
+    }
+    if ( numPointerLights == 0 )
+    {
+        m_state.SetPointer( 0 );
+    }
+    else
+    {
+        Vector2I halfSep( m_pointerSeparation.X() / 2,
+                          m_pointerSeparation.Y() / 2 );
+        Point2I rawMiddle = lights[ 0 ] + halfSep;
+        float midX = 1.f -
+                ((float) rawMiddle.X() / ::wiimote_state::ir::MAX_RAW_X);
+        midX = max( 0.f, min( 1.f, midX ) );
+        float midY = (float) rawMiddle.Y() / ::wiimote_state::ir::MAX_RAW_Y;
+        midY = max( 0.f, min( 1.f, midY ) );
+        Point2F scaledMiddle( midX, midY );
+        if ( numPointerLights == 1 )
+        {
+            m_state.SetPointer( 1, scaledMiddle );
+        }
+        else //numPointerLights == 2
+        {
+            Angle angle = ArcTan( m_pointerSeparation.Y(),
+                                  m_pointerSeparation.X() );
+            Vector2F pointerSeparation( (float)m_pointerSeparation.X(),
+                                        (float)m_pointerSeparation.Y() );
+            float sepLen = pointerSeparation.Length();
+            float distance = s_PointerMeterSeparation / sepLen;
+            m_state.SetPointer( 2, scaledMiddle, angle, distance );
+        }
+    }
+
+    if (  m_wyMote.ExtensionType == ::wiimote_state::NUNCHUK )
+    {
+        acceleration.Set( -m_wyMote.Nunchuk.Acceleration.X,
+                          -m_wyMote.Nunchuk.Acceleration.Z,
+                          m_wyMote.Nunchuk.Acceleration.Y );
+        gravity.Set( -m_wyMote.Nunchuk.Acceleration.Orientation.X,
+                     -m_wyMote.Nunchuk.Acceleration.Orientation.Z,
+                     m_wyMote.Nunchuk.Acceleration.Orientation.Y );
+        Point2F joystick( m_wyMote.Nunchuk.Joystick.X,
+                          m_wyMote.Nunchuk.Joystick.Y );
+        m_state.SetNunchuk( true, acceleration, gravity, joystick );
+    }
+    else
+    {
+        m_state.SetNunchuk( false );
+    }
+}
+
+//=============================================================================
+
+void 
+WiimoteImpl::FindAll( vector< shared_ptr< WiimoteImpl > > * pImpls )
+{
+    for ( int i = 0; i < MaxWiimotes; ++i )
+    {
+        shared_ptr< WiimoteImpl > pImpl( new WiimoteImpl( i ) );
+        pImpls->push_back( pImpl );
+    }
+}
+
+
+//*****************************************************************************
+
+#endif //USE_CWIID, USE_WIIYOURSLEF
 
 
 //*****************************************************************************

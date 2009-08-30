@@ -283,6 +283,9 @@ DeviceTypeName( InputDevice::Type type )
         return "Gamepad";
     case InputDevice::Wiimote:
         return "Wiimote";
+    default:
+        Assert( 0 && "Unexpected input device type" );
+        return "Undefined";
     }
 }
 
@@ -365,7 +368,7 @@ InputImpl::Shutdown( )
     m_joysticks.clear();
     m_pMouse.reset();
     m_pKeyboard.reset();
-    if ( Input::Instance().IgnoreTypes() & InputDevice::Gamepad == 0 )
+    if ( (Input::Instance().IgnoreTypes() & InputDevice::Gamepad) == 0 )
         if ( ::SDL_WasInit( SDL_INIT_JOYSTICK ) != 0 )
             ::SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
 }
@@ -462,10 +465,10 @@ InputImpl::Device( int index ) const
     if ( index == 1 )
         return m_pMouse;
     index -= 2;
-    if ( index < m_joysticks.size() )
+    if ( index < (int)m_joysticks.size() )
         return m_joysticks[ index ];
     index -= m_joysticks.size();
-    if ( index < m_wiimotes.size() )
+    if ( index < (int)m_wiimotes.size() )
         return m_wiimotes[ index ];
     throw std::out_of_range( "Input::Device()" );
 }

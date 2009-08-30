@@ -484,7 +484,7 @@ File::Test( )
     TESTCHECK( File::Save( testDataFileName, buff ), true, &ok );
     TESTCHECK( File::Exists( testDataFileName ), true, &ok );
     TESTCHECK( File::Size( testDataFileName ),
-               static_cast<int>(ARRAYSIZE( testData )), &ok );
+               static_cast<int>(ARRAY_LENGTH( testData )), &ok );
     DateTime now( true );
     DateTime then = now;
     then.Increment( 0, 0, 0, 0, -1 );   //1 minute ago
@@ -493,8 +493,8 @@ File::Test( )
     buff.Clear( );
     TESTCHECK( File::Load( testDataFileName, &buff ), true, &ok );
     const vector< char > & testData1 = buff.Buffer();
-    TESTCHECK( testData1.size(), ARRAYSIZE( testData ), &ok );
-    TESTCHECK( memcmp( &testData1[0], testData, ARRAYSIZE( testData ) ),
+    TESTCHECK( testData1.size(), ARRAY_LENGTH( testData ), &ok );
+    TESTCHECK( memcmp( &testData1[0], testData, ARRAY_LENGTH( testData ) ),
                0, &ok );
     TESTCHECK( File::Delete( testDataFileName ), true, &ok );
     TESTCHECK( File::Exists( testDataFileName ), false, &ok );

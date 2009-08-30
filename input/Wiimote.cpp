@@ -13,6 +13,7 @@
 #ifdef USE_CWIID
 #include <cwiid.h>
 #include <queue>
+#include <unistd.h>
 #endif
 using namespace std;
 
@@ -510,15 +511,21 @@ WiimoteImpl::WiimoteImpl( )
     :   m_bdaddr( *BDADDR_ANY ),
         m_pCWiiD( 0 )
 {
-    m_pCWiiD = ::cwiid_open( &m_bdaddr, 0 );
-    if ( m_pCWiiD != 0 )
+    for ( int i = 0; i < 2; ++i )
     {
-        uint8_t reportMode = CWIID_RPT_STATUS | CWIID_RPT_BTN | CWIID_RPT_ACC |
-                CWIID_RPT_IR | CWIID_RPT_NUNCHUK;
-        int rptRslt = ::cwiid_set_rpt_mode( m_pCWiiD, reportMode );
-        Assert( rptRslt == 0 ); //!!!
-        GetCalibrationData( );
-        m_pointerSeparation.Set( 300, 0 );    //!!!
+        m_pCWiiD = ::cwiid_open( &m_bdaddr, 0 );
+        if ( m_pCWiiD != 0 )
+        {
+            uint8_t reportMode = CWIID_RPT_STATUS | CWIID_RPT_BTN
+                    | CWIID_RPT_ACC | CWIID_RPT_IR | CWIID_RPT_NUNCHUK;
+            int rptRslt = ::cwiid_set_rpt_mode( m_pCWiiD, reportMode );
+            Assert( rptRslt == 0 ); //!!!
+            GetCalibrationData( );
+            m_pointerSeparation.Set( 300, 0 );    //!!!
+            break;
+        }
+        const double delay = 1;
+        ::sleep( delay );
     }
 }
 

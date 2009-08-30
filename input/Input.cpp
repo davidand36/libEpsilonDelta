@@ -49,6 +49,7 @@ public:
 
 private:
 #ifdef USE_SDL
+    bool                                m_initialized;
     //Under SDL there are exactly one keyboard and one mouse, which is true for
     // modern PCs, but not for many game consoles, phones, etc.
     shared_ptr< Keyboard >              m_pKeyboard;
@@ -192,17 +193,37 @@ Input::Test( )
         input.Init( );
 
         cout << "Number of devices: " << input.NumDevices() << endl;
+        cout << "Index\tType\t\tButtons\tPnters\tAxes\tAccels\tName" << endl;
         for ( int i = 0; i < input.NumDevices(); ++i )
         {
             const shared_ptr< InputDevice > pDev =  input.Device( i );
             Assert( pDev != 0 );
-            cout << i << ")" << " Type=" << DeviceTypeName( pDev->Type() )
-                 << " Name=\"" << pDev->Name() << "\""
-                 << " NumButtons=" << pDev->NumButtons()
-                 << " NumPointers=" << pDev->NumPointers()
-                 << " NumAxes=" << pDev->NumAxes()
-                 << " NumAccels=" << pDev->NumAccelerometers()
-                 << endl;
+            cout << i << "\t" << DeviceTypeName( pDev->Type() ) << "   "
+                 << "\t" << pDev->NumButtons() << "\t" << pDev->NumPointers()
+                 << "\t" << pDev->NumAxes() << "\t" << pDev->NumAccelerometers()
+                 << "\t" << pDev->Name() << endl;
+        }
+        cout << endl;
+
+        cout << "Shutdown()" << endl;
+        input.Shutdown( );
+
+        cout << "Init()" << endl;
+        input.Init( );
+        cout << "Init() again" << endl;
+        input.Init( );
+        cout << endl;
+
+        cout << "Number of devices: " << input.NumDevices() << endl;
+        cout << "Index\tType\t\tButtons\tPnters\tAxes\tAccels\tName" << endl;
+        for ( int i = 0; i < input.NumDevices(); ++i )
+        {
+            const shared_ptr< InputDevice > pDev =  input.Device( i );
+            Assert( pDev != 0 );
+            cout << i << "\t" << DeviceTypeName( pDev->Type() ) << "   "
+                 << "\t" << pDev->NumButtons() << "\t" << pDev->NumPointers()
+                 << "\t" << pDev->NumAxes() << "\t" << pDev->NumAccelerometers()
+                 << "\t" << pDev->Name() << endl;
         }
         cout << endl;
 
@@ -302,6 +323,7 @@ DeviceTypeName( InputDevice::EType type )
 
 
 InputImpl::InputImpl( )
+    :   m_initialized( false )
 {
     SDL::Instance();    //to force construction
 }
@@ -317,10 +339,17 @@ InputImpl::~InputImpl( )
 void 
 InputImpl::Init( )
 {
+    if ( m_initialized )
+        return;
+    m_initialized = true;
+
     uint32_t ignoreTypes = Input::Instance().IgnoreTypes();
 
 #ifdef SUPPORT_WIIMOTE
-    Wiimote::FindAll( &m_wiimotes );
+    if ( (ignoreTypes & InputDevice::Wiimote) == 0 )
+    {
+        Wiimote::FindAll( &m_wiimotes );
+    }
 #endif
 
     SDL::Instance().Init( );
@@ -362,12 +391,13 @@ InputImpl::Init( )
 void 
 InputImpl::Shutdown( )
 {
+    m_wiimotes.clear();
     m_joysticks.clear();
     m_pMouse.reset();
     m_pKeyboard.reset();
-    if ( Input::Instance().IgnoreTypes() & InputDevice::Gamepad == 0 )
-        if ( ::SDL_WasInit( SDL_INIT_JOYSTICK ) != 0 )
-            ::SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
+    if ( ::SDL_WasInit( SDL_INIT_JOYSTICK ) != 0 )
+        ::SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
+    m_initialized = false;
 }
 
 //=============================================================================

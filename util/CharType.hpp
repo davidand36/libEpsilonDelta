@@ -8,6 +8,8 @@
   NOTES:
   1. These are intended as a short-term solution to handling Unicode characters
      outside the ASCII range.
+  2. Only values less than WCharTypeTableLimt are handled by the wchar_t
+     routines. Larger values result in an Assert.
 */
 
 
@@ -48,6 +50,8 @@ bool IsAlNum( wchar_t ch );
 wchar_t ToUpper( wchar_t ch );
 wchar_t ToLower( wchar_t ch );
 char ToASCII( wchar_t ch );
+
+extern const int WCharTypeTableLimit;
 
 
 //*****************************************************************************

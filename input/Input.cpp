@@ -232,6 +232,7 @@ Input::Test( )
         }
         cout << endl;
 
+        cout << "Ready to report events." << endl;
         Timer realTime;
         while ( true )
         {
@@ -241,8 +242,11 @@ Input::Test( )
             {
                 const shared_ptr< InputDevice > pDev = pEvent->Device();
                 int button = pEvent->Button();
-                cout << "Button=" << button
-                     << "  Device: Type=" << DeviceTypeName( pDev->Type() )
+                cout << "Button=" << button;
+                if ( (pDev->Type() == InputDevice::Keyboard)
+                     && (button <= 0xFF) && IsPrint( (char)button ) )
+                    cout << " (" << (char)button << ")";
+                cout << "  Device: Type=" << DeviceTypeName( pDev->Type() )
                      << " Name=\"" << pDev->Name() << "\"" << endl;
                 cout << "  Buttons down: ";
                 for ( int i = 0; i < pDev->NumButtons(); ++i )
@@ -273,8 +277,38 @@ Input::Test( )
                 }
             }
             if ( realTime.Seconds( ) > 60. )
+            {
+                cout << "Time's up" << endl;
                 break;
+            }
         }
+
+        realTime.Reset();
+        cout << "SetTextInput( true )" << endl;
+        input.SetTextInput( true );
+        while ( true )
+        {
+            input.Update( );
+            const shared_ptr< InputEvent > pEvent = input.CheckEvent( );
+            if ( pEvent )
+            {
+                if ( pEvent->Device()->Type() == InputDevice::Keyboard )
+                {
+                    int button = pEvent->Button();
+                    wcout << button;
+                    if ( (button < WCharTypeTableLimit)
+                         && IsPrint( (wchar_t)button ) )
+                        wcout << " (" << (wchar_t)button << ")";
+                    wcout << endl;
+                }
+            }            
+            if ( realTime.Seconds( ) > 60. )
+            {
+                cout << endl << "Time's up" << endl;
+                break;
+            }
+        }
+        wcout << endl;
     }
     catch ( SDLException & except )
     {
@@ -331,7 +365,8 @@ DeviceTypeName( InputDevice::EType type )
 
 
 InputImpl::InputImpl( )
-    :   m_initialized( false )
+    :   m_initialized( false ),
+        m_textInput( false )
 {
     SDL::Instance();    //to force construction
 }

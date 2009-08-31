@@ -321,6 +321,8 @@ IsUpper( wchar_t ch )
     if ( ch < 128 )
         return ( isupper( ch ) != 0 );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return false;
     return ((WCharTypeTable[ ch - 128 ] & UpperCTBit) != 0);
 }
 
@@ -332,6 +334,8 @@ IsLower( wchar_t ch )
     if ( ch < 128 )
         return ( islower( ch ) != 0 );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return false;
     return ((WCharTypeTable[ ch - 128 ] & LowerCTBit) != 0);
 }
 
@@ -343,6 +347,8 @@ IsAlpha( wchar_t ch )
     if ( ch < 128 )
         return ( isalpha( ch ) != 0 );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return false;
     return ((WCharTypeTable[ ch - 128 ]
              & (UpperCTBit | LowerCTBit | OtherAlphaCTBit)) != 0);
 }
@@ -417,6 +423,8 @@ IsPunct( wchar_t ch )
     if ( ch < 128 )
         return ( ispunct( ch ) != 0 );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return false;
     return ((WCharTypeTable[ ch - 128 ] & PunctCTBit) != 0);
 }
 
@@ -444,6 +452,8 @@ ToUpper( wchar_t ch )
     if ( ch < 128 )
         return static_cast< wchar_t >( toupper( ch ) );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return ch;
     wchar_t u = ToUpperTable[ ch - 128 ];
     return ( u  ?  u  :  ch );
 }
@@ -456,6 +466,8 @@ ToLower( wchar_t ch )
     if ( ch < 128 )
         return static_cast< wchar_t >( tolower( ch ) );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return ch;
     wchar_t l = ToLowerTable[ ch - 128 ];
     return ( l  ?  l  :  ch );
 }
@@ -468,6 +480,8 @@ ToASCII( wchar_t ch )
     if ( ch < 128 )
         return static_cast< char >( ch );
     Assert( ch < WCharTypeTableLimit );
+    if ( ch >= WCharTypeTableLimit )
+        return '_';
     return ToASCIITable[ ch - 128 ];
 }
 

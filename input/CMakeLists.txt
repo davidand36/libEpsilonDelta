@@ -13,6 +13,7 @@ set( sources
      Mouse.cpp
      Gamepad.cpp
      Wiimote.cpp
+     DeviceOwners.cpp
    )
 
 set( EpsilonDeltaLibs

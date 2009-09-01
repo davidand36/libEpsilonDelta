@@ -242,7 +242,7 @@ Input::Test( )
             {
                 const shared_ptr< InputDevice > pDev = pEvent->Device();
                 int button = pEvent->Button();
-                cout << "Button=" << button;
+                cout << "Button=" << hex << button;
                 if ( (pDev->Type() == InputDevice::Keyboard)
                      && (button <= 0xFF) && IsPrint( (char)button ) )
                     cout << " (" << (char)button << ")";
@@ -251,7 +251,7 @@ Input::Test( )
                 cout << "  Buttons down: ";
                 for ( int i = 0; i < pDev->NumButtons(); ++i )
                     if ( pDev->ButtonDown( i ) )
-                        cout << i << " ";
+                        cout << hex << i << " ";
                 cout << endl;
                 if ( pDev->NumPointers() > 0 )
                 {
@@ -295,13 +295,13 @@ Input::Test( )
                 if ( pEvent->Device()->Type() == InputDevice::Keyboard )
                 {
                     int button = pEvent->Button();
-                    wcout << button;
                     if ( (button < WCharTypeTableLimit)
                          && IsPrint( (wchar_t)button ) )
-                        wcout << " (" << (wchar_t)button << ")";
-                    wcout << endl;
+                        wcout << (wchar_t)button << flush;
+                    else if ( button > 0 )
+                        cout << "[" << hex << button << "]" << flush;
                 }
-            }            
+            }
             if ( realTime.Seconds( ) > 60. )
             {
                 cout << endl << "Time's up" << endl;

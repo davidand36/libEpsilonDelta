@@ -202,7 +202,7 @@ Wiimote::~Wiimote( )
 //=============================================================================
 
 bool 
-Wiimote::IsConnected( )
+Wiimote::IsConnected( ) const
 {
     return m_pImpl->IsConnected( );
 }

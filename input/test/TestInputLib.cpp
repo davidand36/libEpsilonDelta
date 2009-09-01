@@ -6,15 +6,16 @@
 */
 
 
-#include <cstdio>
-#include <iostream>
+#include "Input.hpp"
+#include "DeviceOwners.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
 #include "TestCheck.hpp"
 #if USE_SDL
 #include "Graphics2D.hpp"
 #endif
-#include "Input.hpp"
+#include <cstdio>
+#include <iostream>
 using namespace std;
 using namespace EpsilonDelta;
 
@@ -60,6 +61,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     Graphics2D::Instance().Init( );
     Graphics2D::Instance().SetupScreen( 640, 480, "Test Input Lib" );
 
+    if ( ! DeviceOwners::Test( ) )
+        ok = false;
     if ( ! Input::Test( ) )
         ok = false;
 #endif //DEBUG

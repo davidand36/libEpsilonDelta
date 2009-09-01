@@ -64,7 +64,7 @@ public:
 
 private:
     virtual void Update( );
-    bool IsConnected( );
+    bool IsConnected( ) const;
     bool WasButtonPressed( );
     int GetButtonPressed( );
 

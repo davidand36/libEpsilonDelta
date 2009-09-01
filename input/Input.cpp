@@ -39,10 +39,10 @@ public:
     void Shutdown( );
 
     void Update( );
-    const shared_ptr< InputEvent > CheckEvent( );
+    shared_ptr< InputEvent const > CheckEvent( );
 
     int NumDevices( ) const;
-    const shared_ptr< InputDevice > Device( int index ) const;
+    shared_ptr< InputDevice const > Device( int index ) const;
     int DeviceIndex( InputDevice::EType type ) const;
 
     void SetTextInput( bool on );
@@ -104,7 +104,7 @@ Input::Update( )
 
 //=============================================================================
 
-const shared_ptr< InputEvent > 
+shared_ptr< InputEvent const > 
 Input::CheckEvent( )
 {
     return m_pImpl->CheckEvent( );
@@ -120,7 +120,7 @@ Input::NumDevices( ) const
 
 //-----------------------------------------------------------------------------
 
-const shared_ptr< InputDevice >
+shared_ptr< InputDevice const >
 Input::Device( int index ) const
 {
     return m_pImpl->Device( index );
@@ -196,7 +196,7 @@ Input::Test( )
         cout << "Index\tType\t\tButtons\tPnters\tAxes\tAccels\tName" << endl;
         for ( int i = 0; i < input.NumDevices(); ++i )
         {
-            const shared_ptr< InputDevice > pDev =  input.Device( i );
+            shared_ptr< InputDevice const > pDev =  input.Device( i );
             Assert( pDev != 0 );
             cout << i << "\t" << DeviceTypeName( pDev->Type() ) << "   "
                  << "\t" << pDev->NumButtons() << "\t" << pDev->NumPointers()
@@ -212,7 +212,7 @@ Input::Test( )
         input.Init( );
         for ( int i = 0; i < input.NumDevices(); ++i )
         {
-            const shared_ptr< InputDevice > pDev =  input.Device( i );
+            shared_ptr< InputDevice const > pDev =  input.Device( i );
             Assert( pDev != 0 );
         }
         cout << "Init() again" << endl;
@@ -223,7 +223,7 @@ Input::Test( )
         cout << "Index\tType\t\tButtons\tPnters\tAxes\tAccels\tName" << endl;
         for ( int i = 0; i < input.NumDevices(); ++i )
         {
-            const shared_ptr< InputDevice > pDev =  input.Device( i );
+            shared_ptr< InputDevice const > pDev =  input.Device( i );
             Assert( pDev != 0 );
             cout << i << "\t" << DeviceTypeName( pDev->Type() ) << "   "
                  << "\t" << pDev->NumButtons() << "\t" << pDev->NumPointers()
@@ -237,10 +237,10 @@ Input::Test( )
         while ( true )
         {
             input.Update( );
-            const shared_ptr< InputEvent > pEvent = input.CheckEvent( );
+            shared_ptr< InputEvent const > pEvent = input.CheckEvent( );
             if ( pEvent )
             {
-                const shared_ptr< InputDevice > pDev = pEvent->Device();
+                shared_ptr< InputDevice const > pDev = pEvent->Device();
                 int button = pEvent->Button();
                 cout << "Button=" << hex << button;
                 if ( (pDev->Type() == InputDevice::Keyboard)
@@ -289,7 +289,7 @@ Input::Test( )
         while ( true )
         {
             input.Update( );
-            const shared_ptr< InputEvent > pEvent = input.CheckEvent( );
+            shared_ptr< InputEvent const > pEvent = input.CheckEvent( );
             if ( pEvent )
             {
                 if ( pEvent->Device()->Type() == InputDevice::Keyboard )
@@ -458,7 +458,7 @@ InputImpl::Update( )
 
 //=============================================================================
 
-const shared_ptr< InputEvent > 
+shared_ptr< InputEvent const > 
 InputImpl::CheckEvent( )
 {
     ::SDL_Event sdlEvent;
@@ -469,33 +469,35 @@ InputImpl::CheckEvent( )
         {
         case SDL_KEYDOWN:
         {
-            shared_ptr< Keyboard > pDevice = m_pKeyboard;
+            shared_ptr< Keyboard const > pDevice = m_pKeyboard;
             int key = 0;
             if ( m_textInput )
                 key = sdlEvent.key.keysym.unicode;
             else
                 key = sdlEvent.key.keysym.sym;
-            return shared_ptr< InputEvent >( new InputEvent( pDevice, key ) );
+            return shared_ptr< InputEvent const >(
+                new InputEvent( pDevice, key ) );
         }
         case SDL_MOUSEBUTTONDOWN:
         {
-            shared_ptr< Mouse > pDevice = m_pMouse;
+            shared_ptr< Mouse const > pDevice = m_pMouse;
             int button = sdlEvent.button.button;
-            return shared_ptr< InputEvent >(
+            return shared_ptr< InputEvent const >(
                 new InputEvent( pDevice, button ) );
         }
         case SDL_JOYBUTTONDOWN:
         {
             Assert( sdlEvent.jbutton.which < m_joysticks.size() );
-            shared_ptr< Gamepad > pDevice
+            shared_ptr< Gamepad const > pDevice
                     = m_joysticks[ sdlEvent.jbutton.which ];
             int key = sdlEvent.jbutton.button;
-            return shared_ptr< InputEvent >( new InputEvent( pDevice, key ) );
+            return shared_ptr< InputEvent const >(
+                new InputEvent( pDevice, key ) );
         }
         case SDL_QUIT:
         {
             Input::Instance().HandleQuit( );
-            return shared_ptr< InputEvent >( );
+            return shared_ptr< InputEvent const >( );
         }
         default:
             break;
@@ -508,12 +510,12 @@ InputImpl::CheckEvent( )
         if ( pWiimote->WasButtonPressed() )
         {
             int button = pWiimote->GetButtonPressed( );
-            return shared_ptr< InputEvent >(
+            return shared_ptr< InputEvent const >(
                 new InputEvent( pWiimote, button ) );
         }
     }
 #endif
-    return shared_ptr< InputEvent >( );
+    return shared_ptr< InputEvent const >( );
 }
 
 //=============================================================================
@@ -526,7 +528,7 @@ InputImpl::NumDevices( ) const
 
 //-----------------------------------------------------------------------------
 
-const shared_ptr< InputDevice >
+shared_ptr< InputDevice const >
 InputImpl::Device( int index ) const
 {
     if ( index < 0 )

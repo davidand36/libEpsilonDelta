@@ -20,13 +20,13 @@ namespace EpsilonDelta
 class InputEvent
 {
 public:
-    InputEvent( const shared_ptr< InputDevice > device, int button );
+    InputEvent( shared_ptr< InputDevice const > device, int button );
 
-    const shared_ptr< InputDevice > Device( ) const;
+    shared_ptr< InputDevice const > Device( ) const;
     int Button( ) const;
 
 private:
-    const shared_ptr< InputDevice > m_device;
+    shared_ptr< InputDevice const > m_device;
     int                             m_button;
 };
 
@@ -35,7 +35,7 @@ private:
 
 
 inline
-InputEvent::InputEvent( const shared_ptr< InputDevice > device, int button )
+InputEvent::InputEvent( shared_ptr< InputDevice const > device, int button )
     :   m_device( device ),
         m_button( button )
 {
@@ -44,7 +44,7 @@ InputEvent::InputEvent( const shared_ptr< InputDevice > device, int button )
 //=============================================================================
 
 inline
-const shared_ptr< InputDevice > 
+shared_ptr< InputDevice const > 
 InputEvent::Device( ) const
 {
     return m_device;

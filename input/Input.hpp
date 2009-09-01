@@ -42,10 +42,10 @@ public:
     void Shutdown( );
 
     void Update( );
-    const shared_ptr< InputEvent > CheckEvent( );
+    shared_ptr< InputEvent const > CheckEvent( );
 
     int NumDevices( ) const;
-    const shared_ptr< InputDevice > Device( int index ) const;
+    shared_ptr< InputDevice const > Device( int index ) const;
     int DeviceIndex( InputDevice::EType type ) const;
 
     typedef void (*QuitHandler)( );

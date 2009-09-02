@@ -14,6 +14,7 @@ set( sources
      Gamepad.cpp
      Wiimote.cpp
      DeviceOwners.cpp
+     InputEventMap.cpp
    )
 
 set( EpsilonDeltaLibs

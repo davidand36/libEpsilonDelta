@@ -8,6 +8,7 @@
 
 #include "Input.hpp"
 #include "DeviceOwners.hpp"
+#include "InputEventMap.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
 #include "TestCheck.hpp"
@@ -62,6 +63,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     Graphics2D::Instance().SetupScreen( 640, 480, "Test Input Lib" );
 
     if ( ! DeviceOwners::Test( ) )
+        ok = false;
+    if ( ! InputEventMap::Test( ) )
         ok = false;
     if ( ! Input::Test( ) )
         ok = false;

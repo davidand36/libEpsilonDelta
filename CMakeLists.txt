@@ -26,25 +26,9 @@ set( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules )
 include( CheckIncludeFile )
 include( CheckLibraryExists )
 
-if ( ${MSVC} )
-    add_definitions( -D_USE_MATH_DEFINES )
-    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
-    add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-endif ( ${MSVC} )
-
-option( release  "Build for release"  false )
-if ( release )
-   add_definitions( -DNDEBUG )
-   #!!!optimizations
-else ( release )
+if ( ${CMAKE_BUILD_TYPE} MATCHES Debug )
    add_definitions( -DDEBUG )
-   #!!!debug data
-endif ( release )
-
-option( profile  "Build for profiling"  false )
-if ( profile )
-    #!!!compiler settings
-endif ( profile )
+endif ( ${CMAKE_BUILD_TYPE} MATCHES Debug )
 
 #!!! STLport
 
@@ -135,6 +119,12 @@ if ( supportWiimote )
 endif ( supportWiimote )
 
 add_definitions( -DBITSPERPIXEL=32 )    #!!!
+
+if ( ${MSVC} )
+    add_definitions( -D_USE_MATH_DEFINES )
+    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+    add_definitions( -D_SCL_SECURE_NO_WARNINGS )
+endif ( ${MSVC} )
 
 
 set( LIBRARY_OUTPUT_PATH  ${CMAKE_SOURCE_DIR} )

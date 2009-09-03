@@ -45,6 +45,29 @@ InputDeviceMap::Set( shared_ptr< InputDevice const > pDevice, int owner )
     m_ownedDevices.push_back( ownedDev );
 }
 
+//-----------------------------------------------------------------------------
+
+void 
+InputDeviceMap::Remove( shared_ptr< InputDevice const > pDevice )
+{
+    for ( vector< OwnedDevice >::iterator pOwnedDev = m_ownedDevices.begin();
+          pOwnedDev != m_ownedDevices.end(); )
+    {
+        if ( pOwnedDev->m_pDevice == pDevice )
+            pOwnedDev = m_ownedDevices.erase( pOwnedDev );
+        else
+            ++pOwnedDev;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void 
+InputDeviceMap::Reset( )
+{
+    m_ownedDevices.clear( );
+}
+
 //=============================================================================
 
 int 
@@ -66,29 +89,6 @@ InputDeviceMap::Devices( int owner ) const
         if ( m_ownedDevices[ i ].m_owner == owner )
             devices.push_back( m_ownedDevices[ i ].m_pDevice );
     return devices;
-}
-
-//=============================================================================
-
-void 
-InputDeviceMap::Disown( shared_ptr< InputDevice const > pDevice )
-{
-    for ( vector< OwnedDevice >::iterator pOwnedDev = m_ownedDevices.begin();
-          pOwnedDev != m_ownedDevices.end(); )
-    {
-        if ( pOwnedDev->m_pDevice == pDevice )
-            pOwnedDev = m_ownedDevices.erase( pOwnedDev );
-        else
-            ++pOwnedDev;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void 
-InputDeviceMap::Reset( )
-{
-    m_ownedDevices.clear( );
 }
 
 //=============================================================================
@@ -138,8 +138,8 @@ InputDeviceMap::Test( )
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)2, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );
-    cout << "Disown( pDev1 )" << endl;
-    devOwners.Disown( pDev1 );
+    cout << "Remove( pDev1 )" << endl;
+    devOwners.Remove( pDev1 );
     TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 10, &ok );
     TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,

@@ -32,12 +32,11 @@ class InputDeviceMap
 {
 public:
     void Set( shared_ptr< InputDevice const > pDevice, int owner );
+    void Remove( shared_ptr< InputDevice const > pDevice );
+    void Reset( );
 
     int Owner( shared_ptr< InputDevice const > pDevice ) const;
     std::vector< shared_ptr< InputDevice const > > Devices( int owner ) const;
-
-    void Disown( shared_ptr< InputDevice const > pDevice );
-    void Reset( );
 
     static const int NoOwner = -1000;
 

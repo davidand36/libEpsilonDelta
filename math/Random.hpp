@@ -72,7 +72,7 @@ public:
 private:
     double Uni01( );    //operator()(0.,1.)
 
-    RandomNumberGeneratorImpl * m_pImpl;
+    shared_ptr< RandomNumberGeneratorImpl > m_pImpl;
     int     m_seed;
 };
 

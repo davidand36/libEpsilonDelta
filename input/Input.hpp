@@ -65,9 +65,9 @@ private:
     void HandleQuit( );
     uint32_t IgnoreTypes( ) const;
 
-    QuitHandler                                 m_quitHandler;
-    uint32_t                                    m_ignoreTypes;
-    shared_ptr< InputImpl >                     m_pImpl;
+    QuitHandler                 m_quitHandler;
+    uint32_t                    m_ignoreTypes;
+    shared_ptr< InputImpl >     m_pImpl;
 
     friend class Singleton< Input >;
     friend class InputImpl;

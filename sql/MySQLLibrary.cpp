@@ -65,21 +65,21 @@ MySQLLibrary::Init( const vector< string > & options )
         Init( );
     else
     {
-        char ** ppOptions( new char *[ numOptions + 1 ] );
+        shared_array< shared_array< char > > saOptions(
+            new shared_array< char >[ numOptions + 1 ] );
+        shared_array< char * > ppOptions( new char *[ numOptions + 1 ] );
         //The first "argument" is ignored
-        ppOptions[0] = new char[ 1 ];
-        ppOptions[0][0] = 0;
+        saOptions[ 0 ].reset( new char[ 1 ] );
+        ppOptions[ 0 ] = saOptions[ 0 ].get();
+        ppOptions[ 0 ][ 0 ] = 0;
         for ( int i = 0; i < numOptions; ++i )
         {
-            ppOptions[ i + 1 ] = new char[ options[i].size() + 1 ];
+            saOptions[ i + 1 ].reset( new char[ options[ i ].size() + 1 ] );
+            ppOptions[ i + 1 ] = saOptions[ i + 1 ].get();
             strcpy( ppOptions[ i + 1 ], options[i].c_str() );
         }
 
-        int initRslt = mysql_library_init( numOptions, ppOptions, 0 );
-
-        for ( int i = 0; i < numOptions + 1; ++i )
-            delete[] ppOptions[i];
-        delete[] ppOptions;
+        int initRslt = mysql_library_init( numOptions, ppOptions.get(), 0 );
 
         if ( initRslt != 0 )
         {

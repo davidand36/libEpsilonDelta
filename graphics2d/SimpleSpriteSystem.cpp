@@ -208,18 +208,18 @@ SimpleSpriteSystem::TestUpdate( )
                 }
                 else
                 {
-                    Surface * pSurf = new Surface( 75, 75, PixelType8888 );
+                    shared_ptr< Surface > pSurf(
+                        new Surface( 75, 75, PixelType8888 ) );
                     Rectangle ext = pSurf->Extent();
                     pSurf->Draw( ext, Color4B( 0, 0, 0, 0 ) );
                     Color3B color( i * 17, i * 17, 255 );
                     Circle circle( Point2I( 37, 37 ), 37 );
-                    circle.Fill( color, pSurf );
+                    circle.Fill( color, pSurf.get() );
                     Point2I pos( i * 10 + 10, 500 );
-                    shared_ptr< Surface > spSurf( pSurf );
-                    surfaces.push_back( spSurf );
-                    shared_ptr< Sprite > spSprite( new Sprite( spSurf, pos ) );
-                    sprites.push_back( spSprite );
-                    sss.AddSprite( spSprite, i );
+                    surfaces.push_back( pSurf );
+                    shared_ptr< Sprite > pSprite( new Sprite( pSurf, pos ) );
+                    sprites.push_back( pSprite );
+                    sss.AddSprite( pSprite, i );
                 }
             }
             break;

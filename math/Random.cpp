@@ -81,7 +81,6 @@ RandomNumberGenerator::RandomNumberGenerator( )
 
 RandomNumberGenerator::~RandomNumberGenerator( )
 {
-    delete m_pImpl;
 }
 
 //=============================================================================

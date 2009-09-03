@@ -71,8 +71,8 @@ namespace
 
 bool SaveBuff( const string & fileName, const char * buffer, int bufferSize,
                File::Type type );
-bool LoadBuff( const string & fileName, char ** pBuffer, int * pBufferSize,
-               File::Type type );
+bool LoadBuff( const string & fileName, shared_array< char > * pBuffer,
+               int * pBufferSize, File::Type type );
 
 
 //=============================================================================
@@ -133,10 +133,10 @@ File::Read( char * buffer, int bufferSize, int * pBytesRead )
 {
     bool readRslt = m_pImpl->Read( buffer, bufferSize, pBytesRead );
     if ( readRslt )
-        ms_log( Logger::Debug, "Read %d bytes from %s",
+        ms_log( Logger::Info, "Read %d bytes from %s",
                bufferSize, m_fileName.c_str() );
     else
-        ms_log( Logger::Debug, "Unable to read %d bytes from %s",
+        ms_log( Logger::Error, "Unable to read %d bytes from %s",
                bufferSize, m_fileName.c_str() );
     return readRslt;
 }
@@ -148,10 +148,10 @@ File::Write( const char * buffer, int bufferSize )
 {
     bool writeRslt = m_pImpl->Write( buffer, bufferSize );
     if ( writeRslt )
-        ms_log( Logger::Debug, "Wrote %d bytes to %s",
+        ms_log( Logger::Info, "Wrote %d bytes to %s",
                bufferSize, m_fileName.c_str() );
     else
-        ms_log( Logger::Debug, "Unable to write %d bytes to %s",
+        ms_log( Logger::Error, "Unable to write %d bytes to %s",
                bufferSize, m_fileName.c_str() );
     return writeRslt;
 }
@@ -164,10 +164,10 @@ File::Seek( int offset, Origin origin )
     int location = m_pImpl->Seek( offset, origin );
     const char * originNames[] = { "Beginning", "Current", "End" };
     if ( location >= 0 )
-        ms_log( Logger::Debug, "Seeked to %d (%d from %s) in %s",
+        ms_log( Logger::Info, "Seeked to %d (%d from %s) in %s",
                 location, offset, originNames[ origin ], m_fileName.c_str() );
     else
-        ms_log( Logger::Debug, "Unable to seek to %d from %s in %s",
+        ms_log( Logger::Error, "Unable to seek to %d from %s in %s",
                 offset, originNames[ origin ], m_fileName.c_str() );
     return location;
 }
@@ -227,14 +227,11 @@ bool
 File::Load( const std::string & fileName, DataBuffer * pBuffer )
 {
     pBuffer->Clear( );
-    char * buffer;
+    shared_array< char > buffer;
     int bufferSize;
     bool loadRslt = LoadBuff( fileName, &buffer, &bufferSize, Binary );
     if ( loadRslt )
-    {        
-        pBuffer->Add( buffer, bufferSize );
-        delete[] buffer;
-    }
+        pBuffer->Add( buffer.get(), bufferSize );
     return loadRslt;
 }
 
@@ -243,14 +240,11 @@ File::Load( const std::string & fileName, DataBuffer * pBuffer )
 bool 
 File::Load( const std::string & fileName, std::string * pText )
 {
-    char * buffer;
+    shared_array< char > buffer;
     int bufferSize;
     bool loadRslt = LoadBuff( fileName, &buffer, &bufferSize, Text );
     if ( loadRslt )
-    {        
-        pText->assign( buffer, buffer + bufferSize );
-        delete[] buffer;
-    }
+        pText->assign( buffer.get(), buffer.get() + bufferSize );
     return loadRslt;
 }
 
@@ -290,8 +284,8 @@ SaveBuff( const string & fileName, const char * buffer, int bufferSize,
 //-----------------------------------------------------------------------------
 
 bool 
-LoadBuff( const string & fileName, char ** pBuffer, int * pBufferSize,
-          File::Type type )
+LoadBuff( const string & fileName, shared_array< char > * pBuffer,
+          int * pBufferSize, File::Type type )
 {
     File file( fileName );
     if ( ! file.Open( File::ReadMode, type ) )
@@ -301,13 +295,12 @@ LoadBuff( const string & fileName, char ** pBuffer, int * pBufferSize,
         return false;
     if ( file.Seek( 0 ) != 0 )
         return false;
-    *pBuffer = new char[ fileSize ];  //Not deleted by this function on success!
-    memset( *pBuffer, 0, fileSize );
+    pBuffer->reset( new char[ fileSize ] );
+    memset( pBuffer->get(), 0, fileSize );
     int bytesRead = 0;
-    if ( ! file.Read( *pBuffer, fileSize, &bytesRead ) )
+    if ( ! file.Read( pBuffer->get(), fileSize, &bytesRead ) )
     {
-        delete[] *pBuffer;
-        *pBuffer = 0;
+        pBuffer->reset( );
         *pBufferSize = 0;
         return false;
     }

@@ -7,7 +7,7 @@
 
 
 #include "Input.hpp"
-#include "DeviceOwners.hpp"
+#include "InputDeviceMap.hpp"
 #include "InputEventMap.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
@@ -62,7 +62,7 @@ int Main( int /*argc*/, char ** /*argv*/ )
     Graphics2D::Instance().Init( );
     Graphics2D::Instance().SetupScreen( 640, 480, "Test Input Lib" );
 
-    if ( ! DeviceOwners::Test( ) )
+    if ( ! InputDeviceMap::Test( ) )
         ok = false;
     if ( ! InputEventMap::Test( ) )
         ok = false;

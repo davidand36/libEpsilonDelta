@@ -1,13 +1,14 @@
-#ifndef DEVICEOWNERS_HPP
-#define DEVICEOWNERS_HPP
+#ifndef INPUTDEVICEMAP_HPP
+#define INPUTDEVICEMAP_HPP
 /*
-  DeviceOwners.hpp
+  InputDeviceMap.hpp
   Copyright (C) 2009 David M. Anderson
 
-  DeviceOwners class: Associates input devices with owners.
+  InputDeviceMap class: Associates input devices with owners.
   NOTES:
-  1. Owners are simply identified by integers. It is up to the application to
-     give these integers additional meaning.
+  1. The mapping is to integers, which are presumed, but not required, to
+     represent users (owners) of the devices, mainly for multiplayer games,
+     and such.
   2. Each device may only have one owner, but each owner may own multiple
      devices.
   3. Owner IDs are not required to be nonnegative, but note that "no owner"
@@ -26,8 +27,8 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class DeviceOwners
-    :   public Singleton< DeviceOwners >
+class InputDeviceMap
+    :   public Singleton< InputDeviceMap >
 {
 public:
     void Set( shared_ptr< InputDevice const > pDevice, int owner );
@@ -45,8 +46,8 @@ public:
 #endif
 
 private:
-    DeviceOwners( );
-    ~DeviceOwners( );
+    InputDeviceMap( );
+    ~InputDeviceMap( );
 
     struct OwnedDevice
     {
@@ -56,7 +57,7 @@ private:
 
     std::vector< OwnedDevice >  m_ownedDevices;
 
-    friend class Singleton< DeviceOwners >;
+    friend class Singleton< InputDeviceMap >;
 };
 
 
@@ -64,4 +65,4 @@ private:
 
 }                                                      //namespace EpsilonDelta
 
-#endif //DEVICEOWNERS_HPP
+#endif //INPUTDEVICEMAP_HPP

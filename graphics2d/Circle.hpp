@@ -8,6 +8,7 @@
 */
 
 
+#include "Region.hpp"
 #include "Ellipse.hpp"
 
 
@@ -18,6 +19,7 @@ namespace EpsilonDelta
 
 
 class Circle
+    :   public Region
 {
 public:
     Circle( );
@@ -28,7 +30,7 @@ public:
     Point2I Center( ) const;
     int Radius( ) const;
     Rectangle Bounds( ) const;
-    bool Contains( const Point2I & point ) const;
+    virtual bool Contains( const Point2I & point ) const;
     bool operator==( const Circle & rhs ) const;
     bool operator!=( const Circle & rhs ) const;
     template < typename Pxl >

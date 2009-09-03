@@ -8,6 +8,7 @@
 */
 
 
+#include "Region.hpp"
 #include "Color.hpp"
 #include "Point2.hpp"
 #include "Assert.hpp"
@@ -30,6 +31,7 @@ class Surface;
 
 
 class Rectangle
+    :   public Region
 {
 public:
     Rectangle( );
@@ -64,7 +66,7 @@ public:
 #if USE_SDL
     operator SDL_Rect( ) const;
 #endif
-    bool Contains( const Point2I & pt ) const;
+    virtual bool Contains( const Point2I & pt ) const;
     bool Contains( const Rectangle & rect ) const;
     bool Intersects( const Rectangle & rect ) const;
     bool Clip( const Rectangle & rect );

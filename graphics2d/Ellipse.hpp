@@ -8,6 +8,7 @@
 */
 
 
+#include "Region.hpp"
 #include "Point2.hpp"
 #include "Rectangle.hpp"
 #include "Dot2.hpp"
@@ -23,6 +24,7 @@ namespace EpsilonDelta
 
 
 class Ellipse
+    :   public Region
 {
 public:
     Ellipse( );
@@ -36,7 +38,7 @@ public:
     typedef std::pair< int, int > AxisPair;
     AxisPair SemiAxes( ) const;
     Rectangle Bounds( ) const;
-    bool Contains( const Point2I & point ) const;
+    virtual bool Contains( const Point2I & point ) const;
     bool operator==( const Ellipse & rhs ) const;
     bool operator!=( const Ellipse & rhs ) const;
     template < typename Pxl >

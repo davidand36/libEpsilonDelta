@@ -43,6 +43,15 @@ Rectangle::Set( const Point2I & pt1, const Point2I & pt2 )
 //=============================================================================
 
 bool 
+Rectangle::operator==( const Region & rhs ) const
+{
+    const Rectangle * pRectangle = dynamic_cast< Rectangle const * >( &rhs );
+    return ( pRectangle && (*this == *pRectangle) );
+}
+
+//=============================================================================
+
+bool 
 Rectangle::Intersects( const Rectangle & rect ) const
 {
     Rectangle intersection = Intersection( *this, rect );

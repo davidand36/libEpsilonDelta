@@ -21,6 +21,15 @@ namespace EpsilonDelta
 
 
 bool 
+Ellipse::operator==( const Region & rhs ) const
+{
+    const Ellipse * pEllipse = dynamic_cast< Ellipse const * >( &rhs );
+    return ( pEllipse && (*this == *pEllipse) );
+}
+
+//=============================================================================
+
+bool 
 Ellipse::Contains( const Point2I & point ) const
 {
     int x = point.X() - m_center.X();

@@ -21,6 +21,14 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
+bool 
+Circle::operator==( const Region & rhs ) const
+{
+    const Circle * pCircle = dynamic_cast< Circle const * >( &rhs );
+    return ( pCircle && (*this == *pCircle) );
+}
+
+//=============================================================================
 
 void 
 Circle::Draw( uint32_t pxl, Surface * pSurface ) const

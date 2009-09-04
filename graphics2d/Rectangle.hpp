@@ -63,6 +63,7 @@ public:
     int Area( ) const;
     bool operator==( const Rectangle & rhs ) const;
     bool operator!=( const Rectangle & rhs ) const;
+    virtual bool operator==( const Region & rhs ) const;
 #if USE_SDL
     operator SDL_Rect( ) const;
 #endif

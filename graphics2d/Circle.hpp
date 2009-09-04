@@ -33,6 +33,7 @@ public:
     virtual bool Contains( const Point2I & point ) const;
     bool operator==( const Circle & rhs ) const;
     bool operator!=( const Circle & rhs ) const;
+    virtual bool operator==( const Region & rhs ) const;
     template < typename Pxl >
     void Draw( Pxl pxl,
                DrawingSurface< Pxl > * pDrawingSurface ) const;

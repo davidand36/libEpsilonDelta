@@ -23,7 +23,21 @@ public:
     virtual ~Region( ) { };
 
     virtual bool Contains( const Point2I & point ) const = 0;
+
+    virtual bool operator==( const Region & rhs ) const = 0;
+    bool operator!=( const Region & rhs ) const;
 };
+
+
+//*****************************************************************************
+
+
+inline
+bool 
+Region::operator!=( const Region & rhs ) const
+{
+    return ! (*this == rhs);
+}
 
 
 //*****************************************************************************

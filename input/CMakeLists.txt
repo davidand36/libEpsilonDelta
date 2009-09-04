@@ -14,7 +14,7 @@ set( sources
      Gamepad.cpp
      Wiimote.cpp
      InputDeviceMap.cpp
-     InputEventMap.cpp
+     InputButtonMap.cpp
      RegionMap.cpp
    )
 

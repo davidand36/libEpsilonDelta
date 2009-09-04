@@ -8,7 +8,7 @@
 
 #include "Input.hpp"
 #include "InputDeviceMap.hpp"
-#include "InputEventMap.hpp"
+#include "InputButtonMap.hpp"
 #include "RegionMap.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
@@ -65,7 +65,7 @@ int Main( int /*argc*/, char ** /*argv*/ )
 
     if ( ! InputDeviceMap::Test( ) )
         ok = false;
-    if ( ! InputEventMap::Test( ) )
+    if ( ! InputButtonMap::Test( ) )
         ok = false;
     if ( ! RegionMap::Test( ) )
         ok = false;

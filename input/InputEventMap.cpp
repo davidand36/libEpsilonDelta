@@ -147,6 +147,12 @@ InputEventMap::Test( )
     TESTCHECK( map2.Action( event120 ), 1120, &ok );
     TESTCHECK( map2.Action( event210 ), InputEventMap::NoAction, &ok );
     TESTCHECK( map2.Action( event230 ), InputEventMap::NoAction, &ok );
+    cout << "Set( event110, 2110 )" << endl;
+    map2.Set( event110, 2110 );
+    TESTCHECK( map2.Action( event110 ), 2110, &ok );
+    TESTCHECK( map2.Action( event120 ), 1120, &ok );
+    TESTCHECK( map2.Action( event210 ), InputEventMap::NoAction, &ok );
+    TESTCHECK( map2.Action( event230 ), InputEventMap::NoAction, &ok );
 
     cout << "map3 = map1" << endl;
     InputEventMap map3 = map1;
@@ -193,7 +199,7 @@ InputEventMap::Test( )
 
     cout << "map3 = map2" << endl;
     map3 = map2;
-    TESTCHECK( map3.Action( event110 ), 1110, &ok );
+    TESTCHECK( map3.Action( event110 ), 2110, &ok );
     TESTCHECK( map3.Action( event120 ), 1120, &ok );
     TESTCHECK( map3.Action( event210 ), InputEventMap::NoAction, &ok );
     TESTCHECK( map3.Action( event230 ), InputEventMap::NoAction, &ok );

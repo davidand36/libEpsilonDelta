@@ -15,6 +15,7 @@ set( sources
      Wiimote.cpp
      InputDeviceMap.cpp
      InputEventMap.cpp
+     RegionMap.cpp
    )
 
 set( EpsilonDeltaLibs

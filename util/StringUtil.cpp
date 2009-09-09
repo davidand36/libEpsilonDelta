@@ -8,6 +8,7 @@
 
 #include "StringUtil.hpp"
 #include "StdInt.hpp"
+#include <cstring>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Array.hpp"

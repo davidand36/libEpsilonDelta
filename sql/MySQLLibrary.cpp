@@ -15,6 +15,7 @@
 #include "SmartPtr.hpp"
 #include "StringUtil.hpp"
 #include <mysql.h>
+#include <cstring>
 using namespace std;
 
 

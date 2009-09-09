@@ -20,6 +20,7 @@
 #include "NullVectorException.hpp"
 #include "Algorithms.hpp"
 #include "Array.hpp"
+#include <limits>
 #include <iostream>
 
 

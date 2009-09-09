@@ -5,7 +5,7 @@
 # Top-level CMake script for EpsilonDelta libraries.
 #
 #
-cmake_minimum_required( VERSION 2.4 )
+cmake_minimum_required( VERSION 2.6 )
 
 project( libEpsilonDelta )
 

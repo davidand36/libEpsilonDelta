@@ -13,6 +13,7 @@
 #include "SQLiteResult.hpp"
 #include "Assert.hpp"
 #include <sqlite3.h>
+#include <cstring>
 using namespace std;
 
 

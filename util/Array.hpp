@@ -35,6 +35,7 @@ using boost::array;
 #endif
 
 #include "SmartPtr.hpp"
+#include <cstring>
 
 
 namespace EpsilonDelta

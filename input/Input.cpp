@@ -19,6 +19,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Timer.hpp"
+#include <iomanip>
 #endif
 using namespace std;
 
@@ -242,7 +243,8 @@ Input::Test( )
             {
                 shared_ptr< InputDevice const > pDev = pEvent->Device();
                 int button = pEvent->Button();
-                cout << "Button=" << hex << button;
+                cout << "Button=" << hex << setw(2) << setfill('0') << button
+                     << dec << setw(0) << setfill(' ');
                 if ( (pDev->Type() == InputDevice::Keyboard)
                      && (button <= 0xFF) && IsPrint( (char)button ) )
                     cout << " (" << (char)button << ")";
@@ -251,7 +253,8 @@ Input::Test( )
                 cout << "  Buttons down: ";
                 for ( int i = 0; i < pDev->NumButtons(); ++i )
                     if ( pDev->ButtonDown( i ) )
-                        cout << hex << i << " ";
+                        cout << hex << setw(2) << setfill('0') << i
+                             << dec << setw(0) << setfill(' ') << " ";
                 cout << endl;
                 if ( pDev->NumPointers() > 0 )
                 {
@@ -299,7 +302,8 @@ Input::Test( )
                          && IsPrint( (wchar_t)button ) )
                         wcout << (wchar_t)button << flush;
                     else if ( button > 0 )
-                        cout << "[" << hex << button << "]" << flush;
+                        cout << "[" << hex << setw(2) << setfill('0') << button
+                             << dec << setw(0) << setfill(' ') << "]" << flush;
                 }
             }
             if ( realTime.Seconds( ) > 60. )
@@ -310,7 +314,7 @@ Input::Test( )
         }
         wcout << endl;
     }
-    catch ( SDLException & except )
+    catch ( Exception & except )
     {
         cout << except.Description( ) << endl;
         ok = false;
@@ -481,7 +485,9 @@ InputImpl::CheckEvent( )
         case SDL_MOUSEBUTTONDOWN:
         {
             shared_ptr< Mouse const > pDevice = m_pMouse;
-            int button = sdlEvent.button.button;
+            //SDL's mouse button definitions start at 1, but are in the
+            // same order as ours, which start at 0.
+            int button = sdlEvent.button.button - 1;
             return shared_ptr< InputEvent const >(
                 new InputEvent( pDevice, button ) );
         }

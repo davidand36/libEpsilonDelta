@@ -738,7 +738,6 @@ WiimoteImpl::Update( )
             m_buttonQueue.push( i );
     }
 
-
     Vector3F acceleration(
         -((float) cwiidState.acc[ 0 ] - m_cal.m_acc0[ 0 ]) / m_cal.m_acc1[ 0 ],
         -((float) cwiidState.acc[ 2 ] - m_cal.m_acc0[ 2 ]) / m_cal.m_acc1[ 2 ],

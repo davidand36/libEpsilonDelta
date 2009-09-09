@@ -30,6 +30,15 @@ public:
     Mouse( const std::string & name );
     virtual ~Mouse( );
 
+    enum Button
+    {
+        LeftButton = 0,
+        MiddleButton,
+        RightButton,
+        WheelUp,
+        WheelDown
+    };
+
     virtual int NumButtons( ) const;
     virtual bool ButtonDown( int button ) const;
 

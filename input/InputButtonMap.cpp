@@ -8,6 +8,7 @@
 
 
 #include "InputButtonMap.hpp"
+#include "MappedInput.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #endif
@@ -63,7 +64,7 @@ InputButtonMap::Action( shared_ptr< InputDevice const > device,
     MapType::const_iterator pKV = m_map.find( devButton );
     if ( pKV != m_map.end() )
         return pKV->second;
-    return NoAction;
+    return MappedInput::NoAction;
 }
 
 //=============================================================================
@@ -106,21 +107,21 @@ InputButtonMap::Test( )
     cout << "Set( pDev2, 30, 230 )" << endl;
     map1.Set( pDev2, 30, 230 );
     TESTCHECK( map1.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pDev2, 30 ), 230, &ok );
     cout << "Set( pDev2, 10, 210 )" << endl;
     map1.Set( pDev2, 10, 210 );
     TESTCHECK( map1.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pDev2, 10 ), 210, &ok );
     TESTCHECK( map1.Action( pDev2, 30 ), 230, &ok );
     cout << "Remove( pDev2, 30 )" << endl;
     map1.Remove( pDev2, 30 );
     TESTCHECK( map1.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pDev2, 10 ), 210, &ok );
-    TESTCHECK( map1.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
 
     InputButtonMap map2;
 
@@ -130,64 +131,64 @@ InputButtonMap::Test( )
     map2.Set( pDev1, 20, 1120 );
     TESTCHECK( map2.Action( pDev1, 10 ), 1110, &ok );
     TESTCHECK( map2.Action( pDev1, 20 ), 1120, &ok );
-    TESTCHECK( map2.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map2.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map2.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
     cout << "Set( pDev1, 10, 2110 )" << endl;
     map2.Set( pDev1, 10, 2110 );
     TESTCHECK( map2.Action( pDev1, 10 ), 2110, &ok );
     TESTCHECK( map2.Action( pDev1, 20 ), 1120, &ok );
-    TESTCHECK( map2.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map2.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map2.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
 
     cout << "map3 = map1" << endl;
     InputButtonMap map3 = map1;
     TESTCHECK( map3.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map3.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pDev2, 10 ), 210, &ok );
-    TESTCHECK( map3.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
     cout << "Remove( pDev1, 20 )" << endl;
     map3.Remove( pDev1, 20 );
     TESTCHECK( map3.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map3.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pDev2, 10 ), 210, &ok );
-    TESTCHECK( map3.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
     cout << "Remove( pDev2, 10 )" << endl;
     map3.Remove( pDev2, 10 );
     cout << "Set( pDev2, 30, 2230 )" << endl;
     map3.Set( pDev2, 30, 2230 );
     TESTCHECK( map3.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map3.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pDev2, 30 ), 2230, &ok );
     TESTCHECK( map1.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pDev2, 10 ), 210, &ok );
-    TESTCHECK( map1.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
     cout << "Reset( )" << endl;
     map1.Reset( );
-    TESTCHECK( map1.Action( pDev1, 10 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 10 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map3.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pDev2, 30 ), 2230, &ok );
     cout << "Set( pDev1, 10, 110 )" << endl;
     map1.Set( pDev1, 10, 110 );
     cout << "Set( pDev2, 30, 230 )" << endl;
     map1.Set( pDev2, 30, 230 );
     TESTCHECK( map1.Action( pDev1, 10 ), 110, &ok );
-    TESTCHECK( map1.Action( pDev1, 20 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev1, 20 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pDev2, 30 ), 230, &ok );
 
     cout << "map3 = map2" << endl;
     map3 = map2;
     TESTCHECK( map3.Action( pDev1, 10 ), 2110, &ok );
     TESTCHECK( map3.Action( pDev1, 20 ), 1120, &ok );
-    TESTCHECK( map3.Action( pDev2, 10 ), InputButtonMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pDev2, 30 ), InputButtonMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 10 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pDev2, 30 ), MappedInput::NoAction, &ok );
 
     if ( ok )
         cout << "InputButtonMap PASSED." << endl << endl;

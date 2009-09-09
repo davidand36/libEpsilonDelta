@@ -9,13 +9,14 @@
 set( sources
      Input.cpp
      InputDevice.cpp
+     MappedInput.cpp
+     InputDeviceMap.cpp
+     InputButtonMap.cpp
+     RegionMap.cpp
      Keyboard.cpp
      Mouse.cpp
      Gamepad.cpp
      Wiimote.cpp
-     InputDeviceMap.cpp
-     InputButtonMap.cpp
-     RegionMap.cpp
    )
 
 set( EpsilonDeltaLibs

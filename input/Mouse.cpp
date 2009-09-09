@@ -116,6 +116,8 @@ MouseImpl::NumButtons( ) const
 bool 
 MouseImpl::ButtonDown( int button ) const
 {
+    //Note that SDL starts its mouse button definitions at 1, but
+    // the bit masks effectively start with (1<<0).
     if ( (button < 0) || (button >= MaxButtons) )
         throw std::out_of_range( "Mouse::ButtonDown()" );
     Uint8 buttonState = ::SDL_GetMouseState( 0, 0 );

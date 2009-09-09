@@ -7,6 +7,7 @@
 
 
 #include "RegionMap.hpp"
+#include "MappedInput.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Circle.hpp"
@@ -62,25 +63,25 @@ RegionMap::Reset( )
 //=============================================================================
 
 int 
-RegionMap::Action( const Region & region )
+RegionMap::Action( const Region & region ) const
 {
-    for ( vector< RegAct >::iterator pRegAct = m_regActs.begin();
+    for ( vector< RegAct >::const_iterator pRegAct = m_regActs.begin();
           pRegAct != m_regActs.end(); ++pRegAct )
         if ( *(pRegAct->m_pRegion) == region )
             return pRegAct->m_action;
-    return NoAction;
+    return MappedInput::NoAction;
 }
 
 //.............................................................................
 
 int 
-RegionMap::Action( const Point2I & point )
+RegionMap::Action( const Point2I & point ) const
 {
-    for ( vector< RegAct >::iterator pRegAct = m_regActs.begin();
+    for ( vector< RegAct >::const_iterator pRegAct = m_regActs.begin();
           pRegAct != m_regActs.end(); ++pRegAct )
         if ( pRegAct->m_pRegion->Contains( point ) )
             return pRegAct->m_action;
-    return NoAction;
+    return MappedInput::NoAction;
 }
 
 //=============================================================================
@@ -111,10 +112,10 @@ RegionMap::Test( )
     cout << "Set( pRegion4, 230 )" << endl;
     map1.Set( pRegion4, 230 );
     TESTCHECK( map1.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( *pRegion3 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion3 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( *pRegion4 ), 230, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt12 ), 110, &ok );
     TESTCHECK( map1.Action( pt24 ), 230, &ok );
     TESTCHECK( map1.Action( pt124 ), 110, &ok );
@@ -122,10 +123,10 @@ RegionMap::Test( )
     cout << "Set( pRegion3, 210 )" << endl;
     map1.Set( pRegion3, 210 );
     TESTCHECK( map1.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( *pRegion3 ), 210, &ok );
     TESTCHECK( map1.Action( *pRegion4 ), 230, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt12 ), 110, &ok );
     TESTCHECK( map1.Action( pt24 ), 230, &ok );
     TESTCHECK( map1.Action( pt124 ), 110, &ok );
@@ -133,12 +134,12 @@ RegionMap::Test( )
     cout << "Remove( *pRegion4 )" << endl;
     map1.Remove( *pRegion4 );
     TESTCHECK( map1.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( *pRegion3 ), 210, &ok );
-    TESTCHECK( map1.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt12 ), 110, &ok );
-    TESTCHECK( map1.Action( pt24 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pt24 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt124 ), 110, &ok );
     TESTCHECK( map1.Action( pt134 ), 110, &ok );
 
@@ -150,9 +151,9 @@ RegionMap::Test( )
     map2.Set( pRegion1, 1110 );
     TESTCHECK( map2.Action( *pRegion1 ), 1110, &ok );
     TESTCHECK( map2.Action( *pRegion2 ), 1120, &ok );
-    TESTCHECK( map2.Action( *pRegion3 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map2.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map2.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map2.Action( *pRegion3 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map2.Action( pt12 ), 1120, &ok );
     TESTCHECK( map2.Action( pt24 ), 1120, &ok );
     TESTCHECK( map2.Action( pt124 ), 1120, &ok );
@@ -161,9 +162,9 @@ RegionMap::Test( )
     map2.Set( pRegion2, 2120 );
     TESTCHECK( map2.Action( *pRegion1 ), 1110, &ok );
     TESTCHECK( map2.Action( *pRegion2 ), 2120, &ok );
-    TESTCHECK( map2.Action( *pRegion3 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map2.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map2.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map2.Action( *pRegion3 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map2.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map2.Action( pt12 ), 2120, &ok );
     TESTCHECK( map2.Action( pt24 ), 2120, &ok );
     TESTCHECK( map2.Action( pt124 ), 2120, &ok );
@@ -172,23 +173,23 @@ RegionMap::Test( )
     cout << "map3 = map1" << endl;
     RegionMap map3 = map1;
     TESTCHECK( map3.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map3.Action( *pRegion2 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion2 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( *pRegion3 ), 210, &ok );
-    TESTCHECK( map3.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt12 ), 110, &ok );
-    TESTCHECK( map3.Action( pt24 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pt24 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt124 ), 110, &ok );
     TESTCHECK( map3.Action( pt134 ), 110, &ok );
     cout << "Remove( *pRegion2 )" << endl;
     map3.Remove( *pRegion2 );
     TESTCHECK( map3.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map3.Action( *pRegion2 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion2 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( *pRegion3 ), 210, &ok );
-    TESTCHECK( map3.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt12 ), 110, &ok );
-    TESTCHECK( map3.Action( pt24 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pt24 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt124 ), 110, &ok );
     TESTCHECK( map3.Action( pt134 ), 110, &ok );
     cout << "Remove( *pRegion3 )" << endl;
@@ -196,39 +197,39 @@ RegionMap::Test( )
     cout << "Set( pRegion4, 2230 )" << endl;
     map3.Set( pRegion4, 2230 );
     TESTCHECK( map3.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map3.Action( *pRegion2 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( *pRegion3 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion2 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion3 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( *pRegion4 ), 2230, &ok );
-    TESTCHECK( map3.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt12 ), 110, &ok );
     TESTCHECK( map3.Action( pt24 ), 2230, &ok );
     TESTCHECK( map3.Action( pt124 ), 110, &ok );
     TESTCHECK( map3.Action( pt134 ), 110, &ok );
     TESTCHECK( map1.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( *pRegion3 ), 210, &ok );
-    TESTCHECK( map1.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt12 ), 110, &ok );
-    TESTCHECK( map1.Action( pt24 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pt24 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt124 ), 110, &ok );
     TESTCHECK( map1.Action( pt134 ), 110, &ok );
     cout << "Reset( )" << endl;
     map1.Reset( );
-    TESTCHECK( map1.Action( *pRegion1 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( *pRegion3 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt12 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt24 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt124 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( pt134 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion1 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion3 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt12 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt24 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt124 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( pt134 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map3.Action( *pRegion2 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( *pRegion3 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion2 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion3 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( *pRegion4 ), 2230, &ok );
-    TESTCHECK( map3.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt12 ), 110, &ok );
     TESTCHECK( map3.Action( pt24 ), 2230, &ok );
     TESTCHECK( map3.Action( pt124 ), 110, &ok );
@@ -238,10 +239,10 @@ RegionMap::Test( )
     cout << "Set( pRegion4, 230 )" << endl;
     map1.Set( pRegion4, 230 );
     TESTCHECK( map1.Action( *pRegion1 ), 110, &ok );
-    TESTCHECK( map1.Action( *pRegion2 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map1.Action( *pRegion3 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion2 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map1.Action( *pRegion3 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( *pRegion4 ), 230, &ok );
-    TESTCHECK( map1.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map1.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map1.Action( pt12 ), 110, &ok );
     TESTCHECK( map1.Action( pt24 ), 230, &ok );
     TESTCHECK( map1.Action( pt124 ), 110, &ok );
@@ -251,9 +252,9 @@ RegionMap::Test( )
     map3 = map2;
     TESTCHECK( map3.Action( *pRegion1 ), 1110, &ok );
     TESTCHECK( map3.Action( *pRegion2 ), 2120, &ok );
-    TESTCHECK( map3.Action( *pRegion3 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( *pRegion4 ), RegionMap::NoAction, &ok );
-    TESTCHECK( map3.Action( pt0 ), RegionMap::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion3 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( *pRegion4 ), MappedInput::NoAction, &ok );
+    TESTCHECK( map3.Action( pt0 ), MappedInput::NoAction, &ok );
     TESTCHECK( map3.Action( pt12 ), 2120, &ok );
     TESTCHECK( map3.Action( pt24 ), 2120, &ok );
     TESTCHECK( map3.Action( pt124 ), 2120, &ok );

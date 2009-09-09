@@ -10,6 +10,7 @@
 #include "InputDeviceMap.hpp"
 #include "InputButtonMap.hpp"
 #include "RegionMap.hpp"
+#include "MappedInput.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
 #include "TestCheck.hpp"
@@ -70,6 +71,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     if ( ! RegionMap::Test( ) )
         ok = false;
     if ( ! Input::Test( ) )
+        ok = false;
+    if ( ! MappedInput::Test( ) )
         ok = false;
 #endif //DEBUG
 

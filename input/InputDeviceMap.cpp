@@ -7,6 +7,7 @@
 
 
 #include "InputDeviceMap.hpp"
+#include "MappedInput.hpp"
 #include <algorithm>
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -76,7 +77,7 @@ InputDeviceMap::Owner( shared_ptr< InputDevice const > pDevice ) const
     for ( size_t i = 0; i < m_ownedDevices.size(); ++i )
         if ( m_ownedDevices[ i ].m_pDevice == pDevice )
             return m_ownedDevices[ i ].m_owner;
-    return NoOwner;
+    return MappedInput::NoOwner;
 }
 
 //-----------------------------------------------------------------------------
@@ -108,17 +109,17 @@ InputDeviceMap::Test( )
     shared_ptr< InputDevice > pDev2( new InputDevice( InputDevice::Mouse,
                                                       "FakeMouse" ) );
 
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Owner( pDev2 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev2 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)0, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );
     cout << "Set( pDev2, 20 )" << endl;
     devOwners.Set( pDev2, 20 );
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 20, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)0, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)1, &ok );
@@ -126,7 +127,7 @@ InputDeviceMap::Test( )
     devOwners.Set( pDev1, 10 );
     TESTCHECK( devOwners.Owner( pDev1 ), 10, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 20, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)1, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)1, &ok );
@@ -134,15 +135,15 @@ InputDeviceMap::Test( )
     devOwners.Set( pDev2, 10 );
     TESTCHECK( devOwners.Owner( pDev1 ), 10, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 10, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)2, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );
     cout << "Remove( pDev1 )" << endl;
     devOwners.Remove( pDev1 );
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 10, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)1, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );
@@ -150,31 +151,31 @@ InputDeviceMap::Test( )
     devOwners.Set( pDev1, 20 );
     TESTCHECK( devOwners.Owner( pDev1 ), 20, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 10, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)1, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)1, &ok );
     cout << "Reset()" << endl;
     devOwners.Reset( );
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Owner( pDev2 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev2 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)0, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );
     cout << "Set( pDev2, 20 )" << endl;
     devOwners.Set( pDev2, 20 );
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
     TESTCHECK( devOwners.Owner( pDev2 ), 20, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)0, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)1, &ok );
     cout << "Reset()" << endl;
     devOwners.Reset( );
-    TESTCHECK( devOwners.Owner( pDev1 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Owner( pDev2 ), InputDeviceMap::NoOwner, &ok );
-    TESTCHECK( devOwners.Devices( InputDeviceMap::NoOwner ).size(), (size_t)0,
+    TESTCHECK( devOwners.Owner( pDev1 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Owner( pDev2 ), MappedInput::NoOwner, &ok );
+    TESTCHECK( devOwners.Devices( MappedInput::NoOwner ).size(), (size_t)0,
                &ok );
     TESTCHECK( devOwners.Devices( 10 ).size(), (size_t)0, &ok );
     TESTCHECK( devOwners.Devices( 20 ).size(), (size_t)0, &ok );

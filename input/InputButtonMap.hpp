@@ -16,7 +16,8 @@
 */
 
 
-#include "InputEvent.hpp"
+#include "InputDevice.hpp"
+#include "SmartPtr.hpp"
 #include "VMap.hpp"
 
 
@@ -36,8 +37,6 @@ public:
     void Reset( );
 
     int Action( shared_ptr< InputDevice const > device, int button ) const;
-
-    static const int NoAction = -1000;
 
 #ifdef DEBUG
     static bool Test( );

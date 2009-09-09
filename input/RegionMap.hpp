@@ -37,10 +37,8 @@ public:
     void Remove( const Region & region );
     void Reset( );
 
-    int Action( const Region & region );
-    int Action( const Point2I & point );
-
-    static const int NoAction = -1000;
+    int Action( const Region & region ) const;
+    int Action( const Point2I & point ) const;
 
 #ifdef DEBUG
     static bool Test( );

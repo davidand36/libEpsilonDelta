@@ -38,12 +38,12 @@ public:
     Rectangle( int left, int top, int width, int height );
     Rectangle( const Point2I & pt1, const Point2I & pt2 );
 #if USE_SDL
-    Rectangle( const SDL_Rect & sdlRect );
+    Rectangle( const ::SDL_Rect & sdlRect );
 #endif
     void Set( int left, int top, int width, int height );
     void Set( const Point2I & pt1, const Point2I & pt2 );
 #if USE_SDL
-    void Set( const SDL_Rect & sdlRect );
+    void Set( const ::SDL_Rect & sdlRect );
 #endif
     void SetLeft( int left );
     void SetTop( int top );
@@ -65,7 +65,7 @@ public:
     bool operator!=( const Rectangle & rhs ) const;
     virtual bool operator==( const Region & rhs ) const;
 #if USE_SDL
-    operator SDL_Rect( ) const;
+    operator ::SDL_Rect( ) const;
 #endif
     virtual bool Contains( const Point2I & pt ) const;
     bool Contains( const Rectangle & rect ) const;
@@ -148,7 +148,7 @@ Rectangle::Set( int left, int top, int width, int height )
 
 inline
 void 
-Rectangle::Set( const SDL_Rect & sdlRect )
+Rectangle::Set( const ::SDL_Rect & sdlRect )
 {
     m_left = sdlRect.x;
     m_top = sdlRect.y;
@@ -178,7 +178,7 @@ Rectangle::Rectangle( int left, int top, int width, int height )
 #if USE_SDL
 
 inline
-Rectangle::Rectangle( const SDL_Rect & sdlRect )
+Rectangle::Rectangle( const ::SDL_Rect & sdlRect )
 {
     Set( sdlRect );
 }
@@ -355,9 +355,9 @@ Rectangle::operator!=( const Rectangle & rhs ) const
 #if USE_SDL
 
 inline
-Rectangle::operator SDL_Rect( ) const
+Rectangle::operator ::SDL_Rect( ) const
 {
-    SDL_Rect sdlRect;
+    ::SDL_Rect sdlRect;
     sdlRect.x = static_cast< Sint16 >( m_left );
     sdlRect.y = static_cast< Sint16 >( m_top );
     sdlRect.w = static_cast< Uint16 >( m_width );

@@ -41,7 +41,7 @@ public:
     Surface( );
     Surface( int width, int height, EPixelType pixelType = NativePixelType );
 #ifdef USE_SDL
-    Surface( SDL_Surface * sdl_Surface, bool own = true );
+    Surface( ::SDL_Surface * sdl_Surface, bool own = true );
 #endif
     Surface( const std::string & fileSpec, bool alpha = false );
     Surface( const std::string & fileSpec, const Color3B & transparentColor );
@@ -82,8 +82,8 @@ public:
     template < typename Shape >
     void Fill( const Shape & shape, const Color4B & color );
 #ifdef USE_SDL
-    SDL_Surface * GetSDL_Surface( );
-    const SDL_Surface * GetSDL_Surface( ) const;
+    ::SDL_Surface * GetSDL_Surface( );
+    const ::SDL_Surface * GetSDL_Surface( ) const;
 #endif
 #ifdef USE_PNG
     void SavePng( const std::string & fileSpec );
@@ -107,7 +107,7 @@ protected:
     void CopySurface( const Surface & rhs );
 
 #ifdef USE_SDL
-    SDL_Surface * m_pSDL_Surface;
+    ::SDL_Surface * m_pSDL_Surface;
 #endif
     bool m_own;
     EPixelType m_pixelType;

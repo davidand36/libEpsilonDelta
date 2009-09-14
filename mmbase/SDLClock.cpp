@@ -44,9 +44,9 @@ void
 SDLClock::Init( )
 {
     SDL::Instance().Init( );
-    if ( SDL_WasInit( SDL_INIT_TIMER ) == 0 )
+    if ( ::SDL_WasInit( SDL_INIT_TIMER ) == 0 )
     {
-        int initRslt = SDL_InitSubSystem( SDL_INIT_TIMER );
+        int initRslt = ::SDL_InitSubSystem( SDL_INIT_TIMER );
 
         if ( initRslt != 0 )
             throw SDLException( "SDL_InitSubSystem( SDL_INIT_TIMER )" );
@@ -58,8 +58,8 @@ SDLClock::Init( )
 void 
 SDLClock::Shutdown( )
 {
-    if ( SDL_WasInit( SDL_INIT_TIMER ) != 0 )
-        SDL_QuitSubSystem( SDL_INIT_TIMER );
+    if ( ::SDL_WasInit( SDL_INIT_TIMER ) != 0 )
+        ::SDL_QuitSubSystem( SDL_INIT_TIMER );
 }
 
 //=============================================================================
@@ -67,7 +67,7 @@ SDLClock::Shutdown( )
 double 
 SDLClock::Seconds( ) const
 {
-    return  SDL_GetTicks( ) / 1000.;
+    return  ::SDL_GetTicks( ) / 1000.;
 }
 
 //=============================================================================

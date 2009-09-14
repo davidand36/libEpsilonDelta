@@ -133,9 +133,9 @@ Rectangle::Fill( uint32_t pxl, Surface * pSurface ) const
     if ( pSurface == 0 )
         pSurface = Surface::Current();
 #if USE_SDL
-    SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
-    SDL_Rect sdl_Rect = *this;
-    int fillRslt = SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
+    ::SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
+    ::SDL_Rect sdl_Rect = *this;
+    int fillRslt = ::SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
     if ( fillRslt != 0 )
         throw SDLException( "SDL_FillRect" );
 #else
@@ -151,13 +151,13 @@ Rectangle::Fill( const Color3B & color, Surface * pSurface ) const
     if ( pSurface == 0 )
         pSurface = Surface::Current();
 #if USE_SDL
-    SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
-    SDL_Rect sdl_Rect = *this;
-    Uint32 pxl = SDL_MapRGB( pSDL_Surf->format,
-                             static_cast< Uint8 >( color.Red() ),
-                             static_cast< Uint8 >( color.Green() ),
-                             static_cast< Uint8 >( color.Blue() ) );
-    int fillRslt = SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
+    ::SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
+    ::SDL_Rect sdl_Rect = *this;
+    Uint32 pxl = ::SDL_MapRGB( pSDL_Surf->format,
+                               static_cast< Uint8 >( color.Red() ),
+                               static_cast< Uint8 >( color.Green() ),
+                               static_cast< Uint8 >( color.Blue() ) );
+    int fillRslt = ::SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
     if ( fillRslt != 0 )
         throw SDLException( "SDL_FillRect" );
 #else
@@ -173,14 +173,14 @@ Rectangle::Fill( const Color4B & color, Surface * pSurface ) const
     if ( pSurface == 0 )
         pSurface = Surface::Current();
 #if USE_SDL
-    SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
-    SDL_Rect sdl_Rect = *this;
-    Uint32 pxl = SDL_MapRGBA( pSDL_Surf->format,
-                              static_cast< Uint8 >( color.Red() ),
-                              static_cast< Uint8 >( color.Green() ),
-                              static_cast< Uint8 >( color.Blue() ),
-                              static_cast< Uint8 >( color.Alpha() ) );
-    int fillRslt = SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
+    ::SDL_Surface * pSDL_Surf = pSurface->GetSDL_Surface();
+    ::SDL_Rect sdl_Rect = *this;
+    Uint32 pxl = ::SDL_MapRGBA( pSDL_Surf->format,
+                                static_cast< Uint8 >( color.Red() ),
+                                static_cast< Uint8 >( color.Green() ),
+                                static_cast< Uint8 >( color.Blue() ),
+                                static_cast< Uint8 >( color.Alpha() ) );
+    int fillRslt = ::SDL_FillRect( pSDL_Surf, &sdl_Rect, pxl );
     if ( fillRslt != 0 )
         throw SDLException( "SDL_FillRect" );
 #else
@@ -223,7 +223,7 @@ Rectangle::Test( )
     TESTCHECK( rect1.Area(), w * h, &ok );
 #if USE_SDL
     cout << "SDL_Rect" << endl;
-    SDL_Rect sdl_Rect = rect1;
+    ::SDL_Rect sdl_Rect = rect1;
     TESTCHECK( sdl_Rect.x, l, &ok );
     TESTCHECK( sdl_Rect.y, t, &ok );
     TESTCHECK( sdl_Rect.w, w, &ok );
@@ -280,10 +280,10 @@ Rectangle::Test( )
     w = 40;
     h = 40;
 #if USE_SDL
-    SDL_Rect sdl_Rect3 = { static_cast< Sint16 >( l ),
-                           static_cast< Sint16 >( t ),
-                           static_cast< Uint16 >( w ),
-                           static_cast< Uint16 >( h ) };
+    ::SDL_Rect sdl_Rect3 = { static_cast< Sint16 >( l ),
+                             static_cast< Sint16 >( t ),
+                             static_cast< Uint16 >( w ),
+                             static_cast< Uint16 >( h ) };
     cout << "Rectangle( SDL_Rect( " << l << ", " << t << ", " << w
          << ", " << h << " ) )" << endl;
     Rectangle rect3( sdl_Rect3 );
@@ -357,10 +357,10 @@ Rectangle::TestDraw( )
     w = 40;
     h = 40;
 #if USE_SDL
-    SDL_Rect sdl_Rect3 = { static_cast< Sint16 >( l ),
-                           static_cast< Sint16 >( t ),
-                           static_cast< Uint16 >( w ),
-                           static_cast< Uint16 >( h ) };
+    ::SDL_Rect sdl_Rect3 = { static_cast< Sint16 >( l ),
+                             static_cast< Sint16 >( t ),
+                             static_cast< Uint16 >( w ),
+                             static_cast< Uint16 >( h ) };
     Rectangle rect3( sdl_Rect3 );
 #else
     Rectangle rect3( l, t, w, h );

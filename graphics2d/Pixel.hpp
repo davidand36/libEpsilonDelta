@@ -312,11 +312,11 @@ private:
 
 #ifdef USE_SDL
 
-SDL_PixelFormat DetermineSDLPixelFormat( EPixelType pixelType );
-EPixelType DeterminePixelType( const SDL_PixelFormat & pixelFormat );
+::SDL_PixelFormat DetermineSDLPixelFormat( EPixelType pixelType );
+EPixelType DeterminePixelType( const ::SDL_PixelFormat & pixelFormat );
 
 #ifdef DEBUG
-void PrintPixelFormat( const SDL_PixelFormat & pixelFormat );
+void PrintPixelFormat( const ::SDL_PixelFormat & pixelFormat );
 #endif
 
 #endif

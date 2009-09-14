@@ -49,18 +49,18 @@ Surface::Surface( int width, int height, EPixelType pixelType )
     if ( Graphics2D::Instance().Screen()
          && Graphics2D::Instance().Screen()->PixelType() == pixelType )
         flags = SDL_HWSURFACE;
-    SDL_PixelFormat pxlFmt = DetermineSDLPixelFormat( pixelType );
-    m_pSDL_Surface = SDL_CreateRGBSurface( flags, width, height,
-                                           pxlFmt.BitsPerPixel,
-                                           pxlFmt.Rmask, pxlFmt.Gmask,
-                                           pxlFmt.Bmask, pxlFmt.Amask );
+    ::SDL_PixelFormat pxlFmt = DetermineSDLPixelFormat( pixelType );
+    m_pSDL_Surface = ::SDL_CreateRGBSurface( flags, width, height,
+                                             pxlFmt.BitsPerPixel,
+                                             pxlFmt.Rmask, pxlFmt.Gmask,
+                                             pxlFmt.Bmask, pxlFmt.Amask );
     if ( m_pSDL_Surface == 0 )
         throw SDLException( "SDL_CreateRGBSurface" );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-Surface::Surface( SDL_Surface * sdl_Surface, bool own )
+Surface::Surface( ::SDL_Surface * sdl_Surface, bool own )
     :   m_pSDL_Surface( sdl_Surface ),
         m_own( own )
 {
@@ -76,13 +76,13 @@ Surface::Surface( const std::string & filespec, bool alpha )
         throw SDLException( "IMG_Load" );
     if ( alpha )
     {
-        int alphaRslt = SDL_SetAlpha( m_pSDL_Surface, SDL_SRCALPHA, 255 );
+        int alphaRslt = ::SDL_SetAlpha( m_pSDL_Surface, SDL_SRCALPHA, 255 );
         if ( alphaRslt != 0 )
             throw SDLException( "SDL_SetAlpha" );
     }
     else
     {
-        int alphaRslt = SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
+        int alphaRslt = ::SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
         if ( alphaRslt != 0 )
             throw SDLException( "SDL_SetAlpha" );
     }
@@ -115,7 +115,7 @@ Surface::Surface( const Surface & rhs )
 Surface::~Surface( )
 {
     if ( m_own && (m_pSDL_Surface != 0) )
-        SDL_FreeSurface( m_pSDL_Surface );
+        ::SDL_FreeSurface( m_pSDL_Surface );
 }
 
 //=============================================================================
@@ -126,7 +126,7 @@ Surface::operator=( const Surface & rhs )
     if ( &rhs == this )
         return *this;
     if ( m_own && (m_pSDL_Surface != 0) )
-        SDL_FreeSurface( m_pSDL_Surface );
+        ::SDL_FreeSurface( m_pSDL_Surface );
     CopySurface( rhs );
     return *this;
 }
@@ -141,18 +141,18 @@ Surface::CopySurface( const Surface & rhs )
         int width = rhs.m_pSDL_Surface->w;
         int height = rhs.m_pSDL_Surface->h;
         Uint32 flags = rhs.m_pSDL_Surface->flags;
-        SDL_PixelFormat pxlFmt = *(rhs.m_pSDL_Surface->format);
+        ::SDL_PixelFormat pxlFmt = *(rhs.m_pSDL_Surface->format);
 
-        m_pSDL_Surface = SDL_CreateRGBSurface( flags, width, height, 
-                                               pxlFmt.BitsPerPixel,
-                                               pxlFmt.Rmask, pxlFmt.Gmask,
-                                               pxlFmt.Bmask, pxlFmt.Amask );
+        m_pSDL_Surface = ::SDL_CreateRGBSurface( flags, width, height, 
+                                                 pxlFmt.BitsPerPixel,
+                                                 pxlFmt.Rmask, pxlFmt.Gmask,
+                                                 pxlFmt.Bmask, pxlFmt.Amask );
         if ( m_pSDL_Surface == 0 )
             throw SDLException( "SDL_CreateRGBSurface" );
-        SDL_Rect rect = { 0, 0, static_cast< Uint16 >( width ),
-                          static_cast< Uint16 >( height ) };
-        int blitRslt = SDL_BlitSurface( rhs.m_pSDL_Surface, &rect,
-                                        m_pSDL_Surface, &rect );
+        ::SDL_Rect rect = { 0, 0, static_cast< Uint16 >( width ),
+                            static_cast< Uint16 >( height ) };
+        int blitRslt = ::SDL_BlitSurface( rhs.m_pSDL_Surface, &rect,
+                                          m_pSDL_Surface, &rect );
         if ( blitRslt != 0 )
             throw SDLException( "SDL_BlitSurface" );
         m_own = true;
@@ -181,20 +181,20 @@ Surface::SetTransparentColor( const Color3B & transparentColor )
 {
     Uint32 colorKey;
     if ( m_pSDL_Surface->format->Amask == 0 )
-        colorKey = SDL_MapRGB( m_pSDL_Surface->format,
-                               static_cast<Uint8>( transparentColor.Red() ),
-                               static_cast<Uint8>( transparentColor.Green() ),
-                               static_cast<Uint8>( transparentColor.Blue() ) );
-    else
-        colorKey = SDL_MapRGBA( m_pSDL_Surface->format,
+        colorKey = ::SDL_MapRGB( m_pSDL_Surface->format,
                                 static_cast<Uint8>( transparentColor.Red() ),
                                 static_cast<Uint8>( transparentColor.Green() ),
-                                static_cast<Uint8>( transparentColor.Blue() ),
-                                0 );
-    int alphaRslt = SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
+                                static_cast<Uint8>( transparentColor.Blue() ) );
+    else
+        colorKey = ::SDL_MapRGBA( m_pSDL_Surface->format,
+                                 static_cast<Uint8>( transparentColor.Red() ),
+                                 static_cast<Uint8>( transparentColor.Green() ),
+                                 static_cast<Uint8>( transparentColor.Blue() ),
+                                 0 );
+    int alphaRslt = ::SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
     if ( alphaRslt != 0 )
         throw SDLException( "SDL_SetAlpha" );
-    int colorKeyRslt = SDL_SetColorKey( m_pSDL_Surface,
+    int colorKeyRslt = ::SDL_SetColorKey( m_pSDL_Surface,
                                         SDL_SRCCOLORKEY | SDL_RLEACCEL,
                                         colorKey );
     if ( colorKeyRslt != 0 )
@@ -210,7 +210,7 @@ Surface::GetTransparentColor( Color3B * pTransparentColor ) const
     {
         uint32_t colorKey = m_pSDL_Surface->format->colorkey;
         uint8_t r, g, b;
-        SDL_GetRGB( colorKey, m_pSDL_Surface->format, &r, &g, &b );
+        ::SDL_GetRGB( colorKey, m_pSDL_Surface->format, &r, &g, &b );
         pTransparentColor->Set( r, g, b );
         return true;
     }
@@ -321,7 +321,7 @@ Surface::Contains( const Point2I & point ) const
 void * 
 Surface::Lock( )
 {
-    int lockRslt = SDL_LockSurface( m_pSDL_Surface );
+    int lockRslt = ::SDL_LockSurface( m_pSDL_Surface );
     if ( lockRslt != 0 )
         throw SDLException( "SDL_LockSurface" );
     return  m_pSDL_Surface->pixels;
@@ -332,7 +332,7 @@ Surface::Lock( )
 void const * 
 Surface::Lock( ) const
 {
-    int lockRslt = SDL_LockSurface( m_pSDL_Surface );
+    int lockRslt = ::SDL_LockSurface( m_pSDL_Surface );
     if ( lockRslt != 0 )
         throw SDLException( "SDL_LockSurface" );
     return  m_pSDL_Surface->pixels;
@@ -343,7 +343,7 @@ Surface::Lock( ) const
 void 
 Surface::Unlock( ) const
 {
-    SDL_UnlockSurface( m_pSDL_Surface );
+    ::SDL_UnlockSurface( m_pSDL_Surface );
 }
 
 //=============================================================================
@@ -360,12 +360,12 @@ void
 Surface::Blit( const Rectangle & srcRect, const Point2I & destPos,
                Surface * pDest )
 {
-    SDL_Rect srcSDLRect = srcRect;
-    SDL_Rect destSDLRect = srcSDLRect;
+    ::SDL_Rect srcSDLRect = srcRect;
+    ::SDL_Rect destSDLRect = srcSDLRect;
     destSDLRect.x = static_cast< Sint16 >( destPos.X() );
     destSDLRect.y = static_cast< Sint16 >( destPos.Y() );
-    int blitRslt = SDL_BlitSurface( m_pSDL_Surface, &srcSDLRect,
-                                    pDest->m_pSDL_Surface, &destSDLRect );
+    int blitRslt = ::SDL_BlitSurface( m_pSDL_Surface, &srcSDLRect,
+                                      pDest->m_pSDL_Surface, &destSDLRect );
     if ( blitRslt != 0 )
         throw SDLException( "SDL_BlitSurface" );
 }

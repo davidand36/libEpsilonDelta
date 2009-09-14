@@ -89,8 +89,8 @@ inline
 void 
 Surface::SetClippingRect( const Rectangle & clippingRect )
 {
-    SDL_Rect sdlRect = clippingRect;
-    SDL_SetClipRect( m_pSDL_Surface, &sdlRect );
+    ::SDL_Rect sdlRect = clippingRect;
+    ::SDL_SetClipRect( m_pSDL_Surface, &sdlRect );
 }
 
 //=============================================================================
@@ -417,7 +417,7 @@ Surface::Fill( const Shape & shape, const Color4B & color )
 //=============================================================================
 
 inline 
-SDL_Surface * 
+::SDL_Surface * 
 Surface::GetSDL_Surface( )
 {
     return m_pSDL_Surface;
@@ -426,7 +426,7 @@ Surface::GetSDL_Surface( )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline 
-const SDL_Surface * 
+const ::SDL_Surface * 
 Surface::GetSDL_Surface( ) const
 {
     return m_pSDL_Surface;

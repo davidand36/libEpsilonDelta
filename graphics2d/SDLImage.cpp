@@ -27,35 +27,35 @@ namespace EpsilonDelta
 
 Image::Image( const std::string & filespec, bool alpha )
 {
-    SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
+    ::SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
     if ( pSDL_Surface == 0 )
         throw SDLException( "IMG_Load" );
     if ( alpha )
     {
-        int alphaRslt = SDL_SetAlpha( pSDL_Surface, SDL_SRCALPHA, 255 );
+        int alphaRslt = ::SDL_SetAlpha( pSDL_Surface, SDL_SRCALPHA, 255 );
         if ( alphaRslt != 0 )
             throw SDLException( "SDL_SetAlpha" );
-        if ( SDL_GetVideoSurface() != 0 )
+        if ( ::SDL_GetVideoSurface() != 0 )
         {
-            m_pSDL_Surface = SDL_DisplayFormatAlpha( pSDL_Surface );
+            m_pSDL_Surface = ::SDL_DisplayFormatAlpha( pSDL_Surface );
             if ( m_pSDL_Surface == 0 )
                 throw SDLException( "SDL_DisplayFormatAlpha" );
-            SDL_FreeSurface( pSDL_Surface );
+            ::SDL_FreeSurface( pSDL_Surface );
         }
         else
             m_pSDL_Surface = pSDL_Surface;
     }
     else
     {
-        int alphaRslt = SDL_SetAlpha( pSDL_Surface, 0, 255 );
+        int alphaRslt = ::SDL_SetAlpha( pSDL_Surface, 0, 255 );
         if ( alphaRslt != 0 )
             throw SDLException( "SDL_SetAlpha" );
-        if ( SDL_GetVideoSurface() != 0 )
+        if ( ::SDL_GetVideoSurface() != 0 )
         {
-            m_pSDL_Surface = SDL_DisplayFormat( pSDL_Surface );
+            m_pSDL_Surface = ::SDL_DisplayFormat( pSDL_Surface );
             if ( m_pSDL_Surface == 0 )
                 throw SDLException( "SDL_DisplayFormat" );
-            SDL_FreeSurface( pSDL_Surface );
+            ::SDL_FreeSurface( pSDL_Surface );
         }
         else
             m_pSDL_Surface = pSDL_Surface;
@@ -68,36 +68,36 @@ Image::Image( const std::string & filespec, bool alpha )
 
 Image::Image( const std::string & filespec, const Color3B & transparentColor )
 {
-    SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
+    ::SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
     if ( pSDL_Surface == 0 )
         throw SDLException( "IMG_Load" );
     Uint32 colorKey;
     if ( pSDL_Surface->format->Amask == 0 )
-        colorKey = SDL_MapRGB( pSDL_Surface->format,
-                               static_cast<Uint8>( transparentColor.Red() ),
-                               static_cast<Uint8>( transparentColor.Green() ),
-                               static_cast<Uint8>( transparentColor.Blue() ) );
-    else
-        colorKey = SDL_MapRGBA( pSDL_Surface->format,
+        colorKey = ::SDL_MapRGB( pSDL_Surface->format,
                                 static_cast<Uint8>( transparentColor.Red() ),
                                 static_cast<Uint8>( transparentColor.Green() ),
-                                static_cast<Uint8>( transparentColor.Blue() ),
-                                0 );
-    int alphaRslt = SDL_SetAlpha( pSDL_Surface, 0, 255 );
+                                static_cast<Uint8>( transparentColor.Blue() ) );
+    else
+        colorKey = ::SDL_MapRGBA( pSDL_Surface->format,
+                                 static_cast<Uint8>( transparentColor.Red() ),
+                                 static_cast<Uint8>( transparentColor.Green() ),
+                                 static_cast<Uint8>( transparentColor.Blue() ),
+                                 0 );
+    int alphaRslt = ::SDL_SetAlpha( pSDL_Surface, 0, 255 );
     if ( alphaRslt != 0 )
         throw SDLException( "SDL_SetAlpha" );
-    int colorKeyRslt = SDL_SetColorKey( pSDL_Surface,
-                                        SDL_SRCCOLORKEY | SDL_RLEACCEL,
-                                        colorKey );
+    int colorKeyRslt = ::SDL_SetColorKey( pSDL_Surface,
+                                          SDL_SRCCOLORKEY | SDL_RLEACCEL,
+                                          colorKey );
     if ( colorKeyRslt != 0 )
         throw SDLException( "SDL_SetColorKey" );
 
-    if ( SDL_GetVideoSurface() != 0 )
+    if ( ::SDL_GetVideoSurface() != 0 )
     {
-        m_pSDL_Surface = SDL_DisplayFormat( pSDL_Surface );
+        m_pSDL_Surface = ::SDL_DisplayFormat( pSDL_Surface );
         if ( m_pSDL_Surface == 0 )
             throw SDLException( "SDL_DisplayFormat" );
-        SDL_FreeSurface( pSDL_Surface );
+        ::SDL_FreeSurface( pSDL_Surface );
     }
     else
         m_pSDL_Surface = pSDL_Surface;

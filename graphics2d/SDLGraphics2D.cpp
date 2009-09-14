@@ -49,9 +49,9 @@ void
 Graphics2D::Init( )
 {
     SDL::Instance().Init( );
-    if ( SDL_WasInit( SDL_INIT_VIDEO ) == 0 )
+    if ( ::SDL_WasInit( SDL_INIT_VIDEO ) == 0 )
     {
-        int initRslt = SDL_InitSubSystem( SDL_INIT_VIDEO );
+        int initRslt = ::SDL_InitSubSystem( SDL_INIT_VIDEO );
 
         if ( initRslt != 0 )
             throw SDLException( "SDL_InitSubSystem( SDL_INIT_VIDEO )" );
@@ -64,8 +64,8 @@ void
 Graphics2D::Shutdown( )
 {
     m_spScreenSurface.reset();
-    if ( SDL_WasInit( SDL_INIT_VIDEO ) != 0 )
-        SDL_QuitSubSystem( SDL_INIT_VIDEO );
+    if ( ::SDL_WasInit( SDL_INIT_VIDEO ) != 0 )
+        ::SDL_QuitSubSystem( SDL_INIT_VIDEO );
 }
 
 //=============================================================================
@@ -76,39 +76,39 @@ Graphics2D::SetupScreen( int width, int height,
                                EPixelType pixelType,
                                bool fullScreen, bool openGL )
 {
-    const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo( );
+    const ::SDL_VideoInfo * videoInfo = ::SDL_GetVideoInfo( );
     if ( videoInfo == 0 )
         throw SDLException( "SDL_GetVideoInfo" );
     if ( videoInfo->wm_available )
     {
-        SDL_WM_SetCaption( title, 0 );
+        ::SDL_WM_SetCaption( title, 0 );
         //!!!SDL_WM_SetIcon(...);
     }
 
     Uint32 flags = 0;
     if ( fullScreen )
         flags |= SDL_FULLSCREEN;
-    SDL_PixelFormat pxlFmt = DetermineSDLPixelFormat( pixelType );
+    ::SDL_PixelFormat pxlFmt = DetermineSDLPixelFormat( pixelType );
     if ( openGL )
     {
         flags |= SDL_OPENGL;
 
-        int glRslt = SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        int glRslt = ::SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(DOUBLEBUFFER)" );
-        glRslt = SDL_GL_SetAttribute( SDL_GL_RED_SIZE, (8 - pxlFmt.Rloss) );
+        glRslt = ::SDL_GL_SetAttribute( SDL_GL_RED_SIZE, (8 - pxlFmt.Rloss) );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(RED_SIZE)" );
-        glRslt = SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, (8 - pxlFmt.Gloss) );
+        glRslt = ::SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, (8 - pxlFmt.Gloss) );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(GREEN_SIZE)" );
-        glRslt = SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, (8 - pxlFmt.Bloss) );
+        glRslt = ::SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, (8 - pxlFmt.Bloss) );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(BLUE_SIZE)" );
-        glRslt = SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, (8 - pxlFmt.Aloss) );
+        glRslt = ::SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, (8 - pxlFmt.Aloss) );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(ALPHA_SIZE)" );
-        glRslt = SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+        glRslt = ::SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
         if ( glRslt != 0 )
             throw SDLException( "SDL_GL_SetAttribute(DEPTH_SIZE)" );
         //!!!SDL_GL_STENCIL_SIZE
@@ -119,8 +119,8 @@ Graphics2D::SetupScreen( int width, int height,
         flags |= (SDL_HWSURFACE | SDL_DOUBLEBUF);
     }
 
-    SDL_Surface * sdlScreenSurface
-            = SDL_SetVideoMode( width, height, pxlFmt.BitsPerPixel, flags );
+    ::SDL_Surface * sdlScreenSurface
+            = ::SDL_SetVideoMode( width, height, pxlFmt.BitsPerPixel, flags );
     if ( sdlScreenSurface == 0 )
         throw SDLException( "SDL_SetVideoMode" );
 
@@ -134,10 +134,10 @@ void
 Graphics2D::ShowScreen( )
 {
     if ( m_spScreenSurface->GetSDL_Surface()->flags & SDL_OPENGL )
-        SDL_GL_SwapBuffers( );
+        ::SDL_GL_SwapBuffers( );
     else
     {
-        int flipRslt = SDL_Flip( m_spScreenSurface->GetSDL_Surface() );
+        int flipRslt = ::SDL_Flip( m_spScreenSurface->GetSDL_Surface() );
         if ( flipRslt != 0 )
             throw SDLException( "SDL_Flip" );
     }
@@ -150,16 +150,16 @@ Graphics2D::ShowScreen( )
 void 
 Graphics2D::PrintVideoInfo( )
 {
-    Assert( SDL_WasInit( SDL_INIT_VIDEO ) != 0 );
+    Assert( ::SDL_WasInit( SDL_INIT_VIDEO ) != 0 );
 
     char driverName[ 50 ] = "";
-    char * name = SDL_VideoDriverName( driverName, 50 );
+    char * name = ::SDL_VideoDriverName( driverName, 50 );
     Assert( name );
     cout << "Video driver: " << driverName << endl;
 
     bool videoModeSet = (m_spScreenSurface != 0);
 
-    const SDL_VideoInfo * videoInfo = SDL_GetVideoInfo( );
+    const ::SDL_VideoInfo * videoInfo = ::SDL_GetVideoInfo( );
     cout << "Can create hardware surfaces? "
          << (videoInfo->hw_available  ?  "yes"  :  "no") << endl;
     cout << "Window manager available? "
@@ -184,7 +184,7 @@ Graphics2D::PrintVideoInfo( )
     {
         char * title;
         char * icon;
-        SDL_WM_GetCaption( &title, &icon );
+        ::SDL_WM_GetCaption( &title, &icon );
         if ( title )
             cout << "Window title: \"" << title << "\"" << endl;
         if ( icon )
@@ -208,7 +208,8 @@ Graphics2D::PrintVideoInfo( )
 
         for ( int i = 0; i < NumPixelTypes; ++i )
         {
-            SDL_PixelFormat format = DetermineSDLPixelFormat( (EPixelType) i );
+            ::SDL_PixelFormat format
+                    = DetermineSDLPixelFormat( (EPixelType) i );
             cout << "Available resolutions for "
                  << GetPixelTypeName( (EPixelType) i ) << endl;
             flags = SDL_HWSURFACE;
@@ -233,15 +234,15 @@ Graphics2D::PrintVideoInfo( )
 //.............................................................................
 
 void 
-Graphics2D::PrintAvailableResolutions( const SDL_PixelFormat & format,
+Graphics2D::PrintAvailableResolutions( const ::SDL_PixelFormat & format,
                                              Uint32 flags )
 {
-    SDL_Rect ** resolutions
-            = SDL_ListModes( &(const_cast< SDL_PixelFormat & >( format )),
+    ::SDL_Rect ** resolutions
+            = ::SDL_ListModes( &(const_cast< ::SDL_PixelFormat & >( format )),
                              flags );
     if ( resolutions == 0 )
         cout << " None available" << endl;
-    else if ( resolutions == reinterpret_cast< SDL_Rect ** >( -1 ) )
+    else if ( resolutions == reinterpret_cast< ::SDL_Rect ** >( -1 ) )
         cout << " All resolutions available" << endl;
     else
     {
@@ -276,19 +277,19 @@ Graphics2D::Test( )
         SetupScreen( 640, 480, "Graphics2D Test 640x480" );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1000 );
+        ::SDL_Delay( 1000 );
 
         cout << "SetupScreen( 320, 240, PixelType8888 )" << endl;
         SetupScreen( 320, 240, "Graphics2D Test 320x240", PixelType8888 );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1000 );
+        ::SDL_Delay( 1000 );
 
         cout << "SetupScreen( 640, 480, PixelType565 )" << endl;
         SetupScreen( 640, 480, "Graphics2D Test 640x480", PixelType565 );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1000 );
+        ::SDL_Delay( 1000 );
 
         cout << "Shutdown()" << endl;
         Graphics2D::Instance().Shutdown( );
@@ -304,14 +305,14 @@ Graphics2D::Test( )
                      true );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1500 );
+        ::SDL_Delay( 1500 );
 
         cout << "SetupScreen( 640, 480, PixelType, true, true )" << endl;
         SetupScreen( 640, 480, "Graphics2D Test 640x480", NativePixelType,
                      true, true );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1500 );
+        ::SDL_Delay( 1500 );
 
 #ifndef OS_WINDOWS
         cout << "SetupScreen( 800, 600, PixelType565, true, true )" << endl;
@@ -319,7 +320,7 @@ Graphics2D::Test( )
                      true );
         PrintVideoInfo( );
         cout << endl;
-        SDL_Delay( 1500 );
+        ::SDL_Delay( 1500 );
 #endif
 
         cout << "Shutdown()" << endl;

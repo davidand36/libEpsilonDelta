@@ -43,7 +43,7 @@ public:
 #ifdef DEBUG
     void PrintVideoInfo( );
 #ifdef USE_SDL
-    void PrintAvailableResolutions( const SDL_PixelFormat & format,
+    void PrintAvailableResolutions( const ::SDL_PixelFormat & format,
                                     Uint32 flags );
 #endif
     bool Test( );

@@ -35,7 +35,7 @@ SDL::SDL( )
 SDL::~SDL( )
 {
     if ( m_initialized )
-        SDL_Quit( );
+        ::SDL_Quit( );
 }
 
 //=============================================================================
@@ -45,8 +45,8 @@ SDL::Init( )
 {
     if ( ! m_initialized )
     {
-        int initRslt = SDL_Init( 0 );  //Subsystems are initialized separately.
-
+        int initRslt = ::SDL_Init( 0 );
+        
         if ( initRslt != 0 )
             throw SDLException( "SDL_Init(0)" );
         m_initialized = true;

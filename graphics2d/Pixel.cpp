@@ -51,10 +51,10 @@ GetPixelTypeName( EPixelType pixelType )
 #ifdef USE_SDL
 
 
-SDL_PixelFormat 
+::SDL_PixelFormat 
 DetermineSDLPixelFormat( EPixelType pixelType )
 {
-    SDL_PixelFormat format;
+    ::SDL_PixelFormat format;
     switch ( pixelType )
     {
     case PixelType8:
@@ -303,7 +303,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
 //-----------------------------------------------------------------------------
 
 EPixelType 
-DeterminePixelType( const SDL_PixelFormat & pixelFormat )
+DeterminePixelType( const ::SDL_PixelFormat & pixelFormat )
 {
     if ( pixelFormat.BitsPerPixel == 32 )
     {
@@ -467,7 +467,7 @@ DeterminePixelType( const SDL_PixelFormat & pixelFormat )
 #ifdef DEBUG
 
 void 
-PrintPixelFormat( const SDL_PixelFormat & pixelFormat )
+PrintPixelFormat( const ::SDL_PixelFormat & pixelFormat )
 {
     cout << " BitsPerPixel: " << static_cast<int>( pixelFormat.BitsPerPixel )
          << " BytesPerPixel: " << static_cast<int>( pixelFormat.BytesPerPixel )
@@ -618,68 +618,71 @@ TestPixel( )
 #ifdef USE_SDL
 
     cout << "DetermineSDLPixelFormat( PixelType8 )" << endl;
-    SDL_PixelFormat pxlFmt8 = DetermineSDLPixelFormat( PixelType8 );
+    ::SDL_PixelFormat pxlFmt8 = DetermineSDLPixelFormat( PixelType8 );
     TESTCHECK( DeterminePixelType( pxlFmt8 ), PixelType8, &ok );
     cout << "DetermineSDLPixelFormat( PixelType555 )" << endl;
-    SDL_PixelFormat pxlFmt555 = DetermineSDLPixelFormat( PixelType555 );
+    ::SDL_PixelFormat pxlFmt555 = DetermineSDLPixelFormat( PixelType555 );
     TESTCHECK( DeterminePixelType( pxlFmt555 ), PixelType555, &ok );
     cout << "DetermineSDLPixelFormat( PixelType565 )" << endl;
-    SDL_PixelFormat pxlFmt565 = DetermineSDLPixelFormat( PixelType565 );
+    ::SDL_PixelFormat pxlFmt565 = DetermineSDLPixelFormat( PixelType565 );
     TESTCHECK( DeterminePixelType( pxlFmt565 ), PixelType565, &ok );
     cout << "DetermineSDLPixelFormat( PixelType0888 )" << endl;
-    SDL_PixelFormat pxlFmt0888 = DetermineSDLPixelFormat( PixelType0888 );
+    ::SDL_PixelFormat pxlFmt0888 = DetermineSDLPixelFormat( PixelType0888 );
     TESTCHECK( DeterminePixelType( pxlFmt0888 ), PixelType0888, &ok );
     cout << "DetermineSDLPixelFormat( PixelType8888 )" << endl;
-    SDL_PixelFormat pxlFmt8888 = DetermineSDLPixelFormat( PixelType8888 );
+    ::SDL_PixelFormat pxlFmt8888 = DetermineSDLPixelFormat( PixelType8888 );
     TESTCHECK( DeterminePixelType( pxlFmt8888 ), PixelType8888, &ok );
     cout << "DetermineSDLPixelFormat( PixelType8888Rev )" << endl;
-    SDL_PixelFormat pxlFmt8888Rev = DetermineSDLPixelFormat( PixelType8888Rev );
+    ::SDL_PixelFormat pxlFmt8888Rev
+              = DetermineSDLPixelFormat( PixelType8888Rev );
     TESTCHECK( DeterminePixelType( pxlFmt8888Rev ), PixelType8888Rev, &ok );
 
     Uint8 r8 = static_cast< Uint8 >( r );
     Uint8 g8 = static_cast< Uint8 >( g );
     Uint8 b8 = static_cast< Uint8 >( b );
     Uint8 a8 = static_cast< Uint8 >( a );
-    TESTCHECK( SDL_MapRGB( &pxlFmt555, r8, g8, b8 ),
+    TESTCHECK( ::SDL_MapRGB( &pxlFmt555, r8, g8, b8 ),
                static_cast< Uint32 >( pxl555c.Value() ), &ok );
-    TESTCHECK( SDL_MapRGB( &pxlFmt565, r8, g8, b8 ),
+    TESTCHECK( ::SDL_MapRGB( &pxlFmt565, r8, g8, b8 ),
                static_cast< Uint32 >( pxl565c.Value() ), &ok );
-    TESTCHECK( SDL_MapRGB( &pxlFmt0888, r8, g8, b8 ), pxl0888c3.Value(), &ok );
-    TESTCHECK( SDL_MapRGB( &pxlFmt8888, r8, g8, b8 ), pxl8888c3.Value(), &ok );
-    TESTCHECK( SDL_MapRGBA( &pxlFmt8888, r8, g8, b8, a8 ), pxl8888c4.Value(),
+    TESTCHECK( ::SDL_MapRGB( &pxlFmt0888, r8, g8, b8 ), pxl0888c3.Value(),
                &ok );
-    TESTCHECK( SDL_MapRGBA( &pxlFmt8888Rev, r8, g8, b8, a8 ),
+    TESTCHECK( ::SDL_MapRGB( &pxlFmt8888, r8, g8, b8 ), pxl8888c3.Value(),
+               &ok );
+    TESTCHECK( ::SDL_MapRGBA( &pxlFmt8888, r8, g8, b8, a8 ), pxl8888c4.Value(),
+               &ok );
+    TESTCHECK( ::SDL_MapRGBA( &pxlFmt8888Rev, r8, g8, b8, a8 ),
                pxl8888rc4.Value(), &ok );
 
     cout << "SDL_GetRGB( " << u16 << ", pxlFmt555, ... )" << endl;
-    SDL_GetRGBA( u16, &pxlFmt555, &r8, &g8, &b8, &a8 );
+    ::SDL_GetRGBA( u16, &pxlFmt555, &r8, &g8, &b8, &a8 );
     r = r8; g = g8; b = b8; a = a8;
     TESTCHECK( pxl555v.Color().Red(), r, &ok );
     TESTCHECK( pxl555v.Color().Green(), g, &ok );
     TESTCHECK( pxl555v.Color().Blue(), b, &ok );
     TESTCHECK( a, 255, &ok );
     cout << "SDL_GetRGB( " << u16 << ", pxlFmt565, ... )" << endl;
-    SDL_GetRGBA( u16, &pxlFmt565, &r8, &g8, &b8, &a8 );
+    ::SDL_GetRGBA( u16, &pxlFmt565, &r8, &g8, &b8, &a8 );
     r = r8; g = g8; b = b8; a = a8;
     TESTCHECK( pxl565v.Color().Red(), r, &ok );
     TESTCHECK( pxl565v.Color().Green(), g, &ok );
     TESTCHECK( pxl565v.Color().Blue(), b, &ok );
     TESTCHECK( a, 255, &ok );
     cout << "SDL_GetRGB( " << u32 << ", pxlFmt0888, ... )" << endl;
-    SDL_GetRGB( u32, &pxlFmt0888, &r8, &g8, &b8 );
+    ::SDL_GetRGB( u32, &pxlFmt0888, &r8, &g8, &b8 );
     r = r8; g = g8; b = b8;
     TESTCHECK( pxl0888v.Color().Red(), r, &ok );
     TESTCHECK( pxl0888v.Color().Green(), g, &ok );
     TESTCHECK( pxl0888v.Color().Blue(), b, &ok );
     cout << "SDL_GetRGBA( " << u32 << ", pxlFmt8888, ... )" << endl;
-    SDL_GetRGBA( u32, &pxlFmt8888, &r8, &g8, &b8, &a8 );
+    ::SDL_GetRGBA( u32, &pxlFmt8888, &r8, &g8, &b8, &a8 );
     r = r8; g = g8; b = b8; a = a8;
     TESTCHECK( pxl8888v.Color().Red(), r, &ok );
     TESTCHECK( pxl8888v.Color().Green(), g, &ok );
     TESTCHECK( pxl8888v.Color().Blue(), b, &ok );
     TESTCHECK( pxl8888v.Alpha(), a, &ok );
     cout << "SDL_GetRGBA( " << u32 << ", pxlFmt8888Rev, ... )" << endl;
-    SDL_GetRGBA( u32, &pxlFmt8888Rev, &r8, &g8, &b8, &a8 );
+    ::SDL_GetRGBA( u32, &pxlFmt8888Rev, &r8, &g8, &b8, &a8 );
     r = r8; g = g8; b = b8; a = a8;
     TESTCHECK( pxl8888rv.Color().Red(), r, &ok );
     TESTCHECK( pxl8888rv.Color().Green(), g, &ok );

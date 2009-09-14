@@ -21,6 +21,7 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
+
 bool 
 Circle::operator==( const Region & rhs ) const
 {

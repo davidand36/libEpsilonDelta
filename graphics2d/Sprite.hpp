@@ -9,6 +9,7 @@
 */
 
 
+#include "Region.hpp"
 #include "Surface.hpp"
 #include "SmartPtr.hpp"
 
@@ -19,6 +20,7 @@ namespace EpsilonDelta
 
 
 class Sprite
+    :   public Region
 {
 public:
     Sprite( shared_ptr< Surface > graphic, const Point2I & position );
@@ -28,6 +30,11 @@ public:
     const Point2I & Position( ) const;
     void SetGraphic( shared_ptr< Surface > graphic );
     void SetPosition( const Point2I & position );
+
+    virtual bool Contains( const Point2I & point ) const;
+    bool operator==( const Sprite & rhs ) const;
+    bool operator!=( const Sprite & rhs ) const;
+    virtual bool operator==( const Region & rhs ) const;
 
 #ifdef DEBUG
     static bool Test( );
@@ -90,6 +97,24 @@ void
 Sprite::SetPosition( const Point2I & position )
 {
     m_position = position;
+}
+
+//=============================================================================
+
+inline
+bool 
+Sprite::operator==( const Sprite & rhs ) const
+{
+    return  (m_graphic == rhs.m_graphic) && (m_position == rhs.m_position);
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+bool 
+Sprite::operator!=( const Sprite & rhs ) const
+{
+    return  ! (*this == rhs);
 }
 
 

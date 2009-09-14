@@ -25,6 +25,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Array.hpp"
+#include "Circle.hpp"
 using namespace std;
 #endif
 
@@ -40,11 +41,13 @@ Surface * Surface::ms_current = 0;
 
 
 Surface::Surface( int width, int height, EPixelType pixelType )
-    :   m_own( true ),
+    :   m_pSDL_Surface( 0 ),
+        m_own( true ),
         m_pixelType( pixelType )
 {
     Uint32 flags = 0;
-    if ( Graphics2D::Instance().Screen()->PixelType() == pixelType )
+    if ( Graphics2D::Instance().Screen()
+         && Graphics2D::Instance().Screen()->PixelType() == pixelType )
         flags = SDL_HWSURFACE;
     SDL_PixelFormat pxlFmt = DetermineSDLPixelFormat( pixelType );
     m_pSDL_Surface = SDL_CreateRGBSurface( flags, width, height,
@@ -95,26 +98,7 @@ Surface::Surface( const std::string & filespec,
     m_pSDL_Surface = IMG_Load( filespec.c_str() );
     if ( m_pSDL_Surface == 0 )
         throw SDLException( "IMG_Load" );
-    Uint32 colorKey;
-    if ( m_pSDL_Surface->format->Amask == 0 )
-        colorKey = SDL_MapRGB( m_pSDL_Surface->format,
-                               static_cast<Uint8>( transparentColor.Red() ),
-                               static_cast<Uint8>( transparentColor.Green() ),
-                               static_cast<Uint8>( transparentColor.Blue() ) );
-    else
-        colorKey = SDL_MapRGBA( m_pSDL_Surface->format,
-                                static_cast<Uint8>( transparentColor.Red() ),
-                                static_cast<Uint8>( transparentColor.Green() ),
-                                static_cast<Uint8>( transparentColor.Blue() ),
-                                0 );
-    int alphaRslt = SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
-    if ( alphaRslt != 0 )
-        throw SDLException( "SDL_SetAlpha" );
-    int colorKeyRslt = SDL_SetColorKey( m_pSDL_Surface,
-                                        SDL_SRCCOLORKEY | SDL_RLEACCEL,
-                                        colorKey );
-    if ( colorKeyRslt != 0 )
-        throw SDLException( "SDL_SetColorKey" );
+    SetTransparentColor( transparentColor );
     m_own = true;
     m_pixelType = DeterminePixelType( *(m_pSDL_Surface->format) );
 }
@@ -183,8 +167,153 @@ Surface::CopySurface( const Surface & rhs )
 
 //=============================================================================
 
+bool 
+Surface::operator==( const Region & rhs ) const
+{
+    const Surface * pSurface = dynamic_cast< Surface const * >( &rhs );
+    return ( pSurface && (*this == *pSurface) );
+}
+
+//=============================================================================
+
+void 
+Surface::SetTransparentColor( const Color3B & transparentColor )
+{
+    Uint32 colorKey;
+    if ( m_pSDL_Surface->format->Amask == 0 )
+        colorKey = SDL_MapRGB( m_pSDL_Surface->format,
+                               static_cast<Uint8>( transparentColor.Red() ),
+                               static_cast<Uint8>( transparentColor.Green() ),
+                               static_cast<Uint8>( transparentColor.Blue() ) );
+    else
+        colorKey = SDL_MapRGBA( m_pSDL_Surface->format,
+                                static_cast<Uint8>( transparentColor.Red() ),
+                                static_cast<Uint8>( transparentColor.Green() ),
+                                static_cast<Uint8>( transparentColor.Blue() ),
+                                0 );
+    int alphaRslt = SDL_SetAlpha( m_pSDL_Surface, 0, 255 );
+    if ( alphaRslt != 0 )
+        throw SDLException( "SDL_SetAlpha" );
+    int colorKeyRslt = SDL_SetColorKey( m_pSDL_Surface,
+                                        SDL_SRCCOLORKEY | SDL_RLEACCEL,
+                                        colorKey );
+    if ( colorKeyRslt != 0 )
+        throw SDLException( "SDL_SetColorKey" );
+}
+
+//=============================================================================
+
+bool 
+Surface::Contains( const Point2I & point ) const
+{
+    if ( ! Extent().Contains( point ) )
+        return false;
+    bool transparent = false;
+    if ( m_pSDL_Surface->flags & SDL_SRCCOLORKEY )
+    {
+        uint32_t colorKey = m_pSDL_Surface->format->colorkey;
+        switch ( PixelType() )
+        {
+        case PixelType8:
+        {
+            DrawingSurface< Pixel8 > const drawSurf
+                    = LockDrawingSurface< Pixel8 >( );
+            transparent = (drawSurf.PixelAt( point )->Value()
+                           == (uint8_t)colorKey);
+            break;
+        }
+        case PixelType555:
+        {
+            DrawingSurface< Pixel555 > const drawSurf
+                    = LockDrawingSurface< Pixel555 >( );
+            transparent = (drawSurf.PixelAt( point )->Value()
+                           == (uint16_t)colorKey);
+            break;
+        }
+        case PixelType565:
+        {
+            DrawingSurface< Pixel565 > const drawSurf
+                    = LockDrawingSurface< Pixel565 >( );
+            transparent = (drawSurf.PixelAt( point )->Value()
+                           == (uint16_t)colorKey);
+            break;
+        }
+        case PixelType0888:
+        {
+            DrawingSurface< Pixel0888 > const drawSurf
+                    = LockDrawingSurface< Pixel0888 >( );
+            transparent = (drawSurf.PixelAt( point )->Value() == colorKey);
+            break;
+        }
+        case PixelType0888Rev:
+        {
+            DrawingSurface< Pixel0888Rev > const drawSurf
+                    = LockDrawingSurface< Pixel0888Rev >( );
+            transparent = (drawSurf.PixelAt( point )->Value() == colorKey);
+            break;
+        }
+        case PixelType8888:
+        {
+            DrawingSurface< Pixel8888 > const drawSurf
+                    = LockDrawingSurface< Pixel8888 >( );
+            transparent = (drawSurf.PixelAt( point )->Value() == colorKey);
+            break;
+        }
+        case PixelType8888Rev:
+        {
+            DrawingSurface< Pixel8888Rev > const drawSurf
+                    = LockDrawingSurface< Pixel8888Rev >( );
+            transparent = (drawSurf.PixelAt( point )->Value() == colorKey);
+            break;
+        }
+        default:
+            Assert( 0 && "Unknown pixel type" );
+            return false;
+        }
+        Unlock( );
+    }
+    else if ( m_pSDL_Surface->flags & SDL_SRCALPHA )
+    {
+        switch ( PixelType() )
+        {
+        case PixelType8888:
+        {
+            DrawingSurface< Pixel8888 > const drawSurf
+                    = LockDrawingSurface< Pixel8888 >( );
+            transparent = (drawSurf.PixelAt( point )->Alpha() == 0);
+            Unlock( );
+            break;
+        }
+        case PixelType8888Rev:
+        {
+            DrawingSurface< Pixel8888Rev > const drawSurf
+                    = LockDrawingSurface< Pixel8888Rev >( );
+            bool transparent = (drawSurf.PixelAt( point )->Alpha() == 0);
+            Unlock( );
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return ! transparent;
+}
+
+//=============================================================================
+
 void * 
 Surface::Lock( )
+{
+    int lockRslt = SDL_LockSurface( m_pSDL_Surface );
+    if ( lockRslt != 0 )
+        throw SDLException( "SDL_LockSurface" );
+    return  m_pSDL_Surface->pixels;
+}
+
+//.............................................................................
+
+void const * 
+Surface::Lock( ) const
 {
     int lockRslt = SDL_LockSurface( m_pSDL_Surface );
     if ( lockRslt != 0 )
@@ -195,7 +324,7 @@ Surface::Lock( )
 //-----------------------------------------------------------------------------
 
 void 
-Surface::Unlock( )
+Surface::Unlock( ) const
 {
     SDL_UnlockSurface( m_pSDL_Surface );
 }
@@ -292,6 +421,7 @@ Surface::SavePng( const std::string & fileSpec )
 void 
 Surface::SaveJpeg( const std::string & fileSpec )
 {
+    //!!!
 }
 
 #endif
@@ -352,7 +482,6 @@ Surface::PrintInfo( ) const
 
 #endif
 
-//=============================================================================
 
 //=============================================================================
 
@@ -366,6 +495,64 @@ shared_ptr< Surface > s_spSurfacePlain;
 shared_ptr< Surface > s_spSurfaceColorKeyed;
 shared_ptr< Surface > s_spSurfaceAlpha;
 
+}
+
+//-----------------------------------------------------------------------------
+
+bool
+Surface::Test( )
+{
+    bool ok = true;
+    cout << "Testing Surface" << endl;
+
+    cout << "Surface( 100, 75, PixelType565 )" << endl;
+    shared_ptr< Surface > pSurf565( new Surface( 100, 75, PixelType565 ) );
+    cout << "Extent()" << endl;
+    Rectangle ext = pSurf565->Extent();
+    TESTCHECK( ext.Left(), 0, &ok );
+    TESTCHECK( ext.Top(), 0, &ok );
+    TESTCHECK( ext.Width(), 100, &ok );
+    TESTCHECK( ext.Height(), 75, &ok );
+    Color3B transparent( 255, 0, 255 );
+    cout << "SetTransparentColor()" << endl;
+    pSurf565->SetTransparentColor( transparent );
+    cout << "Fill( Rectangle, Color3B )" << endl;
+    pSurf565->Fill( ext, transparent );
+    Color3B color( 0, 0, 255 );
+    Circle circle( Point2I( 37, 37 ), 37 );
+    cout << "circle.Fill( Color3B )" << endl;
+    circle.Fill( color, pSurf565.get() );
+    TESTCHECK( pSurf565->Contains( Point2I( -1, -1 ) ), false, &ok );
+    TESTCHECK( pSurf565->Contains( Point2I( 50, 100 ) ), false, &ok );
+    TESTCHECK( pSurf565->Contains( Point2I( 37, 37 ) ), true, &ok );
+    TESTCHECK( pSurf565->Contains( Point2I( 20, 60 ) ), true, &ok );
+    TESTCHECK( pSurf565->Contains( Point2I( 8, 8 ) ), false, &ok );
+    TESTCHECK( pSurf565->Contains( Point2I( 80, 37 ) ), false, &ok );
+
+    cout << "Surface( 75, 100, PixelType8888 )" << endl;
+    shared_ptr< Surface > pSurf8888( new Surface( 75, 100, PixelType8888 ) );
+    cout << "Extent()" << endl;
+    ext = pSurf8888->Extent();
+    TESTCHECK( ext.Left(), 0, &ok );
+    TESTCHECK( ext.Top(), 0, &ok );
+    TESTCHECK( ext.Width(), 75, &ok );
+    TESTCHECK( ext.Height(), 100, &ok );
+    cout << "Fill( Rectangle, Color4B )" << endl;
+    pSurf8888->Draw( ext, Color4B( 0, 0, 0, 0 ) );
+      cout << "circle.Fill( Color3B )" << endl;
+    circle.Fill( color, pSurf8888.get() );
+    TESTCHECK( pSurf8888->Contains( Point2I( -1, -1 ) ), false, &ok );
+    TESTCHECK( pSurf8888->Contains( Point2I( 100, 50 ) ), false, &ok );
+    TESTCHECK( pSurf8888->Contains( Point2I( 37, 37 ) ), true, &ok );
+    TESTCHECK( pSurf8888->Contains( Point2I( 20, 60 ) ), true, &ok );
+    TESTCHECK( pSurf8888->Contains( Point2I( 8, 8 ) ), false, &ok );
+    TESTCHECK( pSurf8888->Contains( Point2I( 37, 80 ) ), false, &ok );
+
+    if ( ok )
+        cout << "Surface PASSED." << endl << endl;
+    else
+        cout << "Surface FAILED." << endl << endl;
+    return ok;
 }
 
 //-----------------------------------------------------------------------------

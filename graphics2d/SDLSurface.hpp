@@ -29,6 +29,24 @@ Surface::Surface( )
 //=============================================================================
 
 inline
+bool 
+Surface::operator==( const Surface & rhs ) const
+{
+    return  (m_pSDL_Surface == rhs.m_pSDL_Surface);
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+bool 
+Surface::operator!=( const Surface & rhs ) const
+{
+    return  ! (*this == rhs);
+}
+
+//=============================================================================
+
+inline
 Rectangle 
 Surface::Extent( ) const
 {
@@ -85,6 +103,17 @@ Surface::LockDrawingSurface( )
     return DrawingSurface< Pxl >( pixels, Pitch(), ClippingRect() );
 }
 
+//.............................................................................
+
+template < typename Pxl >
+DrawingSurface< Pxl > const
+Surface::LockDrawingSurface( ) const
+{
+    Pxl const * pixels = reinterpret_cast< Pxl const * >( Lock( ) );
+    return DrawingSurface< Pxl >( const_cast< Pxl * >( pixels ),
+                                  Pitch(), ClippingRect() );
+}
+
 //=============================================================================
 
 template < typename Shape >
@@ -121,11 +150,25 @@ Surface::Draw( const Shape & shape, uint32_t pxl )
         shape.Draw( Pixel0888( static_cast< uint32_t >( pxl ) ), &drawSurf );
         break;
     }
+    case PixelType0888Rev:
+    {
+        DrawingSurface< Pixel0888Rev > drawSurf
+                = LockDrawingSurface< Pixel0888Rev >( );
+        shape.Draw( Pixel0888Rev( static_cast< uint32_t >( pxl ) ), &drawSurf );
+        break;
+    }
     case PixelType8888:
     {
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Draw( Pixel8888( static_cast< uint32_t >( pxl ) ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Draw( Pixel8888Rev( static_cast< uint32_t >( pxl ) ), &drawSurf );
         break;
     }
     default:
@@ -164,11 +207,25 @@ Surface::Draw( const Shape & shape, const Color3B & color )
         shape.Draw( Pixel0888( color ), &drawSurf );
         break;
     }
+    case PixelType0888Rev:
+    {
+        DrawingSurface< Pixel0888Rev > drawSurf
+                = LockDrawingSurface< Pixel0888Rev >( );
+        shape.Draw( Pixel0888Rev( color ), &drawSurf );
+        break;
+    }
     case PixelType8888:
     {
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Draw( Pixel8888( color ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Draw( Pixel8888Rev( color ), &drawSurf );
         break;
     }
     default:
@@ -191,6 +248,13 @@ Surface::Draw( const Shape & shape, const Color4B & color )
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Draw( Pixel8888( color ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Draw( Pixel8888Rev( color ), &drawSurf );
         break;
     }
     default:
@@ -236,11 +300,25 @@ Surface::Fill( const Shape & shape, uint32_t pxl )
         shape.Fill( Pixel0888( static_cast< uint32_t >( pxl ) ), &drawSurf );
         break;
     }
+    case PixelType0888Rev:
+    {
+        DrawingSurface< Pixel0888Rev > drawSurf
+                = LockDrawingSurface< Pixel0888Rev >( );
+        shape.Fill( Pixel0888Rev( static_cast< uint32_t >( pxl ) ), &drawSurf );
+        break;
+    }
     case PixelType8888:
     {
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Fill( Pixel8888( static_cast< uint32_t >( pxl ) ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Fill( Pixel8888Rev( static_cast< uint32_t >( pxl ) ), &drawSurf );
         break;
     }
     default:
@@ -279,11 +357,25 @@ Surface::Fill( const Shape & shape, const Color3B & color )
         shape.Fill( Pixel0888( color ), &drawSurf );
         break;
     }
+    case PixelType0888Rev:
+    {
+        DrawingSurface< Pixel0888Rev > drawSurf
+                = LockDrawingSurface< Pixel0888Rev >( );
+        shape.Fill( Pixel0888Rev( color ), &drawSurf );
+        break;
+    }
     case PixelType8888:
     {
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Fill( Pixel8888( color ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Fill( Pixel8888Rev( color ), &drawSurf );
         break;
     }
     default:
@@ -306,6 +398,13 @@ Surface::Fill( const Shape & shape, const Color4B & color )
         DrawingSurface< Pixel8888 > drawSurf
                 = LockDrawingSurface< Pixel8888 >( );
         shape.Fill( Pixel8888( color ), &drawSurf );
+        break;
+    }
+    case PixelType8888Rev:
+    {
+        DrawingSurface< Pixel8888Rev > drawSurf
+                = LockDrawingSurface< Pixel8888Rev >( );
+        shape.Fill( Pixel8888Rev( color ), &drawSurf );
         break;
     }
     default:

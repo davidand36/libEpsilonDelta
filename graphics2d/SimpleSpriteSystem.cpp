@@ -211,7 +211,7 @@ SimpleSpriteSystem::TestUpdate( )
                     shared_ptr< Surface > pSurf(
                         new Surface( 75, 75, PixelType8888 ) );
                     Rectangle ext = pSurf->Extent();
-                    pSurf->Draw( ext, Color4B( 0, 0, 0, 0 ) );
+                    pSurf->Fill( ext, Color4B( 0, 0, 0, 0 ) );
                     Color3B color( i * 17, i * 17, 255 );
                     Circle circle( Point2I( 37, 37 ), 37 );
                     circle.Fill( color, pSurf.get() );

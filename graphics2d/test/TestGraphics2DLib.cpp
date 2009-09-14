@@ -90,6 +90,8 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! Circle::Test( ) )
         ok = false;
+    if ( ! Surface::Test( ) )
+        ok = false;
     if ( ! Sprite::Test( ) )
         ok = false;
     if ( ! SimpleSpriteSystem::Test( ) )

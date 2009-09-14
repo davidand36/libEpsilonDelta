@@ -19,6 +19,7 @@
 #define SURFACE_HPP
 
 
+#include "Region.hpp"
 #include "Pixel.hpp"
 #include "Rectangle.hpp"
 #include "DrawingSurface.hpp"
@@ -34,6 +35,7 @@ namespace EpsilonDelta
 
 
 class Surface
+    :   public Region
 {
 public:
     Surface( );
@@ -46,18 +48,26 @@ public:
     Surface( const Surface & rhs );
     virtual ~Surface( );
     Surface & operator=( const Surface & rhs );
+    bool operator==( const Surface & rhs ) const;
+    bool operator!=( const Surface & rhs ) const;
+    virtual bool operator==( const Region & rhs ) const;
+    void SetTransparentColor( const Color3B & transparentColor );
     Rectangle Extent( ) const;
+    virtual bool Contains( const Point2I & point ) const;
     int Pitch( ) const;
     EPixelType PixelType( ) const;
     Rectangle ClippingRect( ) const;
     void SetClippingRect( const Rectangle & clippingRect );
     void * Lock( );
-    void Unlock( );
+    void const * Lock( ) const;
+    void Unlock( ) const;
     void Blit( const Point2I & destPos, Surface * pDest = ms_current );
     void Blit( const Rectangle & srcRect, const Point2I & destPos,
                Surface * pDest = ms_current );
     template < typename Pxl >
     DrawingSurface< Pxl > LockDrawingSurface( );
+    template < typename Pxl >
+    DrawingSurface< Pxl > const LockDrawingSurface( ) const;
     template < typename Shape >
     void Draw( const Shape & shape, uint32_t pxl );
     template < typename Shape >
@@ -83,6 +93,7 @@ public:
 
 #ifdef DEBUG
     void PrintInfo( ) const;
+    static bool Test( );
     static bool TestLoad( const std::string & testFileSpec );
     static void TestDraw( );
     static void TestUnload( );

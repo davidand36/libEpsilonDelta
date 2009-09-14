@@ -52,6 +52,7 @@ public:
     bool operator!=( const Surface & rhs ) const;
     virtual bool operator==( const Region & rhs ) const;
     void SetTransparentColor( const Color3B & transparentColor );
+    bool GetTransparentColor( Color3B * pTransparentColor ) const;
     Rectangle Extent( ) const;
     virtual bool Contains( const Point2I & point ) const;
     int Pitch( ) const;

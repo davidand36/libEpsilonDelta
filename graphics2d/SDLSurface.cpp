@@ -201,6 +201,23 @@ Surface::SetTransparentColor( const Color3B & transparentColor )
         throw SDLException( "SDL_SetColorKey" );
 }
 
+//-----------------------------------------------------------------------------
+
+bool 
+Surface::GetTransparentColor( Color3B * pTransparentColor ) const
+{
+    if ( m_pSDL_Surface->flags & SDL_SRCCOLORKEY )
+    {
+        uint32_t colorKey = m_pSDL_Surface->format->colorkey;
+        uint8_t r, g, b;
+        SDL_GetRGB( colorKey, m_pSDL_Surface->format, &r, &g, &b );
+        pTransparentColor->Set( r, g, b );
+        return true;
+    }
+    else
+        return false;
+}
+
 //=============================================================================
 
 bool 
@@ -516,6 +533,10 @@ Surface::Test( )
     Color3B transparent( 255, 0, 255 );
     cout << "SetTransparentColor()" << endl;
     pSurf565->SetTransparentColor( transparent );
+    TESTCHECK( pSurf565->GetTransparentColor( &transparent ), true, &ok );
+    TESTCHECK( transparent.Red(), 255, &ok );
+    TESTCHECK( transparent.Green(), 0, &ok );
+    TESTCHECK( transparent.Blue(), 255, &ok );
     cout << "Fill( Rectangle, Color3B )" << endl;
     pSurf565->Fill( ext, transparent );
     Color3B color( 0, 0, 255 );

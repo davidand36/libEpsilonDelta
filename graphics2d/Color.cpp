@@ -128,6 +128,10 @@ TestColor( )
     TESTCHECK( color3Bb.Red(), r, &ok );
     TESTCHECK( color3Bb.Green(), g, &ok );
     TESTCHECK( color3Bb.Blue(), b, &ok );
+    TESTCHECK( color3Bb == color3B, true, &ok );
+    TESTCHECK( color3Bb == color3Bf, false, &ok );
+    TESTCHECK( color3Bb != color3B, false, &ok );
+    TESTCHECK( color3Bb != color3Bf, true, &ok );
 
     rf = 1.00f;
     gf = 0.50f;
@@ -162,6 +166,11 @@ TestColor( )
     TESTCHECK( color4Bf.Green(), 128, &ok );
     TESTCHECK( color4Bf.Blue(), 255, &ok );
     TESTCHECK( color4Bf.Alpha(), 191, &ok );
+    TESTCHECK( color4Bf == color4Bfa, true, &ok );
+    TESTCHECK( color4Bf == color4B, false, &ok );
+    TESTCHECK( color4Bf != color4Bfa, false, &ok );
+    TESTCHECK( color4Bf != color4B, true, &ok );
+    
     cout << "Color4F( color4B )" << endl;
     Color4F color4Fb( color4B );
     TESTCHECKF( color4Fb.Red(), 1.00f, &ok );
@@ -180,11 +189,19 @@ TestColor( )
     TESTCHECK( color4Ff.Green(), gf, &ok );
     TESTCHECK( color4Ff.Blue(), bf, &ok );
     TESTCHECK( color4Ff.Alpha(), 1.f, &ok );
+    TESTCHECK( color4Ff == color4F, false, &ok );
+    TESTCHECK( color4Ffa == color4F, true, &ok );
+    TESTCHECK( color4Ff != color4F, true, &ok );
+    TESTCHECK( color4Ffa != color4F, false, &ok );
     cout << "Color3F( color4F )" << endl;
     Color3F color3Ff = color4F;
     TESTCHECKF( color3Ff.Red(), rf, &ok );
     TESTCHECKF( color3Ff.Green(), gf, &ok );
     TESTCHECKF( color3Ff.Blue(), bf, &ok );
+    TESTCHECK( color3Ff == color3F, true, &ok );
+    TESTCHECK( color3Ff == color3Fb, false, &ok );
+    TESTCHECK( color3Ff != color3F, false, &ok );
+    TESTCHECK( color3Ff != color3Fb, true, &ok );
 
     if ( ok )
         cout << "Color PASSED." << endl << endl;

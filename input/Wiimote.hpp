@@ -20,6 +20,8 @@
 */
 
 
+#ifdef SUPPORT_WIIMOTE
+
 #include "InputDevice.hpp"
 
 
@@ -93,4 +95,5 @@ private:
 
 }                                                      //namespace EpsilonDelta
 
+#endif //SUPPORT_WIIMOTE
 #endif //WIIMOTE_HPP

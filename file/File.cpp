@@ -9,16 +9,17 @@
 #include "File.hpp"
 #include "FileException.hpp"
 #include "Platform.hpp"
+#include <cstring>
 
 #if defined(OS_UNIX) || defined(OS_WINDOWS)
 #define USE_CSTD_FILE
 #endif
 
 #ifdef USE_CSTD_FILE
+#include "Assert.hpp"
 #include <cstdio>
 #include <sys/stat.h>
 #include <ctime>
-#include "Assert.hpp"
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"

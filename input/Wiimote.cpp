@@ -6,6 +6,8 @@
 */
 
 
+#ifdef SUPPORT_WIIMOTE
+
 #include "Wiimote.hpp"
 #include "Graphics2D.hpp"
 #include "Surface.hpp"
@@ -1238,3 +1240,5 @@ WiimoteImpl::FindAll( vector< shared_ptr< WiimoteImpl > > * pImpls )
 //*****************************************************************************
 
 }                                                      //namespace EpsilonDelta
+
+#endif //SUPPORT_WIIMOTE

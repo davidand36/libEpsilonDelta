@@ -9,10 +9,10 @@
 #include "AngleDMS.hpp"
 #include "Angle.hpp"
 #include "JSON.hpp"
+#include <iomanip>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include <sstream>
-#include <iomanip>
 #endif
 using namespace std;
 

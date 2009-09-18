@@ -10,7 +10,9 @@
 #include "Keyboard.hpp"
 #include "Mouse.hpp"
 #include "Gamepad.hpp"
+#ifdef SUPPORT_WIIMOTE
 #include "Wiimote.hpp"
+#endif
 #ifdef USE_SDL
 #include "SDL.hpp"
 #include "SDLException.hpp"
@@ -56,7 +58,9 @@ private:
     shared_ptr< Keyboard >              m_pKeyboard;
     shared_ptr< Mouse >                 m_pMouse;
     vector< shared_ptr< Gamepad > >     m_joysticks;
+#ifdef SUPPORT_WIIMOTE
     vector< shared_ptr< Wiimote > >     m_wiimotes;
+#endif
     bool                                m_textInput;
 #endif //USE_SDL
 };
@@ -438,7 +442,9 @@ InputImpl::Init( )
 void 
 InputImpl::Shutdown( )
 {
+#ifdef SUPPORT_WIIMOTE
     m_wiimotes.clear();
+#endif
     m_joysticks.clear();
     m_pMouse.reset();
     m_pKeyboard.reset();
@@ -509,7 +515,7 @@ InputImpl::CheckEvent( )
             break;
         }
     }
-#if defined(SUPPORT_WIIMOTE)
+#ifdef SUPPORT_WIIMOTE
     for ( int w = 0; w < (int)m_wiimotes.size(); ++w )
     {
         shared_ptr< Wiimote > pWiimote = m_wiimotes[ w ];
@@ -529,7 +535,11 @@ InputImpl::CheckEvent( )
 int 
 InputImpl::NumDevices( ) const
 {
-    return 2 + m_joysticks.size() + m_wiimotes.size();
+    return 2 + m_joysticks.size()
+#ifdef SUPPORT_WIIMOTE
+            + m_wiimotes.size()
+#endif
+            ;
 }
 
 //-----------------------------------------------------------------------------
@@ -547,8 +557,10 @@ InputImpl::Device( int index ) const
     if ( index < (int)m_joysticks.size() )
         return m_joysticks[ index ];
     index -= m_joysticks.size();
+#ifdef SUPPORT_WIIMOTE
     if ( index < (int)m_wiimotes.size() )
         return m_wiimotes[ index ];
+#endif
     throw std::out_of_range( "Input::Device()" );
 }
 
@@ -564,9 +576,11 @@ InputImpl::DeviceIndex( InputDevice::EType type ) const
     if ( type == InputDevice::Gamepad )
         if ( m_joysticks.size() > 0 )
             return 2;
+#ifdef SUPPORT_WIIMOTE
     if ( type == InputDevice::Wiimote )
         if ( m_wiimotes.size() > 0 )
             return (2 + m_joysticks.size());
+#endif
     return -1;
 }
 

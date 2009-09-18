@@ -98,7 +98,7 @@ SimpleSpriteSystem::Render( )
           pSD != m_sprites.end(); ++pSD )
     {
         shared_ptr< Sprite > pSprite = pSD->m_sprite;
-        if ( pSprite )
+        if ( pSprite && pSprite->Graphic() && pSprite->IsVisible() )
             pSprite->Graphic()->Blit( pSprite->Position() );
     }
 }
@@ -301,6 +301,46 @@ SimpleSpriteSystem::TestUpdate( )
                 else
                 {
                     sss.SetLevel( sprites[ 15 - i ], (15 - i) );
+                }
+            }
+            break;
+        }
+        case 6:
+        {
+            int newI = (int)((now - stageStartTime) * 6.);
+            Assert( newI >= 0 );
+            if ( newI != i )
+            {
+                i = newI;
+                if ( i > 15 )
+                {
+                    i = -1;
+                    ++stage;
+                    stageStartTime = now;
+                }
+                else
+                {
+                    sprites[ i ]->Hide( );
+                }
+            }
+            break;
+        }
+        case 7:
+        {
+            int newI = (int)((now - stageStartTime) * 6.);
+            Assert( newI >= 0 );
+            if ( newI != i )
+            {
+                i = newI;
+                if ( i > 15 )
+                {
+                    i = -1;
+                    ++stage;
+                    stageStartTime = now;
+                }
+                else
+                {
+                    sprites[ 15 - i ]->Show( );
                 }
             }
             break;

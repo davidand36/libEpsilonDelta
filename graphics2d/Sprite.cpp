@@ -56,11 +56,15 @@ Sprite::Test( )
     Sprite sprite( pSurf, Point2I( x, y ) );
     TESTCHECK( sprite.Position().X(), 10, &ok );
     TESTCHECK( sprite.Position().Y(), -20, &ok );
+    TESTCHECK( sprite.IsVisible(), true, &ok );
     TESTCHECK( sprite.Contains( Point2I( 0, 0 ) ), false, &ok );
     TESTCHECK( sprite.Contains( Point2I( 40, 40 ) ), true, &ok );
     TESTCHECK( sprite.Contains( Point2I( 80, 120 ) ), false, &ok );
     TESTCHECK( sprite.Contains( Point2I( 50, 0 ) ), true, &ok );
     TESTCHECK( sprite.Contains( Point2I( 15, -15 ) ), false, &ok );
+    cout << "Hide()" << endl;
+    sprite.Hide( );
+    TESTCHECK( sprite.IsVisible(), false, &ok );
     cout << "SetPosition( Point2I( 40, 80 ) )" << endl;
     sprite.SetPosition( Point2I( 40, 80 ) );
     TESTCHECK( sprite.Position().X(), 40, &ok );
@@ -70,7 +74,11 @@ Sprite::Test( )
     TESTCHECK( sprite.Contains( Point2I( 80, 120 ) ), true, &ok );
     TESTCHECK( sprite.Contains( Point2I( 50, 0 ) ), false, &ok );
     TESTCHECK( sprite.Contains( Point2I( 15, -15 ) ), false, &ok );
-    
+    TESTCHECK( sprite.IsVisible(), false, &ok );
+    cout << "Show()" << endl;
+    sprite.Show( );
+    TESTCHECK( sprite.IsVisible(), true, &ok );
+
     if ( ok )
         cout << "Sprite PASSED." << endl << endl;
     else

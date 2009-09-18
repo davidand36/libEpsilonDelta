@@ -23,13 +23,17 @@ class Sprite
     :   public Region
 {
 public:
-    Sprite( shared_ptr< Surface > graphic, const Point2I & position );
+    Sprite( shared_ptr< Surface > graphic, const Point2I & position,
+            bool visible = true );
     virtual ~Sprite( );
 
     shared_ptr< Surface > Graphic( ) const;
     const Point2I & Position( ) const;
     void SetGraphic( shared_ptr< Surface > graphic );
     void SetPosition( const Point2I & position );
+    void Show( );
+    void Hide( );
+    bool IsVisible( ) const;
 
     virtual bool Contains( const Point2I & point ) const;
     bool operator==( const Sprite & rhs ) const;
@@ -43,6 +47,7 @@ public:
 private:
     shared_ptr< Surface >   m_graphic;
     Point2I                 m_position;
+    bool                    m_visible;
 };
 
 
@@ -50,9 +55,11 @@ private:
 
 
 inline
-Sprite::Sprite( shared_ptr< Surface > graphic, const Point2I & position )
+Sprite::Sprite( shared_ptr< Surface > graphic, const Point2I & position,
+                bool visible )
     :   m_graphic( graphic ),
-        m_position( position )
+        m_position( position ),
+        m_visible( visible )
 {
 }
 
@@ -97,6 +104,33 @@ void
 Sprite::SetPosition( const Point2I & position )
 {
     m_position = position;
+}
+
+//=============================================================================
+
+inline
+void 
+Sprite::Show( )
+{
+    m_visible = true;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+void 
+Sprite::Hide( )
+{
+    m_visible = false;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+bool 
+Sprite::IsVisible( ) const
+{
+    return m_visible;
 }
 
 //=============================================================================

@@ -25,6 +25,7 @@ set( tests
 set( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules )
 include( CheckIncludeFile )
 include( CheckLibraryExists )
+include( FindPackageHandleStandardArgs )
 
 if ( ${CMAKE_BUILD_TYPE} MATCHES Debug )
    add_definitions( -DDEBUG )

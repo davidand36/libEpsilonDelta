@@ -142,11 +142,11 @@ public:
     Pixel888( );
     Pixel888( char value[ 3 ] );
     Pixel888( const Color3B & color );
-    const unsigned char * Value( ) const;
+    const uint8_t * Value( ) const;
     Color3B Color( ) const;
 
 private:
-    unsigned char m_value[ 3 ];
+    uint8_t m_value[ 3 ];
 };
 
 
@@ -159,11 +159,11 @@ public:
     Pixel888Rev( );
     Pixel888Rev( char value[ 3 ] );
     Pixel888Rev( const Color3B & color );
-    const unsigned char * Value( ) const;
+    const uint8_t * Value( ) const;
     Color3B Color( ) const;
 
 private:
-    unsigned char m_value[ 3 ];
+    uint8_t m_value[ 3 ];
 };
 
 
@@ -362,55 +362,6 @@ Pixel8::Value( ) const
 
 
 inline
-Pixel565::Pixel565( )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline
-Pixel565::Pixel565( uint16_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline 
-Pixel565::Pixel565( const Color3B & color )
-{
-    m_rgb.m_red = color.Red() >> 3;
-    m_rgb.m_green = color.Green() >> 2;
-    m_rgb.m_blue = color.Blue() >> 3;
-}
-
-//=============================================================================
-
-inline
-uint16_t 
-Pixel565::Value( ) const
-{
-    return m_value;
-}
-
-//=============================================================================
-
-inline
-Color3B 
-Pixel565::Color( ) const
-{
-    //This allows the stored components to represent the full range 0-255.
-    int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
-    int g = (m_rgb.m_green << 2) | (m_rgb.m_green >> 4);
-    int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
-    return Color3B( r, g, b );
-}
-
-
-//*****************************************************************************
-
-
-inline
 Pixel555::Pixel555( )
 {
 }
@@ -429,9 +380,9 @@ inline
 Pixel555::Pixel555( const Color3B & color )
     :   m_value( 0 )
 {
-    m_rgb.m_red = color.Red() >> 3;
-    m_rgb.m_green = color.Green() >> 3;
-    m_rgb.m_blue = color.Blue() >> 3;
+    m_rgb.m_red = (uint16_t)( color.Red() >> 3 );
+    m_rgb.m_green = (uint16_t)( color.Green() >> 3 );
+    m_rgb.m_blue = (uint16_t)( color.Blue() >> 3 );
 }
 
 //=============================================================================
@@ -461,6 +412,55 @@ Pixel555::Color( ) const
 
 
 inline
+Pixel565::Pixel565( )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel565::Pixel565( uint16_t value )
+    :   m_value( value )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline 
+Pixel565::Pixel565( const Color3B & color )
+{
+    m_rgb.m_red = (uint16_t)( color.Red() >> 3 );
+    m_rgb.m_green = (uint16_t)( color.Green() >> 2 );
+    m_rgb.m_blue = (uint16_t)( color.Blue() >> 3 );
+}
+
+//=============================================================================
+
+inline
+uint16_t 
+Pixel565::Value( ) const
+{
+    return m_value;
+}
+
+//=============================================================================
+
+inline
+Color3B 
+Pixel565::Color( ) const
+{
+    //This allows the stored components to represent the full range 0-255.
+    int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
+    int g = (m_rgb.m_green << 2) | (m_rgb.m_green >> 4);
+    int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
+    return Color3B( r, g, b );
+}
+
+
+//*****************************************************************************
+
+
+inline
 Pixel888::Pixel888( )
 {
 }
@@ -480,20 +480,20 @@ inline
 Pixel888::Pixel888( const Color3B & color )
 {
 #if RBG_REDHIGH
-    m_value[ 0 ] = (unsigned char)color.Red();
-    m_value[ 1 ] = (unsigned char)color.Green();
-    m_value[ 2 ] = (unsigned char)color.Blue();
+    m_value[ 0 ] = (uint8_t) color.Red();
+    m_value[ 1 ] = (uint8_t) color.Green();
+    m_value[ 2 ] = (uint8_t) color.Blue();
 #else
-    m_value[ 0 ] = (unsigned char)color.Blue();
-    m_value[ 1 ] = (unsigned char)color.Green();
-    m_value[ 2 ] = (unsigned char)color.Red();
+    m_value[ 0 ] = (uint8_t) color.Blue();
+    m_value[ 1 ] = (uint8_t) color.Green();
+    m_value[ 2 ] = (uint8_t) color.Red();
 #endif
 }
 
 //=============================================================================
 
 inline
-const unsigned char * 
+const uint8_t * 
 Pixel888::Value( ) const
 {
     return m_value;
@@ -541,20 +541,20 @@ inline
 Pixel888Rev::Pixel888Rev( const Color3B & color )
 {
 #if RBG_REDHIGH
-    m_value[ 0 ] = (unsigned char)color.Blue();
-    m_value[ 1 ] = (unsigned char)color.Green();
-    m_value[ 2 ] = (unsigned char)color.Red();
+    m_value[ 0 ] = (uint8_t) color.Blue();
+    m_value[ 1 ] = (uint8_t) color.Green();
+    m_value[ 2 ] = (uint8_t) color.Red();
 #else
-    m_value[ 0 ] = (unsigned char)color.Red();
-    m_value[ 1 ] = (unsigned char)color.Green();
-    m_value[ 2 ] = (unsigned char)color.Blue();
+    m_value[ 0 ] = (uint8_t) color.Red();
+    m_value[ 1 ] = (uint8_t) color.Green();
+    m_value[ 2 ] = (uint8_t) color.Blue();
 #endif
 }
 
 //=============================================================================
 
 inline
-const unsigned char * 
+const uint8_t * 
 Pixel888Rev::Value( ) const
 {
     return m_value;
@@ -601,9 +601,9 @@ inline
 Pixel0888::Pixel0888( const Color3B & color )
     :   m_value( 0 )
 {
-    m_rgb.m_red = color.Red();
-    m_rgb.m_green = color.Green();
-    m_rgb.m_blue = color.Blue();
+    m_rgb.m_red = (uint8_t) color.Red();
+    m_rgb.m_green = (uint8_t) color.Green();
+    m_rgb.m_blue = (uint8_t) color.Blue();
 }
 
 //=============================================================================
@@ -647,9 +647,9 @@ inline
 Pixel0888Rev::Pixel0888Rev( const Color3B & color )
     :   m_value( 0 )
 {
-    m_rgb.m_red = color.Red();
-    m_rgb.m_green = color.Green();
-    m_rgb.m_blue = color.Blue();
+    m_rgb.m_red = (uint8_t) color.Red();
+    m_rgb.m_green = (uint8_t) color.Green();
+    m_rgb.m_blue = (uint8_t) color.Blue();
 }
 
 //=============================================================================

@@ -28,7 +28,7 @@ if ( useSDL )
 endif ( useSDL )
 
 set( EpsilonDeltaLibs
-     mmbase time math util
+     mmbase file time math util
    )
 foreach( lib ${EpsilonDeltaLibs} )
      include_directories( "${CMAKE_SOURCE_DIR}/${lib}" )

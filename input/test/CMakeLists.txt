@@ -11,7 +11,7 @@ set( sources
    )
 
 set( EpsilonDeltaLibs
-     input graphics2d mmbase time math util
+     input graphics2d mmbase file time math util
    )
 set( libs "" )
 foreach( lib ${EpsilonDeltaLibs} )

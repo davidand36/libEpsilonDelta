@@ -14,6 +14,7 @@
 
 
 #include "Surface.hpp"
+#include "DataBuffer.hpp"
 #include <string>
 
 
@@ -27,6 +28,8 @@ class Image
     :   public Surface
 {
 public:
+    Image( const DataBuffer & dataBuffer, bool alpha = false );
+    Image( const DataBuffer & dataBuffer, const Color3B & transparentColor );
     Image( const std::string & fileSpec, bool alpha = false );
     Image( const std::string & fileSpec, const Color3B & transparentColor );
     virtual ~Image( );
@@ -35,6 +38,13 @@ public:
     static bool TestLoad( const std::string & testFileSpec );
     static void TestDraw( );
     static void TestUnload( );
+#endif
+
+private:
+#ifdef USE_SDL
+    void Init( ::SDL_Surface * pSDL_Surface, bool alpha );
+    void Init( ::SDL_Surface * pSDL_Surface,
+               const Color3B & transparentColor );
 #endif
 };
 

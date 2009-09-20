@@ -20,6 +20,7 @@
 
 
 #include "Region.hpp"
+#include "DataBuffer.hpp"
 #include "Pixel.hpp"
 #include "Rectangle.hpp"
 #include "DrawingSurface.hpp"
@@ -43,6 +44,8 @@ public:
 #ifdef USE_SDL
     Surface( ::SDL_Surface * sdl_Surface, bool own = true );
 #endif
+    Surface( const DataBuffer & dataBuffer, bool alpha = false );
+    Surface( const DataBuffer & dataBuffer, const Color3B & transparentColor );
     Surface( const std::string & fileSpec, bool alpha = false );
     Surface( const std::string & fileSpec, const Color3B & transparentColor );
     Surface( const Surface & rhs );
@@ -113,6 +116,12 @@ protected:
     EPixelType m_pixelType;
 
     static Surface * ms_current;
+
+private:
+#ifdef USE_SDL
+    void Init( bool alpha );
+    void Init( const Color3B & transparentColor );
+#endif
 };
 
 

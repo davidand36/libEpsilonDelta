@@ -24,6 +24,7 @@
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "File.hpp"
 #include "Array.hpp"
 #include "Circle.hpp"
 using namespace std;
@@ -34,6 +35,7 @@ namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
 
 //*****************************************************************************
+
 
 Surface * Surface::ms_current = 0;
 
@@ -58,7 +60,7 @@ Surface::Surface( int width, int height, EPixelType pixelType )
         throw SDLException( "SDL_CreateRGBSurface" );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 Surface::Surface( ::SDL_Surface * sdl_Surface, bool own )
     :   m_pSDL_Surface( sdl_Surface ),
@@ -67,13 +69,70 @@ Surface::Surface( ::SDL_Surface * sdl_Surface, bool own )
     m_pixelType = DeterminePixelType( *(sdl_Surface->format) );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
+
+Surface::Surface( const DataBuffer & dataBuffer, bool alpha )
+{
+    ::SDL_RWops * pRWops
+            = ::SDL_RWFromMem( const_cast< char * >( dataBuffer.Data() ),
+                               dataBuffer.Size() );
+    m_pSDL_Surface = ::IMG_Load_RW( pRWops, 0 );
+    Init( alpha );
+}
+
+//.............................................................................
+
+Surface::Surface( const DataBuffer & dataBuffer,
+                  const Color3B & transparentColor )
+{
+    ::SDL_RWops * pRWops
+            = ::SDL_RWFromMem( const_cast< char * >( dataBuffer.Data() ),
+                               dataBuffer.Size() );
+    m_pSDL_Surface = ::IMG_Load_RW( pRWops, 0 );
+    Init( transparentColor );
+}
+
+//.............................................................................
 
 Surface::Surface( const std::string & filespec, bool alpha )
 {
-    m_pSDL_Surface = IMG_Load( filespec.c_str() );
+    m_pSDL_Surface = ::IMG_Load( filespec.c_str() );
     if ( m_pSDL_Surface == 0 )
         throw SDLException( "IMG_Load" );
+    Init( alpha );
+}
+
+//.............................................................................
+
+Surface::Surface( const std::string & filespec,
+                  const Color3B & transparentColor )
+{
+    m_pSDL_Surface = ::IMG_Load( filespec.c_str() );
+    if ( m_pSDL_Surface == 0 )
+        throw SDLException( "IMG_Load" );
+    Init( transparentColor );
+}
+
+//.............................................................................
+
+Surface::Surface( const Surface & rhs )
+{
+    CopySurface( rhs );
+}
+
+//-----------------------------------------------------------------------------
+
+Surface::~Surface( )
+{
+    if ( m_own && (m_pSDL_Surface != 0) )
+        ::SDL_FreeSurface( m_pSDL_Surface );
+}
+
+//=============================================================================
+
+void 
+Surface::Init( bool alpha )
+{
     if ( alpha )
     {
         int alphaRslt = ::SDL_SetAlpha( m_pSDL_Surface, SDL_SRCALPHA, 255 );
@@ -90,35 +149,17 @@ Surface::Surface( const std::string & filespec, bool alpha )
     m_pixelType = DeterminePixelType( *(m_pSDL_Surface->format) );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//-----------------------------------------------------------------------------
 
-Surface::Surface( const std::string & filespec,
-                  const Color3B & transparentColor )
+void 
+Surface::Init( const Color3B & transparentColor )
 {
-    m_pSDL_Surface = IMG_Load( filespec.c_str() );
-    if ( m_pSDL_Surface == 0 )
-        throw SDLException( "IMG_Load" );
     SetTransparentColor( transparentColor );
     m_own = true;
     m_pixelType = DeterminePixelType( *(m_pSDL_Surface->format) );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-Surface::Surface( const Surface & rhs )
-{
-    CopySurface( rhs );
-}
-
-//-----------------------------------------------------------------------------
-
-Surface::~Surface( )
-{
-    if ( m_own && (m_pSDL_Surface != 0) )
-        ::SDL_FreeSurface( m_pSDL_Surface );
-}
-
-//=============================================================================
+//*****************************************************************************
 
 Surface & 
 Surface::operator=( const Surface & rhs )
@@ -354,7 +395,7 @@ Surface::Blit( const Point2I & destPos, Surface * pDest )
     Blit( Extent(), destPos, pDest );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 void 
 Surface::Blit( const Rectangle & srcRect, const Point2I & destPos,
@@ -586,6 +627,11 @@ Surface::TestLoad( const std::string & testFileSpec )
 
     try
     {
+        DataBuffer dataBuff;
+        if ( ! File::Load( testFileSpec, &dataBuff ) )
+            throw Exception( "File::Load() failed" );
+        cout << "Surface( DataBuffer )" << endl;
+        s_spSurfacePlain.reset( new Surface( dataBuff ) );
         cout << "Surface( \"" << testFileSpec << "\" )" << endl;
         s_spSurfacePlain.reset( new Surface( testFileSpec ) );
         cout << "Surface( \"" << testFileSpec
@@ -594,8 +640,11 @@ Surface::TestLoad( const std::string & testFileSpec )
                                          Color3B( 0xFF, 0, 0xFF ) ) );
         cout << "Surface( \"" << testFileSpec << "\", true )" << endl;
         s_spSurfaceAlpha.reset( new Surface( testFileSpec, true ) );
+        cout << "Surface( DataBuffer, Color3B )" << endl;
+        s_spSurfaceColorKeyed.reset( new Surface( dataBuff,
+                                                  Color3B( 0xFF, 0, 0xFF ) ) );
     }
-    catch ( SDLException except )
+    catch ( Exception except )
     {
         ok = false;
         cout << except.Description( ) << endl;

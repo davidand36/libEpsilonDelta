@@ -15,6 +15,7 @@
 #include <SDL_image.h>
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "File.hpp"
 using namespace std;
 #endif
 
@@ -25,11 +26,51 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
+Image::Image( const DataBuffer & dataBuffer, bool alpha )
+{
+    ::SDL_RWops * pRWops
+            = ::SDL_RWFromMem( const_cast< char * >( dataBuffer.Data() ),
+                               dataBuffer.Size() );
+    ::SDL_Surface * pSDL_Surface = ::IMG_Load_RW( pRWops, 0 );
+    Init( pSDL_Surface, alpha );
+}
+
+//.............................................................................
+
+Image::Image( const DataBuffer & dataBuffer, const Color3B & transparentColor )
+{
+    ::SDL_RWops * pRWops
+            = ::SDL_RWFromMem( const_cast< char * >( dataBuffer.Data() ),
+                               dataBuffer.Size() );
+    ::SDL_Surface * pSDL_Surface = ::IMG_Load_RW( pRWops, 0 );
+    Init( pSDL_Surface, transparentColor );
+}
+
+//.............................................................................
+
 Image::Image( const std::string & filespec, bool alpha )
 {
-    ::SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
+    ::SDL_Surface * pSDL_Surface = ::IMG_Load( filespec.c_str() );
     if ( pSDL_Surface == 0 )
         throw SDLException( "IMG_Load" );
+    Init( pSDL_Surface, alpha );
+}
+
+//.............................................................................
+
+Image::Image( const std::string & filespec, const Color3B & transparentColor )
+{
+    ::SDL_Surface * pSDL_Surface = ::IMG_Load( filespec.c_str() );
+    if ( pSDL_Surface == 0 )
+        throw SDLException( "IMG_Load" );
+    Init( pSDL_Surface, transparentColor );
+}
+
+//-----------------------------------------------------------------------------
+
+void 
+Image::Init( ::SDL_Surface * pSDL_Surface, bool alpha )
+{
     if ( alpha )
     {
         int alphaRslt = ::SDL_SetAlpha( pSDL_Surface, SDL_SRCALPHA, 255 );
@@ -64,13 +105,11 @@ Image::Image( const std::string & filespec, bool alpha )
     m_pixelType = DeterminePixelType( *(m_pSDL_Surface->format) );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
-Image::Image( const std::string & filespec, const Color3B & transparentColor )
+void 
+Image::Init( ::SDL_Surface * pSDL_Surface, const Color3B & transparentColor )
 {
-    ::SDL_Surface * pSDL_Surface = IMG_Load( filespec.c_str() );
-    if ( pSDL_Surface == 0 )
-        throw SDLException( "IMG_Load" );
     Uint32 colorKey;
     if ( pSDL_Surface->format->Amask == 0 )
         colorKey = ::SDL_MapRGB( pSDL_Surface->format,
@@ -131,14 +170,22 @@ Image::TestLoad( const std::string & testFileSpec )
     {
         cout << "Image( \"" << testFileSpec << "\" )" << endl;
         s_spImagePlain.reset( new Image( testFileSpec ) );
+        DataBuffer dataBuff;
+        if ( ! File::Load( testFileSpec, &dataBuff ) )
+            throw Exception( "File::Load() failed" );
+        cout << "Image( DataBuffer, Color3B )" << endl;
+        s_spImageColorKeyed.reset( new Image( dataBuff, 
+                                              Color3B( 0xFF, 0, 0xFF ) ) );
         cout << "Image( \"" << testFileSpec << "\", Color3B( 0xFF, 0, 0xFF ) )"
              << endl;
         s_spImageColorKeyed.reset( new Image( testFileSpec,
                                      Color3B( 0xFF, 0, 0xFF ) ) );
         cout << "Image( \"" << testFileSpec << "\", true )" << endl;
         s_spImageAlpha.reset( new Image( testFileSpec, true ) );
+        cout << "Image( DataBuffer, true )" << endl;
+        s_spImageAlpha.reset( new Image( dataBuff, true ) );
     }
-    catch ( SDLException except )
+    catch ( Exception except )
     {
         ok = false;
         cout << except.Description( ) << endl;

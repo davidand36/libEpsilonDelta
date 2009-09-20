@@ -43,10 +43,14 @@ DataBuffer::Test( )
     cout << "Testing DataBuffer" << endl;
 
     DataBuffer buff;
+    TESTCHECK( buff.Data() == 0, true, &ok );
+    TESTCHECK( buff.Size(), 0, &ok );
     char sIn[ 10 ] = "123456789";
     Foo fIn = { 127, 2.5f };
     cout << "Add( char *, 10 )" << endl;
     buff.Add( sIn, 10 );
+    TESTCHECK( *buff.Data(), '1', &ok );
+    TESTCHECK( buff.Size(), 10, &ok );
     cout << "Add( Foo )" << endl;
     buff.Add( fIn );
     cout << "Read( 10 )" << endl;

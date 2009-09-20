@@ -42,6 +42,9 @@ public:
     const T * Read( );
 
     const std::vector< char > & Buffer( ) const;
+    char * Data( );
+    const char * Data( ) const;
+    int Size( ) const;
 
 #ifdef DEBUG
     static bool Test( );
@@ -137,6 +140,36 @@ DataBuffer::Buffer( ) const
     return m_buffer;
 }
 
+//=============================================================================
+
+inline
+char * 
+DataBuffer::Data( )
+{
+    if ( m_buffer.size() == 0 )
+        return 0;
+    return &m_buffer[ 0 ];
+}
+
+//.............................................................................
+
+inline
+const char * 
+DataBuffer::Data( ) const
+{
+    if ( m_buffer.size() == 0 )
+        return 0;
+    return &m_buffer[ 0 ];
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int 
+DataBuffer::Size( ) const
+{
+    return (int)m_buffer.size();
+}
 
 
 //*****************************************************************************

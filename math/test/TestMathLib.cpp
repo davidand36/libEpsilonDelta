@@ -9,6 +9,8 @@
 #include "Assert.hpp"
 #include "TestCheck.hpp"
 #include "DivMod.hpp"
+#include "Shift.hpp"
+#include "FixedPoint.hpp"
 #include "Polynomial.hpp"
 #include "RootFinder.hpp"
 #include "PrecisionTests.hpp"
@@ -80,6 +82,10 @@ int Main( int /*argc*/, char ** /*argv*/ )
 
 #ifdef DEBUG
     if ( ! TestDivMod( ) )
+        ok = false;
+    if ( ! TestShift( ) )
+        ok = false;
+    if ( ! TestFixedPoint( ) )
         ok = false;
     if ( ! TestPolynomial( ) )
         ok = false;

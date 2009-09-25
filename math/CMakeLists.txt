@@ -8,6 +8,8 @@
 
 set( sources
      DivMod.cpp
+     Shift.cpp
+     FixedPoint.cpp
      Polynomial.cpp
      RootFinder.cpp
      Angle.cpp

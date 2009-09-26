@@ -563,9 +563,8 @@ inline
 FixedPoint<R,F> 
 operator/( int i1, FixedPoint<R,F> f2 )
 {
-    R r1 = i1 << (3*F/2);
-    R r2 = f2.Raw() >> (F/2);
-    return FixedPoint<R,F>( r1 / r2, true );
+    FixedPoint<R,F> f1( i1 );
+    return f1 / f2;
 }
 
 

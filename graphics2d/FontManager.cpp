@@ -346,21 +346,7 @@ FontManager::TestDraw( )
     FontManager & fontManager = FontManager::Instance();
 
     Color3B yellow( 255, 255, 0 );
-    Point2F penPos( 10, 180 );
-    for ( int i = 0; i < s_testFontIDs.size(); ++i )//!!!
-    {
-        int fontID = s_testFontIDs[ i ];
-        shared_ptr< Glyph > pGlyph
-                = fontManager.GetGlyph( fontID, 'M', yellow, true );
-        Point2I pos( (int)penPos.X(), (int)penPos.Y() );
-        pGlyph->Draw( pos );
-        penPos += pGlyph->GetAdvance();
-        pGlyph = fontManager.GetGlyph( fontID, 'A', yellow, false );
-        pos.Set( (int)penPos.X(), (int)penPos.Y() );
-        pGlyph->Draw( pos );
-        penPos += pGlyph->GetAdvance();
-    }
-    penPos.SetX( 480 );
+    Point2F penPos( 480, 180 );
     for ( int i = 0; i < s_testFontIDs.size(); ++i )//!!!
     {
         int fontID = s_testFontIDs[ i ];

@@ -119,7 +119,7 @@ int Main( int argc, char ** argv )
         if ( ! Image::TestLoad( testDirectory + "star.png" ) )
             ok = false;
 
-        string fontNames[] = { "Vera.ttf", "", "b018035l.pfb", "b018035l.afm",
+        string fontNames[] = { "Vera.ttf", "", "b018035l.pfb", "b018035l.pfm",
                                "helvR18.pcf", "" };
         vector< string > testFonts( fontNames,
                                     fontNames + ARRAY_LENGTH( fontNames ) );

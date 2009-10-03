@@ -112,11 +112,12 @@ bool TestFixedPoint( );
 
 //.............................................................................
 
-typedef FixedPoint<int32_t, 12 > Fixed32_12;
-typedef FixedPoint<int32_t, 8 > Fixed32_8;
-typedef FixedPoint<int32_t, 6 > Fixed32_6;
-typedef FixedPoint<int16_t, 12 > Fixed16_12;
 typedef FixedPoint<int16_t, 8 > Fixed16_8;
+typedef FixedPoint<int16_t, 12 > Fixed16_12;
+typedef FixedPoint<int32_t, 6 > Fixed32_6;
+typedef FixedPoint<int32_t, 8 > Fixed32_8;
+typedef FixedPoint<int32_t, 12 > Fixed32_12;
+typedef FixedPoint<int32_t, 16 > Fixed32_16;
 
 
 //*****************************************************************************

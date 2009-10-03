@@ -46,7 +46,7 @@ public:
     void PrintAvailableResolutions( const ::SDL_PixelFormat & format,
                                     Uint32 flags );
 #endif
-    bool Test( );
+    bool Test( bool testResolutions );
 #endif
 
 private:

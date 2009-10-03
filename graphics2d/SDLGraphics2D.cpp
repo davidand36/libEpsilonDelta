@@ -222,7 +222,8 @@ Graphics2D::PrintVideoInfo( )
             cout << " (SDL_FULLSCREEN | SDL_HWSURFACE):" << endl;
             PrintAvailableResolutions( format, flags );
             flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF;
-            cout << " (SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF):" << endl;
+            cout << " (SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF):"
+                 << endl;
             PrintAvailableResolutions( format, flags );
             flags = SDL_OPENGL;
             cout << " (SDL_OPENGL)" << endl;
@@ -260,7 +261,7 @@ Graphics2D::PrintAvailableResolutions( const ::SDL_PixelFormat & format,
 //-----------------------------------------------------------------------------
 
 bool 
-Graphics2D::Test( )
+Graphics2D::Test( bool testResolutions )
 {
     bool ok = true;
     cout << "Testing Graphics2D" << endl;
@@ -273,55 +274,58 @@ Graphics2D::Test( )
         PrintVideoInfo( );
         cout << endl;
 
-        cout << "SetupScreen( 640, 480 )" << endl;
-        SetupScreen( 640, 480, "Graphics2D Test 640x480" );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1000 );
+        if ( testResolutions )
+        {
+            cout << "SetupScreen( 640, 480 )" << endl;
+            SetupScreen( 640, 480, "Graphics2D Test 640x480" );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1000 );
 
-        cout << "SetupScreen( 320, 240, PixelType8888 )" << endl;
-        SetupScreen( 320, 240, "Graphics2D Test 320x240", PixelType8888 );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1000 );
+            cout << "SetupScreen( 320, 240, PixelType8888 )" << endl;
+            SetupScreen( 320, 240, "Graphics2D Test 320x240", PixelType8888 );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1000 );
 
-        cout << "SetupScreen( 640, 480, PixelType565 )" << endl;
-        SetupScreen( 640, 480, "Graphics2D Test 640x480", PixelType565 );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1000 );
+            cout << "SetupScreen( 640, 480, PixelType565 )" << endl;
+            SetupScreen( 640, 480, "Graphics2D Test 640x480", PixelType565 );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1000 );
 
-        cout << "Shutdown()" << endl;
-        Graphics2D::Instance().Shutdown( );
+            cout << "Shutdown()" << endl;
+            Graphics2D::Instance().Shutdown( );
 
-        cout << "Init()" << endl;
-        Graphics2D::Instance().Init( );
-        cout << "Init() again" << endl;
-        Graphics2D::Instance().Init( );
-        cout << endl;
+            cout << "Init()" << endl;
+            Graphics2D::Instance().Init( );
+            cout << "Init() again" << endl;
+            Graphics2D::Instance().Init( );
+            cout << endl;
 
-        cout << "SetupScreen( 640, 480, PixelType, true )" << endl;
-        SetupScreen( 640, 480, "Graphics2D Test 640x480", NativePixelType,
-                     true );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1500 );
+            cout << "SetupScreen( 640, 480, PixelType, true )" << endl;
+            SetupScreen( 640, 480, "Graphics2D Test 640x480", NativePixelType,
+                         true );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1500 );
 
-        cout << "SetupScreen( 640, 480, PixelType, true, true )" << endl;
-        SetupScreen( 640, 480, "Graphics2D Test 640x480", NativePixelType,
-                     true, true );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1500 );
+            cout << "SetupScreen( 640, 480, PixelType, true, true )" << endl;
+            SetupScreen( 640, 480, "Graphics2D Test 640x480", NativePixelType,
+                         true, true );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1500 );
 
 #ifndef OS_WINDOWS
-        cout << "SetupScreen( 800, 600, PixelType565, true, true )" << endl;
-        SetupScreen( 800, 600, "Graphics2D Test 800x600", PixelType565, true,
-                     true );
-        PrintVideoInfo( );
-        cout << endl;
-        ::SDL_Delay( 1500 );
+            cout << "SetupScreen( 800, 600, PixelType565, true, true )" << endl;
+            SetupScreen( 800, 600, "Graphics2D Test 800x600", PixelType565,
+                         true, true );
+            PrintVideoInfo( );
+            cout << endl;
+            ::SDL_Delay( 1500 );
 #endif
+        }
 
         cout << "Shutdown()" << endl;
         Graphics2D::Instance().Shutdown( );

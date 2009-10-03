@@ -20,6 +20,7 @@
 #include "Image.hpp"
 #include "Sprite.hpp"
 #include "SimpleSpriteSystem.hpp"
+#include "FontManager.hpp"
 #include "Platform.hpp"
 #include "StdClock.hpp"
 #include <cstdio>
@@ -60,9 +61,16 @@ int main( int argc, char ** argv )
 
 //-----------------------------------------------------------------------------
 
-int Main( int /*argc*/, char ** argv )
+int Main( int argc, char ** argv )
 {
     bool ok = true;
+    bool testResolutions = false;
+
+    for ( int i = 1; i < argc; ++i )
+    {
+        if ( strcmp( argv[ i ], "-r" ) == 0 )
+            testResolutions = true;
+    }
 
 #ifdef DEBUG
     string libBasePath = argv[0];
@@ -96,17 +104,28 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! SimpleSpriteSystem::Test( ) )
         ok = false;
-    if ( ! Graphics2D::Instance().Test( ) )
+    if ( ! Graphics2D::Instance().Test( testResolutions ) )
         ok = false;
     if ( ok )
     {
         Graphics2D::Instance().Init( );
         Graphics2D::Instance().SetupScreen( 800, 600, "Test 2D Graphics Lib" );
 
-        if ( ! Surface::TestLoad( libBasePath + "graphics2d/test/star.png" ) )
+        string testDirectory = libBasePath + "graphics2d/test/";
+
+        if ( ! Surface::TestLoad( testDirectory + "star.png" ) )
             ok = false;
-        if ( ! Image::TestLoad( libBasePath + "graphics2d/test/star.png" ) )
+
+        if ( ! Image::TestLoad( testDirectory + "star.png" ) )
             ok = false;
+
+        string fontNames[] = { "Vera.ttf", "", "b018035l.pfb", "b018035l.afm",
+                               "helvR18.pcf", "" };
+        vector< string > testFonts( fontNames,
+                                    fontNames + ARRAY_LENGTH( fontNames ) );
+        if ( ! FontManager::TestLoad( testDirectory, testFonts ) )
+            ok = false;
+
         if ( ok )
         {
             int frames = 0;
@@ -123,6 +142,7 @@ int Main( int /*argc*/, char ** argv )
                 Circle::TestDraw( );
                 Surface::TestDraw( );
                 Image::TestDraw( );
+                FontManager::TestDraw( );
                 done = SimpleSpriteSystem::TestUpdate( );
 
                 Graphics2D::Instance().ShowScreen( );

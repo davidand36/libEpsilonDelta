@@ -16,6 +16,9 @@ set( sources
      Circle.cpp
      Sprite.cpp
      SimpleSpriteSystem.cpp
+     Glyph.cpp
+     FontManager.cpp
+     FTException.cpp
    )
 
 if ( useSDL )

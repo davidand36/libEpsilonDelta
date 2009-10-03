@@ -10,7 +10,8 @@
   2. The template parameter F is the number of fractional bits.
   3. Raw() returns the underlying representation. So, e.g., a fixed-point
      number representing 2 has a raw value of (2 << F).
-     ToInt() returns the truncated (i.e. floor) integer part of the number.
+     ToInt() returns the nearest (rounded) integer equivalent.
+     Floor() returns the truncated integer part of the number.
      ToFloat() returns the (approximate) floating-point equivalent.
   4. For the operators * and /, separate implementations are used when there is
      a larger native type available (e.g. int32_t for FixedPoint< int32_t, F >.
@@ -42,7 +43,10 @@ public:
 
     R Raw( ) const;
     int ToInt( ) const;
+    int Floor( ) const;
     float ToFloat( ) const;
+    operator int( ) const;
+    operator float( ) const;
 
     bool operator==( const FixedPoint & rhs ) const;
     bool operator!=( const FixedPoint & rhs ) const;
@@ -196,6 +200,16 @@ inline
 int
 FixedPoint<R,F>::ToInt( ) const
 {
+    return (int)(m_raw + (((R)1 << (F-1)) - 1) >> F);
+}
+
+//-----------------------------------------------------------------------------
+
+template < typename R, int F >
+inline
+int
+FixedPoint<R,F>::Floor( ) const
+{
     return (int)(m_raw >> F);
 }
 
@@ -210,6 +224,24 @@ FixedPoint<R,F>::ToFloat( ) const
 }
 
 //-----------------------------------------------------------------------------
+
+template < typename R, int F >
+inline
+FixedPoint<R,F>::operator int( ) const
+{
+    return ToInt();
+}
+
+//-----------------------------------------------------------------------------
+
+template < typename R, int F >
+inline
+FixedPoint<R,F>::operator float( ) const
+{
+    return ToFloat();
+}
+
+//=============================================================================
 
 template < typename R, int F >
 inline

@@ -3,6 +3,16 @@
   Copyright (C) 2009 David M. Anderson
 
   FontManager singleton class: Manages text fonts.
+  NOTES:
+  1. The FreeType implementation uses FreeType 2's cache subsystem.
+  2. Regarding the relationship between our types and FreeType's:
+     Our FontSet doesn't have a corresponding type in FT.
+     Our Face lines up with FT's face.
+     FT uses a void * of the user's choosing to identify faces (FTC_FaceID);
+     here we cast FT_Face to and from const Face *.
+     Our Font essentially lines up with FT_Size (a face set to a given size),
+     though we don't directly use that type.
+     Our Glyph corresponds to an FT bitmap glyph.
 */
 
 
@@ -21,7 +31,7 @@
 #include "File.hpp"
 #endif
 using namespace std;
-
+using namespace std::tr1;
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -39,7 +49,7 @@ public:
     void Shutdown( );
 
     int AddFontSet( shared_ptr< DataBuffer > fontData,
-                     shared_ptr< DataBuffer > auxData );
+                    shared_ptr< DataBuffer > auxData );
     int AddFace( int fontSetID, int faceIndex );
     void AddFont( int fontID, int faceID, float height );
 
@@ -51,6 +61,8 @@ public:
 
     shared_ptr< Glyph > GetGlyph( int fontID, wchar_t character,
                                   Color3B color, bool monochrome );
+
+    Vector2F GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar );
 
 #ifdef USE_FREETYPE
     static ::FT_Error FaceRequestHandler( ::FTC_FaceID facePtr,
@@ -222,6 +234,14 @@ FontManager::GetGlyph( int fontID, wchar_t character,
                        Color3B color, bool monochrome )
 {
     return m_pImpl->GetGlyph( fontID, character, color, monochrome );
+}
+
+//=============================================================================
+
+Vector2F 
+FontManager::GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar )
+{
+    return m_pImpl->GetKerning( fontID, leftChar, rightChar );
 }
 
 //=============================================================================
@@ -704,6 +724,15 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
     pSurface->Unlock( );
 
     return shared_ptr< Glyph >( new Glyph( pSurface, offset, advance ) );
+}
+
+//=============================================================================
+
+Vector2F 
+FontManagerImpl::GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar )
+{
+    ::FT_Vector ftKerning;
+    //!!!
 }
 
 //=============================================================================

@@ -23,6 +23,7 @@
 #ifdef SUPPORT_WIIMOTE
 
 #include "InputDevice.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -41,7 +42,7 @@ class Wiimote
     :   public InputDevice
 {
 public:
-    Wiimote( const std::string & name, shared_ptr< WiimoteImpl > pImpl );
+    Wiimote( const std::string & name, std::tr1::shared_ptr< WiimoteImpl > pImpl );
     virtual ~Wiimote( );
 
     virtual int NumButtons( ) const;
@@ -82,10 +83,11 @@ private:
     bool WasButtonPressed( );
     int GetButtonPressed( );
 
-    static void FindAll( std::vector< shared_ptr< Wiimote > > * pWiimotes );
+    static void FindAll(
+        std::vector< std::tr1::shared_ptr< Wiimote > > * pWiimotes );
 
 
-    shared_ptr< WiimoteImpl >  m_pImpl;
+    std::tr1::shared_ptr< WiimoteImpl >     m_pImpl;
 
     friend class InputImpl;
 };

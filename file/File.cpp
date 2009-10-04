@@ -72,8 +72,8 @@ namespace
 
 bool SaveBuff( const string & fileName, const char * buffer, int bufferSize,
                File::Type type );
-bool LoadBuff( const string & fileName, shared_array< char > * pBuffer,
-               int * pBufferSize, File::Type type );
+bool LoadBuff( const string & fileName, vector< char > * pBuffer,
+               File::Type type );
 
 
 //=============================================================================
@@ -228,11 +228,10 @@ bool
 File::Load( const std::string & fileName, DataBuffer * pBuffer )
 {
     pBuffer->Clear( );
-    shared_array< char > buffer;
-    int bufferSize;
-    bool loadRslt = LoadBuff( fileName, &buffer, &bufferSize, Binary );
+    vector< char > buffer;
+    bool loadRslt = LoadBuff( fileName, &buffer, Binary );
     if ( loadRslt )
-        pBuffer->Add( buffer.get(), bufferSize );
+        pBuffer->Add( &buffer[0], (int)buffer.size() );
     return loadRslt;
 }
 
@@ -241,11 +240,10 @@ File::Load( const std::string & fileName, DataBuffer * pBuffer )
 bool 
 File::Load( const std::string & fileName, std::string * pText )
 {
-    shared_array< char > buffer;
-    int bufferSize;
-    bool loadRslt = LoadBuff( fileName, &buffer, &bufferSize, Text );
+    vector< char > buffer;
+    bool loadRslt = LoadBuff( fileName, &buffer, Text );
     if ( loadRslt )
-        pText->assign( buffer.get(), buffer.get() + bufferSize );
+        pText->assign( &buffer[0], &buffer[ buffer.size() ] );
     return loadRslt;
 }
 
@@ -285,8 +283,7 @@ SaveBuff( const string & fileName, const char * buffer, int bufferSize,
 //-----------------------------------------------------------------------------
 
 bool 
-LoadBuff( const string & fileName, shared_array< char > * pBuffer,
-          int * pBufferSize, File::Type type )
+LoadBuff( const string & fileName, vector< char > * pBuffer, File::Type type )
 {
     File file( fileName );
     if ( ! file.Open( File::ReadMode, type ) )
@@ -296,16 +293,14 @@ LoadBuff( const string & fileName, shared_array< char > * pBuffer,
         return false;
     if ( file.Seek( 0 ) != 0 )
         return false;
-    pBuffer->reset( new char[ fileSize ] );
-    memset( pBuffer->get(), 0, fileSize );
+    pBuffer->clear( );
+    pBuffer->resize( fileSize, 0 );
     int bytesRead = 0;
-    if ( ! file.Read( pBuffer->get(), fileSize, &bytesRead ) )
+    if ( ! file.Read( &(pBuffer->at(0)), fileSize, &bytesRead ) )
     {
-        pBuffer->reset( );
-        *pBufferSize = 0;
+        pBuffer->clear( );
         return false;
     }
-    *pBufferSize = bytesRead;   //In text mode, might be < fileSize.
     file.Close( );
     return true;
 }

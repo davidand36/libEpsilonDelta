@@ -11,7 +11,7 @@
 
 #include "Region.hpp"
 #include "Surface.hpp"
-#include "SmartPtr.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -23,13 +23,13 @@ class Sprite
     :   public Region
 {
 public:
-    Sprite( shared_ptr< Surface > graphic, const Point2I & position,
+    Sprite( std::tr1::shared_ptr< Surface > graphic, const Point2I & position,
             bool visible = true );
     virtual ~Sprite( );
 
-    shared_ptr< Surface > Graphic( ) const;
+    std::tr1::shared_ptr< Surface > Graphic( ) const;
     const Point2I & Position( ) const;
-    void SetGraphic( shared_ptr< Surface > graphic );
+    void SetGraphic( std::tr1::shared_ptr< Surface > graphic );
     void SetPosition( const Point2I & position );
     void Show( );
     void Hide( );
@@ -45,9 +45,9 @@ public:
 #endif
 
 private:
-    shared_ptr< Surface >   m_graphic;
-    Point2I                 m_position;
-    bool                    m_visible;
+    std::tr1::shared_ptr< Surface >     m_graphic;
+    Point2I                             m_position;
+    bool                                m_visible;
 };
 
 
@@ -55,8 +55,8 @@ private:
 
 
 inline
-Sprite::Sprite( shared_ptr< Surface > graphic, const Point2I & position,
-                bool visible )
+Sprite::Sprite( std::tr1::shared_ptr< Surface > graphic,
+                const Point2I & position, bool visible )
     :   m_graphic( graphic ),
         m_position( position ),
         m_visible( visible )
@@ -73,7 +73,7 @@ Sprite::~Sprite( )
 //=============================================================================
 
 inline
-shared_ptr< Surface > 
+std::tr1::shared_ptr< Surface > 
 Sprite::Graphic( ) const
 {
     return m_graphic;
@@ -92,7 +92,7 @@ Sprite::Position( ) const
 
 inline
 void 
-Sprite::SetGraphic( shared_ptr< Surface > graphic )
+Sprite::SetGraphic( std::tr1::shared_ptr< Surface > graphic )
 {
     m_graphic = graphic;
 }

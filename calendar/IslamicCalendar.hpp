@@ -26,7 +26,7 @@
 
 
 #include "GeodeticLocation.hpp"
-#include "SmartPtr.hpp"
+#include <tr1/memory>
 #include <string>
 
 
@@ -114,9 +114,9 @@ public:
         :   public System
     {
     public:
-        AstronomicalSystem( shared_ptr< MonthFunc > pMonthFunc );
-        void SetMonthFunc( shared_ptr< MonthFunc > pMonthFunc );
-        shared_ptr< MonthFunc > GetMonthFunc( ) const;
+        AstronomicalSystem( std::tr1::shared_ptr< MonthFunc > pMonthFunc );
+        void SetMonthFunc( std::tr1::shared_ptr< MonthFunc > pMonthFunc );
+        std::tr1::shared_ptr< MonthFunc > GetMonthFunc( ) const;
 
     protected:
         virtual void JulianDayToDMY( int julianDay,
@@ -128,7 +128,7 @@ public:
     private:
         int MonthStart( int julianDay );
 
-        shared_ptr< MonthFunc >   m_pMonthFunc;
+        std::tr1::shared_ptr< MonthFunc >   m_pMonthFunc;
     };
 
 //-----------------------------------------------------------------------------
@@ -178,13 +178,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-    static void SetSystem( shared_ptr< System > pSystem );
-    shared_ptr< System > GetSystem( );
+    static void SetSystem( std::tr1::shared_ptr< System > pSystem );
+    std::tr1::shared_ptr< System > GetSystem( );
 
 //=============================================================================
 
 private:
-    static shared_ptr< System >    ms_pSystem;
+    static std::tr1::shared_ptr< System >    ms_pSystem;
 };                                                            //IslamicCalendar
 
 
@@ -202,7 +202,7 @@ IslamicCalendar::MonthsInYear( int /*year*/ )
 
 inline 
 void 
-IslamicCalendar::SetSystem( shared_ptr< System > pSystem )
+IslamicCalendar::SetSystem( std::tr1::shared_ptr< System > pSystem )
 {
     ms_pSystem = pSystem;
 }
@@ -210,7 +210,7 @@ IslamicCalendar::SetSystem( shared_ptr< System > pSystem )
 //-----------------------------------------------------------------------------
 
 inline 
-shared_ptr< IslamicCalendar::System > 
+std::tr1::shared_ptr< IslamicCalendar::System > 
 IslamicCalendar::GetSystem( )
 {
     return ms_pSystem;
@@ -252,7 +252,7 @@ IslamicCalendar::ArithmeticSystem::LeapSequence( ) const
 
 inline
 IslamicCalendar::AstronomicalSystem::AstronomicalSystem(
-    shared_ptr< MonthFunc > pMonthFunc )
+    std::tr1::shared_ptr< MonthFunc > pMonthFunc )
     :   m_pMonthFunc( pMonthFunc )
 {
 }
@@ -262,7 +262,7 @@ IslamicCalendar::AstronomicalSystem::AstronomicalSystem(
 inline
 void
 IslamicCalendar::AstronomicalSystem::SetMonthFunc(
-    shared_ptr< MonthFunc > pMonthFunc )
+    std::tr1::shared_ptr< MonthFunc > pMonthFunc )
 {
     m_pMonthFunc = pMonthFunc;
 }
@@ -270,7 +270,7 @@ IslamicCalendar::AstronomicalSystem::SetMonthFunc(
 //-----------------------------------------------------------------------------
 
 inline
-shared_ptr< IslamicCalendar::MonthFunc > 
+std::tr1::shared_ptr< IslamicCalendar::MonthFunc > 
 IslamicCalendar::AstronomicalSystem::GetMonthFunc( ) const
 {
     return m_pMonthFunc;

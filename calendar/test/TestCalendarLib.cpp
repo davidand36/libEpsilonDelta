@@ -36,6 +36,7 @@
 #include "FrenchRevolutionaryDate.hpp"
 #include "Platform.hpp"
 using namespace std;
+using namespace std::tr1;
 using namespace EpsilonDelta;
 
 

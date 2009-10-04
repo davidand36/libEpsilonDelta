@@ -7,6 +7,8 @@
 
 
 #include "SQLResult.hpp"
+using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -40,7 +42,7 @@ SQLResult::Record::operator[]( int field ) const
 //-----------------------------------------------------------------------------
 
 std::string 
-SQLResult::Record::operator[]( std::string fieldName ) const
+SQLResult::Record::operator[]( string fieldName ) const
 {
     for ( int i = 0; i < m_pResult->NumFields(); ++i )
         if ( m_pResult->FieldName( i ) == fieldName )

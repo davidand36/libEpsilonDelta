@@ -28,6 +28,7 @@
 #include "Assert.hpp"
 #include "JSON.hpp"
 #include <iostream>
+#include <cstring>
 
 
 namespace EpsilonDelta
@@ -55,9 +56,13 @@ public:
     Point2( );
     Point2( T x, T y );
     Point2( const T * pCoords );
+    template < typename U >
+    explicit Point2( const Point2<U> & pt );
     explicit Point2( const Vector2<T> & vec );
     void Set( T x = T(), T y = T() );
     void Set( const T * pCoords );
+    template < typename U >
+    void Set( const Point2<U> & pt );
     void Set( const Vector2<T> & vec );
     T X( ) const;
     T Y( ) const;
@@ -143,6 +148,16 @@ Point2<T>::Point2( const T * pCoords )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename T>
+template < typename U >
+inline
+Point2<T>::Point2( const Point2<U> & pt )
+{
+    Set( (T)pt.X(), (T)pt.Y() );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
 inline
 Point2<T>::Point2( const Vector2<T> & vec )
 {
@@ -167,6 +182,17 @@ void
 Point2<T>::Set( const T * pCoords )
 {
     memcpy( m_coords.c_array(), pCoords, sizeof( m_coords ) );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+void 
+Point2<T>::Set( const Point2<U> & pt )
+{
+    Set( (T)pt.X(), (T)pt.Y() );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

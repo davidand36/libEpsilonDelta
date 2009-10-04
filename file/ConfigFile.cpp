@@ -10,8 +10,8 @@
 #include "Assert.hpp"
 #include "File.hpp"
 #include "StringUtil.hpp"
-#include "SmartPtr.hpp"
-#include <stdio.h>
+#include <cstdio>
+#include <tr1/memory>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Platform.hpp"
@@ -20,6 +20,7 @@
 #endif
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta

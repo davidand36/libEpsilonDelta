@@ -28,11 +28,12 @@ public:
     SimpleSpriteSystem( );
     virtual ~SimpleSpriteSystem( );
 
-    void SetBackground( shared_ptr< Surface > background );
+    void SetBackground( std::tr1::shared_ptr< Surface > background );
 
-    virtual bool AddSprite( shared_ptr< Sprite > sprite, int level = 0 );
-    virtual bool RemoveSprite( shared_ptr< Sprite > sprite );
-    virtual bool SetLevel( shared_ptr< Sprite > sprite, int level );
+    virtual bool AddSprite( std::tr1::shared_ptr< Sprite > sprite,
+                            int level = 0 );
+    virtual bool RemoveSprite( std::tr1::shared_ptr< Sprite > sprite );
+    virtual bool SetLevel( std::tr1::shared_ptr< Sprite > sprite, int level );
 
     void Render( );
 
@@ -48,13 +49,13 @@ private:
 
     struct SpriteData
     {
-        shared_ptr< Sprite >    m_sprite;
-        int                     m_level;
+        std::tr1::shared_ptr< Sprite >  m_sprite;
+        int                             m_level;
     };
 
-    shared_ptr< Surface >   m_background;
-    typedef std::list< SpriteData > SpriteList;
-    SpriteList              m_sprites;
+    std::tr1::shared_ptr< Surface >     m_background;
+    typedef std::list< SpriteData >  SpriteList;
+    SpriteList                          m_sprites;
 };
 
 

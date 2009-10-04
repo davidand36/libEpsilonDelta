@@ -9,6 +9,7 @@
 
 
 #include "InputDevice.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -37,7 +38,7 @@ public:
     virtual double Axis( int index = 0 ) const;
 
 private:
-    shared_ptr< GamepadImpl >  m_pImpl;
+    std::tr1::shared_ptr< GamepadImpl >     m_pImpl;
 };
 
 

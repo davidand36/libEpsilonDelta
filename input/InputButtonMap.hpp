@@ -17,8 +17,8 @@
 
 
 #include "InputDevice.hpp"
-#include "SmartPtr.hpp"
 #include "VMap.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -32,11 +32,13 @@ class InputButtonMap
 public:
     InputButtonMap( );
 
-    void Set( shared_ptr< InputDevice const > device, int button, int action );
-    void Remove( shared_ptr< InputDevice const > device, int button );
+    void Set( std::tr1::shared_ptr< InputDevice const > device, int button,
+              int action );
+    void Remove( std::tr1::shared_ptr< InputDevice const > device, int button );
     void Reset( );
 
-    int Action( shared_ptr< InputDevice const > device, int button ) const;
+    int Action( std::tr1::shared_ptr< InputDevice const > device,
+                int button ) const;
 
 #ifdef DEBUG
     static bool Test( );
@@ -45,8 +47,8 @@ public:
 private:
     struct DevButton
     {
-        shared_ptr< InputDevice const > m_device;
-        int                             m_button;
+        std::tr1::shared_ptr< InputDevice const >   m_device;
+        int                                         m_button;
     };
 
     typedef bool (*ButtonLessFunc)( const DevButton & lhs,

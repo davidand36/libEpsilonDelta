@@ -11,12 +11,13 @@
 
 #include "Image.hpp"
 #include "SDLException.hpp"
-#include "SmartPtr.hpp"
 #include <SDL_image.h>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "File.hpp"
+#include <tr1/memory>
 using namespace std;
+using namespace std::tr1;
 #endif
 
 

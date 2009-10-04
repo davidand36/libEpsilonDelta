@@ -10,9 +10,9 @@
 
 
 #include "Surface.hpp"
-#include "SmartPtr.hpp"
 #include "Vector2.hpp"
 #include "Point2.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -24,15 +24,16 @@ namespace EpsilonDelta
 class Glyph
 {
 public:
-    Glyph( shared_ptr< Surface > image, Vector2F offset, Vector2F advance );
+    Glyph( std::tr1::shared_ptr< Surface > image,
+           Vector2F offset, Vector2F advance );
 
     void Draw( const Point2I & destPos, Surface * pSurface = 0 );
     Vector2F GetAdvance( ) const;
     
 private:
-    shared_ptr< Surface >   m_image;
-    Vector2F                m_offset;
-    Vector2F                m_advance;
+    std::tr1::shared_ptr< Surface >     m_image;
+    Vector2F                            m_offset;
+    Vector2F                            m_advance;
 };
 
 

@@ -9,6 +9,7 @@
 
 
 #include "InputDevice.hpp"
+#include <tr1/memory>
 #ifdef USE_SDL
 #include <SDL_keysym.h>
 #endif
@@ -87,7 +88,7 @@ public:
 #endif //SDL
 
 private:
-    shared_ptr< KeyboardImpl >  m_pImpl;
+    std::tr1::shared_ptr< KeyboardImpl >    m_pImpl;
 };
 
 

@@ -26,11 +26,10 @@
 */
 
 
-#include "SmartPtr.hpp"
 #include <string>
 #include <iostream>
 #include <cstdarg>
-
+#include <tr1/memory>
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -55,7 +54,8 @@ public:
     
 
     Logger( const std::string & domain,
-            shared_ptr< OutputFunc > func = shared_ptr< OutputFunc >() );
+            std::tr1::shared_ptr< OutputFunc > func
+            = std::tr1::shared_ptr< OutputFunc >() );
 
     void operator()( int level, const std::string & message );
     void operator()( int level, const char * format, ... );
@@ -66,8 +66,8 @@ public:
     void SetVerbosity( int maxLevel );
     int GetVerbosity( ) const;
 
-    void SetOutputFunc( shared_ptr< OutputFunc > func
-                        = shared_ptr< OutputFunc >() );
+    void SetOutputFunc( std::tr1::shared_ptr< OutputFunc > func
+                        = std::tr1::shared_ptr< OutputFunc >() );
     void SetOutputStream( std::ostream & dest, int level = -1 );
 
 #ifdef DEBUG
@@ -88,9 +88,9 @@ private:
         std::ostream *  m_destinations[ NumLevels ];
     };
         
-    std::string                 m_domain;
-    int                         m_verbosity;
-    shared_ptr< OutputFunc >    m_pOutputFunc;
+    std::string                         m_domain;
+    int                                 m_verbosity;
+    std::tr1::shared_ptr< OutputFunc >  m_pOutputFunc;
 };
 
 

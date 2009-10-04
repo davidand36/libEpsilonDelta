@@ -32,11 +32,11 @@
 #include "Singleton.hpp"
 #include "DataBuffer.hpp"
 #include "Glyph.hpp"
-#include "SmartPtr.hpp"
 #include "Vector2.hpp"
 #include "Color.hpp"
 #include <string>
 #include <vector>
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -58,8 +58,9 @@ public:
     void Init( );
     void Shutdown( );
 
-    int AddFontSet( shared_ptr< DataBuffer > fontData,
-                shared_ptr< DataBuffer > auxData = shared_ptr< DataBuffer >() );
+    int AddFontSet( std::tr1::shared_ptr< DataBuffer > fontData,
+                    std::tr1::shared_ptr< DataBuffer > auxData
+                    = std::tr1::shared_ptr< DataBuffer >() );
     int AddFace( int fontSetID, int faceIndex );
     void AddFont( int fontID, int faceID, float height );
 
@@ -69,8 +70,11 @@ public:
     int GetFixedSizes( int faceID, std::vector< float > * pSizes ) const;
     float Height( int fontID );
 
-    shared_ptr< Glyph > GetGlyph( int fontID, wchar_t character,
-                                  Color3B color, bool monochrome = false );
+    std::tr1::shared_ptr< Glyph > GetGlyph( int fontID, wchar_t character,
+                                            Color3B color,
+                                            bool monochrome = false );
+
+    Vector2F GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar );
 
 #ifdef DEBUG
     static bool TestLoad( const std::string & directory,
@@ -82,7 +86,7 @@ private:
     FontManager( );
     ~FontManager( );
 
-    shared_ptr< FontManagerImpl >  m_pImpl;
+    std::tr1::shared_ptr< FontManagerImpl >  m_pImpl;
 
     friend class Singleton< FontManager >;
 };

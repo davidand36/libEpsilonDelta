@@ -31,6 +31,7 @@
 #include "JSON.hpp"
 #include <string>
 #include <iostream>
+#include <cstring>
 
 
 namespace EpsilonDelta

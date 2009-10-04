@@ -759,15 +759,15 @@ JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
     //We maintain a cache of two blocks to avoid thrashing if we are computing
     // positions at a variety of times near a block boundary.
     //On success, m_coeffBlocks[ m_curBlock ] will be the appropriate block.
-    shared_array< const double > block;
-    if ( m_coeffBlocks[ m_curBlock ] == 0 )
+    double * block;
+    if ( m_coeffBlocks[ m_curBlock ].empty() )
     {
-        m_coeffBlocks[ m_curBlock ].reset( new double[ m_coeffsPerBlock ] );
-        block = m_coeffBlocks[ m_curBlock ];
+        m_coeffBlocks[ m_curBlock ].resize( m_coeffsPerBlock );
+        block = &(m_coeffBlocks[ m_curBlock ][0]);
     }
     else
     {
-        block = m_coeffBlocks[ m_curBlock ];
+        block = &(m_coeffBlocks[ m_curBlock ][0]);
         double blockDiff = julianDay0 - block[0];
         blockDiff += julianDay1;
         //block[0] and block[1] contain the start and end dates of the block.
@@ -776,15 +776,14 @@ JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
         else
         {
             m_curBlock = 1 - m_curBlock;  //toggle 0 <-> 1
-            if ( m_coeffBlocks[ m_curBlock ] == 0 )
+            if ( m_coeffBlocks[ m_curBlock ].empty() )
             {
-                m_coeffBlocks[ m_curBlock ].reset(
-                    new double[ m_coeffsPerBlock ] );
-                block = m_coeffBlocks[ m_curBlock ];
+                m_coeffBlocks[ m_curBlock ].resize( m_coeffsPerBlock );
+                block = &(m_coeffBlocks[ m_curBlock ][0]);
             }
             else
             {
-                block = m_coeffBlocks[ m_curBlock ];
+                block = &(m_coeffBlocks[ m_curBlock ][0]);
                 blockDiff = julianDay0 - block[0];
                 blockDiff += julianDay1;
                 if ( (blockDiff >= 0.0) && (block[0] + blockDiff <= block[1]) )
@@ -813,8 +812,7 @@ JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
         throw Exception( "Seek failed." );
         //return false;
     }
-    int bytesRead = fread( const_cast< double * >( block.get() ), 1, blockSize,
-                           m_file );
+    int bytesRead = fread( block, 1, blockSize, m_file );
     if ( bytesRead != blockSize )
     {
         throw Exception( "Read failed." );
@@ -822,7 +820,7 @@ JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
     }
     if ( m_wrongEndian )
     {
-        double * pCoeff = const_cast< double * >( block.get() );
+        double * pCoeff = block;
         for ( int i = 0; i < m_coeffsPerBlock; ++i, ++pCoeff )
             SwapEndian( pCoeff );
     }
@@ -835,8 +833,8 @@ bool
 JPLEphemeris::GetTargetCoefficients( double julianDay0, double julianDay1, 
                                      ETarget target )
 {
-    shared_array< const double > coeffBlock( m_coeffBlocks[ m_curBlock ] );
-    m_targetCoeffs = coeffBlock.get() + m_coeffLayouts[ target ].m_offset;
+    const double * coeffBlock = &m_coeffBlocks[ m_curBlock ][0];
+    m_targetCoeffs = coeffBlock + m_coeffLayouts[ target ].m_offset;
     double blockDiff = julianDay0 - coeffBlock[0];
     blockDiff += julianDay1;
     double blockFrac = blockDiff / m_blockInterval;

@@ -81,6 +81,22 @@ TestPoint2( )
     TESTCHECK( pt3.X(), x, &ok );
     TESTCHECK( pt3.Y(), y, &ok );
 
+    cout << "Point2F( pt3 )" << endl;
+    Point2F ptf1( pt3 );
+    TESTCHECK( ptf1.X(), 45.f, &ok );
+    TESTCHECK( ptf1.Y(), 85.f, &ok );
+
+    float xf = 7.7f;
+    float yf = -5.2;
+    cout << "Point2F( " << xf << ", " << yf << " )" << endl;
+    Point2F ptf2( xf, yf );
+    TESTCHECK( ptf2.X(), xf, &ok );
+    TESTCHECK( ptf2.Y(), yf, &ok );
+    cout << "Point2I( ptf2 )" << endl;
+    Point2I pt4( ptf2 );
+    TESTCHECK( pt4.X(), 7, &ok );   //truncates
+    TESTCHECK( pt4.Y(), -5, &ok );
+
     int dx = 10;
     int dy = -10;
     cout << "Vector2I( " << dx << ", " << dy << " )" << endl;

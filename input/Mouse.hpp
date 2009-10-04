@@ -9,6 +9,7 @@
 
 
 #include "InputDevice.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -46,7 +47,7 @@ public:
     virtual Point2I Pointer( int index = 0 ) const;
 
 private:
-    shared_ptr< MouseImpl >  m_pImpl;
+    std::tr1::shared_ptr< MouseImpl >   m_pImpl;
 };
 
 

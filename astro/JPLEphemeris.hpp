@@ -75,7 +75,7 @@
 #include "Angle.hpp"
 #include "Nutation.hpp"
 #include "SolarSystem.hpp"
-#include "SmartPtr.hpp"
+#include <vector>
 #include <string>
 #include <cstdio>
 
@@ -208,7 +208,7 @@ private:
     int m_dataOffset;
 
     //data obtained from subroutines
-    shared_array< const double > m_coeffBlocks[2];
+    std::vector< double > m_coeffBlocks[2];
     int m_curBlock;
     const double * m_targetCoeffs;
     double m_timeFrac;

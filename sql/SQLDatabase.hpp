@@ -13,7 +13,7 @@
 
 
 #include "SQLResult.hpp"
-#include "SmartPtr.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -28,7 +28,8 @@ public:
     SQLDatabase( ) { }
     virtual ~SQLDatabase( ) { }
     virtual void DoCommand( const std::string & command ) = 0;
-    virtual shared_ptr< SQLResult > DoQuery( const std::string & query ) = 0;
+    virtual std::tr1::shared_ptr< SQLResult >
+            DoQuery( const std::string & query ) = 0;
 };
 
 

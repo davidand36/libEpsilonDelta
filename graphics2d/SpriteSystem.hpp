@@ -9,8 +9,8 @@
 
 
 #include "Sprite.hpp"
-#include "SmartPtr.hpp"
 #include <vector>
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -23,9 +23,11 @@ class SpriteSystem
 public:
     virtual ~SpriteSystem( ) { };
 
-    virtual bool AddSprite( shared_ptr< Sprite > sprite, int level = 0 ) = 0;
-    virtual bool RemoveSprite( shared_ptr< Sprite > sprite ) = 0;
-    virtual bool SetLevel( shared_ptr< Sprite > sprite, int level ) = 0;
+    virtual bool AddSprite( std::tr1::shared_ptr< Sprite > sprite,
+                            int level = 0 ) = 0;
+    virtual bool RemoveSprite( std::tr1::shared_ptr< Sprite > sprite ) = 0;
+    virtual bool SetLevel( std::tr1::shared_ptr< Sprite > sprite,
+                           int level ) = 0;
 
     virtual void Render( ) = 0;
 };

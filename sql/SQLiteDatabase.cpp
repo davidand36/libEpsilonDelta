@@ -19,11 +19,13 @@
 #include "TestCheck.hpp"
 #include "Platform.hpp"
 #include <iostream>
+#include <cstdlib>
 #ifndef OS_WINDOWS
 #include <unistd.h>
 #endif
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta

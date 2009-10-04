@@ -24,13 +24,14 @@ class MappedInput
     :   public Singleton< MappedInput >
 {
 public:
-    void SetButtonMap( shared_ptr< InputButtonMap const > pButtonMap );
-    void SetRegionMap( shared_ptr< RegionMap const > pRegionMap,
-                       shared_ptr< InputDevice const > pDevice
-                       = shared_ptr< InputDevice const >(),
+    void SetButtonMap(
+        std::tr1::shared_ptr< InputButtonMap const > pButtonMap );
+    void SetRegionMap( std::tr1::shared_ptr< RegionMap const > pRegionMap,
+                       std::tr1::shared_ptr< InputDevice const > pDevice
+                       = std::tr1::shared_ptr< InputDevice const >(),
                        int button = 0, int pointer = 0 );
-    void RemoveRegionMap( shared_ptr< InputDevice const > pDevice
-                          = shared_ptr< InputDevice const >(),
+    void RemoveRegionMap( std::tr1::shared_ptr< InputDevice const > pDevice
+                          = std::tr1::shared_ptr< InputDevice const >(),
                           int button = 0, int pointer = 0 );
 
     bool CheckEvent( int * pAction, int * pOwner = 0 ) const;
@@ -45,22 +46,23 @@ public:
 private:
     MappedInput( );
     ~MappedInput( );
-    bool MapEvent( shared_ptr< InputEvent const > pEvent,
+    bool MapEvent( std::tr1::shared_ptr< InputEvent const > pEvent,
                    int * pAction, int * pOwner ) const;
 
 
     struct RegMapItem
     {
-        bool Matches( shared_ptr< InputDevice const > pDevice,
+        bool Matches( std::tr1::shared_ptr< InputDevice const > pDevice,
                       int button, int pointer = -1 ) const;
-        shared_ptr< InputDevice const > m_device;
-        int                             m_button;
-        int                             m_pointer;
-        shared_ptr< RegionMap const >   m_pRegionMap;
+
+        std::tr1::shared_ptr< InputDevice const >   m_device;
+        int                                         m_button;
+        int                                         m_pointer;
+        std::tr1::shared_ptr< RegionMap const >     m_pRegionMap;
     };
 
-    shared_ptr< InputButtonMap const >  m_pButtonMap;
-    std::vector< RegMapItem >           m_regionMaps;
+    std::tr1::shared_ptr< InputButtonMap const >    m_pButtonMap;
+    std::vector< RegMapItem >                       m_regionMaps;
 
     friend class Singleton< MappedInput >;
 };

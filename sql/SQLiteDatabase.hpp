@@ -33,7 +33,8 @@ public:
     SQLiteDatabase( const std::string & fileName );
     virtual ~SQLiteDatabase( );
     virtual void DoCommand( const std::string & command );
-    virtual shared_ptr< SQLResult > DoQuery( const std::string & query );
+    virtual std::tr1::shared_ptr< SQLResult > DoQuery(
+        const std::string & query );
     virtual std::vector< std::string > ListTables( );
     virtual std::string DumpSQL( );
 

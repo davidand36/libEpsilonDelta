@@ -21,7 +21,7 @@
 #include <cmath>
 #include <algorithm>
 using namespace std;
-
+using namespace std::tr1;
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta

@@ -5,6 +5,9 @@
   Copyright (C) 2009 David M. Anderson
 
   File class: Basic file operations, wrapped for platform-independence.
+  NOTES:
+  1. Seek() combines the standard seek() and tell() operations, in that it
+     returns the resulting file position.
 */
 
 
@@ -12,6 +15,7 @@
 #include "DateTime.hpp"
 #include "Logger.hpp"
 #include <string>
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -60,10 +64,10 @@ public:
 #endif
 
 private:
-    std::string             m_fileName;
-    shared_ptr< FileImpl >  m_pImpl;
+    std::string                         m_fileName;
+    std::tr1::shared_ptr< FileImpl >    m_pImpl;
 
-    static Logger           ms_log;
+    static Logger                       ms_log;
 };
 
 

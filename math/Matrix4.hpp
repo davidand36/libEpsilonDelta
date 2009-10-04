@@ -46,6 +46,7 @@
 #include "SingularMatrixException.hpp"
 #include "JSON.hpp"
 #include <iostream>
+#include <cstring>
 
 
 namespace EpsilonDelta

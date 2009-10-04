@@ -28,6 +28,7 @@
 #include "Array.hpp"
 #include "Circle.hpp"
 using namespace std;
+using namespace std::tr1;
 #endif
 
 

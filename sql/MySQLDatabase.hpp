@@ -35,7 +35,8 @@ public:
 #endif
     virtual ~MySQLDatabase( );
     virtual void DoCommand( const std::string & command );
-    virtual shared_ptr< SQLResult > DoQuery( const std::string & query );
+    virtual std::tr1::shared_ptr< SQLResult > DoQuery(
+        const std::string & query );
 
 #ifdef DEBUG
     static bool Test( const std::string & configFileName );

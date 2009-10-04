@@ -13,6 +13,7 @@
 #include "TestCheck.hpp"
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta

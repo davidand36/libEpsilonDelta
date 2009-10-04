@@ -13,6 +13,7 @@
 #include "TestCheck.hpp"
 #include "Exception.hpp"
 #include <iostream>
+#include <cstring>
 using namespace std;
 #endif
 

@@ -8,10 +8,10 @@
 */
 
 
-#include "SmartPtr.hpp"
 #include <string>
 #include <vector>
 #include <map>
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -57,14 +57,14 @@ public:
     class Record
     {
     public:
-        Record( shared_ptr< SQLResult const > pResult, int record );
+        Record( std::tr1::shared_ptr< SQLResult const > pResult, int record );
         void Set( int record );
         std::string operator[]( int field ) const;
         std::string operator[]( std::string fieldName ) const;
 
     private:
-        shared_ptr< SQLResult const > m_pResult;
-        int     m_record;
+        std::tr1::shared_ptr< SQLResult const >     m_pResult;
+        int                                         m_record;
     };
 };
 

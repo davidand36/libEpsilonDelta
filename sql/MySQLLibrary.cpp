@@ -12,11 +12,12 @@
 
 #include "MySQLLibrary.hpp"
 #include "MySQLException.hpp"
-#include "SmartPtr.hpp"
 #include "StringUtil.hpp"
 #include <mysql.h>
 #include <cstring>
+#include <tr1/memory>
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -66,21 +67,19 @@ MySQLLibrary::Init( const vector< string > & options )
         Init( );
     else
     {
-        shared_array< shared_array< char > > saOptions(
-            new shared_array< char >[ numOptions + 1 ] );
-        shared_array< char * > ppOptions( new char *[ numOptions + 1 ] );
+        vector< vector< char > > vvOptions( numOptions + 1 );
+        vector< char * > vpOptions( numOptions + 1 );
         //The first "argument" is ignored
-        saOptions[ 0 ].reset( new char[ 1 ] );
-        ppOptions[ 0 ] = saOptions[ 0 ].get();
-        ppOptions[ 0 ][ 0 ] = 0;
+        vvOptions[ 0 ].resize( 1, 0 );
+        vpOptions[ 0 ] = &(vvOptions[ 0 ][ 0 ]);
         for ( int i = 0; i < numOptions; ++i )
         {
-            saOptions[ i + 1 ].reset( new char[ options[ i ].size() + 1 ] );
-            ppOptions[ i + 1 ] = saOptions[ i + 1 ].get();
-            strcpy( ppOptions[ i + 1 ], options[i].c_str() );
+            vvOptions[ i + 1 ].resize( options[ i ].size() + 1, 0 );
+            vpOptions[ i + 1 ] = &(vvOptions[ i + 1 ][ 0 ]);
+            strcpy( vpOptions[ i + 1 ], options[ i ].c_str() );
         }
 
-        int initRslt = mysql_library_init( numOptions, ppOptions.get(), 0 );
+        int initRslt = mysql_library_init( numOptions, &vpOptions[0], 0 );
 
         if ( initRslt != 0 )
         {

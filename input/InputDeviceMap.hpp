@@ -18,8 +18,9 @@
 
 #include "InputDevice.hpp"
 #include "Singleton.hpp"
-#include "SmartPtr.hpp"
 #include <vector>
+#include <tr1/memory>
+
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -31,12 +32,13 @@ class InputDeviceMap
     :   public Singleton< InputDeviceMap >
 {
 public:
-    void Set( shared_ptr< InputDevice const > pDevice, int owner );
-    void Remove( shared_ptr< InputDevice const > pDevice );
+    void Set( std::tr1::shared_ptr< InputDevice const > pDevice, int owner );
+    void Remove( std::tr1::shared_ptr< InputDevice const > pDevice );
     void Reset( );
 
-    int Owner( shared_ptr< InputDevice const > pDevice ) const;
-    std::vector< shared_ptr< InputDevice const > > Devices( int owner ) const;
+    int Owner( std::tr1::shared_ptr< InputDevice const > pDevice ) const;
+    std::vector< std::tr1::shared_ptr< InputDevice const > >
+            Devices( int owner ) const;
 
 #ifdef DEBUG
     static bool Test( );
@@ -48,8 +50,8 @@ private:
 
     struct OwnedDevice
     {
-        shared_ptr< InputDevice const >     m_pDevice;
-        int                                 m_owner;
+        std::tr1::shared_ptr< InputDevice const >   m_pDevice;
+        int                                         m_owner;
     };
 
     std::vector< OwnedDevice >  m_ownedDevices;

@@ -13,7 +13,7 @@
 
 #include "Pixel.hpp"
 #include "Singleton.hpp"
-#include "SmartPtr.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -37,7 +37,7 @@ public:
                       const char * title, 
                       EPixelType pixelType = NativePixelType,
                       bool fullScreen = false, bool openGL = false );
-    shared_ptr< Surface > Screen( );
+    std::tr1::shared_ptr< Surface > Screen( );
     void ShowScreen( );
 
 #ifdef DEBUG
@@ -53,7 +53,7 @@ private:
     Graphics2D( );
     ~Graphics2D( );
 
-    shared_ptr< Surface > m_spScreenSurface;
+    std::tr1::shared_ptr< Surface >     m_spScreenSurface;
 
     friend class Singleton< Graphics2D >;
 };
@@ -63,7 +63,7 @@ private:
 
 
 inline 
-shared_ptr< Surface >
+std::tr1::shared_ptr< Surface >
 Graphics2D::Screen( )
 {
     return m_spScreenSurface;

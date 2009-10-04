@@ -8,22 +8,23 @@
 
 #include "CGIInput.hpp"
 #include "StringUtil.hpp"
-#include "SmartPtr.hpp"
 #include "Exception.hpp"
 #include "Assert.hpp"
 #include "Platform.hpp"
-#include <string.h>
+#include <cstring>
+#include <cstdlib>
+#include <tr1/memory>
 #ifdef USE_FASTCGI
 #include <fcgi_stdio.h>
 #else
-#include <stdio.h>
+#include <cstdio>
 #endif
 #ifdef OS_WINDOWS
 #include <io.h>
 #include <fcntl.h>
 #endif
 using namespace std;
-
+using namespace std::tr1;
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -95,17 +96,17 @@ CGIInput::ReadRawInput( int maxInputLength )
         Assert( length >= 0 );
         if ( length > maxInputLength )
             throw Exception( "CGI input exceeds maximum allowed size." );
-        scoped_array< char > inputBuff( new char[ length + 1 ] );
+        vector< char > inputBuff( length + 1 );
 #ifdef OS_WINDOWS
         _setmode( _fileno( stdin ), _O_BINARY );
 #endif
 #ifdef DEBUG
         int bytesRead =
 #endif
-                fread( inputBuff.get(), 1, length, stdin );
+                fread( &inputBuff[0], 1, length, stdin );
         Assert( bytesRead == length );
         inputBuff[ length ] = 0;
-        m_rawInput.append( inputBuff.get(), length );
+        m_rawInput.append( &inputBuff[0], length );
     }
     const char * queryString = getenv( "QUERY_STRING" );
     if ( queryString == 0 )

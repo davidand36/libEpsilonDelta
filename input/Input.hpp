@@ -42,10 +42,10 @@ public:
     void Shutdown( );
 
     void Update( );
-    shared_ptr< InputEvent const > CheckEvent( );
+    std::tr1::shared_ptr< InputEvent const > CheckEvent( );
 
     int NumDevices( ) const;
-    shared_ptr< InputDevice const > Device( int index ) const;
+    std::tr1::shared_ptr< InputDevice const > Device( int index ) const;
     int DeviceIndex( InputDevice::EType type ) const;
 
     typedef void (*QuitHandler)( );
@@ -65,9 +65,9 @@ private:
     void HandleQuit( );
     uint32_t IgnoreTypes( ) const;
 
-    QuitHandler                 m_quitHandler;
-    uint32_t                    m_ignoreTypes;
-    shared_ptr< InputImpl >     m_pImpl;
+    QuitHandler                         m_quitHandler;
+    uint32_t                            m_ignoreTypes;
+    std::tr1::shared_ptr< InputImpl >   m_pImpl;
 
     friend class Singleton< Input >;
     friend class InputImpl;

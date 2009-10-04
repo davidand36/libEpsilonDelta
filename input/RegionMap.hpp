@@ -20,7 +20,7 @@
 
 #include "InputDevice.hpp"
 #include "Region.hpp"
-#include "SmartPtr.hpp"
+#include <tr1/memory>
 #include <vector>
 
 
@@ -33,7 +33,7 @@ namespace EpsilonDelta
 class RegionMap
 {
 public:
-    void Set( shared_ptr< Region > pRegion, int action );
+    void Set( std::tr1::shared_ptr< Region > pRegion, int action );
     void Remove( const Region & region );
     void Reset( );
 
@@ -47,8 +47,8 @@ public:
 private:
     struct RegAct
     {
-        shared_ptr< Region >    m_pRegion;
-        int                     m_action;
+        std::tr1::shared_ptr< Region >  m_pRegion;
+        int                             m_action;
     };
 
     std::vector< RegAct >   m_regActs;

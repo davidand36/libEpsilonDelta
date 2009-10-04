@@ -9,6 +9,7 @@
 
 
 #include "InputDevice.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -20,13 +21,13 @@ namespace EpsilonDelta
 class InputEvent
 {
 public:
-    InputEvent( shared_ptr< InputDevice const > device, int button );
+    InputEvent( std::tr1::shared_ptr< InputDevice const > device, int button );
 
-    shared_ptr< InputDevice const > Device( ) const;
+    std::tr1::shared_ptr< InputDevice const > Device( ) const;
     int Button( ) const;
 
 private:
-    shared_ptr< InputDevice const > m_device;
+    std::tr1::shared_ptr< InputDevice const > m_device;
     int                             m_button;
 };
 
@@ -35,7 +36,8 @@ private:
 
 
 inline
-InputEvent::InputEvent( shared_ptr< InputDevice const > device, int button )
+InputEvent::InputEvent( std::tr1::shared_ptr< InputDevice const > device,
+                        int button )
     :   m_device( device ),
         m_button( button )
 {
@@ -44,7 +46,7 @@ InputEvent::InputEvent( shared_ptr< InputDevice const > device, int button )
 //=============================================================================
 
 inline
-shared_ptr< InputDevice const > 
+std::tr1::shared_ptr< InputDevice const > 
 InputEvent::Device( ) const
 {
     return m_device;

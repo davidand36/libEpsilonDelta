@@ -20,12 +20,11 @@
 */
 
 
-#include "SmartPtr.hpp"
 #include "Vector3.hpp"
 #include "Array.hpp"
 #include "StdInt.hpp"
 #include "FixEndian.hpp"
-
+#include <tr1/memory>
 #include <iostream>
 
 
@@ -72,8 +71,8 @@ public:
 private:
     double Uni01( );    //operator()(0.,1.)
 
-    shared_ptr< RandomNumberGeneratorImpl > m_pImpl;
-    int     m_seed;
+    std::tr1::shared_ptr< RandomNumberGeneratorImpl >   m_pImpl;
+    int                                                 m_seed;
 };
 
 

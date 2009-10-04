@@ -10,7 +10,6 @@
 #include "Platform.hpp"
 #include "FileException.hpp"
 #include "StringUtil.hpp"
-#include "SmartPtr.hpp"
 #include <vector>
 #include <errno.h>
 #if defined(OS_UNIX)
@@ -26,6 +25,7 @@
 #include "TestCheck.hpp"
 #include "File.hpp"
 #include <iostream>
+#include <algorithm>
 #endif
 using namespace std;
 
@@ -230,14 +230,14 @@ TestDirUtil( )
             cout << "MakeDirectory( " << newDir << " )" << endl;
             MakeDirectory( newDir );
             string fileSpec = newDir + "Mine";
-            scoped_array< char > chars( new char[1000] );
+            vector< char > chars( 1000 );
             DataBuffer buff;
-            buff.Add( chars.get(), 1000 );
+            buff.Add( &chars[0], 1000 );
             bool saveRslt = File::Save( fileSpec, buff );
             Assert( saveRslt );
             fileSpec = newDir + "Dave";
             buff.Clear();
-            buff.Add( chars.get(), 100 );
+            buff.Add( &chars[0], 100 );
             saveRslt = File::Save( fileSpec, buff );
             Assert( saveRslt );
             string dir = baseDirs[i] + "DirUtilTest1";

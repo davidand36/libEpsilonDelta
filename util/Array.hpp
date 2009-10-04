@@ -34,8 +34,7 @@ using boost::array;
 
 #endif
 
-#include "SmartPtr.hpp"
-#include <cstring>
+#include <vector>
 
 
 namespace EpsilonDelta
@@ -133,8 +132,8 @@ public:
 private:
     int m_numRows;
     int m_numColumns;
-    shared_array< T* > m_elements;
-    shared_array< T > m_elements0;
+    std::vector< T* > m_elements;
+    std::vector< T > m_elements0;
 };
 
 
@@ -166,9 +165,9 @@ private:
     int m_numSlices;
     int m_numRows;
     int m_numColumns;
-    shared_array< T** > m_elements;
-    shared_array< T* > m_elements0;
-    shared_array< T > m_elements00;
+    std::vector< T** > m_elements;
+    std::vector< T* > m_elements0;
+    std::vector< T > m_elements00;
 };
 
 
@@ -373,11 +372,9 @@ template < typename T >
 TwoDArray<T>::TwoDArray( int numRows, int numColumns )
     :   m_numRows( numRows ),
         m_numColumns( numColumns ),
-        m_elements( new T*[ numRows ] ),
-        m_elements0( new T[ numRows * numColumns ] )
+        m_elements( numRows ),
+        m_elements0( numRows * numColumns, 0 )
 {
-    int numElements = numRows * numColumns;
-    std::memset( m_elements0.get(), 0, numElements * sizeof( T ) );
     for ( int r = 0; r < numRows; ++r )
         m_elements[ r ] = &(m_elements0[ r * numColumns ]);
 }
@@ -480,12 +477,10 @@ ThreeDArray<T>::ThreeDArray( int numSlices, int numRows, int numColumns )
     :   m_numSlices( numSlices ),
         m_numRows( numRows ),
         m_numColumns( numColumns ),
-        m_elements( new T**[ numSlices ] ),
-        m_elements0( new T*[ numSlices * numRows ] ),
-        m_elements00( new T[ numSlices * numRows * numColumns ] )
+        m_elements( numSlices ),
+        m_elements0( numSlices * numRows ),
+        m_elements00( numSlices * numRows * numColumns, 0 )
 {
-    int numElements = numSlices * numRows * numColumns;
-    std::memset( m_elements00.get(), 0, numElements * sizeof( T ) );
     for ( int s = 0; s < numSlices; ++s )
     {
         m_elements[s] = &(m_elements0[ s * numRows ]);

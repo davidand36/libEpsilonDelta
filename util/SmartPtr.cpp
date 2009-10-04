@@ -9,8 +9,10 @@
 #include "SmartPtr.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include <tr1/memory>
 #include <list>
 using namespace std;
+using namespace std::tr1;
 #endif
 
 

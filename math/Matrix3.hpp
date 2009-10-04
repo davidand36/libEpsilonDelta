@@ -56,6 +56,7 @@
 #include "EulerAngles.hpp"
 #include "JSON.hpp"
 #include <iostream>
+#include <cstring>
 
 
 namespace EpsilonDelta

@@ -61,8 +61,12 @@ public:
     Vector4( );
     Vector4( T x, T y, T z, T w );
     Vector4( const T * pCoords );
+    template < typename U >
+    explicit Vector4( const Vector4<U> & vec );
     Vector4( const Vector3<T> & vec3 );
     Vector4( const Point3<T> & pt3 );
+    template < typename U >
+    void Set( const Vector4<U> & vec );
     void Set( T x = T(), T y = T(), T z = T(), T w = T() );
     void Set( const T * pCoords );
     void Set( const Vector3<T> & vec3 );
@@ -118,6 +122,8 @@ template <typename T>   //scalar product
 Vector4<T> operator*( const Vector4<T> & lhs, T rhs );
 template <typename T>   //inner (dot) product
 T operator*( const Vector4<T> & lhs, const Vector4<T> & rhs );
+template <typename T>
+Vector4<T> Round( const Vector4<T> & vec );
 
 #ifdef DEBUG
 bool TestVector4( );
@@ -154,6 +160,16 @@ template <typename T>
 Vector4<T>::Vector4( const T * pCoords )
 {
     Set( pCoords );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+Vector4<T>::Vector4( const Vector4<U> & vec )
+{
+    Set( vec );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -214,6 +230,17 @@ void
 Vector4<T>::Set( const Point3<T> & pt3 )
 {
     Set( pt3[0], pt3[1], pt3[2], 1 );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+void 
+Vector4<T>::Set( const Vector4<U> & vec )
+{
+    Set( (T)vec[0], (T)vec[1], (T)vec[2], (T)vec[3] );
 }
 
 //=============================================================================
@@ -554,6 +581,17 @@ operator*( const Vector4<T> & lhs, const Vector4<T> & rhs )
 {
     return (lhs[0] * rhs[0]  +  lhs[1] * rhs[1]  +  lhs[2] * rhs[2]
             +  lhs[3] * rhs[3]);
+}
+
+//=============================================================================
+
+template <typename T>
+Vector4<T> Round( const Vector4<T> & vec )
+{
+    return Vector4<T>( std::floor( vec[0] + (T)0.5 ),
+                       std::floor( vec[1] + (T)0.5 ),
+                       std::floor( vec[2] + (T)0.5 ),
+                       std::floor( vec[3] + (T)0.5 ) );
 }
 
 //=============================================================================

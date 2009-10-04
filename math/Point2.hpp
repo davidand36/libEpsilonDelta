@@ -25,8 +25,10 @@
 
 
 #include "Vector2.hpp"
-#include "Assert.hpp"
+#include "FixedPoint.hpp"
 #include "JSON.hpp"
+#include "Assert.hpp"
+#include <cmath>
 #include <iostream>
 #include <cstring>
 
@@ -105,6 +107,8 @@ template <typename T>
 Point2<T> operator*( const Matrix2<T> & m, const Point2<T> & pt );
 template <typename T>
 Point2<T> operator*( const Point2<T> & pt, const Matrix2<T> & m );
+template <typename T>
+Point2<T> Round( const Point2<T> & pt );
 
 #ifdef DEBUG
 bool TestPoint2( );
@@ -114,9 +118,16 @@ bool TestPoint2( );
 //=============================================================================
 
 
-typedef Point2<int>    Point2I;
-typedef Point2<float>  Point2F;
-typedef Point2<double> Point2D;
+typedef Point2<int>         Point2I;
+typedef Point2<float>       Point2F;
+typedef Point2<double>      Point2D;
+typedef Point2<long double> Point2LD;
+typedef Point2<Fixed16_8>   Point2Fx16_8;
+typedef Point2<Fixed16_12>  Point2Fx16_12;
+typedef Point2<Fixed32_6>   Point2Fx32_6;
+typedef Point2<Fixed32_8>   Point2Fx32_8;
+typedef Point2<Fixed32_12>  Point2Fx32_12;
+typedef Point2<Fixed32_16>  Point2Fx32_16;
 
 
 //*****************************************************************************
@@ -152,7 +163,7 @@ template < typename U >
 inline
 Point2<T>::Point2( const Point2<U> & pt )
 {
-    Set( (T)pt.X(), (T)pt.Y() );
+    Set( pt );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -192,7 +203,7 @@ inline
 void 
 Point2<T>::Set( const Point2<U> & pt )
 {
-    Set( (T)pt.X(), (T)pt.Y() );
+    Set( (T)pt[0], (T)pt[1] );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -457,6 +468,15 @@ std::ostream &
 operator<<( std::ostream & out, const Point2<T> & pt )
 {
     return out << "[ " << pt[0] << ", " << pt[1] << " ]";
+}
+
+//=============================================================================
+
+template <typename T>
+Point2<T> Round( const Point2<T> & pt )
+{
+    return Point2<T>( std::floor( pt[0] + (T)0.5 ),
+                      std::floor( pt[1] + (T)0.5 ) );
 }
 
 //=============================================================================

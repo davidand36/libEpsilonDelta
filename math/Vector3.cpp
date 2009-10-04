@@ -683,6 +683,36 @@ TestVector3( )
     TESTCHECK( Vector3F::UnitZ.Y(), 0.f, &ok );
     TESTCHECK( Vector3F::UnitZ.Z(), 1.f, &ok );
 
+    cout << "Vector3F( vs2 )" << endl;
+    Vector3F vf4( vs2 );
+    TESTCHECK( vf4.X(), -352.f, &ok );
+    TESTCHECK( vf4.Y(), 128.f, &ok );
+    TESTCHECK( vf4.Z(), 224.f, &ok );
+
+    xf = 7.7f;
+    yf = -5.2;
+    zf = -3.6f;
+    cout << "Vector3F( " << xf << ", " << yf << ", " << zf << " )" << endl;
+    Vector3F vf5( xf, yf, zf );
+    TESTCHECK( vf5.X(), xf, &ok );
+    TESTCHECK( vf5.Y(), yf, &ok );
+    TESTCHECK( vf5.Z(), zf, &ok );
+    cout << "Vector3<short>( vf5 )" << endl;
+    Vector3<short> vs4( vf5 );
+    TESTCHECK( vs4.X(), 7, &ok );
+    TESTCHECK( vs4.Y(), -5, &ok );
+    TESTCHECK( vs4.Z(), -3, &ok );
+    cout << "Round()" << endl;
+    Vector3F vf6 = Round( vf5 );
+    TESTCHECK( vf6.X(), 8.f, &ok );
+    TESTCHECK( vf6.Y(), -5.f, &ok );
+    TESTCHECK( vf6.Z(), -4.f, &ok );
+    cout << "Vector3<short>( vf6 )" << endl;
+    Vector3<short> vs5( vf6 );
+    TESTCHECK( vs5.X(), 8, &ok );
+    TESTCHECK( vs5.Y(), -5, &ok );
+    TESTCHECK( vs5.Z(), -4, &ok );
+
     if ( ok )
         cout << "Vector3 PASSED." << endl << endl;
     else

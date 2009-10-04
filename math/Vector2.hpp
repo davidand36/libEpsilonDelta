@@ -32,10 +32,11 @@
 */
 
 
+#include "Matrix2.hpp"
+#include "FixedPoint.hpp"
+#include "JSON.hpp"
 #include "Assert.hpp"
 #include "NullVectorException.hpp"
-#include "Matrix2.hpp"
-#include "JSON.hpp"
 #include <cmath>
 #include <iostream>
 #include <cstring>
@@ -67,8 +68,12 @@ public:
     Vector2( );
     Vector2( T x, T y );
     Vector2( const T * pCoords );
+    template < typename U >
+    explicit Vector2( const Vector2<U> & vec );
     void Set( T x = T(), T y = T() );
     void Set( const T * pCoords );
+    template < typename U >
+    void Set( const Vector2<U> & vec );
     T X( ) const;
     T Y( ) const;
     void SetX( T x );
@@ -121,6 +126,8 @@ template <typename T>
 Vector2<T> Perp( const Vector2<T> & v );
 template <typename T>
 T PerpDot( const Vector2<T> & v1, const Vector2<T> & v2 );
+template <typename T>
+Vector2<T> Round( const Vector2<T> & vec );
 
 #ifdef DEBUG
 bool TestVector2( );
@@ -129,9 +136,16 @@ bool TestVector2( );
 //=============================================================================
 
 
-typedef Vector2<int>    Vector2I;
-typedef Vector2<float>  Vector2F;
-typedef Vector2<double> Vector2D;
+typedef Vector2<int>            Vector2I;
+typedef Vector2<float>          Vector2F;
+typedef Vector2<double>         Vector2D;
+typedef Vector2<long double>    Vector2LD;
+typedef Vector2<Fixed16_8>      Vector2Fx16_8;
+typedef Vector2<Fixed16_12>     Vector2Fx16_12;
+typedef Vector2<Fixed32_6>      Vector2Fx32_6;
+typedef Vector2<Fixed32_8>      Vector2Fx32_8;
+typedef Vector2<Fixed32_12>     Vector2Fx32_12;
+typedef Vector2<Fixed32_16>     Vector2Fx32_16;
 
 
 //*****************************************************************************
@@ -160,6 +174,16 @@ Vector2<T>::Vector2( const T * pCoords )
     Set( pCoords );
 }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+Vector2<T>::Vector2( const Vector2<U> & vec )
+{
+    Set( vec );
+}
+
 //=============================================================================
 
 template <typename T>
@@ -178,6 +202,17 @@ void
 Vector2<T>::Set( const T * pCoords )
 {
     memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+void 
+Vector2<T>::Set( const Vector2<U> & vec )
+{
+    Set( (T)vec[0], (T)vec[1] );
 }
 
 //=============================================================================
@@ -483,6 +518,15 @@ T
 PerpDot( const Vector2<T> & v1, const Vector2<T> & v2 )
 {
     return  Perp( v1 ) * v2;
+}
+
+//=============================================================================
+
+template <typename T>
+Vector2<T> Round( const Vector2<T> & vec )
+{
+    return Vector2<T>( std::floor( vec[0] + (T)0.5 ),
+                       std::floor( vec[1] + (T)0.5 ) );
 }
 
 //=============================================================================

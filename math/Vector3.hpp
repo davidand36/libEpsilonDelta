@@ -25,10 +25,11 @@
 */
 
 
+#include "Matrix3.hpp"
+#include "FixedPoint.hpp"
+#include "JSON.hpp"
 #include "Assert.hpp"
 #include "NullVectorException.hpp"
-#include "Matrix3.hpp"
-#include "JSON.hpp"
 #include <cmath>
 #include <iostream>
 #include <cstring>
@@ -60,8 +61,12 @@ public:
     Vector3( );
     Vector3( T x, T y, T z );
     Vector3( const T * pCoords );
+    template < typename U >
+    explicit Vector3( const Vector3<U> & vec );
     void Set( T x = T(), T y = T(), T z = T() );
     void Set( const T * pCoords );
+    template < typename U >
+    void Set( const Vector3<U> & vec );
     T X( ) const;
     T Y( ) const;
     T Z( ) const;
@@ -115,6 +120,8 @@ template <typename T>
 Vector3<T> operator*( const Matrix3<T> & m, const Vector3<T> & v );
 template <typename T>
 Vector3<T> operator*( const Vector3<T> & v, const Matrix3<T> & m );
+template <typename T>
+Vector3<T> Round( const Vector3<T> & vec );
 
 #ifdef DEBUG
 bool TestVector3( );
@@ -123,9 +130,16 @@ bool TestVector3( );
 //=============================================================================
 
 
-typedef Vector3<int>  Vector3I;
-typedef Vector3<float>  Vector3F;
-typedef Vector3<double> Vector3D;
+typedef Vector3<int>            Vector3I;
+typedef Vector3<float>          Vector3F;
+typedef Vector3<double>         Vector3D;
+typedef Vector3<long double>    Vector3LD;
+typedef Vector3<Fixed16_8>      Vector3Fx16_8;
+typedef Vector3<Fixed16_12>     Vector3Fx16_12;
+typedef Vector3<Fixed32_6>      Vector3Fx32_6;
+typedef Vector3<Fixed32_8>      Vector3Fx32_8;
+typedef Vector3<Fixed32_12>     Vector3Fx32_12;
+typedef Vector3<Fixed32_16>     Vector3Fx32_16;
 
 
 //*****************************************************************************
@@ -154,6 +168,16 @@ Vector3<T>::Vector3( const T * pCoords )
     Set( pCoords );
 }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+Vector3<T>::Vector3( const Vector3<U> & vec )
+{
+    Set( vec );
+}
+
 //=============================================================================
 
 template <typename T>
@@ -173,6 +197,17 @@ void
 Vector3<T>::Set( const T * pCoords )
 {
     memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+void 
+Vector3<T>::Set( const Vector3<U> & vec )
+{
+    Set( (T)vec[0], (T)vec[1], (T)vec[2] );
 }
 
 //=============================================================================
@@ -501,6 +536,16 @@ operator*( const Vector3<T> & v, const Matrix3<T> & m )
     return Vector3<T>( (m(0,0) * v[0]  +  m(1,0) * v[1]  +  m(2,0) * v[2]),
                        (m(0,1) * v[0]  +  m(1,1) * v[1]  +  m(2,1) * v[2]),
                        (m(0,2) * v[0]  +  m(1,2) * v[1]  +  m(2,2) * v[2]) );
+}
+
+//=============================================================================
+
+template <typename T>
+Vector3<T> Round( const Vector3<T> & vec )
+{
+    return Vector3<T>( std::floor( vec[0] + (T)0.5 ),
+                       std::floor( vec[1] + (T)0.5 ),
+                       std::floor( vec[2] + (T)0.5 ) );
 }
 
 //=============================================================================

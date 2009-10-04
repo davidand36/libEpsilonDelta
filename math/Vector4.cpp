@@ -477,6 +477,46 @@ TestVector4( )
     TESTCHECKF( v3f1.X(), -0.11f, &ok );
     TESTCHECKF( v3f1.Y(), 0.04f, &ok );
     TESTCHECKF( v3f1.Z(), 0.07f, &ok );
+
+    cout << "Vector4<long> vl1( -352, 128, 224, 1000000 )" << endl;
+    Vector4<long> vl1( -352, 128, 224, 1000000 );
+    cout << "Vector4F( vl1 )" << endl;
+    Vector4F vf5( vl1 );
+    TESTCHECK( vf5.X(), -352.f, &ok );
+    TESTCHECK( vf5.Y(), 128.f, &ok );
+    TESTCHECK( vf5.Z(), 224.f, &ok );
+    TESTCHECK( vf5.W(), 1000000.f, &ok );
+
+    xf = 7.7f;
+    yf = -5.2;
+    zf = -3.6f;
+    wf = 10.0f;
+    cout << "Vector4F( " << xf << ", " << yf << ", " << zf << ", " << wf
+         << " )" << endl;
+    Vector4F vf6( xf, yf, zf, wf );
+    TESTCHECK( vf6.X(), xf, &ok );
+    TESTCHECK( vf6.Y(), yf, &ok );
+    TESTCHECK( vf6.Z(), zf, &ok );
+    TESTCHECK( vf6.W(), wf, &ok );
+    cout << "Vector3<long>( vf6 )" << endl;
+    Vector4<long> vl2( vf6 );
+    TESTCHECK( vl2.X(), 7L, &ok );
+    TESTCHECK( vl2.Y(), -5L, &ok );
+    TESTCHECK( vl2.Z(), -3L, &ok );
+    TESTCHECK( vl2.W(), 10L, &ok );
+    cout << "Round()" << endl;
+    Vector4F vf7 = Round( vf6 );
+    TESTCHECK( vf7.X(), 8.f, &ok );
+    TESTCHECK( vf7.Y(), -5.f, &ok );
+    TESTCHECK( vf7.Z(), -4.f, &ok );
+    TESTCHECK( vf7.W(), 10.f, &ok );
+    cout << "Vector4<short>( vf7 )" << endl;
+    Vector4<long> vl3( vf7 );
+    TESTCHECK( vl3.X(), 8L, &ok );
+    TESTCHECK( vl3.Y(), -5L, &ok );
+    TESTCHECK( vl3.Z(), -4L, &ok );
+    TESTCHECK( vl3.W(), 10L, &ok );
+
     TESTCHECK( Vector4F::UnitX.X(), 1.f, &ok );
     TESTCHECK( Vector4F::UnitX.Y(), 0.f, &ok );
     TESTCHECK( Vector4F::UnitX.Z(), 0.f, &ok );

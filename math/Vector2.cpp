@@ -518,6 +518,30 @@ TestVector2( )
     ost << vf3;
     TESTCHECK( ost.str(), string( "[ -8, 1 ]" ), &ok );
 
+    cout << "Vector2F( vs2 )" << endl;
+    Vector2F vf4( vs2 );
+    TESTCHECK( vf4.X(), -352.f, &ok );
+    TESTCHECK( vf4.Y(), 128.f, &ok );
+
+    xf = 7.7f;
+    yf = -5.2;
+    cout << "Vector2F( " << xf << ", " << yf << " )" << endl;
+    Vector2F vf5( xf, yf );
+    TESTCHECK( vf5.X(), xf, &ok );
+    TESTCHECK( vf5.Y(), yf, &ok );
+    cout << "Vector2<short>( vf5 )" << endl;
+    Vector2<short> vs4( vf5 );
+    TESTCHECK( vs4.X(), 7, &ok );
+    TESTCHECK( vs4.Y(), -5, &ok );
+    cout << "Round()" << endl;
+    Vector2F vf6 = Round( vf5 );
+    TESTCHECK( vf6.X(), 8.f, &ok );
+    TESTCHECK( vf6.Y(), -5.f, &ok );
+    cout << "Vector2<short>( vf6 )" << endl;
+    Vector2<short> vs5( vf6 );
+    TESTCHECK( vs5.X(), 8, &ok );
+    TESTCHECK( vs5.Y(), -5, &ok );
+
     if ( ok )
         cout << "Vector2 PASSED." << endl << endl;
     else

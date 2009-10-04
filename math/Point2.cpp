@@ -94,8 +94,16 @@ TestPoint2( )
     TESTCHECK( ptf2.Y(), yf, &ok );
     cout << "Point2I( ptf2 )" << endl;
     Point2I pt4( ptf2 );
-    TESTCHECK( pt4.X(), 7, &ok );   //truncates
+    TESTCHECK( pt4.X(), 7, &ok );
     TESTCHECK( pt4.Y(), -5, &ok );
+    cout << "Round()" << endl;
+    Point2F ptf3 = Round( ptf2 );
+    TESTCHECK( ptf3.X(), 8.f, &ok );
+    TESTCHECK( ptf3.Y(), -5.f, &ok );
+    cout << "Point2I( ptf3 )" << endl;
+    Point2I pt5( ptf3 );
+    TESTCHECK( pt5.X(), 8, &ok );
+    TESTCHECK( pt5.Y(), -5, &ok );
 
     int dx = 10;
     int dy = -10;

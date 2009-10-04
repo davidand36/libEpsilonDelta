@@ -94,6 +94,36 @@ TestPoint3( )
     TESTCHECK( pt3.Y(), y, &ok );
     TESTCHECK( pt3.Z(), z, &ok );
 
+    cout << "Point3F( pt3 )" << endl;
+    Point3F ptf1( pt3 );
+    TESTCHECK( ptf1.X(), 45.f, &ok );
+    TESTCHECK( ptf1.Y(), 85.f, &ok );
+    TESTCHECK( ptf1.Z(), -5.f, &ok );
+
+    float xf = 7.7f;
+    float yf = -5.2;
+    float zf = -3.6f;
+    cout << "Point3F( " << xf << ", " << yf << ", " << zf << " )" << endl;
+    Point3F ptf2( xf, yf, zf );
+    TESTCHECK( ptf2.X(), xf, &ok );
+    TESTCHECK( ptf2.Y(), yf, &ok );
+    TESTCHECK( ptf2.Z(), zf, &ok );
+    cout << "Point3I( ptf2 )" << endl;
+    Point3I pt4( ptf2 );
+    TESTCHECK( pt4.X(), 7, &ok );
+    TESTCHECK( pt4.Y(), -5, &ok );
+    TESTCHECK( pt4.Z(), -3, &ok );
+    cout << "Round()" << endl;
+    Point3F ptf3 = Round( ptf2 );
+    TESTCHECK( ptf3.X(), 8.f, &ok );
+    TESTCHECK( ptf3.Y(), -5.f, &ok );
+    TESTCHECK( ptf3.Z(), -4.f, &ok );
+    cout << "Point3I( ptf3 )" << endl;
+    Point3I pt5( ptf3 );
+    TESTCHECK( pt5.X(), 8, &ok );
+    TESTCHECK( pt5.Y(), -5, &ok );
+    TESTCHECK( pt5.Z(), -4, &ok );
+
     int dx = 10;
     int dy = -10;
     int dz = 20;

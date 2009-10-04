@@ -25,8 +25,9 @@
 
 
 #include "Vector3.hpp"
-#include "Assert.hpp"
+#include "FixedPoint.hpp"
 #include "JSON.hpp"
+#include "Assert.hpp"
 #include <iostream>
 #include <cstring>
 
@@ -56,9 +57,13 @@ public:
     Point3( );
     Point3( T x, T y, T z );
     Point3( const T * pCoords );
+    template < typename U >
+    explicit Point3( const Point3<U> & pt );
     explicit Point3( const Vector3<T> & vec );
     void Set( T x = T(), T y = T(), T z = T() );
     void Set( const T * pCoords );
+    template < typename U >
+    void Set( const Point3<U> & pt );
     void Set( const Vector3<T> & vec );
     T X( ) const;
     T Y( ) const;
@@ -103,6 +108,8 @@ template <typename T>
 Point3<T> operator*( const Matrix3<T> & m, const Point3<T> & pt );
 template <typename T>
 Point3<T> operator*( const Point3<T> & pt, const Matrix3<T> & m );
+template <typename T>
+Point3<T> Round( const Point3<T> & pt );
 
 #ifdef DEBUG
 bool TestPoint3( );
@@ -112,9 +119,16 @@ bool TestPoint3( );
 //=============================================================================
 
 
-typedef Point3<int>    Point3I;
-typedef Point3<float>  Point3F;
-typedef Point3<double> Point3D;
+typedef Point3<int>         Point3I;
+typedef Point3<float>       Point3F;
+typedef Point3<double>      Point3D;
+typedef Point3<long double> Point3LD;
+typedef Point3<Fixed16_8>   Point3Fx16_8;
+typedef Point3<Fixed16_12>  Point3Fx16_12;
+typedef Point3<Fixed32_6>   Point3Fx32_6;
+typedef Point3<Fixed32_8>   Point3Fx32_8;
+typedef Point3<Fixed32_12>  Point3Fx32_12;
+typedef Point3<Fixed32_16>  Point3Fx32_16;
 
 
 //*****************************************************************************
@@ -146,6 +160,16 @@ Point3<T>::Point3( const T * pCoords )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename T>
+template < typename U >
+inline
+Point3<T>::Point3( const Point3<U> & pt )
+{
+    Set( pt );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
 inline
 Point3<T>::Point3( const Vector3<T> & vec )
 {
@@ -171,6 +195,17 @@ void
 Point3<T>::Set( const T * pCoords )
 {
     memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename T>
+template < typename U >
+inline
+void 
+Point3<T>::Set( const Point3<U> & pt )
+{
+    Set( (T)pt[0], (T)pt[1], (T)pt[2] );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -464,6 +499,16 @@ std::ostream &
 operator<<( std::ostream & out, const Point3<T> & pt )
 {
     return out << "[ " << pt[0] << ", " << pt[1] << ", " << pt[2] << " ]";
+}
+
+//=============================================================================
+
+template <typename T>
+Point3<T> Round( const Point3<T> & pt )
+{
+    return Point3<T>( std::floor( pt[0] + (T)0.5 ),
+                      std::floor( pt[1] + (T)0.5 ),
+                      std::floor( pt[2] + (T)0.5 ) );
 }
 
 //=============================================================================

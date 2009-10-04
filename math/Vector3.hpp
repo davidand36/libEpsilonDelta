@@ -22,6 +22,8 @@
      integer types. If you already have the length, you can pass it to
      Normalize() to save some time. If the length is 0, Normalize() will
      throw a NullVectorException.
+  7. The Round() functions are only useful for Vector3F, Vector3D,
+     and Vector3LD.
 */
 
 

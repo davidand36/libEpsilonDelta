@@ -29,6 +29,8 @@
      PerpDot(v1, v2) returns Perp(v1) * v2, which is the determinant of the
      matrix with columns (or rows) [v1 v2]. See F.S. Hill, Jr. "The Pleasures
      of 'Perp Dot' Products" in Graphics Gems IV, for details.
+  8. The Round() functions are only useful for Vector2F, Vector2D,
+     and Vector2LD.
 */
 
 

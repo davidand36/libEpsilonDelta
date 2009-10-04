@@ -24,6 +24,8 @@
      fails, asserting and returning a zero vector.
   7. The Vector3 forms of the constructor and Set() set W=0.
      The Point3 forms set W=1.
+  7. The Round() functions are only useful for Vector4F, Vector4D,
+     and Vector4LD.
 */
 
 

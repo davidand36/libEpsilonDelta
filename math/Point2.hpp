@@ -21,6 +21,7 @@
   5. The difference between two points (operator-) yields a vector. However,
      operator-=, as well as Translate() can be used to change the coordinates
      of a point to correspond to a new origin (rhs), also a point.
+  6. The Round() functions are only useful for Point2F, Point2D, and Point2LD.
 */
 
 

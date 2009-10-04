@@ -11,7 +11,6 @@
 #include <cstring>
 #ifdef DEBUG
 #include "TestCheck.hpp"
-#include "Array.hpp"
 #include <iostream>
 #endif
 using namespace std;

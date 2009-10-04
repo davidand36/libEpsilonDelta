@@ -8,8 +8,8 @@
 */
 
 
-#include "Array.hpp"
 #include "NullVectorException.hpp"
+#include <tr1/array>
 #include <cmath>
 #include <iostream>
 
@@ -44,7 +44,7 @@ public:
     static const Vector Zero;
 
 private:
-    array<T,N> m_coords;
+    std::tr1::array<T,N> m_coords;
 };
 
 //.............................................................................
@@ -111,7 +111,7 @@ inline
 const T * 
 Vector<T,N>::Array( ) const
 {
-    return static_cast< const T * >( m_coords );
+    return m_coords.data();
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ inline
 T * 
 Vector<T,N>::Array( )
 {
-    return static_cast< T * >( m_coords );
+    return m_coords.data();
 }
 
 //=============================================================================

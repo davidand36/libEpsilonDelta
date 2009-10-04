@@ -11,7 +11,7 @@
 
 #include "StringUtil.hpp"
 #include "StdInt.hpp"
-#include "Array.hpp"
+#include <tr1/array>
 #include "VMap.hpp"
 #include <map>
 
@@ -40,7 +40,7 @@ std::string ToJSON( const char * s );
 std::string ToJSON( const std::string & s );
 std::string ToJSON( const std::wstring & s );
 template < typename T, size_t N >
-std::string ToJSON( const array< T, N > & a );
+std::string ToJSON( const std::tr1::array< T, N > & a );
 template < typename T >
 std::string ToJSON( const std::vector< T > & v );
 std::string ToJSON( const JSONObject & o );
@@ -62,7 +62,7 @@ void FromJSON( const std::string & json, long double * pR );
 void FromJSON( const std::string & json, std::string * pS );
 void FromJSON( const std::string & json, std::wstring * pS );
 template < typename T, size_t N >
-void FromJSON( const std::string & json, array< T, N > * pA );
+void FromJSON( const std::string & json, std::tr1::array< T, N > * pA );
 template < typename T >
 void FromJSON( const std::string & json, std::vector< T > * pV );
 void FromJSON( const std::string & json, JSONObject * pO );
@@ -81,7 +81,7 @@ bool TestJSON( );
 
 template < typename T, size_t N >
 std::string
-ToJSON( const array< T, N > & a )
+ToJSON( const std::tr1::array< T, N > & a )
 {
     std::string json = "[ ";
     for ( int i = 0; i < N; ++i )
@@ -115,7 +115,7 @@ ToJSON( const std::vector< T > & v )
 
 template < typename T, size_t N >
 void 
-FromJSON( const std::string & json, array< T, N > * pA )
+FromJSON( const std::string & json, std::tr1::array< T, N > * pA )
 {
     std::vector< std::string > stringVec;
     SplitJSONArray( json, &stringVec );

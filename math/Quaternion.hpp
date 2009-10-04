@@ -19,7 +19,7 @@
 #include "Vector4.hpp"
 #include "NullVectorException.hpp"
 #include "Algorithms.hpp"
-#include "Array.hpp"
+#include <tr1/array>
 #include <limits>
 #include <iostream>
 
@@ -308,7 +308,7 @@ Quaternion<T>::Set( const RotationMatrix3<T> & matrix )
     T m11 = matrix(1,1);
     T m22 = matrix(2,2);
     T u = m00 + m11 + m22;
-    array< T, 4 > diag = { { u, m00, m11, m22 } };
+    std::tr1::array< T, 4 > diag = {{ u, m00, m11, m22 }};
     int iMax = MaxIndex( diag.begin(), diag.end() );
     if ( iMax == 0 )
     {

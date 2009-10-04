@@ -24,10 +24,10 @@
 */
 
 
-#include "Array.hpp"
 #include "StdInt.hpp"
 #include "Assert.hpp"
 #include <vector>
+#include <tr1/array>
 #include <algorithm>
 #include <iostream>
 
@@ -79,7 +79,7 @@ public:
     template < typename RSC >
     RSC Apply( const RSC & set ) const;
     template < typename T, size_t N >
-    array< T, N > Apply( const array< T, N > & set ) const;
+    std::tr1::array< T, N > Apply( const std::tr1::array< T, N > & set ) const;
 
     bool operator==( const Permutation & rhs ) const;
     bool operator<( const Permutation & rhs ) const;
@@ -116,9 +116,9 @@ public:
     class Transposition
     {
     public:
-        Transposition( const array< int, 2 > indices );
+        Transposition( const std::tr1::array< int, 2 > indices );
         Transposition( int index0, int index1 );
-        void Set( const array< int, 2 > indices );
+        void Set( const std::tr1::array< int, 2 > indices );
         void Set( int index0, int index1 );
 
         int MinDegree( ) const;
@@ -127,7 +127,7 @@ public:
         void Apply( RC * pSet ) const;
 
     private:
-        array< int, 2 > m_indices;
+        std::tr1::array< int, 2 > m_indices;
 
         friend std::string ToJSON( const Transposition & trans );
         friend void FromJSON( const std::string & json,
@@ -217,11 +217,11 @@ Permutation::Apply( const RSC & set ) const
 //-----------------------------------------------------------------------------
 
 template < typename T, size_t N >
-array< T, N > 
-Permutation::Apply( const array< T, N > & set ) const
+std::tr1::array< T, N > 
+Permutation::Apply( const std::tr1::array< T, N > & set ) const
 {
     Assert( N == Degree() );
-    array< T, N > permuted;
+    std::tr1::array< T, N > permuted;
     for ( int i = 0; i < N; ++i )
         permuted[i] = set[ m_perm[i] ];
     return permuted;
@@ -295,7 +295,7 @@ Permutation::Cycle::Apply( RC * pSet ) const
 
 inline
 void 
-Permutation::Transposition::Set( const array< int, 2 > indices )
+Permutation::Transposition::Set( const std::tr1::array< int, 2 > indices )
 {
     m_indices = indices;
 }
@@ -313,7 +313,8 @@ Permutation::Transposition::Set( int index0, int index1 )
 //-----------------------------------------------------------------------------
 
 inline
-Permutation::Transposition::Transposition( const array< int, 2 > indices )
+Permutation::Transposition::Transposition(
+    const std::tr1::array< int, 2 > indices )
     :   m_indices( indices )
 {
 }

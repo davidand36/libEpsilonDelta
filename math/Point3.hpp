@@ -83,7 +83,7 @@ public:
     static const Point3 Zero;
 
 private:
-    array< T, 3 >   m_coords;
+    std::tr1::array< T, 3 >   m_coords;
 
     friend std::string ToJSON<>( const Point3 & pt );
     friend void FromJSON<>( const std::string & json, Point3 * pPt );
@@ -170,7 +170,7 @@ template <typename T>
 void
 Point3<T>::Set( const T * pCoords )
 {
-    memcpy( m_coords.c_array(), pCoords, sizeof( m_coords ) );
+    memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -300,7 +300,7 @@ inline
 T * 
 Point3<T>::Array( )
 {
-    return m_coords.c_array();
+    return m_coords.data();
 }
 
 //=============================================================================

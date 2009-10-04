@@ -41,10 +41,10 @@
 */
 
 
-#include "Array.hpp"
 #include "Assert.hpp"
 #include "SingularMatrixException.hpp"
 #include "JSON.hpp"
+#include <tr1/array>
 #include <iostream>
 #include <cstring>
 
@@ -120,7 +120,7 @@ public:
     static const Matrix4 Identity;
 
 protected:
-    array< array< T, 4 >, 4 >   m_elements; //[column][row]
+    std::tr1::array< std::tr1::array< T, 4 >, 4 >   m_elements; //[column][row]
 
     friend std::string ToJSON<>( const Matrix4 & mat );
     friend void FromJSON<>( const std::string & json, Matrix4 * pMat );
@@ -267,7 +267,7 @@ void
 Matrix4<T>::Set( const T * pElements, bool columnMajor )
 {
     if ( columnMajor )
-        memcpy( m_elements[0].c_array(), pElements, sizeof( m_elements ) );
+        memcpy( m_elements[0].data(), pElements, sizeof( m_elements ) );
     else
     {
         m_elements[0][0] = *pElements++;
@@ -299,10 +299,10 @@ Matrix4<T>::Set( const Vector4<T> & v0, const Vector4<T> & v1,
 {
     if ( columns )
     {
-        memcpy( m_elements[0].c_array(), v0.Array(), 4 * sizeof(T) );
-        memcpy( m_elements[1].c_array(), v1.Array(), 4 * sizeof(T) );
-        memcpy( m_elements[2].c_array(), v2.Array(), 4 * sizeof(T) );
-        memcpy( m_elements[3].c_array(), v3.Array(), 4 * sizeof(T) );
+        memcpy( m_elements[0].data(), v0.Array(), 4 * sizeof(T) );
+        memcpy( m_elements[1].data(), v1.Array(), 4 * sizeof(T) );
+        memcpy( m_elements[2].data(), v2.Array(), 4 * sizeof(T) );
+        memcpy( m_elements[3].data(), v3.Array(), 4 * sizeof(T) );
     }
     else
     {
@@ -385,7 +385,7 @@ template <typename T>
 T * 
 Matrix4<T>::Array( )
 {
-    return reinterpret_cast<T *>( m_elements.c_array() );
+    return reinterpret_cast<T *>( m_elements.data() );
 }
 
 //=============================================================================

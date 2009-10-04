@@ -15,8 +15,10 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include <iostream>
+#include <tr1/array>
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta

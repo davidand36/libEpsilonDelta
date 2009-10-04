@@ -43,12 +43,12 @@
 */
 
 
-#include "Array.hpp"
 #include "Assert.hpp"
 #include "SingularMatrixException.hpp"
 #include "Vector2.hpp"
 #include "Angle.hpp"
 #include "JSON.hpp"
+#include <tr1/array>
 #include <iostream>
 #include <cstring>
 
@@ -114,7 +114,7 @@ public:
     static const Matrix2 Identity;
 
 protected:
-    array< array< T, 2 >, 2 >   m_elements; //[column][row]
+    std::tr1::array< std::tr1::array< T, 2 >, 2 >   m_elements; //[column][row]
 
     friend std::string ToJSON<>( const Matrix2 & mat );
     friend void FromJSON<>( const std::string & json, Matrix2 * pMat );
@@ -235,7 +235,7 @@ void
 Matrix2<T>::Set( const T * pElements, bool columnMajor )
 {
     if ( columnMajor )
-        memcpy( m_elements[0].c_array(), pElements, sizeof( m_elements ) );
+        memcpy( m_elements[0].data(), pElements, sizeof( m_elements ) );
     else
     {
         m_elements[0][0] = *pElements++;
@@ -254,8 +254,8 @@ Matrix2<T>::Set( const Vector2<T> & v0, const Vector2<T> & v1,
 {
     if ( columns )
     {
-        memcpy( m_elements[0].c_array(), v0.Array(), 2 * sizeof(T) );
-        memcpy( m_elements[1].c_array(), v1.Array(), 2 * sizeof(T) );
+        memcpy( m_elements[0].data(), v0.Array(), 2 * sizeof(T) );
+        memcpy( m_elements[1].data(), v1.Array(), 2 * sizeof(T) );
     }
     else
     {
@@ -345,7 +345,7 @@ inline
 const T * 
 Matrix2<T>::Array( ) const
 {
-    return m_elements[0].c_array();
+    return m_elements[0].data();
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -355,7 +355,7 @@ inline
 T * 
 Matrix2<T>::Array( )
 {
-    return m_elements[0].c_array();
+    return m_elements[0].data();
 }
 
 //=============================================================================

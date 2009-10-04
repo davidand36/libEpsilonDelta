@@ -30,6 +30,7 @@
 #include <map>
 #include <set>
 using namespace std;
+using namespace std::tr1;
 using namespace EpsilonDelta;
 
 

@@ -29,6 +29,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "File.hpp"
+#include "Array.hpp"
 #endif
 using namespace std;
 using namespace std::tr1;

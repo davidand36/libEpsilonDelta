@@ -19,6 +19,7 @@
 #include "Array.hpp"
 #include "StringUtil.hpp"
 #include <iostream>
+#include <cstdlib>
 #endif
 using namespace std;
 using namespace std::tr1;

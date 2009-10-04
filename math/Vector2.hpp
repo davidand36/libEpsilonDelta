@@ -95,7 +95,7 @@ public:
     static const Vector2 UnitY;
 
 private:
-    array< T, 2 >   m_coords;
+    std::tr1::array< T, 2 >   m_coords;
 
     friend std::string ToJSON<>( const Vector2 & vec );
     friend void FromJSON<>( const std::string & json, Vector2 * pVec );
@@ -177,7 +177,7 @@ template <typename T>
 void
 Vector2<T>::Set( const T * pCoords )
 {
-    memcpy( m_coords.c_array(), pCoords, sizeof( m_coords ) );
+    memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
 }
 
 //=============================================================================
@@ -277,7 +277,7 @@ inline
 T * 
 Vector2<T>::Array( )
 {
-    return m_coords.c_array();
+    return m_coords.data();
 }
 
 //=============================================================================

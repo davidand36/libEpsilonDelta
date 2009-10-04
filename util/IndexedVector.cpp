@@ -12,6 +12,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Array.hpp"
+#include <tr1/array>
 #include <string>
 using namespace std;
 #endif
@@ -34,7 +35,7 @@ TestIndexedVector( )
     string names[] = { "five", "four", "three", "two", "one", "zero" };
     string types[] = { "even", "odd" };
     int nameIndices[] = { 5, 4, 3, 2 };
-    array< unsigned int, 6 > typeIndices = { { 0, 1, 0, 1, 0, 1 } };
+    std::tr1::array< unsigned int, 6 > typeIndices = {{ 0, 1, 0, 1, 0, 1 }};
     vector< string > namesVec( names, names + ARRAY_LENGTH( names ) );
     vector< int > nameIndicesVec( nameIndices,
                                   nameIndices + ARRAY_LENGTH( nameIndices ) );
@@ -60,7 +61,7 @@ TestIndexedVector( )
     TESTCHECK( pName->size(), 4, &ok );
     TESTCHECK( namesIV[ 2 ], namesVec[ 3 ], &ok );
     typedef IndexedVector< string, unsigned int,
-            string[2], array< unsigned int, 6 > >  TypesIVType;
+            string[2], std::tr1::array< unsigned int, 6 > >  TypesIVType;
     cout << "const IndexedVector< string, unsigned int, string[], array< unsigned int, 6 > > typesIV( types, typeIndices )" << endl;
     const TypesIVType typesIV( types, typeIndices );
     TESTCHECK( typesIV.size(), 6, &ok );

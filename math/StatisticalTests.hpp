@@ -38,10 +38,11 @@
 */
 
 
-#include "Array.hpp"
 #include "ProbabilityDistributions.hpp"
+#include "Array.hpp"
 #include "Assert.hpp"
 #include <vector>
+#include <tr1/array>
 #include <algorithm>
 #include <cmath>
 
@@ -102,18 +103,20 @@ double ChiSquareContingencyTableTest( const C & table,
                                       double * pChiSquare,
                                       double * pCramersV, double * pPearsonsC,
                                       double * pTschuprovsT, double * pPhi2 );
-double FishersExactTest( const array< array< int, 2 >, 2 > & table,
-                         double * pKendallsQ = 0 );
+double FishersExactTest(
+    const std::tr1::array< std::tr1::array< int, 2 >, 2 > & table,
+    double * pKendallsQ = 0 );
 
 //Correlation tests:
 double LinearCorrelationTest(
-    const std::vector< array< double, 2 > > & samples,
+    const std::vector< std::tr1::array< double, 2 > > & samples,
     double * pPearsonsR = 0, double * pT = 0 );
 double SpearmansRankCorrelationTest(
-    const std::vector< array< double, 2 > > & samples,
+    const std::vector< std::tr1::array< double, 2 > > & samples,
     double * pSpearmansR = 0, double * pT = 0 );
-double KendallsTauTest( const std::vector< array< double, 2 > > & samples,
-                        double * pKendallsTau = 0 );
+double KendallsTauTest(
+    const std::vector< std::tr1::array< double, 2 > > & samples,
+    double * pKendallsTau = 0 );
 
 #ifdef DEBUG
 bool TestStatisticalTests( );

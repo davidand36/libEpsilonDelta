@@ -100,7 +100,7 @@ public:
     static const Vector4 UnitW;
 
 private:
-    array< T, 4 >   m_coords;
+    std::tr1::array< T, 4 >   m_coords;
 
     friend std::string ToJSON<>( const Vector4 & vec );
     friend void FromJSON<>( const std::string & json, Vector4 * pVec );
@@ -193,7 +193,7 @@ template <typename T>
 void
 Vector4<T>::Set( const T * pCoords )
 {
-    memcpy( m_coords.c_array(), pCoords, sizeof( m_coords ) );
+    memcpy( m_coords.data(), pCoords, sizeof( m_coords ) );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -353,7 +353,7 @@ inline
 T * 
 Vector4<T>::Array( )
 {
-    return m_coords.c_array();
+    return m_coords.data();
 }
 
 //=============================================================================

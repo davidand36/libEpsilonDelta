@@ -26,9 +26,9 @@
 
 
 #include "Angle.hpp"
-#include "Array.hpp"
 #include "Assert.hpp"
 #include "JSON.hpp"
+#include <tr1/array>
 #include <string>
 #include <iostream>
 #include <cstring>
@@ -62,7 +62,7 @@ public:
 #endif
 
 private:
-    array< Angle, 3 >   m_angles;
+    std::tr1::array< Angle, 3 >   m_angles;
 
     friend std::string ToJSON( const EulerAngles & euler );
     friend void FromJSON( const std::string & json, EulerAngles * pEuler );
@@ -94,7 +94,7 @@ inline
 void 
 EulerAngles::Set( const Angle * pAngles )
 {
-    memcpy( m_angles.c_array(), pAngles, sizeof( m_angles ) );
+    memcpy( m_angles.data(), pAngles, sizeof( m_angles ) );
 }
 
 //=============================================================================

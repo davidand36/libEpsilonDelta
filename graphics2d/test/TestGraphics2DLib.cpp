@@ -23,6 +23,7 @@
 #include "FontManager.hpp"
 #include "Platform.hpp"
 #include "StdClock.hpp"
+#include "Array.hpp"
 #include <cstdio>
 #include <iostream>
 using namespace std;

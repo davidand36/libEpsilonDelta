@@ -21,7 +21,6 @@
 
 
 #include "Vector3.hpp"
-#include "Array.hpp"
 #include "StdInt.hpp"
 #include "FixEndian.hpp"
 #include <tr1/memory>

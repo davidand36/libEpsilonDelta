@@ -12,6 +12,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Exception.hpp"
+#include <tr1/array>
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -124,7 +125,7 @@ bool TestArray( )
     TESTCHECK( ARRAY_LENGTH( plainArray ), 3, &ok );
 
     cout << "array< TestClass, 3 > array0  [default c'tor]" << endl;
-    array< TestClass, 3 > array0
+    std::tr1::array< TestClass, 3 > array0
             = { { TestClass( 0, 0., "zero" ), TestClass( 1, 1., "one" ),
                 TestClass( 2, 2., "two" ) } };
     TESTCHECK( array0[0].I(), 0, &ok );
@@ -173,7 +174,7 @@ bool TestArray( )
     TESTCHECK( (array0.rend() - 1)->I(), 100, &ok );
     TESTCHECK( array0.begin(), static_cast< TestClass * >( &array0[0] ), &ok );
     TESTCHECK( array0.size(), 3, &ok );
-    array< TestClass, 3 > array1
+    std::tr1::array< TestClass, 3 > array1
             = { { TestClass( 100, 100., "zero" ),
                   TestClass( 111, 111.1, "one" ),
                   TestClass( 222, 222.2, "two" ) } };

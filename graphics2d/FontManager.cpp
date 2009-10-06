@@ -94,6 +94,16 @@ private:
         float   nominalHeight;
     };
 
+    struct GlyphKey
+    {
+        bool operator<( const GlyphKey & rhs ) const;
+
+        int     fontID;
+        wchar_t character;
+        Color3B color;
+        bool    monochrome;
+    };
+
     int FindFace( int fontSetID, int faceIndex = 0 ) const;
     const Font * FindFont( int fontID ) const;
     ::FT_Face GetFTFace( int faceID ) const;
@@ -109,6 +119,8 @@ private:
     vector< FontSet >   m_fontSets;
     vector< Face >      m_faces;
     vector< Font >      m_fonts;
+    typedef map< GlyphKey, shared_ptr< Glyph > >  GlyphMap;
+    GlyphMap            m_glyphs;
 #endif //USE_FREETYPE
 };
 
@@ -600,6 +612,11 @@ shared_ptr< Glyph >
 FontManagerImpl::GetGlyph( int fontID, wchar_t character,
                            Color3B color, bool monochrome )
 {
+    GlyphKey glyphKey = { fontID, character, color, monochrome };
+    GlyphMap::iterator pGlyphPair = m_glyphs.find( glyphKey );
+    if ( pGlyphPair != m_glyphs.end() )
+        return pGlyphPair->second;
+    
     const Font * pFont = FindFont( fontID );
     const Face * pFace = &m_faces[ pFont->faceID ];
     int glyphIndex
@@ -623,7 +640,7 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
         if ( rslt != 0 )
             throw FTException( "FTC_SBitCache_Lookup", rslt );
         shared_ptr< Glyph > pGlyph = MakeGlyph( sbit, color );
-        //!!!cache this
+        m_glyphs[ glyphKey ] = pGlyph;
         return pGlyph;
     }
     else
@@ -648,7 +665,7 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
         ::FT_BitmapGlyph ftBitmap
                   = reinterpret_cast< ::FT_BitmapGlyph >( ftGlyph );
         shared_ptr< Glyph > pGlyph = MakeGlyph( ftBitmap, color );
-        //!!!cache this
+        m_glyphs[ glyphKey ] = pGlyph;
         return pGlyph;
     }
 }
@@ -866,6 +883,36 @@ FontManagerImpl::FaceRequestHandler( ::FTC_FaceID facePtr,
     if ( pFTFace )
         *pFTFace = ftFace;
     return 0;
+}
+
+//=============================================================================
+
+bool 
+FontManagerImpl::GlyphKey::operator<( const GlyphKey & rhs ) const
+{
+    if ( character < rhs.character )
+        return true;
+    if ( character > rhs.character )
+        return false;
+    if ( fontID < rhs.fontID )
+        return true;
+    if ( fontID > rhs.fontID )
+        return false;
+    if ( color.Red() < rhs.color.Red() )
+        return true;
+    if ( color.Red() > rhs.color.Red() )
+        return false;
+    if ( color.Green() < rhs.color.Green() )
+        return true;
+    if ( color.Green() > rhs.color.Green() )
+        return false;
+    if ( color.Blue() < rhs.color.Blue() )
+        return true;
+    if ( color.Blue() > rhs.color.Blue() )
+        return false;
+    if ( monochrome && ! rhs.monochrome )
+        return true;
+    return false;
 }
 
 //=============================================================================

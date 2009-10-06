@@ -110,6 +110,10 @@ private:
     shared_ptr< Glyph > MakeGlyph( ::FTC_SBit sbit, Color3B color );
     shared_ptr< Glyph > MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph,
                                    Color3B color );
+    shared_ptr< Surface > MakeGlyphSurface( int width, int height,
+                                            uint8_t * srcPixels,
+                                            int srcPitch, bool monochrome,
+                                            Color3B color );
 
     ::FT_Library        m_ftLibrary;
     ::FTC_Manager       m_ftCacheMgr;
@@ -624,7 +628,6 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
                                       const_cast< Face *>( pFace ), -1,
                                       character ); //-1=default charmap
     int height = (int)floor( pFont->nominalHeight + 0.5 );
-#if 0
     if ( height <= 255 )
     {
         ::FTC_ImageTypeRec imageType;
@@ -639,12 +642,11 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
                                                   glyphIndex, &ftSBit, 0 );
         if ( rslt != 0 )
             throw FTException( "FTC_SBitCache_Lookup", rslt );
-        shared_ptr< Glyph > pGlyph = MakeGlyph( sbit, color );
+        shared_ptr< Glyph > pGlyph = MakeGlyph( ftSBit, color );
         m_glyphs[ glyphKey ] = pGlyph;
         return pGlyph;
     }
     else
-#endif
     {
         ::FTC_ImageTypeRec imageType;
         imageType.face_id = const_cast< Face *>( pFace );
@@ -677,11 +679,11 @@ FontManagerImpl::MakeGlyph( ::FTC_SBit ftSBit, Color3B color )
 {
     Vector2I offset( ftSBit->left, -ftSBit->top );
     Vector2F advance( (float)ftSBit->xadvance, -(float)ftSBit->yadvance );
-    bool monochrome = (ftSBit->format == 0); //?!!!
-    EPixelType pixelType = monochrome  ?  PixelType888  :  PixelType8888;
-    shared_ptr< Surface > pSurface( new Surface( ftSBit->width, ftSBit->height,
-                                                 pixelType ) );
-    //!!!Blt to surface
+    bool monochrome = (ftSBit->format == 1); //2=grayscale
+    shared_ptr< Surface > pSurface
+            = MakeGlyphSurface( ftSBit->width, ftSBit->height,
+                                ftSBit->buffer, ftSBit->pitch, monochrome,
+                                color );
     return shared_ptr< Glyph >( new Glyph( pSurface, offset, advance ) );
 }
 
@@ -701,14 +703,30 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
         Assert( (ftBitmapGlyph->bitmap.pixel_mode & FT_PIXEL_MODE_GRAY) != 0 );
     int width = ftBitmapGlyph->bitmap.width;
     int height = ftBitmapGlyph->bitmap.rows;
+
+    uint8_t * srcPixels = ftBitmapGlyph->bitmap.buffer;
+    int srcPitch = ftBitmapGlyph->bitmap.pitch;
+    shared_ptr< Surface > pSurface
+            = MakeGlyphSurface( width, height, srcPixels, srcPitch, monochrome,
+                                color);
+
+    return shared_ptr< Glyph >( new Glyph( pSurface, offset, advance ) );
+}
+
+//-----------------------------------------------------------------------------
+
+shared_ptr< Surface > 
+FontManagerImpl::MakeGlyphSurface( int width, int height,
+                                   uint8_t * srcPixels, int srcPitch,
+                                   bool monochrome, Color3B color )
+{
     EPixelType pixelType = monochrome  ?  PixelType0888  :  PixelType8888;
     shared_ptr< Surface > pSurface( new Surface( width, height, pixelType ) );
 
-    unsigned char * srcPixels = ftBitmapGlyph->bitmap.buffer;
-    int srcPitch = ftBitmapGlyph->bitmap.pitch;
     if ( srcPitch < 0 )
         srcPixels += -srcPitch * (height - 1);   //start at last row (=top)
-
+    int destPitch = pSurface->Pitch();
+    
     if ( monochrome )
     {
         Color3B transparentColor;
@@ -721,15 +739,14 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
         Pixel0888 fg( color );
         Pixel0888 bg( transparentColor );
 
-        int destPitch = pSurface->Pitch();
         Pixel0888 * destPixels
                 = reinterpret_cast< Pixel0888 * >( pSurface->Lock( ) );
 
         for ( int y = 0; y < height; ++y )
         {
-            unsigned char * pSrc = srcPixels;
+            uint8_t * pSrc = srcPixels;
             Pixel0888 * pDest = destPixels;
-            unsigned char c = 0;
+            uint8_t c = 0;
             for ( int x = 0; x < width; ++x )
             {
                 if ( (x & 7) == 0 ) //x%8==0
@@ -744,13 +761,12 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
     }
     else
     {
-        int destPitch = pSurface->Pitch();
         Pixel8888 * destPixels
                 = reinterpret_cast< Pixel8888 * >( pSurface->Lock( ) );
 
         for ( int y = 0; y < height; ++y )
         {
-            unsigned char * pSrc = srcPixels;
+            uint8_t * pSrc = srcPixels;
             Pixel8888 * pDest = destPixels;
             for ( int x = 0; x < width; ++x )
             {
@@ -763,7 +779,7 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
     }
     pSurface->Unlock( );
 
-    return shared_ptr< Glyph >( new Glyph( pSurface, offset, advance ) );
+    return pSurface;
 }
 
 //=============================================================================

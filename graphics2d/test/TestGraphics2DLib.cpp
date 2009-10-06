@@ -121,7 +121,7 @@ int Main( int argc, char ** argv )
             ok = false;
 
         string fontNames[] = { "Vera.ttf", "", "b018035l.pfb", "b018035l.pfm",
-                               "helvR18.pcf", "" };
+                               "helvR24.pcf", "" };
         vector< string > testFonts( fontNames,
                                     fontNames + ARRAY_LENGTH( fontNames ) );
         if ( ! FontManager::TestLoad( testDirectory, testFonts ) )

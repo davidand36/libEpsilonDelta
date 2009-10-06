@@ -18,7 +18,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-Glyph::Glyph( shared_ptr< Surface > image, Vector2F offset, Vector2F advance )
+Glyph::Glyph( shared_ptr< Surface > image, Vector2I offset, Vector2F advance )
     :   m_image( image ),
         m_offset( offset ),
         m_advance( advance )
@@ -33,7 +33,7 @@ Glyph::Draw( const Point2I & destPos, Surface * pSurface )
 {
     if ( pSurface == 0 )
         pSurface = Surface::Current();
-    Point2I pos = destPos + Vector2I( (int)m_offset.X(), (int)m_offset.Y() );
+    Point2I pos = destPos + m_offset;
     m_image->Blit( pos, pSurface );
 }
 

@@ -91,6 +91,7 @@ private:
         int     fontID;
         int     faceID;
         float   height;
+        float   nominalHeight;
     };
 
     int FindFace( int fontSetID, int faceIndex = 0 ) const;
@@ -345,6 +346,15 @@ FontManager::TestLoad( const ::string & directory,
                 }
             }
         }
+
+        for ( int i = 0; i < s_testFontIDs.size(); ++i )
+        {
+            int fontID = s_testFontIDs[ i ];
+            cout << "Font " << fontID << ": Kerning between A & B: "
+                 << fontManager.GetKerning( fontID, 'A', 'B' ) << endl;
+            cout << "Font " << fontID << ": Kerning between A & V: "
+                 << fontManager.GetKerning( fontID, 'A', 'V' ) << endl;
+        }
     }    
     catch ( Exception except )
     {
@@ -368,7 +378,7 @@ FontManager::TestDraw( )
 
     Color3B yellow( 255, 255, 0 );
     Point2F penPos( 480, 180 );
-    for ( int i = 0; i < s_testFontIDs.size(); ++i )//!!!
+    for ( int i = 0; i < s_testFontIDs.size(); ++i )
     {
         int fontID = s_testFontIDs[ i ];
         shared_ptr< Glyph > pGlyph
@@ -510,7 +520,22 @@ FontManagerImpl::AddFace( int fontSetID, int faceIndex )
 void 
 FontManagerImpl::AddFont( int fontID, int faceID, float height )
 {
-    Font font = { fontID, faceID, height };
+    float nominalHeight = height;
+    if ( ! IsScalable( faceID ) )
+    {
+        ::FT_Face ftFace = GetFTFace( faceID );
+        int numFixedSizes = ftFace->num_fixed_sizes;
+        for ( int i = numFixedSizes - 1; i >= 0; --i )
+        {
+            if ( height >= ftFace->available_sizes[ i ].height )
+            {
+                height = ftFace->available_sizes[ i ].height;
+                Fixed32_6 fxYPpEm( ftFace->available_sizes[ i ].y_ppem, true );
+                nominalHeight = (float)fxYPpEm;
+            }
+        }
+    }
+    Font font = { fontID, faceID, height, nominalHeight };
     m_fonts.push_back( font );
 }
 
@@ -557,10 +582,7 @@ FontManagerImpl::GetFixedSizes( int faceID, vector< float > * pSizes ) const
     ::FT_Face ftFace = GetFTFace( faceID );
     int numFixedSizes = ftFace->num_fixed_sizes;
     for ( int i = 0; i < numFixedSizes; ++i )
-    {
-        Fixed32_6 fxSize( ftFace->available_sizes[ i ].y_ppem, true );
-        pSizes->push_back( fxSize.ToFloat() );
-    }
+        pSizes->push_back( ftFace->available_sizes[ i ].height );
     return numFixedSizes;
 }
 
@@ -584,7 +606,7 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
             = ::FTC_CMapCache_Lookup( m_ftCharmapCache,
                                       const_cast< Face *>( pFace ), -1,
                                       character ); //-1=default charmap
-    int height = (int)floor( pFont->height + 0.5 );
+    int height = (int)floor( pFont->nominalHeight + 0.5 );
 #if 0
     if ( height <= 255 )
     {
@@ -636,7 +658,7 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
 shared_ptr< Glyph > 
 FontManagerImpl::MakeGlyph( ::FTC_SBit ftSBit, Color3B color )
 {
-    Vector2F offset( (float)ftSBit->left, -(float)ftSBit->top );
+    Vector2I offset( ftSBit->left, -ftSBit->top );
     Vector2F advance( (float)ftSBit->xadvance, -(float)ftSBit->yadvance );
     bool monochrome = (ftSBit->format == 0); //?!!!
     EPixelType pixelType = monochrome  ?  PixelType888  :  PixelType8888;
@@ -651,7 +673,7 @@ FontManagerImpl::MakeGlyph( ::FTC_SBit ftSBit, Color3B color )
 shared_ptr< Glyph > 
 FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
 {
-    Vector2F offset( (float)ftBitmapGlyph->left, -(float)ftBitmapGlyph->top );
+    Vector2I offset( ftBitmapGlyph->left, -ftBitmapGlyph->top );
     Fixed32_16 advX( ftBitmapGlyph->root.advance.x, true );
     Fixed32_16 advY( ftBitmapGlyph->root.advance.y, true );
     Vector2F advance( advX.ToFloat(), advY.ToFloat() );
@@ -732,8 +754,33 @@ FontManagerImpl::MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph, Color3B color )
 Vector2F 
 FontManagerImpl::GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar )
 {
+    const Font * pFont = FindFont( fontID );
+    const Face * pFace = &m_faces[ pFont->faceID ];
+    ::FTC_ScalerRec ftScaler;
+    ftScaler.face_id = const_cast< Face *>( pFace );
+    ftScaler.width = 0;
+    ftScaler.height = (int)pFont->nominalHeight;
+    ftScaler.pixel = 1;
+    ::FT_Size ftSize;
+    ::FT_Error rslt = ::FTC_Manager_LookupSize( m_ftCacheMgr, &ftScaler,
+                                                &ftSize );
+    if ( rslt != 0 )
+        throw FTException( "FTC_Manager_LookupSize", rslt );
+    int leftGlyphIndex
+            = ::FTC_CMapCache_Lookup( m_ftCharmapCache,
+                                      const_cast< Face *>( pFace ), -1,
+                                      leftChar );
+    int rightGlyphIndex
+            = ::FTC_CMapCache_Lookup( m_ftCharmapCache,
+                                      const_cast< Face *>( pFace ), -1,
+                                      rightChar );
+
     ::FT_Vector ftKerning;
-    //!!!
+    ::FT_Get_Kerning( ftSize->face, leftGlyphIndex, rightGlyphIndex,
+                      FT_KERNING_DEFAULT, &ftKerning );
+    Vector2Fx32_6 kerning( Fixed32_6( ftKerning.x, true ),
+                           Fixed32_6( ftKerning.y, true ) );
+    return Vector2F( (float)kerning.X(), -(float)kerning.Y() );
 }
 
 //=============================================================================

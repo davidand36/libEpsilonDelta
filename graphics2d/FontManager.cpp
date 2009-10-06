@@ -628,15 +628,16 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
                                       const_cast< Face *>( pFace ), -1,
                                       character ); //-1=default charmap
     int height = (int)floor( pFont->nominalHeight + 0.5 );
+    ::FTC_ImageTypeRec imageType;
+    imageType.face_id = const_cast< Face *>( pFace );
+    imageType.width = 0;
+    imageType.height = height;
+    imageType.flags = FT_LOAD_RENDER;
+    if ( monochrome )
+        imageType.flags |= FT_LOAD_MONOCHROME | FT_LOAD_TARGET_MONO;
+
     if ( height <= 255 )
     {
-        ::FTC_ImageTypeRec imageType;
-        imageType.face_id = const_cast< Face *>( pFace );
-        imageType.width = 0;
-        imageType.height = height;
-        imageType.flags = FT_LOAD_RENDER;
-        if ( monochrome )
-            imageType.flags |= FT_LOAD_MONOCHROME | FT_LOAD_TARGET_MONO;
         ::FTC_SBit ftSBit;
         ::FT_Error rslt = ::FTC_SBitCache_Lookup( m_ftSBitCache, &imageType,
                                                   glyphIndex, &ftSBit, 0 );
@@ -648,22 +649,11 @@ FontManagerImpl::GetGlyph( int fontID, wchar_t character,
     }
     else
     {
-        ::FTC_ImageTypeRec imageType;
-        imageType.face_id = const_cast< Face *>( pFace );
-        imageType.width = 0;
-        imageType.height = height;
-        imageType.flags = FT_LOAD_RENDER;
-        if ( monochrome )
-            imageType.flags |= FT_LOAD_MONOCHROME | FT_LOAD_TARGET_MONO;
         ::FT_Glyph ftGlyph;
         ::FT_Error rslt = ::FTC_ImageCache_Lookup( m_ftGlyphCache, &imageType,
                                                    glyphIndex, &ftGlyph, 0 );
         if ( rslt != 0 )
-        {
-            cout << "GetGlyph: fontID=" << fontID << " faceID=" << pFont->faceID
-                 << " height=" << height << endl;
             throw FTException( "FTC_ImageCache_Lookup", rslt );
-        }
         ::FT_BitmapGlyph ftBitmap
                   = reinterpret_cast< ::FT_BitmapGlyph >( ftGlyph );
         shared_ptr< Glyph > pGlyph = MakeGlyph( ftBitmap, color );

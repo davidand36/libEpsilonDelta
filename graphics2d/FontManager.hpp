@@ -26,6 +26,10 @@
      maintain the correspondence.
   4. Font size is indicated by the height in pixels, i.e. the distance
      between consecutive baselines.
+     Ascent() and Descent() give the declared length of the ascenders and
+     descenders, respectively, from the baseline. Note that it is common that
+     Height < Ascent + Descent, i.e. that the font is designed so that glyphs
+     can overlap.
 */
 
 
@@ -69,6 +73,8 @@ public:
     bool IsScalable( int faceID ) const;
     int GetFixedSizes( int faceID, std::vector< float > * pSizes ) const;
     float Height( int fontID );
+    float Ascent( int fontID );
+    float Descent( int fontID );
 
     std::tr1::shared_ptr< Glyph > GetGlyph( int fontID, wchar_t character,
                                             Color3B color,

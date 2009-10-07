@@ -10,8 +10,7 @@
      Our Face lines up with FT's face.
      FT uses a void * of the user's choosing to identify faces (FTC_FaceID);
      here we cast FT_Face to and from const Face *.
-     Our Font essentially lines up with FT_Size (a face set to a given size),
-     though we don't directly use that type.
+     Our Font essentially lines up with FT_Size (a face set to a given size).
      Our Glyph corresponds to an FT bitmap glyph.
 */
 
@@ -59,6 +58,8 @@ public:
     bool IsScalable( int faceID ) const;
     int GetFixedSizes( int faceID, vector< float > * pSizes ) const;
     float Height( int fontID ) const;
+    float Ascent( int fontID );
+    float Descent( int fontID );
 
     shared_ptr< Glyph > GetGlyph( int fontID, wchar_t character,
                                   Color3B color, bool monochrome );
@@ -107,6 +108,7 @@ private:
     int FindFace( int fontSetID, int faceIndex = 0 ) const;
     const Font * FindFont( int fontID ) const;
     ::FT_Face GetFTFace( int faceID ) const;
+    ::FT_Size GetFTSize( int fontID ) const;
     shared_ptr< Glyph > MakeGlyph( ::FTC_SBit sbit, Color3B color );
     shared_ptr< Glyph > MakeGlyph( ::FT_BitmapGlyph ftBitmapGlyph,
                                    Color3B color );
@@ -245,6 +247,22 @@ FontManager::Height( int fontID )
     return m_pImpl->Height( fontID );
 }
 
+//-----------------------------------------------------------------------------
+
+float 
+FontManager::Ascent( int fontID )
+{
+    return m_pImpl->Ascent( fontID );
+}
+
+//-----------------------------------------------------------------------------
+
+float 
+FontManager::Descent( int fontID )
+{
+    return m_pImpl->Descent( fontID );
+}
+
 //=============================================================================
 
 shared_ptr< Glyph > 
@@ -366,6 +384,11 @@ FontManager::TestLoad( const ::string & directory,
         for ( int i = 0; i < s_testFontIDs.size(); ++i )
         {
             int fontID = s_testFontIDs[ i ];
+            cout << "Font " << fontID
+                 << ": Height = " << fontManager.Height( fontID )
+                 << ": Ascent = " << fontManager.Ascent( fontID )
+                 << ": Descent = " << fontManager.Descent( fontID )
+                 << endl;
             cout << "Font " << fontID << ": Kerning between A & B: "
                  << fontManager.GetKerning( fontID, 'A', 'B' ) << endl;
             cout << "Font " << fontID << ": Kerning between A & V: "
@@ -610,6 +633,24 @@ FontManagerImpl::Height( int fontID ) const
     return FindFont( fontID )->height;
 }
 
+//-----------------------------------------------------------------------------
+
+float 
+FontManagerImpl::Ascent( int fontID )
+{
+    ::FT_Size ftSize = GetFTSize( fontID );
+    return (float)Fixed32_6( ftSize->metrics.ascender, true );
+}
+
+//-----------------------------------------------------------------------------
+
+float
+FontManagerImpl::Descent( int fontID )
+{
+    ::FT_Size ftSize = GetFTSize( fontID );
+    return -(float)Fixed32_6( ftSize->metrics.descender, true );
+}
+
 //=============================================================================
 
 shared_ptr< Glyph > 
@@ -779,16 +820,7 @@ FontManagerImpl::GetKerning( int fontID, wchar_t leftChar, wchar_t rightChar )
 {
     const Font * pFont = FindFont( fontID );
     const Face * pFace = &m_faces[ pFont->faceID ];
-    ::FTC_ScalerRec ftScaler;
-    ftScaler.face_id = const_cast< Face *>( pFace );
-    ftScaler.width = 0;
-    ftScaler.height = (int)pFont->nominalHeight;
-    ftScaler.pixel = 1;
-    ::FT_Size ftSize;
-    ::FT_Error rslt = ::FTC_Manager_LookupSize( m_ftCacheMgr, &ftScaler,
-                                                &ftSize );
-    if ( rslt != 0 )
-        throw FTException( "FTC_Manager_LookupSize", rslt );
+    ::FT_Size ftSize = GetFTSize( fontID );
     int leftGlyphIndex
             = ::FTC_CMapCache_Lookup( m_ftCharmapCache,
                                       const_cast< Face *>( pFace ), -1,
@@ -846,6 +878,26 @@ FontManagerImpl::GetFTFace( int faceID ) const
         throw FTException( "FTC_Manager_LookupFace", rslt );
     Assert( ftFace != 0 );
     return ftFace;
+}
+
+//-----------------------------------------------------------------------------
+
+::FT_Size 
+FontManagerImpl::GetFTSize( int fontID ) const
+{
+    const Font * pFont = FindFont( fontID );
+    const Face * pFace = &m_faces[ pFont->faceID ];
+    ::FTC_ScalerRec ftScaler;
+    ftScaler.face_id = const_cast< Face *>( pFace );
+    ftScaler.width = 0;
+    ftScaler.height = (int)pFont->nominalHeight;
+    ftScaler.pixel = 1;
+    ::FT_Size ftSize;
+    ::FT_Error rslt = ::FTC_Manager_LookupSize( m_ftCacheMgr, &ftScaler,
+                                                &ftSize );
+    if ( rslt != 0 )
+        throw FTException( "FTC_Manager_LookupSize", rslt );
+    return ftSize;
 }
 
 //=============================================================================

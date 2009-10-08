@@ -21,6 +21,7 @@
 #include "Sprite.hpp"
 #include "SimpleSpriteSystem.hpp"
 #include "FontManager.hpp"
+#include "Text.hpp"
 #include "Platform.hpp"
 #include "StdClock.hpp"
 #include "Array.hpp"
@@ -144,6 +145,7 @@ int Main( int argc, char ** argv )
                 Surface::TestDraw( );
                 Image::TestDraw( );
                 FontManager::TestDraw( );
+                Text::TestDraw( );
                 done = SimpleSpriteSystem::TestUpdate( );
 
                 Graphics2D::Instance().ShowScreen( );

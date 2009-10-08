@@ -18,6 +18,7 @@ set( sources
      SimpleSpriteSystem.cpp
      Glyph.cpp
      FontManager.cpp
+     Text.cpp
      FTException.cpp
    )
 

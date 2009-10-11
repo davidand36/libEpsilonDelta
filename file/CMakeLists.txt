@@ -9,6 +9,7 @@
 set( sources
      DataBuffer.cpp
      File.cpp
+     FileName.cpp
      DirUtil.cpp
      ConfigFile.cpp
    )

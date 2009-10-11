@@ -10,6 +10,7 @@
 #include "TestCheck.hpp"
 #include "DataBuffer.hpp"
 #include "File.hpp"
+#include "FileName.hpp"
 #include "DirUtil.hpp"
 #include "ConfigFile.hpp"
 #include <cstdio>
@@ -57,6 +58,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     if ( ! DataBuffer::Test( ) )
         ok = false;
     if ( ! File::Test( ) )
+        ok = false;
+    if ( ! FileName::Test( ) )
         ok = false;
     if ( ! TestDirUtil( ) )
         ok = false;

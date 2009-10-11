@@ -24,6 +24,7 @@
 #define OS_UNIX
 #endif
 #if defined(__linux__) || defined(__linux) || defined(linux)
+#define OS_UNIX
 #define OS_LINUX
 #endif
 #if defined(_WIN32) || defined(WIN32)

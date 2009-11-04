@@ -10,6 +10,7 @@
 #include "TestCheck.hpp"
 #include "Logger.hpp"
 #include "FixEndian.hpp"
+#include "CharType.hpp"
 #include "StringUtil.hpp"
 #include "UnicodeUtil.hpp"
 #include "CSV.hpp"
@@ -75,6 +76,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     if ( ! Logger::Test( ) )
         ok = false;
     if ( ! TestFixEndian( ) )
+        ok = false;
+    if ( ! TestCharType( ) )
         ok = false;
     if ( ! TestStringUtil( ) )
         ok = false;

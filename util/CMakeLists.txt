@@ -13,6 +13,7 @@ set( sources
      Logger.cpp
      FixEndian.cpp
      CharType.cpp
+     CodePointData.cpp
      StringUtil.cpp
      UnicodeUtil.cpp
      CSV.cpp

@@ -21,6 +21,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Timer.hpp"
+#include "CodePointData.hpp"
 #include <iomanip>
 #endif
 using namespace std;
@@ -303,7 +304,7 @@ Input::Test( )
                 if ( pEvent->Device()->Type() == InputDevice::Keyboard )
                 {
                     int button = pEvent->Button();
-                    if ( (button < WCharTypeTableLimit)
+                    if ( (button < MaximumCodePoint)
                          && IsPrint( (wchar_t)button ) )
                         wcout << (wchar_t)button << flush;
                     else if ( button > 0 )

@@ -368,9 +368,9 @@ TestCharType( )
     bool ok = true;
     cout << "Testing CharType" << endl;
 
+    cout << "Checking range 0-127 for consistency with std functions." << endl;
     for ( char c = 0; (c >= 0) && (c < 128); ++c )
     {
-        cout << "char: " << (int)c << endl; //!!!
         TESTCHECKD( IsAlpha( c ), (bool)isalpha( c ), &ok,
                     TestCheck::PrintFailure );
         TESTCHECKD( IsUpper( c ), (bool)isupper( c ), &ok,
@@ -404,7 +404,6 @@ TestCharType( )
 
     for ( wchar_t wc = 0; wc < 128; ++wc )
     {
-        cout << "wchar_t: " << (int)wc << endl; //!!!
         TESTCHECKD( IsAlpha( wc ), (bool)isalpha( wc ), &ok,
                     TestCheck::PrintFailure );
         TESTCHECKD( IsUpper( wc ), (bool)isupper( wc ), &ok,

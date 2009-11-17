@@ -20,6 +20,7 @@
 #include "VMap.hpp"
 #include "IndexedVector.hpp"
 #include "Algorithms.hpp"
+#include "File.hpp"
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -35,7 +36,7 @@ using namespace std::tr1;
 using namespace EpsilonDelta;
 
 
-int Main( int /*argc*/, char ** /*argv*/ );
+int Main( int argc, char ** argv );
 void DisplayDataSizes( );
 
 
@@ -68,11 +69,23 @@ int main( int argc, char ** argv )
 
 //-----------------------------------------------------------------------------
 
-int Main( int /*argc*/, char ** /*argv*/ )
+int Main( int /*argc*/, char ** argv )
 {
     bool ok = true;
 
 #ifdef DEBUG
+    string libBasePath = argv[0];
+    int slashPos = libBasePath.rfind( '/' );
+    if ( slashPos == static_cast<int>( string::npos ) )
+        libBasePath = "";
+    else
+        libBasePath.erase( slashPos + 1 );
+    libBasePath += "../";
+#ifdef COMPILER_MSC
+    libBasePath += "../";
+#endif
+    string testDirectory = libBasePath + "util/test/";
+
     if ( ! Logger::Test( ) )
         ok = false;
     if ( ! TestFixEndian( ) )
@@ -81,6 +94,15 @@ int Main( int /*argc*/, char ** /*argv*/ )
         ok = false;
     if ( ! TestStringUtil( ) )
         ok = false;
+    {
+        //The Unicode.org test file, edited slightly:
+        string fileSpec = testDirectory + "LineBreakTest.txt";
+        string fileText;
+        bool loadRslt = File::Load( fileSpec, &fileText );
+        Assert( loadRslt );
+        if ( ! TestLineBreakOpportunities( fileText ) )
+            ok = false;
+    }
     if ( ! TestUnicodeUtil( ) )
         ok = false;
     if ( ! TestCSV( ) )

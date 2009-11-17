@@ -238,8 +238,20 @@ OrdinalToString( int i, int width = 0, char comma = 0 );
 std::wstring 
 OrdinalToWString( int i, int width = 0, char comma = 0 );
 
+enum LineBreakAction
+{
+    LBA_Prohibited,
+    LBA_Required,
+    LBA_Allowed,
+    LBA_AllowedWithPenalty
+};
+
+void DetermineLineBreakOpportunities( const std::wstring & text,
+                                    std::vector< LineBreakAction > * pActions );
+
 #ifdef DEBUG
 bool TestStringUtil( );
+bool TestLineBreakOpportunities( const std::string & testFileText );
 #endif
 
 

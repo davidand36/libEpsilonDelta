@@ -17,8 +17,6 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-extern int MaximumCodePoint;
-
 enum ECharTypeBit
 {
     CTB_Alpha       = (1 << 0),
@@ -33,6 +31,50 @@ enum ECharTypeBit
     CTB_Ctrl        = (1 << 9)
 };
 
+enum LineBreakClass
+{
+    LBC_MandatoryBreak,                 //BK
+    LBC_CarriageReturn,                 //CR
+    LBC_LineFeed,                       //LF
+    LBC_CombiningMark,                  //CM
+    LBC_WordJoiner,                     //WJ
+    LBC_ZeroWidthSpace,                 //ZW
+    LBC_Glue,                           //GL
+    LBC_Space,                          //SP
+    LBC_BreakOpportunityBeforeAndAfter, //B2
+    LBC_BreakAfter,                     //BA
+    LBC_BreakBefore,                    //BB
+    LBC_Hyphen,                         //HY
+    LBC_ContingentBreakOpportunity,     //CB
+    LBC_ClosePunctuation,               //CL
+    LBC_CloseParenthesis,               //CP
+    LBC_ExclamationInterrogation,       //EX
+    LBC_Inseparable,                    //IN
+    LBC_Nonstarter,                     //NS
+    LBC_OpenPunctuation,                //OP
+    LBC_Quotation,                      //QU
+    LBC_InfixNumericSeperator,          //IS
+    LBC_Numeric,                        //NU
+    LBC_PosfixNumeric,                  //PO
+    LBC_PrefixNumeric,                  //PR
+    LBC_SymbolsAllowingBreakAfter,      //SY
+    LBC_Alphabetic,                     //AL
+    LBC_HangulLVSyllable,               //H2
+    LBC_HangulLVTSyllable,              //H3
+    LBC_Ideographic,                    //ID
+    LBC_HangulLJamo,                    //JL
+    LBC_HangulVJamo,                    //JV
+    LBC_HangulTJamo,                    //JT
+    LBC_NextLine,                       //NL
+    LBC_Surrogate,                      //SG
+    LBC_Ambiguous,                      //AI
+    LBC_ComplexContextDependent,        //SA
+    LBC_UnknownLineBreak,               //XX
+    NumLineBreakClasses
+};
+
+
+extern int MaximumCodePoint;
 
 extern uint16_t codePointCharTypes[ ];
 extern wchar_t codePointToUpper[ ];

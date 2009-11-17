@@ -8,10 +8,13 @@
 
 #include "StringUtil.hpp"
 #include "StdInt.hpp"
+#include "CodePointData.hpp"
 #include <cstring>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include <iostream>
+#include <cstdlib>
+#include <iomanip>
 #endif
 using namespace std;
 
@@ -106,6 +109,178 @@ OrdinalToWString( int i, int width, char comma )
 
 //=============================================================================
 
+namespace
+{                                                                   //namespace
+
+//.............................................................................
+
+enum LineBreakPairAction
+{
+    LBPA_Prohibited             = 0,
+    LBPA_Required               = 1,
+    LBPA_Allowed                = 2,
+    LBPA_AllowedWithPenalty     = 3,
+    LBPA_AllowedWithSpaces      = 4,
+    LBPA_ProhibitedWithSpaces   = 5,
+    LBPA_SkipCombining          = 6
+};
+uint8_t s_LBActionTable[ 32 ][ 32 ]
+= {
+     /* BK CR LF CM WJ ZW GL SP B2 BA BB HY CB CL CP EX IN NS OP QU IS NU PO PR SY AL H2 H3 ID JL JV JT*/
+/*BK*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+/*CR*/ { 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+/*LF*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+/*CM*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 4, 4, 0, 4, 3, 3, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*WJ*/ { 0, 0, 0, 6, 0, 0, 4, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4 },
+/*ZW*/ { 0, 0, 0, 2, 5, 0, 2, 0, 2, 2, 2, 2, 2, 5, 5, 5, 2, 2, 2, 2, 5, 2, 2, 2, 5, 2, 2, 2, 2, 2, 2, 2 },
+/*GL*/ { 0, 0, 0, 6, 0, 0, 4, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4 },
+/*SP*/ { 0, 0, 0, 2, 0, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2 },
+/*B2*/ { 0, 0, 0, 6, 0, 0, 4, 0, 0, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*BA*/ { 0, 0, 0, 6, 0, 0, 3, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*BB*/ { 0, 0, 0, 6, 0, 0, 4, 0, 4, 4, 4, 4, 2, 0, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4 },
+/*HY*/ { 0, 0, 0, 6, 0, 0, 3, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 4, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*CB*/ { 0, 0, 0, 6, 0, 0, 4, 0, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 4, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2 },
+/*CL*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 0, 3, 4, 0, 3, 4, 4, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*CP*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 0, 3, 4, 0, 4, 4, 4, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*EX*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*IN*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*NS*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*OP*/ { 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+/*QU*/ { 0, 0, 0, 6, 0, 0, 4, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 0, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4 },
+/*IS*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 4, 3, 3, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*NU*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*PO*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 4, 4, 0, 4, 3, 3, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*PR*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 4, 4, 0, 4, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4 },
+/*SY*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 3, 4, 3, 4, 0, 4, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*AL*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 4, 4, 0, 4, 3, 3, 0, 4, 3, 3, 3, 3, 3, 3 },
+/*H2*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 3, 3, 3, 3, 4, 4 },
+/*H3*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 3, 3, 3, 3, 3, 4 },
+/*ID*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 3, 3, 3, 3, 3, 3 },
+/*JL*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 4, 4, 3, 4, 4, 3 },
+/*JV*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 3, 3, 3, 3, 4, 4 },
+/*JT*/ { 0, 0, 0, 6, 0, 0, 4, 0, 3, 4, 3, 4, 2, 0, 0, 0, 4, 4, 3, 4, 0, 3, 4, 3, 0, 3, 3, 3, 3, 3, 3, 4 }
+};
+
+#ifdef DEBUG
+
+string lineBreakClassAbbrs[ NumLineBreakClasses ]
+= {
+    "BK",   //LBC_MandatoryBreak,
+    "CR",   //LBC_CarriageReturn,
+    "LF",   //LBC_LineFeed,
+    "CM",   //LBC_CombiningMark,
+    "WJ",   //LBC_WordJoiner,
+    "ZW",   //LBC_ZeroWidthSpace,
+    "GL",   //LBC_Glue,
+    "SP",   //LBC_Space,
+    "B2",   //LBC_BreakOpportunityBeforeAndAfter,
+    "BA",   //LBC_BreakAfter,
+    "BB",   //LBC_BreakBefore,
+    "HY",   //LBC_Hyphen,
+    "CB",   //LBC_ContingentBreakOpportunity,
+    "CL",   //LBC_ClosePunctuation,
+    "CP",   //LBC_CloseParenthesis,
+    "EX",   //LBC_ExclamationInterrogation,
+    "IN",   //LBC_Inseparable,
+    "NS",   //LBC_Nonstarter,
+    "OP",   //LBC_OpenPunctuation,
+    "QU",   //LBC_Quotation,
+    "IS",   //LBC_InfixNumericSeperator,
+    "NU",   //LBC_Numeric,
+    "PO",   //LBC_PosfixNumeric,
+    "PR",   //LBC_PrefixNumeric,
+    "SY",   //LBC_SymbolsAllowingBreakAfter,
+    "AL",   //LBC_Alphabetic,
+    "H2",   //LBC_HangulLVSyllable,
+    "H3",   //LBC_HangulLVTSyllable,
+    "ID",   //LBC_Ideographic,
+    "JL",   //LBC_HangulLJamo,
+    "JV",   //LBC_HangulVJamo,
+    "JT",   //LBC_HangulTJamo,
+    "NL",   //LBC_NextLine,
+    "SG",   //LBC_Surrogate,
+    "AI",   //LBC_Ambiguous,
+    "SA",   //LBC_ComplexContextDependent,
+    "XX"    //LBC_UnknownLineBreak
+};
+
+#endif
+
+//.............................................................................
+
+}                                                                   //namespace
+
+//-----------------------------------------------------------------------------
+
+void 
+DetermineLineBreakOpportunities( const wstring & text,
+                                 vector< LineBreakAction > * pActions )
+{
+    if ( ! pActions )
+        return;
+    pActions->clear( );
+    if ( text.empty() )
+        return;
+    pActions->resize( text.size() );
+    wchar_t ch = text[ 0 ];
+    Assert( ch <= MaximumCodePoint );
+    LineBreakClass lbc0 = (LineBreakClass)codePointLineBreakClasses[ ch ];
+#if 0   //This reflects the sample code in Section 7.4, but not the test cases in LineBreakTest.txt.
+    if ( lbc0 == LBC_Space )
+        lbc0 = LBC_WordJoiner;
+#endif
+
+    for ( int i = 0; i < text.size() - 1; ++i )
+    {
+        ch = text[ i + 1 ];
+        Assert( ch <= MaximumCodePoint );
+        LineBreakClass lbc1 = (LineBreakClass)codePointLineBreakClasses[ ch ];
+        LineBreakPairAction action
+                = (LineBreakPairAction)s_LBActionTable[ lbc0 ][ lbc1 ];
+        if ( (lbc1 == LBC_Space) && (action != LBPA_Required) )
+        {
+            pActions->at( i ) = LBA_Prohibited; //No break before space
+            continue;   //Maintain previous lbc0
+        }
+        if ( action == LBPA_AllowedWithSpaces )
+        {
+            LineBreakClass lbcPrev = (LineBreakClass)codePointLineBreakClasses[ text[ i ] ];
+            if ( lbcPrev == LBC_Space )
+                pActions->at( i ) = LBA_Allowed;
+            else
+                pActions->at( i ) = LBA_Prohibited;
+        }
+        else if ( action == LBPA_ProhibitedWithSpaces )
+        {
+            LineBreakClass lbcPrev = (LineBreakClass)codePointLineBreakClasses[ text[ i ] ];
+            if ( lbcPrev == LBC_Space )
+                pActions->at( i ) = LBA_Prohibited;
+            else
+                pActions->at( i ) = LBA_Allowed;
+        }
+        else if ( action == LBPA_SkipCombining )
+        {
+            LineBreakClass lbcPrev = (LineBreakClass)codePointLineBreakClasses[ text[ i ] ];
+            if ( (lbcPrev == LBC_Space) && (lbc0 != LBC_OpenPunctuation) )
+                pActions->at( i ) = LBA_Allowed;
+            else
+                pActions->at( i ) = LBA_Prohibited;
+            continue;
+        }
+        else
+        {
+            pActions->at( i ) = (LineBreakAction)action;
+        }
+        lbc0 = lbc1;
+    }
+    //Set up to break at end only after BK, CR or LF.
+    LineBreakClass lbc1 = LBC_ZeroWidthSpace;
+    pActions->at( text.size() - 1 )
+            = (LineBreakAction)s_LBActionTable[ lbc0 ][ lbc1 ];
+}
+
+//=============================================================================
+
 #ifdef DEBUG
 
 namespace
@@ -113,6 +288,7 @@ namespace
 bool TestNumbersToString( );
 }
 
+//-----------------------------------------------------------------------------
 
 bool
 TestStringUtil( )
@@ -1241,6 +1417,105 @@ TestNumbersToString( )
 }
 
 }                                                                   //namespace
+
+//-----------------------------------------------------------------------------
+
+bool 
+TestLineBreakOpportunities( const std::string & testFileText )
+{
+    bool ok = true;
+    cout << "Testing LineBreakOpportunities" << endl;
+
+    vector< string > lines = Split( testFileText, '\n' );
+
+    int numLines = (int)lines.size();
+    int linesTested = 0;
+    int linesFailed = 0;
+
+    for ( int i = 0; i < numLines; ++i )
+    {
+        string & line = lines[ i ];
+        size_t poundPos = line.find( '#' );
+        if ( poundPos != string::npos )
+            line.erase( poundPos );
+        Trim( &line );
+        if ( line.empty() )
+            continue;
+        vector< string > fields = Split( line, ' ' );
+        Assert( fields.size() > 1 );
+        if ( fields.size() <= 1 )
+            continue;
+
+#if 0
+        cout << "Testing: " << line << "" << endl;
+#endif
+
+        wstring testString;
+        vector< bool > expectedBreaks;
+        wchar_t maxCP = 0;
+        for ( int j = 1; j < (int)fields.size(); ++j ) //skip initial '÷'
+        {
+            if ( fields[ j ].empty() )
+                break;
+            if ( (j % 2) == 0 )
+            {
+                if ( fields[ j ] == "÷" )
+                    expectedBreaks.push_back( true );
+                else if ( fields[ j ] == "×" )
+                    expectedBreaks.push_back( false );
+                else
+                    Assert( 0 && "Expected ÷ or ×" );
+            }
+            else
+            {
+                wchar_t cp = strtol( fields[ j ].c_str(), 0, 16 );
+                testString += cp;
+                if ( cp > maxCP )
+                    maxCP = cp;
+            }
+        }
+        Assert( testString.size() == expectedBreaks.size() );
+        if ( maxCP > MaximumCodePoint )
+            continue;
+
+        vector< LineBreakAction > actions;
+        DetermineLineBreakOpportunities( testString, &actions );
+        vector< bool > computedBreaks;
+        for ( int j = 0; j < (int)actions.size(); ++j )
+        {
+            bool breakAllowed = (actions[ j ] != LBA_Prohibited);
+            computedBreaks.push_back( breakAllowed );
+        }
+        bool computedIsExpected = true;
+        //skip final value, because expected value is always true, not ours
+        for ( int j = 0; j < (int)computedBreaks.size() - 1; ++j )
+        {
+            if ( computedBreaks[ j ] != expectedBreaks[ j ] )
+            {
+                computedIsExpected = false;
+#if 1
+                cout << "Non-match: " << j << " computed=" << computedBreaks[ j ]
+                     << " expected=" << expectedBreaks[ j ] << endl;
+#endif
+            }
+        }
+        if ( ! computedIsExpected )
+        {
+            ok = false;
+            cout << line << " FAILED" << endl;
+            ++linesFailed;
+        }
+        ++linesTested;
+    }
+
+    cout << linesTested << " lines tested. " << linesFailed << " failed" << endl;
+
+    if ( ok )
+        cout << "LineBreakOpportunities PASSED." << endl << endl;
+    else
+        cout << "LineBreakOpportunities FAILED." << endl << endl;
+    return ok;
+}
 
 #endif //DEBUG
 

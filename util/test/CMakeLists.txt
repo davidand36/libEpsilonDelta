@@ -11,7 +11,7 @@ set( sources
    )
 
 set( EpsilonDeltaLibs
-     util
+     file time math util
    )
 set( libs "" )
 foreach( lib ${EpsilonDeltaLibs} )

@@ -8,6 +8,7 @@
 
 #include "Logger.hpp"
 #include "Assert.hpp"
+#include <cstdio>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "StringUtil.hpp"

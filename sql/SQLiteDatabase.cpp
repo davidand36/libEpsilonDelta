@@ -18,6 +18,7 @@
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "Platform.hpp"
+#include "File.hpp"
 #include <iostream>
 #include <cstdlib>
 #ifndef OS_WINDOWS
@@ -194,7 +195,7 @@ SQLiteDatabase::Test( )
     cout << "Testing SQLiteDatabase" << endl;
 
     const char dbFileName[] = "test.sqlite3";
-    int unlnkRslt = remove( dbFileName ); //In case it already exists
+    int unlnkRslt = File::Delete( dbFileName ); //In case it already exists
 
     cout << "SQLiteDatabase( \"" << dbFileName << "\" )" << endl;
     shared_ptr< SQLDatabase > pDB( new SQLiteDatabase( dbFileName ) );
@@ -415,7 +416,7 @@ SQLiteDatabase::Test( )
     cout << "DoCommand( \"" << command << "\" )" << endl;
     pDB->DoCommand( command );
 
-    unlnkRslt = remove( dbFileName );
+    unlnkRslt = File::Delete( dbFileName );
 //    Assert( unlnkRslt == 0 );
 
     if ( ok )

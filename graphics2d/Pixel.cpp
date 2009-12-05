@@ -97,6 +97,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType565:
         format.palette = 0;
         format.BitsPerPixel = 16;
@@ -127,6 +128,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType888:
         format.palette = 0;
         format.BitsPerPixel = 24;
@@ -155,6 +157,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType888Rev:
         format.palette = 0;
         format.BitsPerPixel = 24;
@@ -183,6 +186,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType0888:
         format.palette = 0;
         format.BitsPerPixel = 32;
@@ -211,6 +215,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType0888Rev:
         format.palette = 0;
         format.BitsPerPixel = 32;
@@ -239,6 +244,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType8888:
         format.palette = 0;
         format.BitsPerPixel = 32;
@@ -266,6 +272,7 @@ DetermineSDLPixelFormat( EPixelType pixelType )
         format.colorkey = 0;
         format.alpha = 255;
         break;
+
     case PixelType8888Rev:
         format.palette = 0;
         format.BitsPerPixel = 32;
@@ -626,9 +633,20 @@ TestPixel( )
     cout << "DetermineSDLPixelFormat( PixelType565 )" << endl;
     ::SDL_PixelFormat pxlFmt565 = DetermineSDLPixelFormat( PixelType565 );
     TESTCHECK( DeterminePixelType( pxlFmt565 ), PixelType565, &ok );
+    cout << "DetermineSDLPixelFormat( PixelType888 )" << endl;
+    ::SDL_PixelFormat pxlFmt888 = DetermineSDLPixelFormat( PixelType888 );
+    TESTCHECK( DeterminePixelType( pxlFmt888 ), PixelType888, &ok );
+    cout << "DetermineSDLPixelFormat( PixelType888Rev )" << endl;
+    ::SDL_PixelFormat pxlFmt888Rev
+              = DetermineSDLPixelFormat( PixelType888Rev );
+    TESTCHECK( DeterminePixelType( pxlFmt888Rev ), PixelType888Rev, &ok );
     cout << "DetermineSDLPixelFormat( PixelType0888 )" << endl;
     ::SDL_PixelFormat pxlFmt0888 = DetermineSDLPixelFormat( PixelType0888 );
     TESTCHECK( DeterminePixelType( pxlFmt0888 ), PixelType0888, &ok );
+    cout << "DetermineSDLPixelFormat( PixelType0888Rev )" << endl;
+    ::SDL_PixelFormat pxlFmt0888Rev
+              = DetermineSDLPixelFormat( PixelType0888Rev );
+    TESTCHECK( DeterminePixelType( pxlFmt0888Rev ), PixelType0888Rev, &ok );
     cout << "DetermineSDLPixelFormat( PixelType8888 )" << endl;
     ::SDL_PixelFormat pxlFmt8888 = DetermineSDLPixelFormat( PixelType8888 );
     TESTCHECK( DeterminePixelType( pxlFmt8888 ), PixelType8888, &ok );

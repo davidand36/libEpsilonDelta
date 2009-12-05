@@ -9,14 +9,17 @@
 
 
 #include "Color.hpp"
+#include "FixEndian.hpp"
 #ifdef USE_SDL
 #include <SDL.h>
 #endif
 
 
+//These are platform-dependent, but I'm not sure just how yet.
 #define BITFIELDS_HIGHFIRST  0
 #define RGB_REDHIGH  1
 #define BITFIELDS_REDFIRST  ( BITFIELDS_HIGHFIRST == RGB_REDHIGH )
+
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -140,13 +143,15 @@ class Pixel888
 {
 public:
     Pixel888( );
-    Pixel888( char value[ 3 ] );
+    Pixel888( char bytes[ 3 ] );
+    Pixel888( uint32_t value );
     Pixel888( const Color3B & color );
-    const uint8_t * Value( ) const;
+    const uint8_t * Bytes( ) const;
+    uint32_t Value( ) const;
     Color3B Color( ) const;
 
 private:
-    uint8_t m_value[ 3 ];
+    uint8_t m_bytes[ 3 ];
 };
 
 
@@ -157,13 +162,15 @@ class Pixel888Rev
 {
 public:
     Pixel888Rev( );
-    Pixel888Rev( char value[ 3 ] );
+    Pixel888Rev( char bytes[ 3 ] );
+    Pixel888Rev( uint32_t value );
     Pixel888Rev( const Color3B & color );
-    const uint8_t * Value( ) const;
+    const uint8_t * Bytes( ) const;
+    uint32_t Value( ) const;
     Color3B Color( ) const;
 
 private:
-    uint8_t m_value[ 3 ];
+    uint8_t m_bytes[ 3 ];
 };
 
 
@@ -468,10 +475,26 @@ Pixel888::Pixel888( )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline
-Pixel888::Pixel888( char value[ 3 ] )
+Pixel888::Pixel888( char bytes[ 3 ] )
 {
     for ( int i = 0; i < 3; ++i )
-        m_value[ i ] = value[ i ];
+        m_bytes[ i ] = bytes[ i ];
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888::Pixel888( uint32_t value )
+{
+#ifdef BIG_ENDIAN
+    m_bytes[ 0 ] = (uint8_t)((value >> 16) & 0xFF);
+    m_bytes[ 1 ] = (uint8_t)((value >> 8) & 0xFF);
+    m_bytes[ 2 ] = (uint8_t)(value & 0xFF);
+#else
+    m_bytes[ 0 ] = (uint8_t)(value & 0xFF);
+    m_bytes[ 1 ] = (uint8_t)((value >> 8) & 0xFF);
+    m_bytes[ 2 ] = (uint8_t)((value >> 16) & 0xFF);
+#endif
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -480,13 +503,13 @@ inline
 Pixel888::Pixel888( const Color3B & color )
 {
 #if RBG_REDHIGH
-    m_value[ 0 ] = (uint8_t) color.Red();
-    m_value[ 1 ] = (uint8_t) color.Green();
-    m_value[ 2 ] = (uint8_t) color.Blue();
+    m_bytes[ 0 ] = (uint8_t) color.Red();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Blue();
 #else
-    m_value[ 0 ] = (uint8_t) color.Blue();
-    m_value[ 1 ] = (uint8_t) color.Green();
-    m_value[ 2 ] = (uint8_t) color.Red();
+    m_bytes[ 0 ] = (uint8_t) color.Blue();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Red();
 #endif
 }
 
@@ -494,9 +517,24 @@ Pixel888::Pixel888( const Color3B & color )
 
 inline
 const uint8_t * 
+Pixel888::Bytes( ) const
+{
+    return m_bytes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t
 Pixel888::Value( ) const
 {
-    return m_value;
+#ifdef BIG_ENDIAN
+    return (uint32_t)( (m_bytes[ 0 ] << 16) | (m_bytes[ 1 ] << 8)
+                       | m_bytes[ 2 ] );
+#else
+    return (uint32_t)( m_bytes[ 0 ] | (m_bytes[ 1 ] << 8)
+                       | (m_bytes[ 2 ] << 16) );
+#endif
 }
 
 //=============================================================================
@@ -506,13 +544,13 @@ Color3B
 Pixel888::Color( ) const
 {
 #if RGB_REDHIGH
-    int r = m_value[ 0 ];
-    int g = m_value[ 1 ];
-    int b = m_value[ 2 ];
+    int r = m_bytes[ 0 ];
+    int g = m_bytes[ 1 ];
+    int b = m_bytes[ 2 ];
 #else
-    int r = m_value[ 2 ];
-    int g = m_value[ 1 ];
-    int b = m_value[ 0 ];
+    int r = m_bytes[ 2 ];
+    int g = m_bytes[ 1 ];
+    int b = m_bytes[ 0 ];
 #endif
     return Color3B( r, g, b );
 }
@@ -529,10 +567,26 @@ Pixel888Rev::Pixel888Rev( )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline
-Pixel888Rev::Pixel888Rev( char value[ 3 ] )
+Pixel888Rev::Pixel888Rev( char bytes[ 3 ] )
 {
     for ( int i = 0; i < 3; ++i )
-        m_value[ i ] = value[ i ];
+        m_bytes[ i ] = bytes[ i ];
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+inline
+Pixel888Rev::Pixel888Rev( uint32_t value )
+{
+#ifdef BIG_ENDIAN
+    m_bytes[ 0 ] = (uint8_t)((value >> 16) & 0xFF);
+    m_bytes[ 1 ] = (uint8_t)((value >> 8) & 0xFF);
+    m_bytes[ 2 ] = (uint8_t)(value & 0xFF);
+#else
+    m_bytes[ 0 ] = (uint8_t)(value & 0xFF);
+    m_bytes[ 1 ] = (uint8_t)((value >> 8) & 0xFF);
+    m_bytes[ 2 ] = (uint8_t)((value >> 16) & 0xFF);
+#endif
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -541,13 +595,13 @@ inline
 Pixel888Rev::Pixel888Rev( const Color3B & color )
 {
 #if RBG_REDHIGH
-    m_value[ 0 ] = (uint8_t) color.Blue();
-    m_value[ 1 ] = (uint8_t) color.Green();
-    m_value[ 2 ] = (uint8_t) color.Red();
+    m_bytes[ 0 ] = (uint8_t) color.Blue();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Red();
 #else
-    m_value[ 0 ] = (uint8_t) color.Red();
-    m_value[ 1 ] = (uint8_t) color.Green();
-    m_value[ 2 ] = (uint8_t) color.Blue();
+    m_bytes[ 0 ] = (uint8_t) color.Red();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Blue();
 #endif
 }
 
@@ -555,9 +609,24 @@ Pixel888Rev::Pixel888Rev( const Color3B & color )
 
 inline
 const uint8_t * 
+Pixel888Rev::Bytes( ) const
+{
+    return m_bytes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t
 Pixel888Rev::Value( ) const
 {
-    return m_value;
+#ifdef BIG_ENDIAN
+    return (uint32_t)( (m_bytes[ 0 ] << 16) | (m_bytes[ 1 ] << 8)
+                       | m_bytes[ 2 ] );
+#else
+    return (uint32_t)( m_bytes[ 0 ] | (m_bytes[ 1 ] << 8)
+                       | (m_bytes[ 2 ] << 16) );
+#endif
 }
 
 //=============================================================================
@@ -567,13 +636,13 @@ Color3B
 Pixel888Rev::Color( ) const
 {
 #if RGB_REDHIGH
-    int r = m_value[ 2 ];
-    int g = m_value[ 1 ];
-    int b = m_value[ 0 ];
+    int r = m_bytes[ 2 ];
+    int g = m_bytes[ 1 ];
+    int b = m_bytes[ 0 ];
 #else
-    int r = m_value[ 0 ];
-    int g = m_value[ 1 ];
-    int b = m_value[ 2 ];
+    int r = m_bytes[ 0 ];
+    int g = m_bytes[ 1 ];
+    int b = m_bytes[ 2 ];
 #endif
     return Color3B( r, g, b );
 }

@@ -9,6 +9,7 @@
 #include "Text.hpp"
 #include "FontManager.hpp"
 #include "UnicodeUtil.hpp"
+#include "CodePointData.hpp"
 using namespace std;
 using namespace std::tr1;
 
@@ -115,6 +116,7 @@ TestDraw( )
 void 
 FullTest( )
 {
+    //!!!
 }
 
 #endif

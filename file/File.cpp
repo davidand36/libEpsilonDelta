@@ -8,16 +8,9 @@
 
 #include "File.hpp"
 #include "FileException.hpp"
-#include "Platform.hpp"
 #include <cstring>
-
-#if defined(OS_UNIX) || defined(OS_WINDOWS)
-#define USE_CSTD_FILE
-#endif
-
 #ifdef USE_CSTD_FILE
 #include "Assert.hpp"
-#include <cstdio>
 #include <sys/stat.h>
 #include <ctime>
 #endif
@@ -54,6 +47,9 @@ public:
     static bool Delete( const std::string & fileName );
     static int Size( const std::string & fileName );
     static DateTime ModDate( const std::string & fileName );
+#ifdef USE_CSTD_FILE 
+    FILE * Handle( );
+#endif
 
 private:
 #ifdef USE_CSTD_FILE
@@ -257,6 +253,18 @@ File::Log( )
 
 //=============================================================================
 
+#ifdef USE_CSTD_FILE
+
+FILE * 
+File::Handle( )
+{
+    return m_pImpl->Handle( );
+}
+
+#endif
+
+//=============================================================================
+
 Logger File::ms_log( "File" );
 
 
@@ -446,6 +454,14 @@ FileImpl::ModDate( const std::string & fileName )
         throw FileException( "Unable to get status of " + fileName );
     std::time_t modDate = fileStatus.st_mtime;
     return DateTime( modDate );
+}
+
+//=============================================================================
+
+FILE * 
+FileImpl::Handle( )
+{
+    return m_file;
 }
 
 //=============================================================================

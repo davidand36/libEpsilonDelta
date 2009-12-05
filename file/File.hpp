@@ -14,8 +14,15 @@
 #include "DataBuffer.hpp"
 #include "DateTime.hpp"
 #include "Logger.hpp"
+#include "Platform.hpp"
 #include <string>
 #include <tr1/memory>
+#if defined(OS_UNIX) || defined(OS_WINDOWS)
+#define USE_CSTD_FILE
+#endif
+#ifdef USE_CSTD_FILE
+#include <cstdio>
+#endif
 
 
 namespace EpsilonDelta
@@ -61,6 +68,9 @@ public:
     static Logger & Log( );
 #ifdef DEBUG
     static bool Test( );
+#endif
+#ifdef USE_CSTD_FILE
+    std::FILE * Handle( );
 #endif
 
 private:

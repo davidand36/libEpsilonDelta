@@ -9,6 +9,7 @@
 #include "Shift.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "StdInt.hpp"
 #include <sstream>
 #endif
 using namespace std;

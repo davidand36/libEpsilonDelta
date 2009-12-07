@@ -210,7 +210,7 @@ SimpleSpriteSystem::TestUpdate( )
                 else
                 {
                     shared_ptr< Surface > pSurf(
-                        new Surface( 75, 75, PixelType8888 ) );
+                        new Surface( 75, 75, PixelTypeRGBA ) );
                     Rectangle ext = pSurf->Extent();
                     pSurf->Fill( ext, Color4B( 0, 0, 0, 0 ) );
                     Color3B color( i * 17, i * 17, 255 );

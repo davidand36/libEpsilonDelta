@@ -116,6 +116,31 @@ Surface::LockDrawingSurface( ) const
 
 //=============================================================================
 
+template < typename Pxl >
+bool 
+Surface::Contains( const Point2I & point, uint32_t colorKey ) const
+{
+    DrawingSurface< Pxl > const drawSurf = LockDrawingSurface< Pxl >( );
+    bool contained
+            = ((uint32_t)(drawSurf.PixelAt( point )->Value()) != colorKey);
+    Unlock( );
+    return contained;
+}
+
+//.............................................................................
+
+template < typename Pxl >
+bool 
+Surface::Contains( const Point2I & point ) const
+{
+    DrawingSurface< Pxl > const drawSurf = LockDrawingSurface< Pxl >( );
+    bool contained = (drawSurf.PixelAt( point )->Color().Alpha() != 0);
+    Unlock( );
+    return contained;
+}
+
+//=============================================================================
+
 template < typename Shape >
 void
 Surface::Draw( const Shape & shape, uint32_t pxl )
@@ -123,78 +148,40 @@ Surface::Draw( const Shape & shape, uint32_t pxl )
     switch ( PixelType() )
     {
     case PixelType8:
-    {
-        DrawingSurface< Pixel8 > drawSurf
-                = LockDrawingSurface< Pixel8 >( );
-        shape.Draw( Pixel8( static_cast< uint8_t >( pxl ) ), &drawSurf );
-        break;
-    }
+        return Draw( shape, Pixel8( (uint8_t) pxl ) );
     case PixelType555:
-    {
-        DrawingSurface< Pixel555 > drawSurf
-                = LockDrawingSurface< Pixel555 >( );
-        shape.Draw( Pixel555( static_cast< uint16_t >( pxl ) ), &drawSurf );
-        break;
-    }
+        return Draw( shape, Pixel555( (uint16_t) pxl ) );
+    case PixelType1555:
+        return Draw( shape, Pixel1555( (uint16_t) pxl ) );
     case PixelType565:
-    {
-        DrawingSurface< Pixel565 > drawSurf
-                = LockDrawingSurface< Pixel565 >( );
-        shape.Draw( Pixel565( static_cast< uint16_t >( pxl ) ), &drawSurf );
-        break;
-    }
-    case PixelType888:
-    {
-        DrawingSurface< Pixel888 > drawSurf
-                = LockDrawingSurface< Pixel888 >( );
-        char * val = reinterpret_cast< char * >( &pxl );
-        shape.Draw( Pixel888( val ), &drawSurf );
-        break;
-    }
-    case PixelType888Rev:
-    {
-        DrawingSurface< Pixel888Rev > drawSurf
-                = LockDrawingSurface< Pixel888Rev >( );
-        char * val = reinterpret_cast< char * >( &pxl );
-        shape.Draw( Pixel888Rev( val ), &drawSurf );
-        break;
-    }
-    case PixelType0888:
-    {
-        DrawingSurface< Pixel0888 > drawSurf
-                = LockDrawingSurface< Pixel0888 >( );
-        shape.Draw( Pixel0888( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType0888Rev:
-    {
-        DrawingSurface< Pixel0888Rev > drawSurf
-                = LockDrawingSurface< Pixel0888Rev >( );
-        shape.Draw( Pixel0888Rev( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Draw( Pixel8888( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Draw( Pixel8888Rev( pxl ), &drawSurf );
-        break;
-    }
+        return Draw( shape, Pixel565( (uint16_t) pxl ) );
+    case PixelTypeRGB:
+        return Draw( shape, PixelRGB( pxl ) );
+    case PixelTypeBGR:
+        return Draw( shape, PixelBGR( pxl ) );
+    case PixelType0RGB:
+        return Draw( shape, Pixel0RGB( pxl ) );
+    case PixelType0BGR:
+        return Draw( shape, Pixel0BGR( pxl ) );
+    case PixelTypeRGB0:
+        return Draw( shape, PixelRGB0( pxl ) );
+    case PixelTypeBGR0:
+        return Draw( shape, PixelBGR0( pxl ) );
+    case PixelTypeARGB:
+        return Draw( shape, PixelARGB( pxl ) );
+    case PixelTypeABGR:
+        return Draw( shape, PixelABGR( pxl ) );
+    case PixelTypeRGBA:
+        return Draw( shape, PixelRGBA( pxl ) );
+    case PixelTypeBGRA:
+        return Draw( shape, PixelBGRA( pxl ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
-        break;
+        return;
     }
-    Unlock( );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 template < typename Shape >
 void
@@ -203,69 +190,38 @@ Surface::Draw( const Shape & shape, const Color3B & color )
     switch ( PixelType() )
     {
     case PixelType555:
-    {
-        DrawingSurface< Pixel555 > drawSurf
-                = LockDrawingSurface< Pixel555 >( );
-        shape.Draw( Pixel555( color ), &drawSurf );
-        break;
-    }
+        return Draw( shape, Pixel555( color ) );
+    case PixelType1555:
+        return Draw( shape, Pixel1555( color ) );
     case PixelType565:
-    {
-        DrawingSurface< Pixel565 > drawSurf
-                = LockDrawingSurface< Pixel565 >( );
-        shape.Draw( Pixel565( color ), &drawSurf );
-        break;
-    }
-    case PixelType888:
-    {
-        DrawingSurface< Pixel888 > drawSurf
-                = LockDrawingSurface< Pixel888 >( );
-        shape.Draw( Pixel888( color ), &drawSurf );
-        break;
-    }
-    case PixelType888Rev:
-    {
-        DrawingSurface< Pixel888Rev > drawSurf
-                = LockDrawingSurface< Pixel888Rev >( );
-        shape.Draw( Pixel888Rev( color ), &drawSurf );
-        break;
-    }
-    case PixelType0888:
-    {
-        DrawingSurface< Pixel0888 > drawSurf
-                = LockDrawingSurface< Pixel0888 >( );
-        shape.Draw( Pixel0888( color ), &drawSurf );
-        break;
-    }
-    case PixelType0888Rev:
-    {
-        DrawingSurface< Pixel0888Rev > drawSurf
-                = LockDrawingSurface< Pixel0888Rev >( );
-        shape.Draw( Pixel0888Rev( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Draw( Pixel8888( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Draw( Pixel8888Rev( color ), &drawSurf );
-        break;
-    }
+        return Draw( shape, Pixel565( color ) );
+    case PixelTypeRGB:
+        return Draw( shape, PixelRGB( color ) );
+    case PixelTypeBGR:
+        return Draw( shape, PixelBGR( color ) );
+    case PixelType0RGB:
+        return Draw( shape, Pixel0RGB( color ) );
+    case PixelType0BGR:
+        return Draw( shape, Pixel0BGR( color ) );
+    case PixelTypeRGB0:
+        return Draw( shape, PixelRGB0( color ) );
+    case PixelTypeBGR0:
+        return Draw( shape, PixelBGR0( color ) );
+    case PixelTypeARGB:
+        return Draw( shape, PixelARGB( color ) );
+    case PixelTypeABGR:
+        return Draw( shape, PixelABGR( color ) );
+    case PixelTypeRGBA:
+        return Draw( shape, PixelRGBA( color ) );
+    case PixelTypeBGRA:
+        return Draw( shape, PixelBGRA( color ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
-        break;
+        return;
     }
-    Unlock( );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 template < typename Shape >
 void
@@ -273,24 +229,30 @@ Surface::Draw( const Shape & shape, const Color4B & color )
 {
     switch ( PixelType() )
     {
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Draw( Pixel8888( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Draw( Pixel8888Rev( color ), &drawSurf );
-        break;
-    }
+    case PixelType1555:
+        return Draw( shape, Pixel1555( color ) );
+    case PixelTypeARGB:
+        return Draw( shape, PixelARGB( color ) );
+    case PixelTypeABGR:
+        return Draw( shape, PixelABGR( color ) );
+    case PixelTypeRGBA:
+        return Draw( shape, PixelRGBA( color ) );
+    case PixelTypeBGRA:
+        return Draw( shape, PixelBGRA( color ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
         break;
     }
+}
+
+//.............................................................................
+
+template < typename Shape, typename Pxl >
+void 
+Surface::Draw( const Shape & shape, Pxl pxl )
+{
+    DrawingSurface< Pxl > drawSurf = LockDrawingSurface< Pxl >( );
+    shape.Draw( pxl, &drawSurf );
     Unlock( );
 }
 
@@ -303,78 +265,40 @@ Surface::Fill( const Shape & shape, uint32_t pxl )
     switch ( PixelType() )
     {
     case PixelType8:
-    {
-        DrawingSurface< Pixel8 > drawSurf
-                = LockDrawingSurface< Pixel8 >( );
-        shape.Fill( Pixel8( static_cast< uint8_t >( pxl ) ), &drawSurf );
-        break;
-    }
+        return Fill( shape, Pixel8( (uint8_t) pxl ) );
     case PixelType555:
-    {
-        DrawingSurface< Pixel555 > drawSurf
-                = LockDrawingSurface< Pixel555 >( );
-        shape.Fill( Pixel555( static_cast< uint16_t >( pxl ) ), &drawSurf );
-        break;
-    }
+        return Fill( shape, Pixel555( (uint16_t) pxl ) );
+    case PixelType1555:
+        return Fill( shape, Pixel1555( (uint16_t) pxl ) );
     case PixelType565:
-    {
-        DrawingSurface< Pixel565 > drawSurf
-                = LockDrawingSurface< Pixel565 >( );
-        shape.Fill( Pixel565( static_cast< uint16_t >( pxl ) ), &drawSurf );
-        break;
-    }
-    case PixelType888:
-    {
-        DrawingSurface< Pixel888 > drawSurf
-                = LockDrawingSurface< Pixel888 >( );
-        char * val = reinterpret_cast< char * >( &pxl );
-        shape.Fill( Pixel888( val ), &drawSurf );
-        break;
-    }
-    case PixelType888Rev:
-    {
-        DrawingSurface< Pixel888Rev > drawSurf
-                = LockDrawingSurface< Pixel888Rev >( );
-        char * val = reinterpret_cast< char * >( &pxl );
-        shape.Fill( Pixel888Rev( val ), &drawSurf );
-        break;
-    }
-    case PixelType0888:
-    {
-        DrawingSurface< Pixel0888 > drawSurf
-                = LockDrawingSurface< Pixel0888 >( );
-        shape.Fill( Pixel0888( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType0888Rev:
-    {
-        DrawingSurface< Pixel0888Rev > drawSurf
-                = LockDrawingSurface< Pixel0888Rev >( );
-        shape.Fill( Pixel0888Rev( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Fill( Pixel8888( pxl ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Fill( Pixel8888Rev( pxl ), &drawSurf );
-        break;
-    }
+        return Fill( shape, Pixel565( (uint16_t) pxl ) );
+    case PixelTypeRGB:
+        return Fill( shape, PixelRGB( pxl ) );
+    case PixelTypeBGR:
+        return Fill( shape, PixelBGR( pxl ) );
+    case PixelType0RGB:
+        return Fill( shape, Pixel0RGB( pxl ) );
+    case PixelType0BGR:
+        return Fill( shape, Pixel0BGR( pxl ) );
+    case PixelTypeRGB0:
+        return Fill( shape, PixelRGB0( pxl ) );
+    case PixelTypeBGR0:
+        return Fill( shape, PixelBGR0( pxl ) );
+    case PixelTypeARGB:
+        return Fill( shape, PixelARGB( pxl ) );
+    case PixelTypeABGR:
+        return Fill( shape, PixelABGR( pxl ) );
+    case PixelTypeRGBA:
+        return Fill( shape, PixelRGBA( pxl ) );
+    case PixelTypeBGRA:
+        return Fill( shape, PixelBGRA( pxl ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
-        break;
+        return;
     }
-    Unlock( );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 template < typename Shape >
 void
@@ -383,69 +307,38 @@ Surface::Fill( const Shape & shape, const Color3B & color )
     switch ( PixelType() )
     {
     case PixelType555:
-    {
-        DrawingSurface< Pixel555 > drawSurf
-                = LockDrawingSurface< Pixel555 >( );
-        shape.Fill( Pixel555( color ), &drawSurf );
-        break;
-    }
+        return Fill( shape, Pixel555( color ) );
+    case PixelType1555:
+        return Fill( shape, Pixel1555( color ) );
     case PixelType565:
-    {
-        DrawingSurface< Pixel565 > drawSurf
-                = LockDrawingSurface< Pixel565 >( );
-        shape.Fill( Pixel565( color ), &drawSurf );
-        break;
-    }
-    case PixelType888:
-    {
-        DrawingSurface< Pixel888 > drawSurf
-                = LockDrawingSurface< Pixel888 >( );
-        shape.Fill( Pixel888( color ), &drawSurf );
-        break;
-    }
-    case PixelType888Rev:
-    {
-        DrawingSurface< Pixel888Rev > drawSurf
-                = LockDrawingSurface< Pixel888Rev >( );
-        shape.Fill( Pixel888Rev( color ), &drawSurf );
-        break;
-    }
-    case PixelType0888:
-    {
-        DrawingSurface< Pixel0888 > drawSurf
-                = LockDrawingSurface< Pixel0888 >( );
-        shape.Fill( Pixel0888( color ), &drawSurf );
-        break;
-    }
-    case PixelType0888Rev:
-    {
-        DrawingSurface< Pixel0888Rev > drawSurf
-                = LockDrawingSurface< Pixel0888Rev >( );
-        shape.Fill( Pixel0888Rev( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Fill( Pixel8888( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Fill( Pixel8888Rev( color ), &drawSurf );
-        break;
-    }
+        return Fill( shape, Pixel565( color ) );
+    case PixelTypeRGB:
+        return Fill( shape, PixelRGB( color ) );
+    case PixelTypeBGR:
+        return Fill( shape, PixelBGR( color ) );
+    case PixelType0RGB:
+        return Fill( shape, Pixel0RGB( color ) );
+    case PixelType0BGR:
+        return Fill( shape, Pixel0BGR( color ) );
+    case PixelTypeRGB0:
+        return Fill( shape, PixelRGB0( color ) );
+    case PixelTypeBGR0:
+        return Fill( shape, PixelBGR0( color ) );
+    case PixelTypeARGB:
+        return Fill( shape, PixelARGB( color ) );
+    case PixelTypeABGR:
+        return Fill( shape, PixelABGR( color ) );
+    case PixelTypeRGBA:
+        return Fill( shape, PixelRGBA( color ) );
+    case PixelTypeBGRA:
+        return Fill( shape, PixelBGRA( color ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
-        break;
+        return;
     }
-    Unlock( );
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 template < typename Shape >
 void
@@ -453,24 +346,30 @@ Surface::Fill( const Shape & shape, const Color4B & color )
 {
     switch ( PixelType() )
     {
-    case PixelType8888:
-    {
-        DrawingSurface< Pixel8888 > drawSurf
-                = LockDrawingSurface< Pixel8888 >( );
-        shape.Fill( Pixel8888( color ), &drawSurf );
-        break;
-    }
-    case PixelType8888Rev:
-    {
-        DrawingSurface< Pixel8888Rev > drawSurf
-                = LockDrawingSurface< Pixel8888Rev >( );
-        shape.Fill( Pixel8888Rev( color ), &drawSurf );
-        break;
-    }
+    case PixelType1555:
+        return Fill( shape, Pixel1555( color ) );
+    case PixelTypeARGB:
+        return Fill( shape, PixelARGB( color ) );
+    case PixelTypeABGR:
+        return Fill( shape, PixelABGR( color ) );
+    case PixelTypeRGBA:
+        return Fill( shape, PixelRGBA( color ) );
+    case PixelTypeBGRA:
+        return Fill( shape, PixelBGRA( color ) );
     default:
         Assert( 0 && "Unexpected pixel type" );
         break;
     }
+}
+
+//.............................................................................
+
+template < typename Shape, typename Pxl >
+void 
+Surface::Fill( const Shape & shape, Pxl pxl )
+{
+    DrawingSurface< Pxl > drawSurf = LockDrawingSurface< Pxl >( );
+    shape.Fill( pxl, &drawSurf );
     Unlock( );
 }
 
@@ -483,7 +382,7 @@ Surface::GetSDL_Surface( )
     return m_pSDL_Surface;
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
 const ::SDL_Surface * 

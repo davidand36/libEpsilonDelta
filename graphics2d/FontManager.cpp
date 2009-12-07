@@ -751,7 +751,7 @@ FontManagerImpl::MakeGlyphSurface( int width, int height,
                                    uint8_t * srcPixels, int srcPitch,
                                    bool monochrome, Color3B color )
 {
-    EPixelType pixelType = monochrome  ?  PixelType0888  :  PixelType8888;
+    EPixelType pixelType = monochrome  ?  PixelType0RGB  :  PixelTypeRGBA;
     shared_ptr< Surface > pSurface( new Surface( width, height, pixelType ) );
 
     if ( srcPitch < 0 )
@@ -767,16 +767,16 @@ FontManagerImpl::MakeGlyphSurface( int width, int height,
             transparentColor.Set( 0, 0, 0 );
         pSurface->SetTransparentColor( transparentColor );
 
-        Pixel0888 fg( color );
-        Pixel0888 bg( transparentColor );
+        Pixel0RGB fg( color );
+        Pixel0RGB bg( transparentColor );
 
-        Pixel0888 * destPixels
-                = reinterpret_cast< Pixel0888 * >( pSurface->Lock( ) );
+        Pixel0RGB * destPixels
+                = reinterpret_cast< Pixel0RGB * >( pSurface->Lock( ) );
 
         for ( int y = 0; y < height; ++y )
         {
             uint8_t * pSrc = srcPixels;
-            Pixel0888 * pDest = destPixels;
+            Pixel0RGB * pDest = destPixels;
             uint8_t c = 0;
             for ( int x = 0; x < width; ++x )
             {
@@ -792,16 +792,16 @@ FontManagerImpl::MakeGlyphSurface( int width, int height,
     }
     else
     {
-        Pixel8888 * destPixels
-                = reinterpret_cast< Pixel8888 * >( pSurface->Lock( ) );
+        PixelRGBA * destPixels
+                = reinterpret_cast< PixelRGBA * >( pSurface->Lock( ) );
 
         for ( int y = 0; y < height; ++y )
         {
             uint8_t * pSrc = srcPixels;
-            Pixel8888 * pDest = destPixels;
+            PixelRGBA * pDest = destPixels;
             for ( int x = 0; x < width; ++x )
             {
-                Pixel8888 pxl( Color4B( color, (int)(*pSrc++) ) );
+                PixelRGBA pxl( Color4B( color, (int)(*pSrc++) ) );
                 *pDest++ = pxl;
             }
             srcPixels += srcPitch;

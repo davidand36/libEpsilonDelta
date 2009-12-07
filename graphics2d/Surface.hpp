@@ -121,6 +121,14 @@ private:
 #ifdef USE_SDL
     void Init( bool alpha );
     void Init( const Color3B & transparentColor );
+    template < typename Pxl >
+    bool Contains( const Point2I & point, uint32_t colorKey ) const;
+    template < typename Pxl >
+    bool Contains( const Point2I & point ) const;
+    template < typename Shape, typename Pxl >
+    void Draw( const Shape & shape, Pxl pxl );
+    template < typename Shape, typename Pxl >
+    void Fill( const Shape & shape, Pxl pxl );
 #endif
 };
 

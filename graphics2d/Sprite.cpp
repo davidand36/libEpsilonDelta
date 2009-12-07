@@ -47,7 +47,7 @@ Sprite::Test( )
     bool ok = true;
     cout << "Testing Sprite" << endl;
 
-    shared_ptr< Surface > pSurf( new Surface( 75, 100, PixelType8888 ) );
+    shared_ptr< Surface > pSurf( new Surface( 75, 100, PixelTypeRGBA ) );
     pSurf->Fill( pSurf->Extent(), Color4B( 0, 0, 0, 0 ) );
     Circle( Point2I( 37, 37 ), 37 ).Fill( Color3B( 0, 0, 255 ), pSurf.get() );
 

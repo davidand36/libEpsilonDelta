@@ -15,12 +15,6 @@
 #endif
 
 
-//These are platform-dependent, but I'm not sure just how yet.
-#define BITFIELDS_HIGHFIRST  0
-#define RGB_REDHIGH  1
-#define BITFIELDS_REDFIRST  ( BITFIELDS_HIGHFIRST == RGB_REDHIGH )
-
-
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
 
@@ -31,13 +25,18 @@ enum EPixelType
 {
     PixelType8,
     PixelType555,
+    PixelType1555,
     PixelType565,
-    PixelType888,
-    PixelType888Rev,
-    PixelType0888,
-    PixelType0888Rev,
-    PixelType8888,
-    PixelType8888Rev,
+    PixelTypeRGB,
+    PixelTypeBGR,
+    PixelType0RGB,
+    PixelType0BGR,
+    PixelTypeRGB0,
+    PixelTypeBGR0,
+    PixelTypeARGB,
+    PixelTypeABGR,
+    PixelTypeRGBA,
+    PixelTypeBGRA,
 
     NumPixelTypes,
 
@@ -48,7 +47,7 @@ enum EPixelType
 #elif BITSPERPIXEL==16
     NativePixelType = PixelType565
 #elif BITSPERPIXEL==32
-    NativePixelType = PixelType0888
+    NativePixelType = PixelTypeRGB0 //???
 #else
 #error "Unexpected BITSPERPIXEL"
 #endif
@@ -77,10 +76,10 @@ class Pixel555
 {
 public:
     Pixel555( );
-    Pixel555( uint16_t value );
     Pixel555( const Color3B & color );
+    Pixel555( uint16_t value );
+    Color3B Color( bool adjust = false ) const;
     uint16_t Value( ) const;
-    Color3B Color( ) const;
     
 private:
     union
@@ -88,18 +87,52 @@ private:
         uint16_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
+#ifdef BIG_ENDIAN
+            uint16_t : 1;
             uint16_t m_red : 5;
             uint16_t m_green : 5;
             uint16_t m_blue : 5;
-            uint16_t : 1;
 #else
-            uint16_t : 1;
             uint16_t m_blue : 5;
             uint16_t m_green : 5;
             uint16_t m_red : 5;
+            uint16_t : 1;
 #endif
         } m_rgb;
+    };
+};
+
+
+//*****************************************************************************
+
+
+class Pixel1555
+{
+public:
+    Pixel1555( );
+    Pixel1555( const Color4B & color );
+    Pixel1555( uint16_t value );
+    Color4B Color( bool adjust = false ) const;
+    uint16_t Value( ) const;
+    
+private:
+    union
+    {
+        uint16_t m_value;
+        struct
+        {
+#ifdef BIG_ENDIAN
+            uint16_t m_alpha: 1;
+            uint16_t m_red : 5;
+            uint16_t m_green : 5;
+            uint16_t m_blue : 5;
+#else
+            uint16_t m_blue : 5;
+            uint16_t m_green : 5;
+            uint16_t m_red : 5;
+            uint16_t m_alpha: 1;
+#endif
+        } m_argb;
     };
 };
 
@@ -111,10 +144,10 @@ class Pixel565
 {
 public:
     Pixel565( );
-    Pixel565( uint16_t value );
     Pixel565( const Color3B & color );
+    Pixel565( uint16_t value );
+    Color3B Color( bool adjust = false ) const;
     uint16_t Value( ) const;
-    Color3B Color( ) const;
     
 private:
     union
@@ -122,7 +155,7 @@ private:
         uint16_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
+#ifdef BIG_ENDIAN
             uint16_t m_red : 5;
             uint16_t m_green : 6;
             uint16_t m_blue : 5;
@@ -139,16 +172,16 @@ private:
 //*****************************************************************************
 
 
-class Pixel888
+class PixelRGB
 {
 public:
-    Pixel888( );
-    Pixel888( char bytes[ 3 ] );
-    Pixel888( uint32_t value );
-    Pixel888( const Color3B & color );
-    const uint8_t * Bytes( ) const;
-    uint32_t Value( ) const;
+    PixelRGB( );
+    PixelRGB( const Color3B & color );
+    PixelRGB( uint32_t value );
+    PixelRGB( char bytes[ 3 ] );
     Color3B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     uint8_t m_bytes[ 3 ];
@@ -158,16 +191,16 @@ private:
 //*****************************************************************************
 
 
-class Pixel888Rev
+class PixelBGR
 {
 public:
-    Pixel888Rev( );
-    Pixel888Rev( char bytes[ 3 ] );
-    Pixel888Rev( uint32_t value );
-    Pixel888Rev( const Color3B & color );
-    const uint8_t * Bytes( ) const;
-    uint32_t Value( ) const;
+    PixelBGR( );
+    PixelBGR( const Color3B & color );
+    PixelBGR( uint32_t value );
+    PixelBGR( char bytes[ 3 ] );
     Color3B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     uint8_t m_bytes[ 3 ];
@@ -177,14 +210,15 @@ private:
 //*****************************************************************************
 
 
-class Pixel0888
+class Pixel0RGB
 {
 public:
-    Pixel0888( );
-    Pixel0888( uint32_t value );
-    Pixel0888( const Color3B & color );
-    uint32_t Value( ) const;
+    Pixel0RGB( );
+    Pixel0RGB( const Color3B & color );
+    Pixel0RGB( uint32_t value );
     Color3B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     union
@@ -192,18 +226,12 @@ private:
         uint32_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
             uint32_t : 8;
             uint32_t m_red : 8;
             uint32_t m_green : 8;
             uint32_t m_blue : 8;
-#else
-            uint32_t m_blue : 8;
-            uint32_t m_green : 8;
-            uint32_t m_red : 8;
-            uint32_t : 8;
-#endif
         } m_rgb;
+        uint8_t m_bytes[ 4 ];
     };
 };
 
@@ -211,14 +239,15 @@ private:
 //*****************************************************************************
 
 
-class Pixel0888Rev
+class Pixel0BGR
 {
 public:
-    Pixel0888Rev( );
-    Pixel0888Rev( uint32_t value );
-    Pixel0888Rev( const Color3B & color );
-    uint32_t Value( ) const;
+    Pixel0BGR( );
+    Pixel0BGR( const Color3B & color );
+    Pixel0BGR( uint32_t value );
     Color3B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     union
@@ -226,18 +255,12 @@ private:
         uint32_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
             uint32_t : 8;
             uint32_t m_blue : 8;
             uint32_t m_green : 8;
             uint32_t m_red : 8;
-#else
-            uint32_t m_red : 8;
-            uint32_t m_green : 8;
-            uint32_t m_blue : 8;
-            uint32_t : 8;
-#endif
         } m_rgb;
+        uint8_t m_bytes[ 4 ];
     };
 };
 
@@ -245,16 +268,15 @@ private:
 //*****************************************************************************
 
 
-class Pixel8888
+class PixelRGB0
 {
 public:
-    Pixel8888( );
-    Pixel8888( uint32_t value );
-    Pixel8888( const Color3B & color );
-    Pixel8888( const Color4B & color );
-    uint32_t Value( ) const;
+    PixelRGB0( );
+    PixelRGB0( const Color3B & color );
+    PixelRGB0( uint32_t value );
     Color3B Color( ) const;
-    int Alpha( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     union
@@ -262,18 +284,12 @@ private:
         uint32_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
-            uint32_t m_alpha : 8;
             uint32_t m_red : 8;
             uint32_t m_green : 8;
             uint32_t m_blue : 8;
-#else
-            uint32_t m_blue : 8;
-            uint32_t m_green : 8;
-            uint32_t m_red : 8;
-            uint32_t m_alpha : 8;
-#endif
-        } m_rgba;
+            uint32_t : 8;
+        } m_rgb;
+        uint8_t m_bytes[ 4 ];
     };
 };
 
@@ -281,16 +297,15 @@ private:
 //*****************************************************************************
 
 
-class Pixel8888Rev
+class PixelBGR0
 {
 public:
-    Pixel8888Rev( );
-    Pixel8888Rev( uint32_t value );
-    Pixel8888Rev( const Color3B & color );
-    Pixel8888Rev( const Color4B & color );
-    uint32_t Value( ) const;
+    PixelBGR0( );
+    PixelBGR0( const Color3B & color );
+    PixelBGR0( uint32_t value );
     Color3B Color( ) const;
-    int Alpha( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
 
 private:
     union
@@ -298,18 +313,132 @@ private:
         uint32_t m_value;
         struct
         {
-#if BITFIELDS_REDFIRST
-            uint32_t m_alpha : 8;
             uint32_t m_blue : 8;
             uint32_t m_green : 8;
             uint32_t m_red : 8;
-#else
+            uint32_t : 8;
+        } m_rgb;
+        uint8_t m_bytes[ 4 ];
+    };
+};
+
+
+//*****************************************************************************
+
+
+class PixelARGB
+{
+public:
+    PixelARGB( );
+    PixelARGB( const Color3B & color );
+    PixelARGB( const Color4B & color );
+    PixelARGB( uint32_t value );
+    Color4B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
+
+private:
+    union
+    {
+        uint32_t m_value;
+        struct
+        {
+            uint32_t m_alpha : 8;
             uint32_t m_red : 8;
             uint32_t m_green : 8;
             uint32_t m_blue : 8;
-            uint32_t m_alpha : 8;
-#endif
         } m_rgba;
+        uint8_t m_bytes[ 4 ];
+    };
+};
+
+
+//*****************************************************************************
+
+
+class PixelABGR
+{
+public:
+    PixelABGR( );
+    PixelABGR( const Color3B & color );
+    PixelABGR( const Color4B & color );
+    PixelABGR( uint32_t value );
+    Color4B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
+
+private:
+    union
+    {
+        uint32_t m_value;
+        struct
+        {
+            uint32_t m_alpha : 8;
+            uint32_t m_blue : 8;
+            uint32_t m_green : 8;
+            uint32_t m_red : 8;
+        } m_rgba;
+        uint8_t m_bytes[ 4 ];
+    };
+};
+
+
+//*****************************************************************************
+
+
+class PixelRGBA
+{
+public:
+    PixelRGBA( );
+    PixelRGBA( const Color3B & color );
+    PixelRGBA( const Color4B & color );
+    PixelRGBA( uint32_t value );
+    Color4B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
+
+private:
+    union
+    {
+        uint32_t m_value;
+        struct
+        {
+            uint32_t m_red : 8;
+            uint32_t m_green : 8;
+            uint32_t m_blue : 8;
+            uint32_t m_alpha : 8;
+        } m_rgba;
+        uint8_t m_bytes[ 4 ];
+    };
+};
+
+
+//*****************************************************************************
+
+
+class PixelBGRA
+{
+public:
+    PixelBGRA( );
+    PixelBGRA( const Color3B & color );
+    PixelBGRA( const Color4B & color );
+    PixelBGRA( uint32_t value );
+    Color4B Color( ) const;
+    uint32_t Value( ) const;
+    const uint8_t * Bytes( ) const;
+
+private:
+    union
+    {
+        uint32_t m_value;
+        struct
+        {
+            uint32_t m_blue : 8;
+            uint32_t m_green : 8;
+            uint32_t m_red : 8;
+            uint32_t m_alpha : 8;
+        } m_rgba;
+        uint8_t m_bytes[ 4 ];
     };
 };
 
@@ -347,7 +476,7 @@ Pixel8::Pixel8( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
 Pixel8::Pixel8( uint8_t value )
@@ -373,15 +502,7 @@ Pixel555::Pixel555( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline
-Pixel555::Pixel555( uint16_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
 Pixel555::Pixel555( const Color3B & color )
@@ -392,7 +513,38 @@ Pixel555::Pixel555( const Color3B & color )
     m_rgb.m_blue = (uint16_t)( color.Blue() >> 3 );
 }
 
+//.............................................................................
+
+inline
+Pixel555::Pixel555( uint16_t value )
+    :   m_value( value )
+{
+}
+
 //=============================================================================
+
+inline
+Color3B 
+Pixel555::Color( bool adjust ) const
+{
+    if ( adjust )
+    {
+        //This allows the stored components to represent the full range 0-255.
+        int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
+        int g = (m_rgb.m_green << 3) | (m_rgb.m_green >> 2);
+        int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
+        return Color3B( r, g, b );
+    }
+    else
+    {
+        int r = m_rgb.m_red << 3;
+        int g = m_rgb.m_green << 3;
+        int b = m_rgb.m_blue << 3;
+        return Color3B( r, g, b );
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 inline
 uint16_t 
@@ -401,17 +553,67 @@ Pixel555::Value( ) const
     return m_value;
 }
 
+
+//*****************************************************************************
+
+
+inline
+Pixel1555::Pixel1555( )
+{
+}
+
+//.............................................................................
+
+inline 
+Pixel1555::Pixel1555( const Color4B & color )
+    :   m_value( 0 )
+{
+    m_argb.m_alpha = (color.Alpha() == 0)  ?  0  :  1;
+    m_argb.m_red = (uint16_t)( color.Red() >> 3 );
+    m_argb.m_green = (uint16_t)( color.Green() >> 3 );
+    m_argb.m_blue = (uint16_t)( color.Blue() >> 3 );
+}
+
+//.............................................................................
+
+inline
+Pixel1555::Pixel1555( uint16_t value )
+    :   m_value( value )
+{
+}
+
 //=============================================================================
 
 inline
-Color3B 
-Pixel555::Color( ) const
+Color4B 
+Pixel1555::Color( bool adjust ) const
 {
-    //This allows the stored components to represent the full range 0-255.
-    int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
-    int g = (m_rgb.m_green << 3) | (m_rgb.m_green >> 2);
-    int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
-    return Color3B( r, g, b );
+    if ( adjust )
+    {
+        //This allows the stored components to represent the full range 0-255.
+        int r = (m_argb.m_red << 3) | (m_argb.m_red >> 2);
+        int g = (m_argb.m_green << 3) | (m_argb.m_green >> 2);
+        int b = (m_argb.m_blue << 3) | (m_argb.m_blue >> 2);
+        int a = (m_argb.m_alpha == 0)  ?  0  :  255;
+        return Color4B( r, g, b, a );
+    }
+    else
+    {
+        int r = m_argb.m_red << 3;
+        int g = m_argb.m_green << 3;
+        int b = m_argb.m_blue << 3;
+        int a = (m_argb.m_alpha == 0)  ?  0  :  255;
+        return Color4B( r, g, b, a );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint16_t 
+Pixel1555::Value( ) const
+{
+    return m_value;
 }
 
 
@@ -423,15 +625,7 @@ Pixel565::Pixel565( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline
-Pixel565::Pixel565( uint16_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
 Pixel565::Pixel565( const Color3B & color )
@@ -441,7 +635,38 @@ Pixel565::Pixel565( const Color3B & color )
     m_rgb.m_blue = (uint16_t)( color.Blue() >> 3 );
 }
 
+//.............................................................................
+
+inline
+Pixel565::Pixel565( uint16_t value )
+    :   m_value( value )
+{
+}
+
 //=============================================================================
+
+inline
+Color3B 
+Pixel565::Color( bool adjust ) const
+{
+    if ( adjust )
+    {
+        //This allows the stored components to represent the full range 0-255.
+        int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
+        int g = (m_rgb.m_green << 2) | (m_rgb.m_green >> 4);
+        int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
+        return Color3B( r, g, b );
+    }
+    else
+    {
+        int r = m_rgb.m_red << 3;
+        int g = m_rgb.m_green << 2;
+        int b = m_rgb.m_blue << 3;
+        return Color3B( r, g, b );
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 inline
 uint16_t 
@@ -450,41 +675,29 @@ Pixel565::Value( ) const
     return m_value;
 }
 
-//=============================================================================
-
-inline
-Color3B 
-Pixel565::Color( ) const
-{
-    //This allows the stored components to represent the full range 0-255.
-    int r = (m_rgb.m_red << 3) | (m_rgb.m_red >> 2);
-    int g = (m_rgb.m_green << 2) | (m_rgb.m_green >> 4);
-    int b = (m_rgb.m_blue << 3) | (m_rgb.m_blue >> 2);
-    return Color3B( r, g, b );
-}
-
 
 //*****************************************************************************
 
 
 inline
-Pixel888::Pixel888( )
+PixelRGB::PixelRGB( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888::Pixel888( char bytes[ 3 ] )
+PixelRGB::PixelRGB( const Color3B & color )
 {
-    for ( int i = 0; i < 3; ++i )
-        m_bytes[ i ] = bytes[ i ];
+    m_bytes[ 0 ] = (uint8_t) color.Red();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Blue();
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888::Pixel888( uint32_t value )
+PixelRGB::PixelRGB( uint32_t value )
 {
 #ifdef BIG_ENDIAN
     m_bytes[ 0 ] = (uint8_t)((value >> 16) & 0xFF);
@@ -497,62 +710,51 @@ Pixel888::Pixel888( uint32_t value )
 #endif
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888::Pixel888( const Color3B & color )
+PixelRGB::PixelRGB( char bytes[ 3 ] )
 {
-#if RBG_REDHIGH
-    m_bytes[ 0 ] = (uint8_t) color.Red();
-    m_bytes[ 1 ] = (uint8_t) color.Green();
-    m_bytes[ 2 ] = (uint8_t) color.Blue();
-#else
-    m_bytes[ 0 ] = (uint8_t) color.Blue();
-    m_bytes[ 1 ] = (uint8_t) color.Green();
-    m_bytes[ 2 ] = (uint8_t) color.Red();
-#endif
-}
-
-//=============================================================================
-
-inline
-const uint8_t * 
-Pixel888::Bytes( ) const
-{
-    return m_bytes;
-}
-
-//-----------------------------------------------------------------------------
-
-inline
-uint32_t
-Pixel888::Value( ) const
-{
-#ifdef BIG_ENDIAN
-    return (uint32_t)( (m_bytes[ 0 ] << 16) | (m_bytes[ 1 ] << 8)
-                       | m_bytes[ 2 ] );
-#else
-    return (uint32_t)( m_bytes[ 0 ] | (m_bytes[ 1 ] << 8)
-                       | (m_bytes[ 2 ] << 16) );
-#endif
+    for ( int i = 0; i < 3; ++i )
+        m_bytes[ i ] = bytes[ i ];
 }
 
 //=============================================================================
 
 inline
 Color3B 
-Pixel888::Color( ) const
+PixelRGB::Color( ) const
 {
-#if RGB_REDHIGH
     int r = m_bytes[ 0 ];
     int g = m_bytes[ 1 ];
     int b = m_bytes[ 2 ];
-#else
-    int r = m_bytes[ 2 ];
-    int g = m_bytes[ 1 ];
-    int b = m_bytes[ 0 ];
-#endif
     return Color3B( r, g, b );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t
+PixelRGB::Value( ) const
+{
+#ifdef BIG_ENDIAN
+    return (uint32_t)( (m_bytes[ 0 ] << 16)
+                       | (m_bytes[ 1 ] << 8)
+                       | m_bytes[ 2 ] );
+#else
+    return (uint32_t)( m_bytes[ 0 ]
+                       | (m_bytes[ 1 ] << 8)
+                       | (m_bytes[ 2 ] << 16) );
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelRGB::Bytes( ) const
+{
+    return m_bytes;
 }
 
 
@@ -560,23 +762,24 @@ Pixel888::Color( ) const
 
 
 inline
-Pixel888Rev::Pixel888Rev( )
+PixelBGR::PixelBGR( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888Rev::Pixel888Rev( char bytes[ 3 ] )
+PixelBGR::PixelBGR( const Color3B & color )
 {
-    for ( int i = 0; i < 3; ++i )
-        m_bytes[ i ] = bytes[ i ];
+    m_bytes[ 0 ] = (uint8_t) color.Blue();
+    m_bytes[ 1 ] = (uint8_t) color.Green();
+    m_bytes[ 2 ] = (uint8_t) color.Red();
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888Rev::Pixel888Rev( uint32_t value )
+PixelBGR::PixelBGR( uint32_t value )
 {
 #ifdef BIG_ENDIAN
     m_bytes[ 0 ] = (uint8_t)((value >> 16) & 0xFF);
@@ -589,62 +792,51 @@ Pixel888Rev::Pixel888Rev( uint32_t value )
 #endif
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel888Rev::Pixel888Rev( const Color3B & color )
+PixelBGR::PixelBGR( char bytes[ 3 ] )
 {
-#if RBG_REDHIGH
-    m_bytes[ 0 ] = (uint8_t) color.Blue();
-    m_bytes[ 1 ] = (uint8_t) color.Green();
-    m_bytes[ 2 ] = (uint8_t) color.Red();
-#else
-    m_bytes[ 0 ] = (uint8_t) color.Red();
-    m_bytes[ 1 ] = (uint8_t) color.Green();
-    m_bytes[ 2 ] = (uint8_t) color.Blue();
-#endif
+    for ( int i = 0; i < 3; ++i )
+        m_bytes[ i ] = bytes[ i ];
 }
 
 //=============================================================================
 
 inline
-const uint8_t * 
-Pixel888Rev::Bytes( ) const
+Color3B 
+PixelBGR::Color( ) const
 {
-    return m_bytes;
+    int r = m_bytes[ 2 ];
+    int g = m_bytes[ 1 ];
+    int b = m_bytes[ 0 ];
+    return Color3B( r, g, b );
 }
 
 //-----------------------------------------------------------------------------
 
 inline
 uint32_t
-Pixel888Rev::Value( ) const
+PixelBGR::Value( ) const
 {
 #ifdef BIG_ENDIAN
-    return (uint32_t)( (m_bytes[ 0 ] << 16) | (m_bytes[ 1 ] << 8)
+    return (uint32_t)( (m_bytes[ 0 ] << 16)
+                       | (m_bytes[ 1 ] << 8)
                        | m_bytes[ 2 ] );
 #else
-    return (uint32_t)( m_bytes[ 0 ] | (m_bytes[ 1 ] << 8)
+    return (uint32_t)( m_bytes[ 0 ]
+                       | (m_bytes[ 1 ] << 8)
                        | (m_bytes[ 2 ] << 16) );
 #endif
 }
 
-//=============================================================================
+//-----------------------------------------------------------------------------
 
 inline
-Color3B 
-Pixel888Rev::Color( ) const
+const uint8_t * 
+PixelBGR::Bytes( ) const
 {
-#if RGB_REDHIGH
-    int r = m_bytes[ 2 ];
-    int g = m_bytes[ 1 ];
-    int b = m_bytes[ 0 ];
-#else
-    int r = m_bytes[ 0 ];
-    int g = m_bytes[ 1 ];
-    int b = m_bytes[ 2 ];
-#endif
-    return Color3B( r, g, b );
+    return m_bytes;
 }
 
 
@@ -652,22 +844,14 @@ Pixel888Rev::Color( ) const
 
 
 inline 
-Pixel0888::Pixel0888( )
+Pixel0RGB::Pixel0RGB( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
-Pixel0888::Pixel0888( uint32_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline 
-Pixel0888::Pixel0888( const Color3B & color )
+Pixel0RGB::Pixel0RGB( const Color3B & color )
     :   m_value( 0 )
 {
     m_rgb.m_red = (uint8_t) color.Red();
@@ -675,22 +859,40 @@ Pixel0888::Pixel0888( const Color3B & color )
     m_rgb.m_blue = (uint8_t) color.Blue();
 }
 
-//=============================================================================
+//.............................................................................
 
-inline
-uint32_t 
-Pixel0888::Value( ) const
+inline 
+Pixel0RGB::Pixel0RGB( uint32_t value )
+    :   m_value( value )
 {
-    return m_value;
 }
 
 //=============================================================================
 
+
 inline
 Color3B 
-Pixel0888::Color( ) const
+Pixel0RGB::Color( ) const
 {
     return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+Pixel0RGB::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+Pixel0RGB::Bytes( ) const
+{
+    return m_bytes;
 }
 
 
@@ -698,22 +900,14 @@ Pixel0888::Color( ) const
 
 
 inline 
-Pixel0888Rev::Pixel0888Rev( )
+Pixel0BGR::Pixel0BGR( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
-Pixel0888Rev::Pixel0888Rev( uint32_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline 
-Pixel0888Rev::Pixel0888Rev( const Color3B & color )
+Pixel0BGR::Pixel0BGR( const Color3B & color )
     :   m_value( 0 )
 {
     m_rgb.m_red = (uint8_t) color.Red();
@@ -721,88 +915,39 @@ Pixel0888Rev::Pixel0888Rev( const Color3B & color )
     m_rgb.m_blue = (uint8_t) color.Blue();
 }
 
-//=============================================================================
+//.............................................................................
 
-inline
-uint32_t 
-Pixel0888Rev::Value( ) const
+inline 
+Pixel0BGR::Pixel0BGR( uint32_t value )
+    :   m_value( value )
 {
-    return m_value;
 }
 
 //=============================================================================
 
 inline
 Color3B 
-Pixel0888Rev::Color( ) const
+Pixel0BGR::Color( ) const
 {
     return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
 }
 
-
-//*****************************************************************************
-
-
-inline 
-Pixel8888::Pixel8888( )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline 
-Pixel8888::Pixel8888( uint32_t value )
-    :   m_value( value )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline 
-Pixel8888::Pixel8888( const Color3B & color )
-{
-    m_rgba.m_red = color.Red();
-    m_rgba.m_green = color.Green();
-    m_rgba.m_blue = color.Blue();
-    m_rgba.m_alpha = 255;
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-inline
-Pixel8888::Pixel8888( const Color4B & color )
-{
-    m_rgba.m_red = color.Red();
-    m_rgba.m_green = color.Green();
-    m_rgba.m_blue = color.Blue();
-    m_rgba.m_alpha = color.Alpha();
-}
-
-//=============================================================================
+//-----------------------------------------------------------------------------
 
 inline
 uint32_t 
-Pixel8888::Value( ) const
+Pixel0BGR::Value( ) const
 {
     return m_value;
 }
 
-//=============================================================================
-
-inline
-Color3B 
-Pixel8888::Color( ) const
-{
-    return Color3B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue );
-}
-
 //-----------------------------------------------------------------------------
 
-inline 
-int 
-Pixel8888::Alpha( ) const
+inline
+const uint8_t * 
+Pixel0BGR::Bytes( ) const
 {
-    return m_rgba.m_alpha;
+    return m_bytes;
 }
 
 
@@ -810,22 +955,124 @@ Pixel8888::Alpha( ) const
 
 
 inline 
-Pixel8888Rev::Pixel8888Rev( )
+PixelRGB0::PixelRGB0( )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline 
-Pixel8888Rev::Pixel8888Rev( uint32_t value )
+PixelRGB0::PixelRGB0( const Color3B & color )
+    :   m_value( 0 )
+{
+    m_rgb.m_red = (uint8_t) color.Red();
+    m_rgb.m_green = (uint8_t) color.Green();
+    m_rgb.m_blue = (uint8_t) color.Blue();
+}
+
+//.............................................................................
+
+inline 
+PixelRGB0::PixelRGB0( uint32_t value )
     :   m_value( value )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//=============================================================================
+
+inline
+Color3B 
+PixelRGB0::Color( ) const
+{
+    return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+PixelRGB0::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelRGB0::Bytes( ) const
+{
+    return m_bytes;
+}
+
+
+//*****************************************************************************
+
 
 inline 
-Pixel8888Rev::Pixel8888Rev( const Color3B & color )
+PixelBGR0::PixelBGR0( )
+{
+}
+
+//.............................................................................
+
+inline 
+PixelBGR0::PixelBGR0( const Color3B & color )
+    :   m_value( 0 )
+{
+    m_rgb.m_red = (uint8_t) color.Red();
+    m_rgb.m_green = (uint8_t) color.Green();
+    m_rgb.m_blue = (uint8_t) color.Blue();
+}
+
+//.............................................................................
+
+inline 
+PixelBGR0::PixelBGR0( uint32_t value )
+    :   m_value( value )
+{
+}
+
+//=============================================================================
+
+inline
+Color3B 
+PixelBGR0::Color( ) const
+{
+    return Color3B( m_rgb.m_red, m_rgb.m_green, m_rgb.m_blue );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+PixelBGR0::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelBGR0::Bytes( ) const
+{
+    return m_bytes;
+}
+
+
+//*****************************************************************************
+
+
+inline 
+PixelARGB::PixelARGB( )
+{
+}
+
+//.............................................................................
+
+inline 
+PixelARGB::PixelARGB( const Color3B & color )
 {
     m_rgba.m_red = color.Red();
     m_rgba.m_green = color.Green();
@@ -833,10 +1080,10 @@ Pixel8888Rev::Pixel8888Rev( const Color3B & color )
     m_rgba.m_alpha = 255;
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 inline
-Pixel8888Rev::Pixel8888Rev( const Color4B & color )
+PixelARGB::PixelARGB( const Color4B & color )
 {
     m_rgba.m_red = color.Red();
     m_rgba.m_green = color.Green();
@@ -844,31 +1091,241 @@ Pixel8888Rev::Pixel8888Rev( const Color4B & color )
     m_rgba.m_alpha = color.Alpha();
 }
 
-//=============================================================================
+//.............................................................................
 
-inline
-uint32_t 
-Pixel8888Rev::Value( ) const
+inline 
+PixelARGB::PixelARGB( uint32_t value )
+    :   m_value( value )
 {
-    return m_value;
 }
 
 //=============================================================================
 
 inline
-Color3B 
-Pixel8888Rev::Color( ) const
+Color4B 
+PixelARGB::Color( ) const
 {
-    return Color3B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue );
+    return Color4B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue,
+                    m_rgba.m_alpha );
 }
 
 //-----------------------------------------------------------------------------
 
-inline 
-int 
-Pixel8888Rev::Alpha( ) const
+inline
+uint32_t 
+PixelARGB::Value( ) const
 {
-    return m_rgba.m_alpha;
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelARGB::Bytes( ) const
+{
+    return m_bytes;
+}
+
+
+//*****************************************************************************
+
+
+inline 
+PixelABGR::PixelABGR( )
+{
+}
+
+//.............................................................................
+
+inline 
+PixelABGR::PixelABGR( const Color3B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = 255;
+}
+
+//.............................................................................
+
+inline
+PixelABGR::PixelABGR( const Color4B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = color.Alpha();
+}
+
+//.............................................................................
+
+inline 
+PixelABGR::PixelABGR( uint32_t value )
+    :   m_value( value )
+{
+}
+
+//=============================================================================
+
+inline
+Color4B 
+PixelABGR::Color( ) const
+{
+    return Color4B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue,
+                    m_rgba.m_alpha );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+PixelABGR::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelABGR::Bytes( ) const
+{
+    return m_bytes;
+}
+
+
+//*****************************************************************************
+
+
+inline 
+PixelRGBA::PixelRGBA( )
+{
+}
+
+//.............................................................................
+
+inline 
+PixelRGBA::PixelRGBA( const Color3B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = 255;
+}
+
+//.............................................................................
+
+inline
+PixelRGBA::PixelRGBA( const Color4B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = color.Alpha();
+}
+
+//.............................................................................
+
+inline 
+PixelRGBA::PixelRGBA( uint32_t value )
+    :   m_value( value )
+{
+}
+
+//=============================================================================
+
+inline
+Color4B 
+PixelRGBA::Color( ) const
+{
+    return Color4B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue,
+                    m_rgba.m_alpha );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+PixelRGBA::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelRGBA::Bytes( ) const
+{
+    return m_bytes;
+}
+
+
+//*****************************************************************************
+
+
+inline 
+PixelBGRA::PixelBGRA( )
+{
+}
+
+//.............................................................................
+
+inline 
+PixelBGRA::PixelBGRA( const Color3B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = 255;
+}
+
+//.............................................................................
+
+inline
+PixelBGRA::PixelBGRA( const Color4B & color )
+{
+    m_rgba.m_red = color.Red();
+    m_rgba.m_green = color.Green();
+    m_rgba.m_blue = color.Blue();
+    m_rgba.m_alpha = color.Alpha();
+}
+
+//.............................................................................
+
+inline 
+PixelBGRA::PixelBGRA( uint32_t value )
+    :   m_value( value )
+{
+}
+
+//=============================================================================
+
+inline
+Color4B 
+PixelBGRA::Color( ) const
+{
+    return Color4B( m_rgba.m_red, m_rgba.m_green, m_rgba.m_blue,
+                    m_rgba.m_alpha );
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+uint32_t 
+PixelBGRA::Value( ) const
+{
+    return m_value;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+const uint8_t * 
+PixelBGRA::Bytes( ) const
+{
+    return m_bytes;
 }
 
 

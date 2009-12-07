@@ -5,6 +5,32 @@
   Copyright (C) 2007 David M. Anderson
 
   Pixel classes.
+  NOTES:
+  1. i) Pixel8 represents an 8-bit pixel. Generally this will be an index into a
+     256-color palette, but it could also be used for luminance, shadow, bump,
+     etc., maps.
+     ii) Pixel555, Pixel1555, and Pixel565 are 16-bit pixels with colors packed
+     in native-endian order as RGB or ARGB.
+     iii) PixelRGB,...,PixelBGRA are 24- or 32-bit pixels with 8 bits per
+     component.
+     The bytes are arranged in the order listed, regardless of platform.
+  2. The value constructors and Value() methods deal directly with the
+     underlying, if rather opaque, in-memory value of the pixel, so they are
+     lossless.
+     For 24- and 32-bit pixels, the color constructors and Color() methods are
+     also lossless, but for the 16-bit pixels, this is not true. When
+     converting from Color3B or Color4B, low-order bits are necessarily lost.
+     For 16-bit pixels, Color() offers two options. The default is simply to
+     shift the components back to 8 bits, setting the low bits to 0.
+     Alternatively, an adjustment can be made by using high order bits to set
+     the missing low ones. The advantage of this is that color components can
+     range all the way from 0 to 255, indicating full saturation.
+  4. The implementation uses bit fields, which are convenient, though rather
+     platform-dependent. It appears that on big-endian platforms, the
+     fields are arranged starting at the high end of the containing integer,
+     while on little-endian platforms, fields start at the low end. (The bits
+     within each field are not rearranged.) For the 32-bit pixel types, this
+     means that in either case the fields are in the same order as the bytes.
 */
 
 

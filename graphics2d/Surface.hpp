@@ -92,7 +92,7 @@ public:
     void SavePng( const std::string & fileSpec );
 #endif
 #ifdef USE_JPEG
-    void SaveJpeg( const std::string & fileSpec );
+    void SaveJpeg( const std::string & fileSpec, int quality = 85 /*0-100*/ );
 #endif
 
 #ifdef DEBUG

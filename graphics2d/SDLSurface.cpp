@@ -23,6 +23,9 @@
 #include <png.h>
 #include <setjmp.h>
 #endif
+#ifdef USE_JPEG
+#include <jpeglib.h>
+#endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "File.hpp"
@@ -417,10 +420,6 @@ Surface::Blit( const Rectangle & srcRect, const Point2I & destPos,
 void 
 Surface::SavePng( const std::string & fileSpec )
 {
-    Rectangle extent = Extent();
-    int width = extent.Width();
-    int height = extent.Height();
-
     if ( (m_pixelType == PixelTypeRGB) || (m_pixelType == PixelTypeARGB) )
     {
         File file( fileSpec );
@@ -439,6 +438,10 @@ Surface::SavePng( const std::string & fileSpec )
             throw FileException( "Error writing " + fileSpec + " as PNG." );
         }
         ::png_init_io( pPng, file.Handle() );
+
+        Rectangle extent = Extent();
+        int width = extent.Width();
+        int height = extent.Height();
         int pitch = Pitch();
         int bytesPerPixel = (m_pixelType == PixelTypeRGB)  ?  3  :  4;
         pitch *= bytesPerPixel;
@@ -449,6 +452,7 @@ Surface::SavePng( const std::string & fileSpec )
         ::png_set_IHDR( pPng, pInfo, width, height, bitDepth, colorType,
                         interlace, PNG_COMPRESSION_TYPE_DEFAULT,
                         PNG_FILTER_TYPE_DEFAULT );
+
         Color3B transparent;
         if ( GetTransparentColor( &transparent ) )
         {
@@ -458,6 +462,7 @@ Surface::SavePng( const std::string & fileSpec )
             pngColor.blue = (::png_uint_16)transparent.Blue();
             ::png_set_tRNS( pPng, pInfo, 0, 1, &pngColor );
         }
+
         ::png_byte * rows[ height ];
         ::png_byte * pixels = (::png_byte *)Lock( );
         for ( int i = 0; i < height; ++i )
@@ -502,9 +507,57 @@ Surface::SavePng( const std::string & fileSpec )
 #ifdef USE_JPEG
 
 void 
-Surface::SaveJpeg( const std::string & fileSpec )
+Surface::SaveJpeg( const std::string & fileSpec, int quality )
 {
-    //!!!
+    if ( m_pixelType == PixelTypeRGB )
+    {
+        File file( fileSpec );
+        bool openRslt = file.Open( File::WriteMode );
+        if ( ! openRslt )
+            throw FileException( "Unable to open " + fileSpec
+                                 + " for writing." );
+        ::jpeg_compress_struct jpegCompress;
+        ::jpeg_error_mgr jpegErrorMgr;
+        jpegCompress.err = ::jpeg_std_error( &jpegErrorMgr );
+        ::jpeg_create_compress( &jpegCompress );
+        ::jpeg_stdio_dest( &jpegCompress, file.Handle() );
+
+        Rectangle extent = Extent();
+        int width = extent.Width();
+        int height = extent.Height();
+        jpegCompress.image_width = width;
+        jpegCompress.image_height = height;
+        jpegCompress.input_components = 3;
+        jpegCompress.in_color_space = ::JCS_RGB;
+        ::jpeg_set_defaults( &jpegCompress );
+        quality = max( 0, min( 100, quality ) );
+        ::jpeg_set_quality( &jpegCompress, quality, true );
+        ::jpeg_start_compress( &jpegCompress, true );
+
+        int pitch = Pitch() * 3; //bytes
+        ::JSAMPLE * rows[ height ];
+        ::JSAMPLE * pixels = (::png_byte *)Lock( );
+        for ( int i = 0; i < height; ++i )
+        {
+            rows[ i ] = pixels;
+            pixels += pitch;
+        }
+        ::JDIMENSION rowsWritten = ::jpeg_write_scanlines( &jpegCompress, rows,
+                                                         (::JDIMENSION)height );
+        Assert( rowsWritten == height );
+        ::jpeg_finish_compress( &jpegCompress );
+        ::jpeg_destroy_compress( &jpegCompress );
+        Unlock( );
+    }
+    else
+    {
+        ::SDL_PixelFormat pxlFmt
+                = DetermineSDLPixelFormat( PixelTypeRGB );
+        ::SDL_Surface * pSDL_Surface
+                = ::SDL_ConvertSurface( m_pSDL_Surface, &pxlFmt, 0 );
+        Surface surfRGB( pSDL_Surface );
+        surfRGB.SaveJpeg( fileSpec, quality );
+    }
 }
 
 #endif //USE_JPEG
@@ -668,6 +721,16 @@ Surface::Test( )
     pSurfRGB->SavePng( "TestRGB.png" );
     cout << "Saving TestARGB.png" << endl;
     pSurfARGB->SavePng( "TestARGB.png" );
+#endif
+#ifdef USE_JPEG
+    cout << "Saving Test565.jpg (default quality)" << endl;
+    pSurf565->SaveJpeg( "Test565.jpg" );
+    cout << "Saving TestRGB.jpg (default quality)" << endl;
+    pSurfRGB->SaveJpeg( "TestRGB.jpg" );
+    cout << "Saving TestRGB.jpg (quality=100)" << endl;
+    pSurfRGB->SaveJpeg( "TestRGB100.jpg", 100 );
+    cout << "Saving TestARGB.jpg" << endl;
+    pSurfARGB->SaveJpeg( "TestARGB.jpg" );
 #endif
 
     if ( ok )

@@ -73,7 +73,11 @@ enum EPixelType
 #elif BITSPERPIXEL==16
     NativePixelType = PixelType565
 #elif BITSPERPIXEL==32
-    NativePixelType = PixelTypeRGB0 //???
+#ifdef BIG_ENDIAN
+    NativePixelType = PixelType0RGB
+#else
+    NativePixelType = PixelTypeBGR0
+#endif
 #else
 #error "Unexpected BITSPERPIXEL"
 #endif

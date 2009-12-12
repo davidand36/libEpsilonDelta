@@ -357,6 +357,8 @@ Surface::Contains( const Point2I & point ) const
             return false;
         }
     }
+    else
+        return true;
 }
 
 //=============================================================================

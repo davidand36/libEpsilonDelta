@@ -133,6 +133,18 @@ Input::Device( int index ) const
     return m_pImpl->Device( index );
 }
 
+//.............................................................................
+
+std::tr1::shared_ptr< InputDevice const >
+Input::Device( InputDevice::EType type ) const
+{
+    std::tr1::shared_ptr< InputDevice const > pDevice;
+    int index = DeviceIndex( type );
+    if ( index >= 0 )
+        pDevice = Device( index );
+    return pDevice;
+}
+
 //-----------------------------------------------------------------------------
 
 int 

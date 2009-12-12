@@ -6,9 +6,11 @@
 
   Input class: Manager of the input devices.
   NOTES:
-  1. Update should be called regularly (each frame, typically).
+  1. Update() should be called regularly (each frame, typically).
   2. DeviceIndex() returns the first device of the specified type,
      or -1 if none is present.
+     Device( EType ) also returns the first device of the specified type,
+     or a null pointer. Device( int ) requires a valid index.
   3. IgnoreDeviceTypes() can be called to avoid detecting and using devices of
      the specified types. (E.g., Wiimotes, which take some time to check for
      with the CWiiD library.) It needs to be called before Init().
@@ -46,6 +48,8 @@ public:
 
     int NumDevices( ) const;
     std::tr1::shared_ptr< InputDevice const > Device( int index ) const;
+    std::tr1::shared_ptr< InputDevice const >
+            Device( InputDevice::EType type ) const;
     int DeviceIndex( InputDevice::EType type ) const;
 
     typedef void (*QuitHandler)( );

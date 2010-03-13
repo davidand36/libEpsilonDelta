@@ -17,7 +17,7 @@
   so that Naw Ruz begins on 21 March. We follow the latter practice here. 
   One variation, implemented as BadiCalendar, uses cycles of cycles of years. 
   The more commonly used sequential numbering of years is implemented here.
-  The epoch (B.E., Baha'i Era) is JD 2,394,647, 21 March 1944 A.D., 
+  The epoch (B.E., Baha'i Era) is JD 2,394,647, 21 March 1844 A.D., 
   the year of al-Bab's declaration.
 */
 

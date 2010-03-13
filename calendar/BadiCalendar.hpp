@@ -10,7 +10,7 @@
   been completely standardized, but we use the term here to denote the
   variation that uses cycles (Kull-i-Shay) of 19 cycles (Vahid) of 19 years.
   See BahaiCalendar.hpp for more information.
-  The epoch (B.E., Baha'i Era) is JD 2,394,647, 21 March 1944 A.D., 
+  The epoch (B.E., Baha'i Era) is JD 2,394,647, 21 March 1844 A.D., 
   the year of al-Bab's declaration.
 */
 

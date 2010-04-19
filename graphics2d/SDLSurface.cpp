@@ -32,9 +32,9 @@
 #include "File.hpp"
 #include "Array.hpp"
 #include "Circle.hpp"
+#endif
 using namespace std;
 using namespace std::tr1;
-#endif
 
 
 namespace EpsilonDelta

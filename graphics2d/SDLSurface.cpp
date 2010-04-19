@@ -25,6 +25,7 @@
 #endif
 #ifdef USE_JPEG
 #include <jpeglib.h>
+#include <algorithm>
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"

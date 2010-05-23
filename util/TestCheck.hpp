@@ -114,11 +114,11 @@ bool DoTestCheck( unsigned int value, unsigned int expected,
                   const char * valStr, bool * pOK,
                   TestCheck::EDetails details = TestCheck::PrintAll );
 bool DoTestCheck( unsigned int value, int expected, const char * valStr,
-               bool * pOK, TestCheck::EDetails details = TestCheck::PrintAll );
-#ifndef COMPILER_MSC //MSC considers size_t and unsigned int to be the same.
-bool DoTestCheck( size_t value, int expected, const char * valStr, bool * pOK,
+                  bool * pOK,
                   TestCheck::EDetails details = TestCheck::PrintAll );
-#endif
+bool DoTestCheck( unsigned long value, int expected, const char * valStr,
+                  bool * pOK,
+                  TestCheck::EDetails details = TestCheck::PrintAll );
 
 template < typename T >
 bool DoTestCheckF( T value, T expected, const char * valStr, bool * pOK,

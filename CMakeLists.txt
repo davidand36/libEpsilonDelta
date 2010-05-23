@@ -9,6 +9,7 @@ cmake_minimum_required( VERSION 2.6 )
 
 project( libEpsilonDelta )
 
+
 set( libraries
      util math time file sql cgi
      )
@@ -39,7 +40,6 @@ if ( ${CMAKE_BUILD_TYPE} MATCHES Debug )
    add_definitions( -DDEBUG )
 endif ( ${CMAKE_BUILD_TYPE} MATCHES Debug )
 
-#!!! STLport
 
 set( useBoost true )  #required, for now at least
 if ( useBoost )

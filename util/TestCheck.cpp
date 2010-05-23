@@ -137,17 +137,13 @@ DoTestCheck( unsigned int value, int expected, const char * valStr,
 
 //-----------------------------------------------------------------------------
 
-#ifndef COMPILER_MSC //MSC considers size_t and unsigned int to be the same.
-
 bool 
-DoTestCheck( size_t value, int expected, const char * valStr, bool * pOK,
+DoTestCheck( unsigned long value, int expected, const char * valStr, bool * pOK,
              TestCheck::EDetails details )
 {
     return TestCheckImpl< int >::Check( static_cast< int >( value ), expected,
                                         valStr, pOK, details );
 }
-
-#endif
 
 //-----------------------------------------------------------------------------
 

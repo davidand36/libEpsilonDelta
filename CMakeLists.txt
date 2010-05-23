@@ -11,15 +11,23 @@ project( libEpsilonDelta )
 
 set( libraries
      util math time file sql cgi
-     astro calendar
-     mmbase graphics2d input
      )
 
 set( tests
      util math time file sql cgi
-     astro calendar
-     mmbase graphics2d input
      )
+
+option( buildAstro  "True to build astronomy & calendar libs"  true )
+if ( buildAstro )
+    list( APPEND libraries  astro calendar )
+    list( APPEND tests  astro calendar )
+endif ( buildAstro )
+
+option( buildMultimedia  "True to build multimedia libs"  true )
+if ( buildMultimedia )
+    list( APPEND libraries  mmbase graphics2d input )
+    list( APPEND tests  mmbase graphics2d input )
+endif ( buildMultimedia )
 
 
 set( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMakeModules )

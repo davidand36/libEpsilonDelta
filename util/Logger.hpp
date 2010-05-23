@@ -61,7 +61,6 @@ public:
     void operator()( int level, const char * format, ... );
     void Log( int level, const std::string & message );
     void Log( int level, const char * format, ... );
-    void Log( int level, const char * format, std::va_list args );
 
     void SetVerbosity( int maxLevel );
     int GetVerbosity( ) const;
@@ -88,6 +87,8 @@ private:
         std::ostream *  m_destinations[ NumLevels ];
     };
         
+    void LogVA( int level, const char * format, std::va_list args );
+
     std::string                         m_domain;
     int                                 m_verbosity;
     std::tr1::shared_ptr< OutputFunc >  m_pOutputFunc;

@@ -49,7 +49,7 @@ Logger::operator()( int level, const char * format, ... )
     {
         va_list args;
         va_start( args, format );
-        Log( level, format, args );
+        LogVA( level, format, args );
         va_end( args );
     }
 }
@@ -75,7 +75,10 @@ Logger::Log( int level, const char * format, ... )
     {
         va_list args;
         va_start( args, format );
-        Log( level, format, args );
+        if ( args )
+            LogVA( level, format, args );
+        else
+            Log( level, string( format ) );
         va_end( args );
     }
 }
@@ -83,7 +86,7 @@ Logger::Log( int level, const char * format, ... )
 //.............................................................................
 
 void 
-Logger::Log( int level, const char * format, va_list args )
+Logger::LogVA( int level, const char * format, va_list args )
 {
     if ( level <= m_verbosity )
     {
@@ -205,7 +208,8 @@ Talk( )
 {
     log1( Logger::Alert, string( "An alert" ) );
     log2( Logger::Alert, "Alert #%d", 2 );
-    log1.Log( Logger::Error, "Can't do %s", "something" );
+    char something[] = "something";
+    log1.Log( Logger::Error, "Can't do %s", something );
     log2.Log( Logger::Error, "Uh oh!" );
     log1( Logger::Warning, "This could be " + string( "bad" ) );
     log2( Logger::Info, "Interestingly..." );

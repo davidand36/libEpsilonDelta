@@ -8,14 +8,14 @@
 *.o
 *.lib
 *.pdb
-astrodata/*
 build/*
 buildCB/*
+.sconsign*
 tests/*
 debug/*
 release/*
-sql/test/*.config
 
 # Misc files
-.sconsign*
 test.sqlite3
+astrodata/*
+sql/test/*.config

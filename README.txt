@@ -51,6 +51,11 @@ SQLite (www.sqlite.org, libsqlite3-dev) -- Excellent embedded database system.
 PostgreSQL (www.postgresql.org, libpq-dev) -- Advanced database system.
 MySQL (www.mysql.org, libmysqlclient-dev) -- High performance database system.
 
+CGI:
+This is optional:
+FastCGI (www.fastcgi.com, libfcgi-dev) -- Extension of CGI protocol. 
+    Use together with Apache mod_fcgid or whatever your HTTP server needs.
+
 Graphics & Input:
 SDL (www.libsdl.org) -- Simple Directmedia Layer, a cross-platform multimedia
     library. Required for mmbase, input, and grpahics2d.
@@ -68,7 +73,7 @@ JPL Planetary and Lunar Ephemerides
     (http://iau-comm4.jpl.nasa.gov/access2ephs.html) -- Data files needed
     for many of the astronomical and calendric computations. DE405 and DE406
     are the ones currently used, but DE200 is included in tests.
-    The library currently expects the big-endian binary files provided by JPL,
+    The tests currently expect the big-endian binary files provided by JPL,
     named as follows: astrodata/JPL_DExxx.be, where xxx = 200, 405, and 406,
     and the .be extension stands for big-endian.
 

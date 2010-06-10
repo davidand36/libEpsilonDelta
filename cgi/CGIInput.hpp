@@ -48,6 +48,7 @@ public:
     bool ReadInput( int maxInputLength = 10000 );
     std::vector< std::string > Values( const std::string & name ) const;
     std::string operator[]( const std::string & name ) const;
+    const std::multimap< std::string, std::string > & Pairs( );
 
 private:
     CGIInput( );
@@ -59,7 +60,6 @@ private:
     void ParseMultipartFormData( const std::string & input );
     void FreeRawInput( );
     const std::string & RawInput( ) const;
-    const std::multimap< std::string, std::string > & Pairs( );
 
     bool m_initialized;
     bool m_parseAndFree;

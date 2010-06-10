@@ -25,6 +25,7 @@ public:
     explicit ConfigFile( const std::string & fileName );
     std::vector< std::string > Values( const std::string & name ) const;
     std::string Value( const std::string & name ) const;
+    const std::multimap< std::string, std::string > & Pairs( );
 #ifdef DEBUG
     static bool Test( );
 #endif

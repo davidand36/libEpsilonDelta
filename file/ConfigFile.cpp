@@ -102,6 +102,14 @@ ConfigFile::Value( const string & name ) const
         return "";
 }
 
+//-----------------------------------------------------------------------------
+
+const std::multimap< std::string, std::string > & 
+ConfigFile::Pairs( )
+{
+    return m_pairs;
+}
+
 //=============================================================================
 
 #ifdef DEBUG

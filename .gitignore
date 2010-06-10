@@ -19,3 +19,5 @@ release/*
 test.sqlite3
 astrodata/*
 sql/test/*.config
+Test*.png
+Test*.jpg

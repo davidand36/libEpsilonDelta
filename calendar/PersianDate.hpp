@@ -1,16 +1,15 @@
-#ifndef PERSIANARITHMETICDATE_HPP
-#define PERSIANARITHMETICDATE_HPP
+#ifndef PERSIANDATE_HPP
+#define PERSIANDATE_HPP
 /*
-  PersianArithmeticDate.hpp
+  PersianDate.hpp
   Copyright (C) 2007 David M. Anderson
 
-  PersianArithmeticDate class, representing a date in the Persian arithmetic
-  calendar.
+  PersianDate class, representing a date in the Persian calendar.
 */
 
 
 #include "DateDMYW.hpp"
-#include "PersianArithmeticCalendar.hpp"
+#include "PersianCalendar.hpp"
 #include "PersianWeek.hpp"
 
 
@@ -20,14 +19,13 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< PersianArithmeticCalendar, PersianWeek >
-        PersianArithmeticDate;
+typedef DateDMYW< PersianCalendar, PersianWeek >  PersianDate;
 
 
 //=============================================================================
 
 #ifdef DEBUG
-bool TestPersianArithmeticDate( );
+bool TestPersianDate( );
 #endif
 
 
@@ -35,4 +33,4 @@ bool TestPersianArithmeticDate( );
 
 }                                                      //namespace EpsilonDelta
 
-#endif //PERSIANARITHMETICDATE_HPP
+#endif //PERSIANDATE_HPP

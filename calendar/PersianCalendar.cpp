@@ -1,13 +1,12 @@
 /*
-  PersianAstronomicalCalendar.cpp
+  PersianCalendar.cpp
   Copyright (C) 2007 David M. Anderson
 
-  Class PersianAstronomicalCalendar, which defines the Persian calendar,
-  as determined by the true astronomical equinox.
+  Class PersianCalendar, which defines the Persian calendar.
 */
 
 
-#include "PersianAstronomicalCalendar.hpp"
+#include "PersianCalendar.hpp"
 #include "Assert.hpp"
 #include "DivMod.hpp"
 #include "CalendarLibText.hpp"
@@ -49,53 +48,112 @@ int PriorSpringEquinox( int jdi );
 
 //=============================================================================
 
+PersianCalendar::EMethod PersianCalendar::ms_method
+    = PersianCalendar::Astronomical;
+
+//=============================================================================
 
 void
-PersianAstronomicalCalendar::JulianDayToDMY( int julianDay,
+PersianCalendar::JulianDayToDMY( int julianDay,
                                  int * pDay, int * pMonth, int * pYear )
 {
-    /*Adapted from Edward M. Reingold and Nachum Dershowitz,
-      "Calendrical Calculations, the Millennium Edition", p. 214.*/
-    int newYear = PriorSpringEquinox( julianDay ) + 1;
-    int year = static_cast<int>( std::floor( ((newYear - s_persianEpoch)
+    switch ( ms_method )
+    {
+    case Astronomical:
+    {
+        /*Adapted from Edward M. Reingold and Nachum Dershowitz,
+          "Calendrical Calculations, the Millennium Edition", p. 214.*/
+        int newYear = PriorSpringEquinox( julianDay ) + 1;
+        int year = static_cast<int>( std::floor( ((newYear - s_persianEpoch)
                                              / s_tropicalYear) + 0.5 ) )  +  1;
-    int dayOfYear = julianDay  -  DMYToJulianDay( 1, 1, year )  +  1;
-    int month;
-    if ( dayOfYear <= 186 )
-        month = static_cast<int>( std::ceil( dayOfYear / 31. ) );
-    else
-        month = static_cast<int>( std::ceil( (dayOfYear - 6) / 30. ) );
-    int day = julianDay  -  DMYToJulianDay( 1, month, year )  +  1;
-    if ( pDay )
+        int dayOfYear = julianDay  -  DMYToJulianDay( 1, 1, year )  +  1;
+        int month;
+        if ( dayOfYear <= 186 )
+            month = static_cast<int>( std::ceil( dayOfYear / 31. ) );
+        else
+            month = static_cast<int>( std::ceil( (dayOfYear - 6) / 30. ) );
+        int day = julianDay  -  DMYToJulianDay( 1, month, year )  +  1;
+        if ( pDay )
+            *pDay = day;
+        if ( pMonth )
+            *pMonth = month;
+        if ( pYear )
+            *pYear = year;
+        break;
+    }
+    case Arithmetic:
+    {
+        /*Adapted from Nachum Dershowitz and Edward M. Reingold,
+          "Calendrical Calculations" (1st ed.), p. 73.*/
+        const int jd475 = 2121446; /*DMYToJulianDay( 1, 1, 475 )*/
+        int d0 = julianDay - jd475;
+        int n = DivF( d0, 1029983 );
+        int d1 = ModF( d0, 1029983 );
+        int y;
+        if ( d1 == 1029982 )
+            y = 2820;
+        else
+        {
+            int a, b;
+            DivModF( d1, 366, &a, &b );
+            y = 1 + a + DivF( (2134 * a + 2816 * b + 2815), 1028522 );
+        }
+        int year = y + 2820 * n + 474;
+        int dy = julianDay - DMYToJulianDay( 1, 1, year ) + 1;
+        int month = (dy <= 186) ? DivC( dy, 31 ) : DivC( (dy - 6), 30 );
+        int day = julianDay - DMYToJulianDay( 1, month, year ) + 1;
         *pDay = day;
-    if ( pMonth )
         *pMonth = month;
-    if ( pYear )
         *pYear = year;
+        break;
+    }
+    default:
+        Assert( 0 && "Unexpected method for Persian calendar" );
+        break;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 int
-PersianAstronomicalCalendar::DMYToJulianDay( int day, int month, int year )
+PersianCalendar::DMYToJulianDay( int day, int month, int year )
 {
-    /*Adapted from Edward M. Reingold and Nachum Dershowitz,
-      "Calendrical Calculations, the Millennium Edition", p. 214.*/
-    int d = s_persianEpoch  +  180
-            +  static_cast<int>( std::floor( s_tropicalYear * (year - 1) ) );
-    int newYear = PriorSpringEquinox( d ) + 1;
-    int jd;
-    if ( month <= 7 )
-        jd = newYear  +  31 * (month - 1)  +  day  -  1;
-    else
-        jd = newYear  +  30 * (month - 1)  +  day  +  5;
-    return jd;
+    switch ( ms_method )
+    {
+    case Astronomical:
+    {
+        /*Adapted from Edward M. Reingold and Nachum Dershowitz,
+          "Calendrical Calculations, the Millennium Edition", p. 214.*/
+        int d = s_persianEpoch  +  180
+                + static_cast<int>( std::floor( s_tropicalYear * (year - 1) ) );
+        int newYear = PriorSpringEquinox( d ) + 1;
+        int jd;
+        if ( month <= 7 )
+            jd = newYear  +  31 * (month - 1)  +  day  -  1;
+        else
+            jd = newYear  +  30 * (month - 1)  +  day  +  5;
+        return jd;
+    }
+    case Arithmetic:
+    {
+        /*Adapted from Nachum Dershowitz and Edward M. Reingold,
+          "Calendrical Calculations" (1st ed.), p. 72.*/
+        int y = year - 474;
+        int yr = ModF( y, 2820 ) + 474;
+        int md = (month <= 7) ? (31 * (month - 1)) : ((30 * (month - 1)) + 6);
+        return (s_persianEpoch - 1 + 365 * (yr - 1) + 1029983 * DivF( y, 2820 )
+                + DivF( (682 * yr - 110), 2816 ) + md + day);
+    }
+    default:
+        Assert( 0 && "Unexpected method for Persian calendar" );
+        break;
+    }
 }
 
 //=============================================================================
 
 int
-PersianAstronomicalCalendar::DaysInMonth( int month, int year )
+PersianCalendar::DaysInMonth( int month, int year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 12 ]
@@ -108,7 +166,7 @@ PersianAstronomicalCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-PersianAstronomicalCalendar::MonthName( int month, int /*year*/ )
+PersianCalendar::MonthName( int month, int /*year*/ )
 {
     Assert( (month > 0) && (month <= 12) );
     return g_persianMonthNames[ month - 1 ];
@@ -117,11 +175,28 @@ PersianAstronomicalCalendar::MonthName( int month, int /*year*/ )
 //=============================================================================
 
 bool
-PersianAstronomicalCalendar::IsLeapYear( int year )
+PersianCalendar::IsLeapYear( int year )
 {
-    int daysInYear = DMYToJulianDay( 1, 1, year + 1 )
-            -  DMYToJulianDay( 1, 1, year );
-    return daysInYear > 365;
+    switch ( ms_method )
+    {
+    case Astronomical:
+    {
+        int daysInYear = DMYToJulianDay( 1, 1, year + 1 )
+                -  DMYToJulianDay( 1, 1, year );
+        return daysInYear > 365;
+    }
+    case Arithmetic:
+    {
+        /*Adapted from Nachum Dershowitz and Edward M. Reingold,
+          "Calendrical Calculations" (1st ed.), p. 71.*/
+        int y = year - 474;
+        int yy = ModF( y, 2820 ) + 474;
+        return ( ModF( ((yy + 38) * 682), 2816) < 682 );
+    }
+    default:
+        Assert( 0 && "Unexpected method for Persian calendar" );
+        break;
+    }
 }
 
 //=============================================================================

@@ -13,10 +13,8 @@ set( sources
      ISO8601Calendar.cpp
      ISO8601Date.cpp
      PersianWeek.cpp
-     PersianAstronomicalCalendar.cpp
-     PersianAstronomicalDate.cpp
-     PersianArithmeticCalendar.cpp
-     PersianArithmeticDate.cpp
+     PersianCalendar.cpp
+     PersianDate.cpp
      IslamicCalendar.cpp
      IslamicWeek.cpp
      IslamicDate.cpp

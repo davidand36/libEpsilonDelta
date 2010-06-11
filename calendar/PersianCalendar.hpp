@@ -1,11 +1,10 @@
-#ifndef PERSIANASTRONOMICALCALENDAR_HPP
-#define PERSIANASTRONOMICALCALENDAR_HPP
+#ifndef PERSIANCALENDAR_HPP
+#define PERSIANCALENDAR_HPP
 /*
-  PersianAstronomicalCalendar.hpp
+  PersianCalendar.hpp
   Copyright (C) 2007 David M. Anderson
 
-  Class PersianAstronomicalCalendar, which defines the Persian calendar,
-  as determined by the true astronomical equinox.
+  Class PersianCalendar, which defines the Persian calendar.
 
   The modern Persian calander, a.k.a. the Persian Solar or Iranian Solar
   calendar, was established on 11 Farvardin 1304 A.H.S. (Anno Hegirae Solis
@@ -26,7 +25,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class PersianAstronomicalCalendar
+class PersianCalendar
 {
 public:
     static void JulianDayToDMY( int julianDay,
@@ -40,6 +39,15 @@ public:
     enum EMonth
     { Farvardin = 1, Ordibehesht, Khordad, Tir, Mordad, Shahrivar,
       Mehr, Aban, Azar, Dey, Bahman, Esfand };
+
+    enum EMethod
+    { Astronomical, Arithmetic };
+
+    static void SetMethod( EMethod method );
+    static EMethod GetMethod( );
+
+private:
+    static EMethod ms_method;
 };
 
 
@@ -48,9 +56,27 @@ public:
 
 inline
 int
-PersianAstronomicalCalendar::MonthsInYear( int /*year*/ )
+PersianCalendar::MonthsInYear( int /*year*/ )
 {
     return 12;
+}
+
+//=============================================================================
+
+inline
+void
+PersianCalendar::SetMethod( EMethod method )
+{
+    ms_method = method;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+PersianCalendar::EMethod
+PersianCalendar::GetMethod( )
+{
+    return ms_method;
 }
 
 
@@ -58,4 +84,4 @@ PersianAstronomicalCalendar::MonthsInYear( int /*year*/ )
 
 }                                                      //namespace EpsilonDelta
 
-#endif //PERSIANASTRONOMICALCALENDAR_HPP
+#endif //PERSIANCALENDAR_HPP

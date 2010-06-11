@@ -13,8 +13,7 @@
 #include "GregorianDate.hpp"
 #include "JulianDate.hpp"
 #include "ISO8601Date.hpp"
-#include "PersianArithmeticDate.hpp"
-#include "PersianAstronomicalDate.hpp"
+#include "PersianDate.hpp"
 #include "IslamicDate.hpp"
 #include "LunarVisibility.hpp"
 #include "HebrewDate.hpp"
@@ -98,7 +97,7 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! TestISO8601Date( ) )
         ok = false;
-    if ( ! TestPersianArithmeticDate( ) )
+    if ( ! TestPersianDate( ) )
         ok = false;
     if ( ! TestIslamicDate( ) )
         ok = false;
@@ -133,8 +132,6 @@ int Main( int /*argc*/, char ** argv )
     if ( ! MayanTzolkinCalendar::Test( ) )
         ok = false;
     if ( ! TestFrenchRevolutionaryDate( ) )
-        ok = false;
-    if ( ! TestPersianAstronomicalDate( ) )
         ok = false;
 
     cout << endl << endl;
@@ -212,6 +209,7 @@ ComputeEpochs( )
     TESTCHECK( gregDate == JulianDate(), true, &ok );
     TESTCHECK( gregDate == JulianDate( 1, 1, 1 ), true, &ok );
 
+    PersianCalendar::SetMethod( PersianCalendar::Astronomical );
     d = 19;
     m = 3;
     y = 622;
@@ -223,10 +221,11 @@ ComputeEpochs( )
     TESTCHECK( d1, d, &ok );
     TESTCHECK( m1, m, &ok );
     TESTCHECK( y1, y, &ok );
-    TESTCHECK( PersianAstronomicalDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == PersianAstronomicalDate(), true, &ok );
-    TESTCHECK( julDate == PersianAstronomicalDate( 1, 1, 1 ), true, &ok );
+    TESTCHECK( PersianDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == PersianDate(), true, &ok );
+    TESTCHECK( julDate == PersianDate( 1, 1, 1 ), true, &ok );
 
+    PersianCalendar::SetMethod( PersianCalendar::Arithmetic );
     d = 19;
     m = 3;
     y = 622;
@@ -238,9 +237,9 @@ ComputeEpochs( )
     TESTCHECK( d1, d, &ok );
     TESTCHECK( m1, m, &ok );
     TESTCHECK( y1, y, &ok );
-    TESTCHECK( PersianArithmeticDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == PersianArithmeticDate(), true, &ok );
-    TESTCHECK( julDate == PersianArithmeticDate( 1, 1, 1 ), true, &ok );
+    TESTCHECK( PersianDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == PersianDate(), true, &ok );
+    TESTCHECK( julDate == PersianDate( 1, 1, 1 ), true, &ok );
 
     d = 16;
     m = 7;

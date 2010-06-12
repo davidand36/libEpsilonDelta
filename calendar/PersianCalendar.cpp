@@ -146,7 +146,7 @@ PersianCalendar::DMYToJulianDay( int day, int month, int year )
     }
     default:
         Assert( 0 && "Unexpected method for Persian calendar" );
-        break;
+        return 0;
     }
 }
 

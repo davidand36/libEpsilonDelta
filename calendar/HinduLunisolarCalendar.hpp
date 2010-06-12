@@ -45,7 +45,36 @@ public:
       Asvina, Karttika, Margasira, Pausha, Magha, Phalguna };
 
     enum { LDNone = 100 };
+
+    enum EVersion
+    { Modern, Old };
+
+    static void SetVersion( EVersion version );
+    static EVersion GetVersion( );
+
+private:
+    static EVersion ms_version;
 };
+
+
+//*****************************************************************************
+
+
+inline
+void
+HinduLunisolarCalendar::SetVersion( EVersion version )
+{
+    ms_version = version;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+HinduLunisolarCalendar::EVersion
+HinduLunisolarCalendar::GetVersion( )
+{
+    return ms_version;
+}
 
 
 //*****************************************************************************

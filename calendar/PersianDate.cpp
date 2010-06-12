@@ -8,10 +8,10 @@
 
 #include "PersianDate.hpp"
 #ifdef DEBUG
-#include <iostream>
 #include "TestCheck.hpp"
 #include "GregorianDate.hpp"
 #include "Array.hpp"
+#include <iostream>
 #endif
 using namespace std;
 

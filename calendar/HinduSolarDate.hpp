@@ -21,6 +21,10 @@ namespace EpsilonDelta
 
 typedef DateDMYW< HinduSolarCalendar, HinduWeek >  HinduSolarDate;
 
+//=============================================================================
+
+template<>
+void DateDMY< HinduSolarCalendar >::Set( bool today );
 
 //=============================================================================
 

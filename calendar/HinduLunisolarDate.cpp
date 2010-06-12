@@ -15,6 +15,7 @@
 #include <string>
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "Array.hpp"
 #include <iostream>
 #endif
 using namespace std;
@@ -176,6 +177,8 @@ TestHinduLunisolarDate( )
     bool ld, lm;
     HinduLunisolarDate hlDate;
 
+    cout << "Modern:" << endl;
+    
     struct
     {
         int julianDay;
@@ -185,7 +188,7 @@ TestHinduLunisolarDate( )
         bool monthLeap;
         int year;
     } 
-    testDates[]
+    modernTestDates[]
             = {
                 { 1507232,  11, false,  6, false, -529 },
                 { 1660038,  27, false,  9, false, -111 },
@@ -222,14 +225,14 @@ TestHinduLunisolarDate( )
                 { 2486077,   6, false,  4, false, 2151 }
             };
 
-    for ( int i = 0; i < sizeof(testDates)/sizeof(testDates[0]); ++i )
+    for ( int i = 0; i < ARRAY_LENGTH( modernTestDates ); ++i )
     {
-        jd = testDates[i].julianDay;
-        d = testDates[i].day;
-        ld = testDates[i].dayLeap;
-        m = testDates[i].month;
-        lm = testDates[i].monthLeap;
-        y = testDates[i].year;
+        jd = modernTestDates[i].julianDay;
+        d = modernTestDates[i].day;
+        ld = modernTestDates[i].dayLeap;
+        m = modernTestDates[i].month;
+        lm = modernTestDates[i].monthLeap;
+        y = modernTestDates[i].year;
         cout << "Set( " << d << ", " << ld << ", " << m <<  ", " << lm
              << ", " << y << " ) :" << endl;
         hlDate.Set( d, ld, m, lm, y );
@@ -240,6 +243,76 @@ TestHinduLunisolarDate( )
         TESTCHECK( hlDate.Valid( ), true, &ok );
         TESTCHECK( hlDate.Day( ), d, &ok );
         TESTCHECK( hlDate.IsDayLeap( ), ld, &ok );
+        TESTCHECK( hlDate.Month( ), m, &ok );
+        TESTCHECK( hlDate.IsMonthLeap( ), lm, &ok );
+        TESTCHECK( hlDate.Year( ), y, &ok );
+    }
+
+    cout << "Old:" << endl;
+    HinduLunisolarCalendar::SetVersion( HinduLunisolarCalendar::Old );
+    
+    struct
+    {
+        int julianDay;
+        int day;
+        int month;
+        bool leap;
+        int year;
+    } 
+    oldTestDates[]
+            = {
+                { 1507232,  11,  6, false, 2515 },
+                { 1660038,  26,  9, false, 2933 },
+                { 1746894,   3,  8, false, 3171 },
+                { 1770642,   9,  8, false, 3236 },
+                { 1892732,  19, 11,  true, 3570 },
+                { 1931580,   5,  3, false, 3677 },
+                { 1974852,  15,  9, false, 3795 },
+                { 2091165,   7,  2, false, 4114 },
+                { 2121510,  24,  2, false, 4197 },
+                { 2155780,   9,  1, false, 4291 },
+                { 2174030,   9, 12, false, 4340 },
+                { 2191585,  23,  1, false, 4389 },
+                { 2195262,   8,  2, false, 4399 },
+                { 2229275,   2,  4, false, 4492 },
+                { 2245581,   7, 11, false, 4536 },
+                { 2266101,   3,  1, false, 4593 },
+                { 2288543,   2,  7, false, 4654 },
+                { 2290902,  29, 11, false, 4660 },
+                { 2323141,  20,  3, false, 4749 },
+                { 2334849,   4,  4, false, 4781 },
+                { 2348021,   6,  5, false, 4817 },
+                { 2366979,   5,  4, false, 4869 },
+                { 2385649,  12,  5, false, 4920 },
+                { 2392826,  13,  1,  true, 4940 },
+                { 2416224,  23,  1, false, 5004 },
+                { 2425849,  21,  5, false, 5030 },
+                { 2430267,   9,  7, false, 5042 },
+                { 2430834,  15,  1, false, 5044 },
+                { 2431005,   9,  7, false, 5044 },
+                { 2448699,  14, 12, false, 5092 },
+                { 2450139,   7, 12, false, 5096 },
+                { 2465738,  14,  8, false, 5139 },
+                { 2486077,   6,  4, false, 5195 }
+            };
+
+    for ( int i = 0; i < ARRAY_LENGTH( oldTestDates ); ++i )
+    {
+        jd = oldTestDates[i].julianDay;
+        d = oldTestDates[i].day;
+        m = oldTestDates[i].month;
+        lm = oldTestDates[i].leap;
+        y = oldTestDates[i].year;
+        cout << "Set( " << d << ", false, " << m <<  ", " << lm << ", " << y
+             << " ) :" << endl;
+        hlDate.Set( d, false, m, lm, y );
+        TESTCHECK( hlDate.Valid( ), true, &ok );
+        TESTCHECK( hlDate.JulianDay( ), jd, &ok );
+        cout << "Set( " << jd << " ) :" << endl;
+        hlDate.Set( jd );
+        TESTCHECK( hlDate.Valid( ), true, &ok );
+        TESTCHECK( hlDate.Day( ), d, &ok );
+        TESTCHECK( hlDate.IsDayLeap( ), false, &ok );
         TESTCHECK( hlDate.Month( ), m, &ok );
         TESTCHECK( hlDate.IsMonthLeap( ), lm, &ok );
         TESTCHECK( hlDate.Year( ), y, &ok );

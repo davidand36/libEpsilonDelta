@@ -24,9 +24,8 @@
 #include "ChineseDate.hpp"
 #include "JPLEphemeris.hpp"
 #include "HinduSolarDate.hpp"
+#include "HinduLunisolarCalendar.hpp"
 #include "HinduLunisolarDate.hpp"
-#include "OldHinduSolarDate.hpp"
-#include "OldHinduLunisolarDate.hpp"
 #include "EgyptianDate.hpp"
 #include "ArmenianDate.hpp"
 #include "MayanLongCountDate.hpp"
@@ -116,10 +115,6 @@ int Main( int /*argc*/, char ** argv )
     if ( ! TestHinduSolarDate( ) )
         ok = false;
     if ( ! TestHinduLunisolarDate( ) )
-        ok = false;
-    if ( ! TestOldHinduSolarDate( ) )
-        ok = false;
-    if ( ! TestOldHinduLunisolarDate( ) )
         ok = false;
     if ( ! TestEgyptianDate( ) )
         ok = false;
@@ -376,6 +371,8 @@ ComputeEpochs( )
     TESTCHECK( julDate == MayanLongCountDate(), true, &ok );
     TESTCHECK( julDate == MayanLongCountDate( 0, 0, 0, 0, 0 ), true, &ok );
 
+    HinduSolarCalendar::SetVersion( HinduSolarCalendar::Old );
+    
     d = 18;
     m = 2;
     y = -3101;
@@ -387,9 +384,9 @@ ComputeEpochs( )
     TESTCHECK( d1, d, &ok );
     TESTCHECK( m1, m, &ok );
     TESTCHECK( y1, y, &ok );
-    TESTCHECK( OldHinduSolarDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == OldHinduSolarDate(), true, &ok );
-    TESTCHECK( julDate == OldHinduSolarDate( 1, 1, 0 ), true, &ok );
+    TESTCHECK( HinduSolarDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == HinduSolarDate(), true, &ok );
+    TESTCHECK( julDate == HinduSolarDate( 1, 1, 0 ), true, &ok );
 
     d = 23;
     m = 1;
@@ -403,10 +400,12 @@ ComputeEpochs( )
     TESTCHECK( d1, d, &ok );
     TESTCHECK( m1, m, &ok );
     TESTCHECK( y1, y, &ok );
-    TESTCHECK( OldHinduSolarDate().JulianDay(), jd, &ok );
-    TESTCHECK( gregDate == OldHinduSolarDate(), true, &ok );
-    TESTCHECK( gregDate == OldHinduSolarDate( 1, 1, 0 ), true, &ok );
+    TESTCHECK( HinduSolarDate().JulianDay(), jd, &ok );
+    TESTCHECK( gregDate == HinduSolarDate(), true, &ok );
+    TESTCHECK( gregDate == HinduSolarDate( 1, 1, 0 ), true, &ok );
 
+    HinduLunisolarCalendar::SetVersion( HinduLunisolarCalendar::Old );
+    
     d = 23;
     m = 1;
     y = -3101;
@@ -419,9 +418,9 @@ ComputeEpochs( )
     TESTCHECK( d1, d, &ok );
     TESTCHECK( m1, m, &ok );
     TESTCHECK( y1, y, &ok );
-    TESTCHECK( OldHinduLunisolarDate().JulianDay(), jd, &ok );
-    TESTCHECK( gregDate == OldHinduLunisolarDate(), true, &ok );
-    TESTCHECK( gregDate == OldHinduLunisolarDate( 1, 1, false, 0 ), true, &ok );
+    TESTCHECK( HinduLunisolarDate().JulianDay(), jd, &ok );
+    TESTCHECK( gregDate == HinduLunisolarDate(), true, &ok );
+    TESTCHECK( gregDate == HinduLunisolarDate( 1, false, 1, false, 0 ), true, &ok );
 
     d = 22;
     m = 9;

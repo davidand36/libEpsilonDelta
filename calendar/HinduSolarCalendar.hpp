@@ -32,9 +32,17 @@ public:
     { Mesha = 1, Vrishabha, Mithuna, Karka, Simha, Kanya,
       Tula, Vrischika, Dhanu, Makara, Kumbha, Mina };
 
+    enum EVersion
+    { Modern, Old };
+
+    static void SetVersion( EVersion version );
+    static EVersion GetVersion( );
+
 private:
     static int KaliYugaYear( double kaliYugaTime );
 
+    static EVersion ms_version;
+    
     friend class HinduLunisolarCalendar;
 };
 
@@ -47,6 +55,24 @@ int
 HinduSolarCalendar::MonthsInYear( int /*year*/ )
 {
     return 12;
+}
+
+//=============================================================================
+
+inline
+void
+HinduSolarCalendar::SetVersion( EVersion version )
+{
+    ms_version = version;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+HinduSolarCalendar::EVersion
+HinduSolarCalendar::GetVersion( )
+{
+    return ms_version;
 }
 
 

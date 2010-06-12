@@ -9,7 +9,6 @@
 
 #include "HinduLunisolarCalendar.hpp"
 #include "HinduSolarCalendar.hpp"
-#include "OldHinduLunisolarCalendar.hpp"
 #include "HinduLunisolarDate.hpp"
 #include "HinduAstro.hpp"
 #include "DivMod.hpp"
@@ -29,8 +28,18 @@ namespace
 
 const int s_kaliYugaEpoch = 588466; //JD of Kali Yuga (Iron Age) epoch
 const int s_vikramaEra = 3044;      //Kali Yuga era year of Vikrama era year 0
+const double s_siderealYear = 1577917500. / 4320000.;
+const double s_solarMonth = s_siderealYear / 12.;
+const double s_lunarMonth = 1577917500. / 53433336.;
+const double s_lunarDay = s_lunarMonth / 30.;
+const double s_solarLunarMonthDiff = s_solarMonth - s_lunarMonth;
 
 }
+
+//=============================================================================
+
+HinduLunisolarCalendar::EVersion HinduLunisolarCalendar::ms_version
+    = HinduLunisolarCalendar::Modern;
 
 //=============================================================================
 
@@ -41,34 +50,66 @@ HinduLunisolarCalendar::JulianDayToDLMLY( int julianDay,
                                          int * pMonth, bool * pMonthLeap,
                                          int * pYear )
 {
-    int kaliYugaDay = julianDay - s_kaliYugaEpoch;
-    double rise = HinduAstro::Sunrise( kaliYugaDay );
-    int day = HinduAstro::LunarDay( rise );
-    double prevRise = HinduAstro::Sunrise( kaliYugaDay - 1 );
-    int prevDay = HinduAstro::LunarDay( prevRise );
-    bool dayLeap = (day == prevDay);
-    double priorNewMoon = HinduAstro::PriorNewMoon( rise );
-    double nextNewMoon = HinduAstro::PriorNewMoon( priorNewMoon + 35 );
-    int solarMonth = HinduAstro::Zodiac( priorNewMoon );
-    int nextSolarMonth = HinduAstro::Zodiac( nextNewMoon );
-    bool monthLeap = (solarMonth == nextSolarMonth);
-    int month = ModP( solarMonth, 12 ) + 1;
-    int kyYear;
-    if ( month <= 2 )
-        kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon + 180. );
-    else
-        kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon );
-    int year = kyYear - s_vikramaEra;
-    if ( pDay )
-        *pDay = day;
-    if ( pDayLeap )
-        *pDayLeap = dayLeap;
-    if ( pMonth )
-        *pMonth = month;
-    if ( pMonthLeap )
-        *pMonthLeap = monthLeap;
-    if ( pYear )
-        *pYear = year;
+    switch ( ms_version )
+    {
+    case Modern:
+    {
+        int kaliYugaDay = julianDay - s_kaliYugaEpoch;
+        double rise = HinduAstro::Sunrise( kaliYugaDay );
+        int day = HinduAstro::LunarDay( rise );
+        double prevRise = HinduAstro::Sunrise( kaliYugaDay - 1 );
+        int prevDay = HinduAstro::LunarDay( prevRise );
+        bool dayLeap = (day == prevDay);
+        double priorNewMoon = HinduAstro::PriorNewMoon( rise );
+        double nextNewMoon = HinduAstro::PriorNewMoon( priorNewMoon + 35 );
+        int solarMonth = HinduAstro::Zodiac( priorNewMoon );
+        int nextSolarMonth = HinduAstro::Zodiac( nextNewMoon );
+        bool monthLeap = (solarMonth == nextSolarMonth);
+        int month = ModP( solarMonth, 12 ) + 1;
+        int kyYear;
+        if ( month <= 2 )
+            kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon + 180. );
+        else
+            kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon );
+        int year = kyYear - s_vikramaEra;
+        if ( pDay )
+            *pDay = day;
+        if ( pDayLeap )
+            *pDayLeap = dayLeap;
+        if ( pMonth )
+            *pMonth = month;
+        if ( pMonthLeap )
+            *pMonthLeap = monthLeap;
+        if ( pYear )
+            *pYear = year;
+        break;
+    }
+    case Old:
+    {
+        double rise = julianDay - s_kaliYugaEpoch  +  1. / 4.;
+        double day = ModRP( std::floor( rise / s_lunarDay ), 30. );
+        double newMoon = rise - ModRP( rise, s_lunarMonth );
+        double monthDiff = ModRP( newMoon, s_solarMonth );
+        bool monthLeap = ((monthDiff > 0.)
+                          && (monthDiff <= s_solarLunarMonthDiff));
+        double month = ModRP( std::ceil( newMoon / s_solarMonth ), 12. );
+        double year = (newMoon + s_solarMonth) / s_siderealYear;
+        if ( pDay )
+            *pDay = static_cast< int >( day ) + 1;
+        if ( pDayLeap )
+            *pDayLeap = false;
+        if ( pMonth )
+            *pMonth = static_cast< int >( month ) + 1;
+        if ( pMonthLeap )
+            *pMonthLeap = monthLeap;
+        if ( pYear )
+            *pYear = static_cast< int >( std::ceil( year ) ) - 1;
+        break;
+    }
+    default:
+        Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
+        break;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -78,32 +119,53 @@ HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
                                           int month, bool monthLeap,
                                           int year )
 {
-    static const double siderealYear = HinduAstro::SiderealYear();
-    HinduLunisolarDate hlDate0( day, dayLeap, month, monthLeap, year );
-    double kyt = siderealYear * (s_vikramaEra  +  year  +  (month - 1) / 12.);
-    double offset = (siderealYear / 360.)
-            * (ModRP( (HinduAstro::SolarLongitude( kyt )
-                       -  (month - 1) * 30  +  180.),  360. )
-               -  180.);
-    kyt = std::floor( kyt - offset );
-    int k = HinduAstro::LunarDay( kyt + (1. / 4.) );
-    int midJD = static_cast< int >( kyt )  -  15  +  s_kaliYugaEpoch;
-    HinduLunisolarDate hlDate1( midJD );
-    kyt += day;
-    if ( (k > 3) && (k < 27) )
-        kyt -= k;
-    else if ( (hlDate1.Month() < month)
-              || (hlDate1.IsMonthLeap() && (! monthLeap)) )
-        kyt -= (ModP( (k + 15), 30 ) - 15);
-    else
-        kyt -= (ModP( (k + 15), 30 ) + 15);
-    kyt += 14  -  ModP( (HinduAstro::LunarDay( kyt + (1. / 4.) ) - day + 15),
-                        30 );
-    int jd = static_cast< int >( kyt ) + s_kaliYugaEpoch;
-    hlDate1.Set( jd );
-    while ( hlDate1 < hlDate0 )
-        hlDate1.Set( ++jd );
-    return jd;
+    switch ( ms_version )
+    {
+    case Modern:
+    {
+        static const double siderealYear = HinduAstro::SiderealYear();
+        HinduLunisolarDate hlDate0( day, dayLeap, month, monthLeap, year );
+        double kyt = siderealYear
+                * (s_vikramaEra  +  year  +  (month - 1) / 12.);
+        double offset = (siderealYear / 360.)
+                * (ModRP( (HinduAstro::SolarLongitude( kyt )
+                           -  (month - 1) * 30  +  180.),  360. )
+                   -  180.);
+        kyt = std::floor( kyt - offset );
+        int k = HinduAstro::LunarDay( kyt + (1. / 4.) );
+        int midJD = static_cast< int >( kyt )  -  15  +  s_kaliYugaEpoch;
+        HinduLunisolarDate hlDate1( midJD );
+        kyt += day;
+        if ( (k > 3) && (k < 27) )
+            kyt -= k;
+        else if ( (hlDate1.Month() < month)
+                  || (hlDate1.IsMonthLeap() && (! monthLeap)) )
+            kyt -= (ModP( (k + 15), 30 ) - 15);
+        else
+            kyt -= (ModP( (k + 15), 30 ) + 15);
+        kyt += 14 - ModP( (HinduAstro::LunarDay( kyt + (1. / 4.) ) - day + 15),
+                          30 );
+        int jd = static_cast< int >( kyt ) + s_kaliYugaEpoch;
+        hlDate1.Set( jd );
+        while ( hlDate1 < hlDate0 )
+            hlDate1.Set( ++jd );
+        return jd;
+    }
+    case Old:
+    {
+        double mina = (12. * year - 1) * s_solarMonth;
+        double newYear = (std::floor( mina / s_lunarMonth ) + 1) * s_lunarMonth;
+        if ( monthLeap
+            || (std::ceil( (newYear - mina) / s_solarLunarMonthDiff ) > month) )
+            --month;
+        double jd = s_kaliYugaEpoch  +  newYear  +  month * s_lunarMonth
+                +  (day - 1) * s_lunarDay  +  3. / 4.;
+        return static_cast< int >( std::floor( jd ) );
+    }
+    default:
+        Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
+        return 0;
+    }
 }
 
 //=============================================================================
@@ -201,20 +263,38 @@ HinduLunisolarCalendar::LastDayOfMonth( int month, bool monthLeap,
 int 
 HinduLunisolarCalendar::LostDay( int month, bool monthLeap, int year )
 {
-    int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
-    int kyDay = jd1 - s_kaliYugaEpoch;
-    int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
-    int prevDay = 1;
-    for ( int d = 1; d <= lastDayOfMonth; ++d )
+    switch ( ms_version )
     {
-        double rise = HinduAstro::Sunrise( kyDay );
-        int day = HinduAstro::LunarDay( rise );
-        if ( day > prevDay + 1 )
-            return prevDay + 1;
-        prevDay = day;
-        ++kyDay;
+    case Modern:
+    {
+        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        int kyDay = jd1 - s_kaliYugaEpoch;
+        int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
+        int prevDay = 1;
+        for ( int d = 1; d <= lastDayOfMonth; ++d )
+        {
+            double rise = HinduAstro::Sunrise( kyDay );
+            int day = HinduAstro::LunarDay( rise );
+            if ( day > prevDay + 1 )
+                return prevDay + 1;
+            prevDay = day;
+            ++kyDay;
+        }
+        return LDNone;
     }
-    return LDNone;
+    case Old:
+    {
+        static const double solarLunarDayDiff = 1. - s_lunarDay;
+        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        double rise = jd1 - s_kaliYugaEpoch +  1. / 4.;
+        double dayGap = ModRP( rise, s_lunarDay );
+        return static_cast< int >( std::ceil( (1. - dayGap)
+                                              / solarLunarDayDiff ) );
+    }
+    default:
+        Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
+        return LDNone;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -222,20 +302,33 @@ HinduLunisolarCalendar::LostDay( int month, bool monthLeap, int year )
 int 
 HinduLunisolarCalendar::LeapDay( int month, bool monthLeap, int year )
 {
-    int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
-    int kyDay = jd1 - s_kaliYugaEpoch;
-    int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
-    int prevDay = -1;
-    for ( int d = 1; d <= lastDayOfMonth + 1; ++d )
+    switch ( ms_version )
     {
-        double rise = HinduAstro::Sunrise( kyDay );
-        int day = HinduAstro::LunarDay( rise );
-        if ( day == prevDay )
-            return day;
-        prevDay = day;
-        ++kyDay;
+    case Modern:
+    {
+        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        int kyDay = jd1 - s_kaliYugaEpoch;
+        int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
+        int prevDay = -1;
+        for ( int d = 1; d <= lastDayOfMonth + 1; ++d )
+        {
+            double rise = HinduAstro::Sunrise( kyDay );
+            int day = HinduAstro::LunarDay( rise );
+            if ( day == prevDay )
+                return day;
+            prevDay = day;
+            ++kyDay;
+        }
+        return LDNone;
     }
-    return LDNone;
+    case Old:
+    {
+        return LDNone;
+    }
+    default:
+        Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
+        return LDNone;
+    }
 }
 
 //=============================================================================
@@ -243,7 +336,28 @@ HinduLunisolarCalendar::LeapDay( int month, bool monthLeap, int year )
 bool 
 HinduLunisolarCalendar::IsMonthLeap( int month, int year )
 {
-    return true; //!!!
+    switch ( ms_version )
+    {
+    case Modern:
+    {
+        int jd = DLMLYToJulianDay( 15, false, month, true, year );
+        int mnth = month;
+        bool monthLeap = true;
+        JulianDayToDLMLY( jd, 0, 0, &mnth, &monthLeap, 0 );
+        return ((mnth == month) && monthLeap);
+    }
+    case Old:
+    {
+        double mina = (12. * year - 1) * s_solarMonth;
+        double newYear = (std::floor( mina / s_lunarMonth ) + 1) * s_lunarMonth;
+        int leapMonth = static_cast< int >( std::ceil( (newYear - mina)
+                                                    / s_solarLunarMonthDiff ) );
+        return (month == leapMonth);
+    }
+    default:
+        Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
+        return LDNone;
+    }
 }
 
 //=============================================================================

@@ -29,10 +29,6 @@ set( sources
      HinduSolarDate.cpp
      HinduLunisolarCalendar.cpp
      HinduLunisolarDate.cpp
-     OldHinduSolarCalendar.cpp
-     OldHinduSolarDate.cpp
-     OldHinduLunisolarCalendar.cpp
-     OldHinduLunisolarDate.cpp
      CopticCalendar.cpp
      CopticWeek.cpp
      CopticDate.cpp

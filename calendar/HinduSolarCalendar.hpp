@@ -33,7 +33,11 @@ public:
       Tula, Vrischika, Dhanu, Makara, Kumbha, Mina };
 
     enum EVersion
-    { Modern, Old };
+    {
+        Modern,
+        Old,
+        NumVersions
+    };
 
     static void SetVersion( EVersion version );
     static EVersion GetVersion( );

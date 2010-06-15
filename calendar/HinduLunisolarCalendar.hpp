@@ -47,7 +47,11 @@ public:
     enum { LDNone = 100 };
 
     enum EVersion
-    { Modern, Old };
+    {
+        Modern,
+        Old,
+        NumVersions
+    };
 
     static void SetVersion( EVersion version );
     static EVersion GetVersion( );

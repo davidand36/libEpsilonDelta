@@ -41,7 +41,11 @@ public:
       Mehr, Aban, Azar, Dey, Bahman, Esfand };
 
     enum EMethod
-    { Astronomical, Arithmetic };
+    {
+        Astronomical,
+        Arithmetic,
+        NumMethods
+    };
 
     static void SetMethod( EMethod method );
     static EMethod GetMethod( );

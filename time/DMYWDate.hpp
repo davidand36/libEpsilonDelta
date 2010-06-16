@@ -1,13 +1,13 @@
-#ifndef DATEDMYW_HPP
-#define DATEDMYW_HPP
+#ifndef DMYWDATE_HPP
+#define DMYWDATE_HPP
 /*
-  DateDMYW.hpp
+  DMYWDate.hpp
   Copyright (C) 2007 David M. Anderson
 
-  DateDMYW class template, for dates represented by (day, month, year) triplets
+  DMYWDate class template, for dates represented by (day, month, year) triplets
   with a week-style cycle.
   NOTES:
-  1. See DateDMY.hh for details about the DateDMY parent class template and 
+  1. See DMYDate.hh for details about the DMYDate parent class template and 
      the Cal template parameter.
   2. The Week template parameter, representing the week cycle, should provide 
      the following interface:
@@ -19,7 +19,7 @@
          static const std::string & WeekDayName( int weekday );
      };
   3. Weekdays will be numbered from 0 to DaysInWeek - 1.
-  4. ToString() is the same as in DateDMY, with the addition of
+  4. ToString() is the same as in DMYDate, with the addition of
      %w for the weekday number and %W for the weekday name.
      Examples (Gregorian dates):
          "%W, %d %M %y"  =>  "Monday, 1 January 2001"
@@ -34,7 +34,7 @@
 */
 
 
-#include "DateDMY.hpp"
+#include "DMYDate.hpp"
 #include "DivMod.hpp"
 #include <string>
 
@@ -46,19 +46,19 @@ namespace EpsilonDelta
 
 
 template <typename Cal, typename WeekType>
-class DateDMYW
-    :   public DateDMY<Cal>
+class DMYWDate
+    :   public DMYDate<Cal>
 {
 public:
-    explicit DateDMYW( bool today = false );
-    explicit DateDMYW( long julianDay );
-    DateDMYW( int day, int month, long year );
-    DateDMYW( const DateJD & date );
-    DateDMYW( const DateDMY<Cal> & date );
-    virtual ~DateDMYW( );
+    explicit DMYWDate( bool today = false );
+    explicit DMYWDate( long julianDay );
+    DMYWDate( int day, int month, long year );
+    DMYWDate( const JDDate & date );
+    DMYWDate( const DMYDate<Cal> & date );
+    virtual ~DMYWDate( );
 
-    virtual DateDMYW & operator=( const DateJD & rhs );
-    virtual DateDMYW & operator=( const DateDMY<Cal> & rhs );
+    virtual DMYWDate & operator=( const JDDate & rhs );
+    virtual DMYWDate & operator=( const DMYDate<Cal> & rhs );
 
     virtual int DayOfWeek( ) const;
     virtual int DaysUntilWeekday( int weekday, int n ) const;
@@ -85,33 +85,16 @@ private:
 
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType>::DateDMYW( bool today )
-    :   DateDMY<Cal>( today )
+DMYWDate<Cal, WeekType>::DMYWDate( bool today )
+    :   DMYDate<Cal>( today )
 {
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType>::DateDMYW( long julianDay )
-    :   DateDMY<Cal>( julianDay )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-template <typename Cal, typename WeekType>
-inline 
-DateDMYW<Cal, WeekType>::DateDMYW( int day, int month, long year )
-    :   DateDMY<Cal>( day, month, year )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType>::DateDMYW( const DateJD & date )
-    :   DateDMY<Cal>( date )
+DMYWDate<Cal, WeekType>::DMYWDate( long julianDay )
+    :   DMYDate<Cal>( julianDay )
 {
 }
 
@@ -119,35 +102,52 @@ DateDMYW<Cal, WeekType>::DateDMYW( const DateJD & date )
 
 template <typename Cal, typename WeekType>
 inline 
-DateDMYW<Cal, WeekType>::DateDMYW( const DateDMY<Cal> & date )
-    :   DateDMY<Cal>( date )
+DMYWDate<Cal, WeekType>::DMYWDate( int day, int month, long year )
+    :   DMYDate<Cal>( day, month, year )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename Cal, typename WeekType>
+DMYWDate<Cal, WeekType>::DMYWDate( const JDDate & date )
+    :   DMYDate<Cal>( date )
+{
+}
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+template <typename Cal, typename WeekType>
+inline 
+DMYWDate<Cal, WeekType>::DMYWDate( const DMYDate<Cal> & date )
+    :   DMYDate<Cal>( date )
 {
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType>::~DateDMYW( )
+DMYWDate<Cal, WeekType>::~DMYWDate( )
 {
 }
 
 //=============================================================================
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType> & 
-DateDMYW<Cal, WeekType>::operator=( const DateJD & rhs )
+DMYWDate<Cal, WeekType> & 
+DMYWDate<Cal, WeekType>::operator=( const JDDate & rhs )
 {
-    DateDMY<Cal>::operator=( rhs );
+    DMYDate<Cal>::operator=( rhs );
     return *this;
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType> & 
-DateDMYW<Cal, WeekType>::operator=( const DateDMY<Cal> & rhs )
+DMYWDate<Cal, WeekType> & 
+DMYWDate<Cal, WeekType>::operator=( const DMYDate<Cal> & rhs )
 {
-    DateDMY<Cal>::operator=( rhs );
+    DMYDate<Cal>::operator=( rhs );
     return *this;
 }
 
@@ -155,7 +155,7 @@ DateDMYW<Cal, WeekType>::operator=( const DateDMY<Cal> & rhs )
 
 template <typename Cal, typename WeekType>
 int
-DateDMYW<Cal, WeekType>::DayOfWeek( ) const
+DMYWDate<Cal, WeekType>::DayOfWeek( ) const
 {
     return ModF( (this->JulianDay( ) + Week::DayOfWeekOfJD0()),
                  (long)Week::DaysInWeek() );
@@ -165,7 +165,7 @@ DateDMYW<Cal, WeekType>::DayOfWeek( ) const
 
 template <typename Cal, typename WeekType>
 int
-DateDMYW<Cal, WeekType>::DaysUntilWeekday( int weekday, int n ) const
+DMYWDate<Cal, WeekType>::DaysUntilWeekday( int weekday, int n ) const
 {
     int daysUntilNext
             = - (int)ModC( (this->JulianDay( ) + Week::DayOfWeekOfJD0()
@@ -177,26 +177,26 @@ DateDMYW<Cal, WeekType>::DaysUntilWeekday( int weekday, int n ) const
 
 template <typename Cal, typename WeekType>
 void 
-DateDMYW<Cal, WeekType>::Increment( int days )
+DMYWDate<Cal, WeekType>::Increment( int days )
 {
-    DateDMY<Cal>::Increment( days );
+    DMYDate<Cal>::Increment( days );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal, typename WeekType>
 void 
-DateDMYW<Cal, WeekType>::Increment( int days, int months, long years,
+DMYWDate<Cal, WeekType>::Increment( int days, int months, long years,
                                     DateFixup::EMethod fixupMethod )
 {
-    DateDMY<Cal>::Increment( days, months, years, fixupMethod );
+    DMYDate<Cal>::Increment( days, months, years, fixupMethod );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal, typename WeekType>
 void 
-DateDMYW<Cal, WeekType>::Increment( int weekday, int n )
+DMYWDate<Cal, WeekType>::Increment( int weekday, int n )
 {
     int days = DaysUntilWeekday( weekday, n );
     Increment( days );
@@ -206,7 +206,7 @@ DateDMYW<Cal, WeekType>::Increment( int weekday, int n )
 
 template <typename Cal, typename WeekType>
 std::string
-DateDMYW<Cal, WeekType>::ToString( const std::string & format ) const
+DMYWDate<Cal, WeekType>::ToString( const std::string & format ) const
 {
     std::string dateString;
     for ( std::string::const_iterator p = format.begin(); p != format.end(); ++p )
@@ -301,14 +301,14 @@ DateDMYW<Cal, WeekType>::ToString( const std::string & format ) const
 
 template <typename Cal, typename WeekType>
 std::string 
-DateDMYW<Cal, WeekType>::m_defaultFormat = "%W, %d %M %y";
+DMYWDate<Cal, WeekType>::m_defaultFormat = "%W, %d %M %y";
 
 //-----------------------------------------------------------------------------
 
 template <typename Cal, typename WeekType>
 inline 
 void
-DateDMYW<Cal, WeekType>::SetDefaultFormat( const std::string & format )
+DMYWDate<Cal, WeekType>::SetDefaultFormat( const std::string & format )
 {
     m_defaultFormat = format;
 }
@@ -318,7 +318,7 @@ DateDMYW<Cal, WeekType>::SetDefaultFormat( const std::string & format )
 template <typename Cal, typename WeekType>
 inline 
 const std::string & 
-DateDMYW<Cal, WeekType>::DefaultFormat( )
+DMYWDate<Cal, WeekType>::DefaultFormat( )
 {
     return m_defaultFormat;
 }
@@ -328,4 +328,4 @@ DateDMYW<Cal, WeekType>::DefaultFormat( )
 
 }                                                      //namespace EpsilonDelta
 
-#endif //DATEDMYW_HPP
+#endif //DMYWDATE_HPP

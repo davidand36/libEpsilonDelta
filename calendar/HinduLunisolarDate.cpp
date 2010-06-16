@@ -28,7 +28,7 @@ namespace EpsilonDelta
 
 
 HinduLunisolarDate::HinduLunisolarDate( bool today )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( today );
 }
@@ -36,15 +36,15 @@ HinduLunisolarDate::HinduLunisolarDate( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 HinduLunisolarDate::HinduLunisolarDate( long julianDay )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( julianDay );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-HinduLunisolarDate::HinduLunisolarDate( const DateJD & date )
-    :   DateJD( false )
+HinduLunisolarDate::HinduLunisolarDate( const JDDate & date )
+    :   JDDate( false )
 {
     Set( date.JulianDay() );
 }
@@ -52,7 +52,7 @@ HinduLunisolarDate::HinduLunisolarDate( const DateJD & date )
 //=============================================================================
 
 HinduLunisolarDate & 
-HinduLunisolarDate::operator=( const DateJD & rhs )
+HinduLunisolarDate::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -67,15 +67,15 @@ HinduLunisolarDate::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
-        Calendar::JulianDayToDLMLY( DateJD::JulianDay(),
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
+        Calendar::JulianDayToDLMLY( JDDate::JulianDay(),
                                     &m_day, &m_dayLeap,
                                     &m_month, &m_monthLeap, &m_year );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, false, 1, false, 0 );
     }
 }
@@ -85,7 +85,7 @@ HinduLunisolarDate::Set( bool today )
 void 
 HinduLunisolarDate::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Calendar::JulianDayToDLMLY( julianDay,
                                 &m_day, &m_dayLeap,
                                 &m_month, &m_monthLeap, &m_year );
@@ -107,7 +107,7 @@ HinduLunisolarDate::MakeValid( DateFixup::EMethod fixupMethod )
     long julianDay = Calendar::MakeValid( &m_day, &m_dayLeap,
                                          &m_month, &m_monthLeap,
                                          &m_year, fixupMethod );
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
 }
 
 //=============================================================================
@@ -115,11 +115,11 @@ HinduLunisolarDate::MakeValid( DateFixup::EMethod fixupMethod )
 long 
 HinduLunisolarDate::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = Calendar::DLMLYToJulianDay( m_day, m_dayLeap,
                                                   m_month, m_monthLeap,
                                                   m_year );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //=============================================================================

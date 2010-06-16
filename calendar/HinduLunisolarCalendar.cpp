@@ -14,7 +14,7 @@
 #include "DivMod.hpp"
 #include "Assert.hpp"
 #include "CalendarLibText.hpp"
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 
 
 namespace EpsilonDelta
@@ -229,7 +229,7 @@ HinduLunisolarCalendar::MakeValid( int * pDay, bool * pDayLeap, int * pMonth,
         }
         if ( *pDayLeap && (*pDay != LeapDay( *pMonth, *pMonthLeap, *pYear )) )
             *pDayLeap = false;
-        return DateJD::INVALID;
+        return JDDate::INVALID;
     }
 }
 

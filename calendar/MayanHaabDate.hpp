@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "MayanHaabCalendar.hpp"
 
 
@@ -18,7 +18,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMY< MayanHaabCalendar >  MayanHaabDate;
+typedef DMYDate< MayanHaabCalendar >  MayanHaabDate;
 
 
 //=============================================================================

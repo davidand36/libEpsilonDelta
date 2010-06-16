@@ -23,7 +23,7 @@ namespace EpsilonDelta
 
 
 ChineseDate::ChineseDate( bool today )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( today );
 }
@@ -31,7 +31,7 @@ ChineseDate::ChineseDate( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ChineseDate::ChineseDate( long julianDay )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( julianDay );
 }
@@ -39,7 +39,7 @@ ChineseDate::ChineseDate( long julianDay )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ChineseDate::ChineseDate( int day, int month, bool leap, long year )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( day, month, leap, year );
 }
@@ -48,7 +48,7 @@ ChineseDate::ChineseDate( int day, int month, bool leap, long year )
 
 ChineseDate::ChineseDate( int day, int month, int yearCyclical, long yearCycle,
                           int leapMonth )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( day, month, yearCyclical, yearCycle, leapMonth );
 }
@@ -57,15 +57,15 @@ ChineseDate::ChineseDate( int day, int month, int yearCyclical, long yearCycle,
 
 ChineseDate::ChineseDate( int day, int month, bool leap,
                           int yearCyclical, long yearCycle )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( day, month, leap, yearCyclical, yearCycle );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ChineseDate::ChineseDate( const DateJD & date )
-    :   DateJD( false )
+ChineseDate::ChineseDate( const JDDate & date )
+    :   JDDate( false )
 {
     Set( date.JulianDay() );
 }
@@ -73,7 +73,7 @@ ChineseDate::ChineseDate( const DateJD & date )
 //=============================================================================
 
 ChineseDate & 
-ChineseDate::operator=( const DateJD & rhs )
+ChineseDate::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -88,14 +88,14 @@ ChineseDate::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
-        Calendar::JulianDayToDMYL( DateJD::JulianDay(),
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
+        Calendar::JulianDayToDMYL( JDDate::JulianDay(),
                                    &m_day, &m_month, &m_year, &m_leapMonth );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 1, 1, Calendar::LMUnknown );
     }
 }
@@ -105,7 +105,7 @@ ChineseDate::Set( bool today )
 void 
 ChineseDate::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Calendar::JulianDayToDMYL( julianDay,
                                &m_day, &m_month, &m_year, &m_leapMonth );
 }
@@ -115,7 +115,7 @@ ChineseDate::Set( long julianDay )
 void 
 ChineseDate::Set( int day, int month, bool leap, long year )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_month = month;
     m_year = year;
@@ -167,7 +167,7 @@ ChineseDate::MakeValid( DateFixup::EMethod fixupMethod )
 {
     long julianDay = Calendar::MakeValid( &m_day, &m_month, &m_year,
                                          &m_leapMonth, fixupMethod );
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
 }
 
 //=============================================================================
@@ -175,9 +175,9 @@ ChineseDate::MakeValid( DateFixup::EMethod fixupMethod )
 long 
 ChineseDate::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = Calendar::DMYToJulianDay( m_day, m_month, m_year );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //=============================================================================

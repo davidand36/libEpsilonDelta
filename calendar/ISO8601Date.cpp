@@ -23,7 +23,7 @@ namespace EpsilonDelta
 
 
 ISO8601Date::ISO8601Date( bool today )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( today );
 }
@@ -31,15 +31,15 @@ ISO8601Date::ISO8601Date( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ISO8601Date::ISO8601Date( long julianDay )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( julianDay );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ISO8601Date::ISO8601Date( const DateJD & date )
-    :   DateJD( false )
+ISO8601Date::ISO8601Date( const JDDate & date )
+    :   JDDate( false )
 {
     Set( date.JulianDay() );
 }
@@ -47,7 +47,7 @@ ISO8601Date::ISO8601Date( const DateJD & date )
 //=============================================================================
 
 ISO8601Date & 
-ISO8601Date::operator=( const DateJD & rhs )
+ISO8601Date::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -62,14 +62,14 @@ ISO8601Date::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
-        Calendar::JulianDayToDWY( DateJD::JulianDay(),
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
+        Calendar::JulianDayToDWY( JDDate::JulianDay(),
                                   &m_day, &m_week, &m_year );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 1, 1 );
     }
 }
@@ -79,7 +79,7 @@ ISO8601Date::Set( bool today )
 void 
 ISO8601Date::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Calendar::JulianDayToDWY( julianDay,
                               &m_day, &m_week, &m_year );
 }
@@ -171,9 +171,9 @@ ISO8601Date::MakeValid( DateFixup::EMethod fixupMethod )
 long 
 ISO8601Date::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = Calendar::DWYToJulianDay( m_day, m_week, m_year );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //=============================================================================
@@ -181,7 +181,7 @@ ISO8601Date::JulianDay( ) const
 void 
 ISO8601Date::Increment( int days )
 {
-    DateJD::Increment( days );
+    JDDate::Increment( days );
     m_day += days;
     MakeValid( DateFixup::Carry );
 }
@@ -192,7 +192,7 @@ void
 ISO8601Date::Increment( int days, int weeks, long years,
                         DateFixup::EMethod fixupMethod )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day += days;
     m_week += weeks;
     m_year += years;

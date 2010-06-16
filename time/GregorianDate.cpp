@@ -27,7 +27,7 @@ namespace EpsilonDelta
 
 template<>
 void 
-DateDMY< GregorianCalendar >::Set( bool today )
+DMYDate< GregorianCalendar >::Set( bool today )
 {
     if ( today )
     {

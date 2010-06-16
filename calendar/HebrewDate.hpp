@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "HebrewCalendar.hpp"
 #include "HebrewWeek.hpp"
 
@@ -19,14 +19,14 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< HebrewCalendar, HebrewWeek >  HebrewDate;
+typedef DMYWDate< HebrewCalendar, HebrewWeek >  HebrewDate;
 
 
 //=============================================================================
 
 
 template<>
-void DateDMY< HebrewCalendar >::Set( bool today );
+void DMYDate< HebrewCalendar >::Set( bool today );
 
 //=============================================================================
 

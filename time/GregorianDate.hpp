@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "GregorianCalendar.hpp"
 #include "WesternWeek.hpp"
 
@@ -19,14 +19,14 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< GregorianCalendar, WesternWeek >  GregorianDate;
+typedef DMYWDate< GregorianCalendar, WesternWeek >  GregorianDate;
 
 
 //=============================================================================
 
 
 template<>
-void DateDMY< GregorianCalendar >::Set( bool today );
+void DMYDate< GregorianCalendar >::Set( bool today );
 
 //=============================================================================
 

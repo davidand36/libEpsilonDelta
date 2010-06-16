@@ -26,17 +26,17 @@ namespace EpsilonDelta
 
 template<>
 void 
-DateDMY< HebrewCalendar >::Set( bool today )
+DMYDate< HebrewCalendar >::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
         HebrewCalendar::JulianDayToDMY( JulianDay(), &m_day, &m_month, &m_year );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 7, 1 );
     }
 }
@@ -154,7 +154,7 @@ TestHebrewDate( )
     TESTCHECK( (hebEq == heb110), true, &ok );
     TESTCHECK( heb110.ToString( ), string( "Yom Reeshone, 1 Nisan -1" ), &ok );
 
-    cout << "HebrewDate( GregorianDate( 7, 9, -3760 ) ) [DateDMY constructor]" << endl;
+    cout << "HebrewDate( GregorianDate( 7, 9, -3760 ) ) [DMYDate constructor]" << endl;
     HebrewDate hebGreg( GregorianDate( 7, 9, -3760 ) );
     TESTCHECK( hebGreg.Valid( ), true, &ok );
     TESTCHECK( hebGreg.ToString( ), string( "Yom Shaynee, 1 Tishri 1" ), &ok );

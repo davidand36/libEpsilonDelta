@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "HinduSolarCalendar.hpp"
 #include "HinduWeek.hpp"
 
@@ -19,12 +19,12 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< HinduSolarCalendar, HinduWeek >  HinduSolarDate;
+typedef DMYWDate< HinduSolarCalendar, HinduWeek >  HinduSolarDate;
 
 //=============================================================================
 
 template<>
-void DateDMY< HinduSolarCalendar >::Set( bool today );
+void DMYDate< HinduSolarCalendar >::Set( bool today );
 
 //=============================================================================
 

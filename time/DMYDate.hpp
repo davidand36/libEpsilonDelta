@@ -1,10 +1,10 @@
-#ifndef DATEDMY_HPP
-#define DATEDMY_HPP
+#ifndef DMYDATE_HPP
+#define DMYDATE_HPP
 /*
-  DateDMY.hpp
+  DMYDate.hpp
   Copyright (C) 2007 David M. Anderson
 
-  DateDMY class template, for dates represented by (day, month, year) triplets.
+  DMYDate class template, for dates represented by (day, month, year) triplets.
   NOTES:
   1. The template parameter Cal, representing the calendrical system, 
      should provide the following interface:
@@ -44,7 +44,7 @@
 */
 
 
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "DateFixupMethod.hpp"
 #include "Assert.hpp"
 #include "StringUtil.hpp"
@@ -58,19 +58,19 @@ namespace EpsilonDelta
 
 
 template <typename Cal>
-class DateDMY
-    :   public DateJD
+class DMYDate
+    :   public JDDate
 {
 public:
-    explicit DateDMY( bool today = false );
-    explicit DateDMY( long julianDay );
-    DateDMY( int day, int month, long year );
-    explicit DateDMY( const DateJD & date );
-    DateDMY( const DateDMY & date );
-    virtual ~DateDMY( );
+    explicit DMYDate( bool today = false );
+    explicit DMYDate( long julianDay );
+    DMYDate( int day, int month, long year );
+    explicit DMYDate( const JDDate & date );
+    DMYDate( const DMYDate & date );
+    virtual ~DMYDate( );
 
-    virtual DateDMY & operator=( const DateJD & rhs );
-    virtual DateDMY & operator=( const DateDMY & rhs );
+    virtual DMYDate & operator=( const JDDate & rhs );
+    virtual DMYDate & operator=( const DMYDate & rhs );
 
     virtual void Set( bool today );
     virtual void Set( long julianDay );
@@ -107,16 +107,16 @@ protected:
 //.............................................................................
 
 template <typename Cal>
-bool operator==( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs );
+bool operator==( const DMYDate<Cal> & lhs, const DMYDate<Cal> & rhs );
 template <typename Cal>
-bool operator<( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs );
+bool operator<( const DMYDate<Cal> & lhs, const DMYDate<Cal> & rhs );
 
 
 //*****************************************************************************
 
 
 template <typename Cal>
-DateDMY<Cal>::DateDMY( bool today )
+DMYDate<Cal>::DMYDate( bool today )
 {
     Set( today );
 }
@@ -124,10 +124,10 @@ DateDMY<Cal>::DateDMY( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal>
-DateDMY<Cal>::DateDMY( long julianDay )
-    :   DateJD( false )
+DMYDate<Cal>::DMYDate( long julianDay )
+    :   JDDate( false )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Cal::JulianDayToDMY( JulianDay(), &m_day, &m_month, &m_year );
 }
 
@@ -135,8 +135,8 @@ DateDMY<Cal>::DateDMY( long julianDay )
 
 template <typename Cal>
 inline
-DateDMY<Cal>::DateDMY( int day, int month, long year )
-    :   DateJD( false ),
+DMYDate<Cal>::DMYDate( int day, int month, long year )
+    :   JDDate( false ),
         m_day( day ),
         m_month( month ),
         m_year( year )
@@ -146,10 +146,10 @@ DateDMY<Cal>::DateDMY( int day, int month, long year )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal>
-DateDMY<Cal>::DateDMY( const DateJD & date )
-    :   DateJD( false )
+DMYDate<Cal>::DMYDate( const JDDate & date )
+    :   JDDate( false )
 {
-    DateJD::Set( date.JulianDay() );
+    JDDate::Set( date.JulianDay() );
     Cal::JulianDayToDMY( JulianDay(), &m_day, &m_month, &m_year );
 }
 
@@ -157,27 +157,27 @@ DateDMY<Cal>::DateDMY( const DateJD & date )
 
 template <typename Cal>
 inline 
-DateDMY<Cal>::DateDMY( const DateDMY & date )
-    :    DateJD( false )
+DMYDate<Cal>::DMYDate( const DMYDate & date )
+    :    JDDate( false )
 {
     Set( date.m_day, date.m_month, date.m_year );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Cal>
 inline
-DateDMY<Cal>::~DateDMY( )
+DMYDate<Cal>::~DMYDate( )
 {
 }
 
 //=============================================================================
 
 template <typename Cal>
-DateDMY<Cal> & 
-DateDMY<Cal>::operator=( const DateJD & rhs )
+DMYDate<Cal> & 
+DMYDate<Cal>::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -189,14 +189,14 @@ DateDMY<Cal>::operator=( const DateJD & rhs )
 
 template <typename Cal>
 inline 
-DateDMY<Cal> & 
-DateDMY<Cal>::operator=( const DateDMY & rhs )
+DMYDate<Cal> & 
+DMYDate<Cal>::operator=( const DMYDate & rhs )
 {
     if ( &rhs == this )
         return *this;
     Set( rhs.m_day, rhs.m_month, rhs.m_year );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 
@@ -204,17 +204,17 @@ DateDMY<Cal>::operator=( const DateDMY & rhs )
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Set( bool today )
+DMYDate<Cal>::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
         Cal::JulianDayToDMY( JulianDay(), &m_day, &m_month, &m_year );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 1, 1 );
     }
 }
@@ -223,9 +223,9 @@ DateDMY<Cal>::Set( bool today )
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Set( long julianDay )
+DMYDate<Cal>::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Cal::JulianDayToDMY( julianDay, &m_day, &m_month, &m_year );
 }
 
@@ -234,9 +234,9 @@ DateDMY<Cal>::Set( long julianDay )
 template <typename Cal>
 inline 
 void 
-DateDMY<Cal>::Set( int day, int month, long year )
+DMYDate<Cal>::Set( int day, int month, long year )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_month = month;
     m_year = year;
@@ -247,7 +247,7 @@ DateDMY<Cal>::Set( int day, int month, long year )
 template <typename Cal>
 inline 
 bool 
-DateDMY<Cal>::Valid( ) const
+DMYDate<Cal>::Valid( ) const
 {
     if ( (m_month < 1) || (m_month > Cal::MonthsInYear( m_year )) )
         return false;
@@ -260,7 +260,7 @@ DateDMY<Cal>::Valid( ) const
 
 template <typename Cal>
 void
-DateDMY<Cal>::MakeValid( DateFixup::EMethod fixupMethod )
+DMYDate<Cal>::MakeValid( DateFixup::EMethod fixupMethod )
 {
     if ( fixupMethod & DateFixup::ClampMonth )
     {
@@ -333,11 +333,11 @@ DateDMY<Cal>::MakeValid( DateFixup::EMethod fixupMethod )
 
 template <typename Cal>
 long 
-DateDMY<Cal>::JulianDay( ) const
+DMYDate<Cal>::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = Cal::DMYToJulianDay( m_day, m_month, m_year );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //-----------------------------------------------------------------------------
@@ -345,7 +345,7 @@ DateDMY<Cal>::JulianDay( ) const
 template <typename Cal>
 inline 
 int 
-DateDMY<Cal>::Day( ) const
+DMYDate<Cal>::Day( ) const
 {
     return m_day;
 }
@@ -355,7 +355,7 @@ DateDMY<Cal>::Day( ) const
 template <typename Cal>
 inline 
 int 
-DateDMY<Cal>::Month( ) const
+DMYDate<Cal>::Month( ) const
 {
     return m_month;
 }
@@ -365,7 +365,7 @@ DateDMY<Cal>::Month( ) const
 template <typename Cal>
 inline 
 long 
-DateDMY<Cal>::Year( ) const
+DMYDate<Cal>::Year( ) const
 {
     return m_year;
 }
@@ -374,9 +374,9 @@ DateDMY<Cal>::Year( ) const
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Increment( int days )
+DMYDate<Cal>::Increment( int days )
 {
-    DateJD::Increment( days );
+    JDDate::Increment( days );
     m_day += days;
     MakeValid( DateFixup::Carry );
 }
@@ -385,10 +385,10 @@ DateDMY<Cal>::Increment( int days )
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Increment( int days, int months, long years,
+DMYDate<Cal>::Increment( int days, int months, long years,
                          DateFixup::EMethod fixupMethod )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day += days;
     m_month += months;
     m_year += years;
@@ -399,7 +399,7 @@ DateDMY<Cal>::Increment( int days, int months, long years,
 
 template <typename Cal>
 std::string 
-DateDMY<Cal>::ToString( const std::string & format ) const
+DMYDate<Cal>::ToString( const std::string & format ) const
 {
     std::string dateString;
     for ( std::string::const_iterator p = format.begin();
@@ -483,14 +483,14 @@ DateDMY<Cal>::ToString( const std::string & format ) const
 
 template <typename Cal>
 std::string 
-DateDMY<Cal>::m_defaultFormat = "%d %M %y";
+DMYDate<Cal>::m_defaultFormat = "%d %M %y";
 
 //-----------------------------------------------------------------------------
 
 template <typename Cal>
 inline 
 void 
-DateDMY<Cal>::SetDefaultFormat( const std::string & format )
+DMYDate<Cal>::SetDefaultFormat( const std::string & format )
 {
     m_defaultFormat = format;
 }
@@ -500,7 +500,7 @@ DateDMY<Cal>::SetDefaultFormat( const std::string & format )
 template <typename Cal>
 inline 
 const std::string &
-DateDMY<Cal>::DefaultFormat( )
+DMYDate<Cal>::DefaultFormat( )
 {
     return m_defaultFormat;
 }
@@ -509,7 +509,7 @@ DateDMY<Cal>::DefaultFormat( )
 
 template <typename Cal>
 inline
-bool operator==( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs )
+bool operator==( const DMYDate<Cal> & lhs, const DMYDate<Cal> & rhs )
 {
     return ( (lhs.Day() == rhs.Day()) && (lhs.Month() == rhs.Month())
              && (lhs.Year() == rhs.Year()) );
@@ -519,7 +519,7 @@ bool operator==( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs )
 
 template <typename Cal>
 inline
-bool operator<( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs )
+bool operator<( const DMYDate<Cal> & lhs, const DMYDate<Cal> & rhs )
 {
     if ( lhs.Year() < rhs.Year() )
         return true;
@@ -538,4 +538,4 @@ bool operator<( const DateDMY<Cal> & lhs, const DateDMY<Cal> & rhs )
 
 }                                                      //namespace EpsilonDelta
 
-#endif //DATEDMY_HPP
+#endif //DMYDATE_HPP

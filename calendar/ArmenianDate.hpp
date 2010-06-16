@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "ArmenianCalendar.hpp"
 #include "ArmenianWeek.hpp"
 
@@ -19,7 +19,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< ArmenianCalendar, ArmenianWeek >  ArmenianDate;
+typedef DMYWDate< ArmenianCalendar, ArmenianWeek >  ArmenianDate;
 
 
 //=============================================================================

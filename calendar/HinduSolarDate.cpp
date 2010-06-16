@@ -26,18 +26,18 @@ namespace EpsilonDelta
 
 template<>
 void 
-DateDMY< HinduSolarCalendar >::Set( bool today )
+DMYDate< HinduSolarCalendar >::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
         HinduSolarCalendar::JulianDayToDMY( JulianDay(),
                                             &m_day, &m_month, &m_year );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 1, 0 );
     }
 }

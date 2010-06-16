@@ -1,15 +1,15 @@
 /*
-  DateJD.cpp
+  JDDate.cpp
   Copyright (C) 2007 David M. Anderson
 
-  DateJD class, representing dates with a Julian Day equivalent,
+  JDDate class, representing dates with a Julian Day equivalent,
   i.e. a base class for all dates.
   NOTE:
   Should always have a non-inline virtual function, in this case, Set.
 */
 
 
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "GregorianCalendar.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -26,7 +26,7 @@ namespace EpsilonDelta
 
 
 void
-DateJD::Set( bool today )
+JDDate::Set( bool today )
 {
     m_julianDay = (today ? Today( ) : INVALID );
 }
@@ -34,7 +34,7 @@ DateJD::Set( bool today )
 //-----------------------------------------------------------------------------
 
 long
-DateJD::Today( )
+JDDate::Today( )
 {
     int day, month;
     long year;
@@ -47,13 +47,13 @@ DateJD::Today( )
 #if DEBUG
 
 bool
-DateJD::Test( )
+JDDate::Test( )
 {
     bool ok = true;
-    cout << "Testing DateJD" << endl;
+    cout << "Testing JDDate" << endl;
 
-    cout << "DateJD() [default constructor]" << endl;
-    DateJD jdDate;
+    cout << "JDDate() [default constructor]" << endl;
+    JDDate jdDate;
     TESTCHECK( jdDate.JulianDay( ), INVALID, &ok );
     TESTCHECK( jdDate.Valid( ), false, &ok );
     int incr = 10;
@@ -76,8 +76,8 @@ DateJD::Test( )
     TESTCHECK( jdDate.JulianDay( ), jd - 10, &ok );
     TESTCHECK( jdDate.Valid( ), true, &ok );
 
-    cout << "DateJD( true ) [today constructor]" << endl;
-    DateJD jdToday( true );
+    cout << "JDDate( true ) [today constructor]" << endl;
+    JDDate jdToday( true );
     cout << "jdToday.JulianDay( )=" << jdToday.JulianDay( );
     if ( (jdToday.JulianDay( ) > 2451545) && (jdToday.JulianDay( ) < 2500000) )
         cout << "\tOK" << endl;
@@ -92,8 +92,8 @@ DateJD::Test( )
     TESTCHECK( (jdDate < jdToday), true, &ok );
 
     jd = 2451545;
-    cout << "DateJD(" << jd << ") [Julian Day constructor]" << endl;
-    DateJD jdJD( jd );
+    cout << "JDDate(" << jd << ") [Julian Day constructor]" << endl;
+    JDDate jdJD( jd );
     TESTCHECK( jdJD.JulianDay( ), jd, &ok );
     TESTCHECK( jdJD.Valid( ), true, &ok );
     incr = 10;
@@ -112,9 +112,9 @@ DateJD::Test( )
     TESTCHECK( (jdJD < jdToday), true, &ok );
 
     if ( ok )
-        cout << "DateJD PASSED." << endl << endl;
+        cout << "JDDate PASSED." << endl << endl;
     else
-        cout << "DateJD FAILED." << endl << endl;
+        cout << "JDDate FAILED." << endl << endl;
     return ok;
 }
 

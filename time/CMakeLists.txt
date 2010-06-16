@@ -11,13 +11,13 @@ set( sources
      Time.cpp
      TimeIncrement.cpp
      TimeStandards.cpp
-     DateTime.cpp
      ModifiedJulianDay.cpp
      Epoch.cpp
-     DateJD.cpp
+     JDDate.cpp
      GregorianCalendar.cpp
      GregorianDate.cpp
      WesternWeek.cpp
+     DateTime.cpp
      StdTime.cpp
      StdClock.cpp
      Timer.cpp

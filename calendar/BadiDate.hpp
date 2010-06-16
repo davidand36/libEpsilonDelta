@@ -36,7 +36,7 @@
 */
 
 
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "DateFixupMethod.hpp"
 #include <string>
 
@@ -48,17 +48,17 @@ namespace EpsilonDelta
 
 
 class BadiDate
-    :   public DateJD
+    :   public JDDate
 {
 public:
     explicit BadiDate( bool today = false );
     explicit BadiDate( long julianDay );
     BadiDate( int day, int month, int year, int vahid, long kulliShay );
-    explicit BadiDate( const DateJD & date );
+    explicit BadiDate( const JDDate & date );
     BadiDate( const BadiDate & date );
     virtual ~BadiDate( );
 
-    BadiDate & operator=( const DateJD & rhs );
+    BadiDate & operator=( const JDDate & rhs );
     BadiDate & operator=( const BadiDate & rhs );
 
     virtual void Set( bool today );

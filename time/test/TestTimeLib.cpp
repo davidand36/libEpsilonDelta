@@ -15,7 +15,7 @@
 #include "Time.hpp"
 #include "ModifiedJulianDay.hpp"
 #include "Epoch.hpp"
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "GregorianDate.hpp"
 #include "DateTime.hpp"
 #include "StdTime.hpp"
@@ -70,7 +70,7 @@ int Main( int /*argc*/, char ** /*argv*/ )
         ok = false;
     if ( ! Epoch::Test( ) )
         ok = false;
-    if ( ! DateJD::Test( ) )
+    if ( ! JDDate::Test( ) )
         ok = false;
     if ( ! TestGregorianDate( ) )
         ok = false;

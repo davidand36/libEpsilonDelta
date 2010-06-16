@@ -9,7 +9,7 @@
 */
 
 
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "DateFixupMethod.hpp"
 #include <string>
 
@@ -21,7 +21,7 @@ namespace EpsilonDelta
 
 
 class MayanLongCountDate
-    :   public DateJD
+    :   public JDDate
 {
 public:
     explicit MayanLongCountDate( bool today = false );
@@ -29,11 +29,11 @@ public:
     MayanLongCountDate( int kin, int uinal, int tun, int katun, int baktun,
                         int pictun = 0, int calabtun = 0,
                         int kinchiltun = 0, int alautun = 0 );
-    explicit MayanLongCountDate( const DateJD & date );
+    explicit MayanLongCountDate( const JDDate & date );
     MayanLongCountDate( const MayanLongCountDate & date );
     virtual ~MayanLongCountDate( );
 
-    MayanLongCountDate & operator=( const DateJD & rhs );
+    MayanLongCountDate & operator=( const JDDate & rhs );
     MayanLongCountDate & operator=( const MayanLongCountDate & rhs );
 
     virtual void Set( bool today );

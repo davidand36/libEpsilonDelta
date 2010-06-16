@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "JulianCalendar.hpp"
 #include "WesternWeek.hpp"
 
@@ -19,7 +19,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< JulianCalendar, WesternWeek >  JulianDate;
+typedef DMYWDate< JulianCalendar, WesternWeek >  JulianDate;
 
 
 //=============================================================================

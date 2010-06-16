@@ -1,10 +1,10 @@
-#ifndef DATEJD_HPP
-#define DATEJD_HPP
+#ifndef JDDATE_HPP
+#define JDDATE_HPP
 /*
-  DateJD.hpp
+  JDDate.hpp
   Copyright (C) 2007 David M. Anderson
 
-  DateJD class, representing dates with a Julian Day equivalent,
+  JDDate class, representing dates with a Julian Day equivalent,
   i.e. a base class for all dates.
 
   Julian Day numbering was developed by John F.W. Herschel in 1849 in his
@@ -20,12 +20,12 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class DateJD
+class JDDate
 {
 public:
-    explicit DateJD( bool today = false );
-    explicit DateJD( long julianDay );
-    virtual ~DateJD( );
+    explicit JDDate( bool today = false );
+    explicit JDDate( long julianDay );
+    virtual ~JDDate( );
     virtual void Set( bool today );
     virtual void Set( long julianDay );
     virtual bool Valid( ) const;
@@ -46,15 +46,15 @@ private:
 
 //.............................................................................
 
-bool operator==( const DateJD & lhs, const DateJD & rhs );
-bool operator<( const DateJD & lhs, const DateJD & rhs );
+bool operator==( const JDDate & lhs, const JDDate & rhs );
+bool operator<( const JDDate & lhs, const JDDate & rhs );
 
 
 //*****************************************************************************
 
 
 inline
-DateJD::DateJD( bool today )
+JDDate::JDDate( bool today )
     :    m_julianDay( today ? Today( ) : INVALID )
 {
 }
@@ -62,7 +62,7 @@ DateJD::DateJD( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline
-DateJD::DateJD( long julianDay )
+JDDate::JDDate( long julianDay )
     :    m_julianDay( julianDay )
 {
 }
@@ -70,7 +70,7 @@ DateJD::DateJD( long julianDay )
 //-----------------------------------------------------------------------------
 
 inline
-DateJD::~DateJD( )
+JDDate::~JDDate( )
 {
 }
 
@@ -78,7 +78,7 @@ DateJD::~DateJD( )
 
 inline
 void
-DateJD::Set( long julianDay )
+JDDate::Set( long julianDay )
 {
     m_julianDay = julianDay;
 }
@@ -87,7 +87,7 @@ DateJD::Set( long julianDay )
 
 inline
 bool
-DateJD::Valid( ) const
+JDDate::Valid( ) const
 {
     return ( m_julianDay != INVALID );
 }
@@ -96,7 +96,7 @@ DateJD::Valid( ) const
 
 inline
 long
-DateJD::JulianDay( ) const
+JDDate::JulianDay( ) const
 {
     return m_julianDay;
 }
@@ -105,7 +105,7 @@ DateJD::JulianDay( ) const
 
 inline
 void
-DateJD::Increment( long days )
+JDDate::Increment( long days )
 {
     if ( m_julianDay != INVALID )
         m_julianDay += days;
@@ -115,7 +115,7 @@ DateJD::Increment( long days )
 
 inline 
 bool
-operator==( const DateJD & lhs, const DateJD & rhs )
+operator==( const JDDate & lhs, const JDDate & rhs )
 {
     return ( lhs.JulianDay( ) == rhs.JulianDay( ) );
 }
@@ -124,7 +124,7 @@ operator==( const DateJD & lhs, const DateJD & rhs )
 
 inline 
 bool
-operator<( const DateJD & lhs, const DateJD & rhs )
+operator<( const JDDate & lhs, const JDDate & rhs )
 {
     return ( lhs.JulianDay( ) < rhs.JulianDay( ) );
 }
@@ -134,4 +134,4 @@ operator<( const DateJD & lhs, const DateJD & rhs )
 
 }                                                      //namespace EpsilonDelta
 
-#endif //DATEJD_HPP
+#endif //JDDATE_HPP

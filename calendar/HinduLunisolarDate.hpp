@@ -9,7 +9,7 @@
 */
 
 
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "DateFixupMethod.hpp"
 #include <string>
 
@@ -21,18 +21,18 @@ namespace EpsilonDelta
 
 
 class HinduLunisolarDate
-    :   public DateJD
+    :   public JDDate
 {
 public:
     explicit HinduLunisolarDate( bool today = false );
     explicit HinduLunisolarDate( long julianDay );
     HinduLunisolarDate( int day, bool dayLeap,
                         int month, bool monthLeap, long year );
-    explicit HinduLunisolarDate( const DateJD & date );
+    explicit HinduLunisolarDate( const JDDate & date );
     HinduLunisolarDate( const HinduLunisolarDate & date );
     virtual ~HinduLunisolarDate( );
 
-    HinduLunisolarDate & operator=( const DateJD & rhs );
+    HinduLunisolarDate & operator=( const JDDate & rhs );
     HinduLunisolarDate & operator=( const HinduLunisolarDate & rhs );
 
     virtual void Set( bool today );
@@ -94,7 +94,7 @@ void
 HinduLunisolarDate::Set( int day, bool dayLeap,
                          int month, bool monthLeap, long year )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_dayLeap = dayLeap;
     m_month = month;
@@ -107,7 +107,7 @@ HinduLunisolarDate::Set( int day, bool dayLeap,
 inline 
 HinduLunisolarDate::HinduLunisolarDate( int day, bool dayLeap,
                                         int month, bool monthLeap, long year )
-    :   DateJD( false ),
+    :   JDDate( false ),
         m_day( day ),
         m_dayLeap( dayLeap ),
         m_month( month ),
@@ -121,11 +121,11 @@ HinduLunisolarDate::HinduLunisolarDate( int day, bool dayLeap,
 inline 
 HinduLunisolarDate::HinduLunisolarDate(
     const HinduLunisolarDate & date )
-    :    DateJD( false )
+    :    JDDate( false )
 {
     Set( date.m_day, date.m_dayLeap, date.m_month, m_monthLeap, date.m_year );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
@@ -144,8 +144,8 @@ HinduLunisolarDate::operator=( const HinduLunisolarDate & rhs )
     if ( &rhs == this )
         return *this;
     Set( rhs.m_day, rhs.m_dayLeap, rhs.m_month, rhs.m_monthLeap, rhs.m_year );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 

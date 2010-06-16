@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "CopticCalendar.hpp"
 #include "CopticWeek.hpp"
 
@@ -19,7 +19,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< CopticCalendar, CopticWeek >  CopticDate;
+typedef DMYWDate< CopticCalendar, CopticWeek >  CopticDate;
 
 
 //=============================================================================

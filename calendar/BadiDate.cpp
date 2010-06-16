@@ -30,9 +30,9 @@ BadiDate::BadiDate( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 BadiDate::BadiDate( long julianDay )
-    :   DateJD( false )
+    :   JDDate( false )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     BadiCalendar::JulianDayToDMYVK( JulianDay(), &m_day, &m_month,
                                     &m_year, &m_vahid, &m_kulliShay );
 }
@@ -40,7 +40,7 @@ BadiDate::BadiDate( long julianDay )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 BadiDate::BadiDate( int day, int month, int year, int vahid, long kulliShay )
-    :   DateJD( false ),
+    :   JDDate( false ),
         m_day( day ),
         m_month( month ),
         m_year( year ),
@@ -51,10 +51,10 @@ BadiDate::BadiDate( int day, int month, int year, int vahid, long kulliShay )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-BadiDate::BadiDate( const DateJD & date )
-    :   DateJD( false )
+BadiDate::BadiDate( const JDDate & date )
+    :   JDDate( false )
 {
-    DateJD::Set( date.JulianDay() );
+    JDDate::Set( date.JulianDay() );
     BadiCalendar::JulianDayToDMYVK( JulianDay(), &m_day, &m_month,
                                     &m_year, &m_vahid, &m_kulliShay );
 }
@@ -62,11 +62,11 @@ BadiDate::BadiDate( const DateJD & date )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 BadiDate::BadiDate( const BadiDate & date )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( date.m_day, date.m_month, date.m_year, date.m_vahid, date.m_kulliShay );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
@@ -82,14 +82,14 @@ BadiDate::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
         BadiCalendar::JulianDayToDMYVK( JulianDay(), &m_day, &m_month,
                                         &m_year, &m_vahid, &m_kulliShay );
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 1, 1, 1, 1, 1 );
     }
 }
@@ -99,7 +99,7 @@ BadiDate::Set( bool today )
 void 
 BadiDate::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     BadiCalendar::JulianDayToDMYVK( JulianDay(), &m_day, &m_month,
                                     &m_year, &m_vahid, &m_kulliShay );
 }
@@ -109,7 +109,7 @@ BadiDate::Set( long julianDay )
 void 
 BadiDate::Set( int day, int month, int year, int vahid, long kulliShay )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_month = month;
     m_year = year;
@@ -120,7 +120,7 @@ BadiDate::Set( int day, int month, int year, int vahid, long kulliShay )
 //=============================================================================
 
 BadiDate & 
-BadiDate::operator=( const DateJD & rhs )
+BadiDate::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -136,8 +136,8 @@ BadiDate::operator=( const BadiDate & rhs )
     if ( &rhs == this )
         return *this;
     Set( rhs.m_day, rhs.m_month, rhs.m_year, rhs.m_vahid, rhs.m_kulliShay );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 
@@ -190,10 +190,10 @@ BadiDate::MakeValid( DateFixup::EMethod fixupMethod )
 long 
 BadiDate::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = BadiCalendar::DMYVKToJulianDay( m_day, m_month, m_year,
                                                       m_vahid, m_kulliShay );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //=============================================================================
@@ -221,7 +221,7 @@ BadiDate::DaysUntilWeekday( int weekday, int n ) const
 void 
 BadiDate::Increment( int days )
 {
-    DateJD::Increment( days );
+    JDDate::Increment( days );
     m_day += days;
     MakeValid( DateFixup::Carry );
 }
@@ -233,7 +233,7 @@ BadiDate::Increment( int days, int months,
                      int years, int vahids, long kulliShays,
                      DateFixup::EMethod fixupMethod )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day += days;
     m_month += months;
     m_year += years;

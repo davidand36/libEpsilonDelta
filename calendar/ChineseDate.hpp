@@ -9,7 +9,7 @@
 
 
 #include "ChineseCalendar.hpp"
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include <string>
 
 
@@ -20,7 +20,7 @@ namespace EpsilonDelta
 
 
 class ChineseDate
-    :   public DateJD
+    :   public JDDate
 {
 public:
     explicit ChineseDate( bool today = false );
@@ -32,11 +32,11 @@ public:
                  int leapMonth );
     ChineseDate( int day, int month, bool leap,
                  int yearCyclical, long yearCycle );
-    explicit ChineseDate( const DateJD & date );
+    explicit ChineseDate( const JDDate & date );
     ChineseDate( const ChineseDate & date );
     virtual ~ChineseDate( );
 
-    ChineseDate & operator=( const DateJD & rhs );
+    ChineseDate & operator=( const JDDate & rhs );
     ChineseDate & operator=( const ChineseDate & rhs );
 
     virtual void Set( bool today );
@@ -109,7 +109,7 @@ inline
 void 
 ChineseDate::Set( int day, int month, long year, int leapMonth )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_month = month;
     m_year = year;
@@ -120,7 +120,7 @@ ChineseDate::Set( int day, int month, long year, int leapMonth )
 
 inline 
 ChineseDate::ChineseDate( int day, int month, long year, int leapMonth )
-    :   DateJD( false ),
+    :   JDDate( false ),
         m_day( day ),
         m_month( month ),
         m_year( year ),
@@ -132,12 +132,12 @@ ChineseDate::ChineseDate( int day, int month, long year, int leapMonth )
 
 inline 
 ChineseDate::ChineseDate( const ChineseDate & date )
-    :    DateJD( false )
+    :    JDDate( false )
 {
     Set( date.m_day, date.m_month, date.m_year,
          date.m_leapMonth );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
@@ -157,8 +157,8 @@ ChineseDate::operator=( const ChineseDate & rhs )
         return *this;
     Set( rhs.m_day, rhs.m_month, rhs.m_year,
          rhs.m_leapMonth );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 

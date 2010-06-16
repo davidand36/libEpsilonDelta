@@ -22,14 +22,14 @@ namespace EpsilonDelta
 
 
 FrenchRevolutionaryDate::FrenchRevolutionaryDate( bool today )
-    :   DateDMY< FrenchRevolutionaryCalendar >( today )
+    :   DMYDate< FrenchRevolutionaryCalendar >( today )
 {
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 FrenchRevolutionaryDate::FrenchRevolutionaryDate( long julianDay )
-    :   DateDMY< FrenchRevolutionaryCalendar >( julianDay )
+    :   DMYDate< FrenchRevolutionaryCalendar >( julianDay )
 {
 }
 
@@ -37,14 +37,14 @@ FrenchRevolutionaryDate::FrenchRevolutionaryDate( long julianDay )
 
 FrenchRevolutionaryDate::FrenchRevolutionaryDate( int day, int month,
                                                   long year )
-    :   DateDMY< FrenchRevolutionaryCalendar >( day, month, year )
+    :   DMYDate< FrenchRevolutionaryCalendar >( day, month, year )
 {
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-FrenchRevolutionaryDate::FrenchRevolutionaryDate( const DateJD & date )
-    :   DateDMY< FrenchRevolutionaryCalendar >( date )
+FrenchRevolutionaryDate::FrenchRevolutionaryDate( const JDDate & date )
+    :   DMYDate< FrenchRevolutionaryCalendar >( date )
 {
 }
 
@@ -52,7 +52,7 @@ FrenchRevolutionaryDate::FrenchRevolutionaryDate( const DateJD & date )
 
 FrenchRevolutionaryDate::FrenchRevolutionaryDate(
     const FrenchRevolutionaryDate & date )
-    :   DateDMY< FrenchRevolutionaryCalendar >( date )
+    :   DMYDate< FrenchRevolutionaryCalendar >( date )
 {
 }
 
@@ -65,11 +65,11 @@ FrenchRevolutionaryDate::~FrenchRevolutionaryDate( )
 //=============================================================================
 
 FrenchRevolutionaryDate & 
-FrenchRevolutionaryDate::operator=( const DateJD & rhs )
+FrenchRevolutionaryDate::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
-    DateDMY< FrenchRevolutionaryCalendar >::operator=( rhs );
+    DMYDate< FrenchRevolutionaryCalendar >::operator=( rhs );
     return *this;
 }
 
@@ -77,11 +77,11 @@ FrenchRevolutionaryDate::operator=( const DateJD & rhs )
 
 FrenchRevolutionaryDate & 
 FrenchRevolutionaryDate::operator=(
-    const DateDMY< FrenchRevolutionaryCalendar > & rhs )
+    const DMYDate< FrenchRevolutionaryCalendar > & rhs )
 {
     if ( &rhs == this )
         return *this;
-    DateDMY< FrenchRevolutionaryCalendar >::operator=( rhs );
+    DMYDate< FrenchRevolutionaryCalendar >::operator=( rhs );
     return *this;
 }
 
@@ -90,7 +90,7 @@ FrenchRevolutionaryDate::operator=(
 std::string 
 FrenchRevolutionaryDate::ToString( const std::string & format ) const
 {
-    return  DateDMY< FrenchRevolutionaryCalendar >::ToString( format );
+    return  DMYDate< FrenchRevolutionaryCalendar >::ToString( format );
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ FrenchRevolutionaryDate::ToString( const std::string & format ) const
 void 
 FrenchRevolutionaryDate::SetDefaultFormat( const std::string & format )
 {
-    DateDMY< FrenchRevolutionaryCalendar >::SetDefaultFormat( format );
+    DMYDate< FrenchRevolutionaryCalendar >::SetDefaultFormat( format );
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ FrenchRevolutionaryDate::SetDefaultFormat( const std::string & format )
 const std::string & 
 FrenchRevolutionaryDate::DefaultFormat( )
 {
-    return DateDMY< FrenchRevolutionaryCalendar >::DefaultFormat();
+    return DMYDate< FrenchRevolutionaryCalendar >::DefaultFormat();
 }
 
 //=============================================================================

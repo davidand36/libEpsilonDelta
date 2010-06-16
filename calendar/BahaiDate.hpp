@@ -8,7 +8,7 @@
 */
 
 
-#include "DateDMYW.hpp"
+#include "DMYWDate.hpp"
 #include "BahaiCalendar.hpp"
 #include "BahaiWeek.hpp"
 
@@ -19,7 +19,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-typedef DateDMYW< BahaiCalendar, BahaiWeek >  BahaiDate;
+typedef DMYWDate< BahaiCalendar, BahaiWeek >  BahaiDate;
 
 
 //=============================================================================

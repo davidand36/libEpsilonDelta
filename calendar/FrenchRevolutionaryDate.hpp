@@ -9,7 +9,7 @@
 */
 
 
-#include "DateDMY.hpp"
+#include "DMYDate.hpp"
 #include "FrenchRevolutionaryCalendar.hpp"
 
 
@@ -20,20 +20,20 @@ namespace EpsilonDelta
 
 
 class FrenchRevolutionaryDate
-    :   public DateDMY< FrenchRevolutionaryCalendar >
+    :   public DMYDate< FrenchRevolutionaryCalendar >
 {
 public:
     explicit FrenchRevolutionaryDate( bool today = false );
     explicit FrenchRevolutionaryDate( long julianDay );
     FrenchRevolutionaryDate( int day, int month, long year );
-    explicit FrenchRevolutionaryDate( const DateJD & date );
+    explicit FrenchRevolutionaryDate( const JDDate & date );
     FrenchRevolutionaryDate( const FrenchRevolutionaryDate & date );
     virtual ~FrenchRevolutionaryDate( );
     virtual std::string ToString( const std::string & format ) const;
     
-    virtual FrenchRevolutionaryDate & operator=( const DateJD & rhs );
+    virtual FrenchRevolutionaryDate & operator=( const JDDate & rhs );
     virtual FrenchRevolutionaryDate & operator=(
-        const DateDMY< FrenchRevolutionaryCalendar > & rhs );
+        const DMYDate< FrenchRevolutionaryCalendar > & rhs );
 
     static void SetDefaultFormat( const std::string & format );
     static const std::string & DefaultFormat( );

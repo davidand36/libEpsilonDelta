@@ -34,9 +34,9 @@ MayanLongCountDate::MayanLongCountDate( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 MayanLongCountDate::MayanLongCountDate( long julianDay )
-    :   DateJD( false )
+    :   JDDate( false )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Calendar::JulianDayToLongCount( JulianDay(), &m_kin, &m_uinal, &m_tun,
                                     &m_katun, &m_baktun, &m_pictun,
                                     &m_calabtun, &m_kinchiltun, &m_alautun );
@@ -47,7 +47,7 @@ MayanLongCountDate::MayanLongCountDate( long julianDay )
 MayanLongCountDate::MayanLongCountDate( int kin, int uinal, int tun, int katun,
                                         int baktun, int pictun, int calabtun,
                                         int kinchiltun, int alautun )
-    :   DateJD( false ),
+    :   JDDate( false ),
         m_kin( kin ),
         m_uinal( uinal ),
         m_tun( tun ),
@@ -62,8 +62,8 @@ MayanLongCountDate::MayanLongCountDate( int kin, int uinal, int tun, int katun,
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-MayanLongCountDate::MayanLongCountDate( const DateJD & date )
-    :   DateJD( false )
+MayanLongCountDate::MayanLongCountDate( const JDDate & date )
+    :   JDDate( false )
 {
     Set( date.JulianDay() );
 }
@@ -71,12 +71,12 @@ MayanLongCountDate::MayanLongCountDate( const DateJD & date )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 MayanLongCountDate::MayanLongCountDate( const MayanLongCountDate & date )
-    :   DateJD( false )
+    :   JDDate( false )
 {
     Set( date.m_kin, date.m_uinal, date.m_tun, date.m_katun, date.m_baktun,
          date.m_pictun, date.m_calabtun, date.m_kinchiltun, date.m_alautun );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
@@ -92,8 +92,8 @@ MayanLongCountDate::Set( bool today )
 {
     if ( today )
     {
-        DateJD::Set( true );
-        Assert( DateJD::Valid() );
+        JDDate::Set( true );
+        Assert( JDDate::Valid() );
         Calendar::JulianDayToLongCount( JulianDay(),
                                         &m_kin, &m_uinal, &m_tun,
                                         &m_katun, &m_baktun,
@@ -102,7 +102,7 @@ MayanLongCountDate::Set( bool today )
     }
     else
     {
-        DateJD::Set( false );
+        JDDate::Set( false );
         Set( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
     }
 }
@@ -112,7 +112,7 @@ MayanLongCountDate::Set( bool today )
 void 
 MayanLongCountDate::Set( long julianDay )
 {
-    DateJD::Set( julianDay );
+    JDDate::Set( julianDay );
     Calendar::JulianDayToLongCount( julianDay,
                                     &m_kin, &m_uinal, &m_tun,
                                     &m_katun, &m_baktun,
@@ -127,7 +127,7 @@ MayanLongCountDate::Set( int kin, int uinal, int tun, int katun, int baktun,
                          int pictun, int calabtun,
                          int kinchiltun, int alautun )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_kin = kin;
     m_uinal = uinal;
     m_tun = tun;
@@ -142,7 +142,7 @@ MayanLongCountDate::Set( int kin, int uinal, int tun, int katun, int baktun,
 //=============================================================================
 
 MayanLongCountDate & 
-MayanLongCountDate::operator=( const DateJD & rhs )
+MayanLongCountDate::operator=( const JDDate & rhs )
 {
     if ( &rhs == this )
         return *this;
@@ -159,8 +159,8 @@ MayanLongCountDate::operator=( const MayanLongCountDate & rhs )
         return *this;
     Set( rhs.m_kin, rhs.m_uinal, rhs.m_tun, rhs.m_katun, rhs.m_baktun,
          rhs.m_pictun, rhs.m_calabtun, rhs.m_kinchiltun, rhs.m_alautun );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 
@@ -320,12 +320,12 @@ MayanLongCountDate::MakeValid( DateFixup::EMethod fixupMethod )
 long 
 MayanLongCountDate::JulianDay( ) const
 {
-    if ( ! DateJD::Valid() )
+    if ( ! JDDate::Valid() )
         m_julianDay = Calendar::LongCountToJulianDay( m_kin, m_uinal, m_tun,
                                                       m_katun, m_baktun,
                                                       m_pictun, m_calabtun,
                                                       m_kinchiltun, m_alautun );
-    return DateJD::JulianDay();
+    return JDDate::JulianDay();
 }
 
 //=============================================================================
@@ -333,7 +333,7 @@ MayanLongCountDate::JulianDay( ) const
 void 
 MayanLongCountDate::Increment( int days )
 {
-    DateJD::Increment( days );
+    JDDate::Increment( days );
     m_kin += days;
     MakeValid( DateFixup::Carry );
 }
@@ -346,7 +346,7 @@ MayanLongCountDate::Increment( int kin, int uinal, int tun, int katun,
                                int kinchiltun, int alautun,
                                DateFixup::EMethod fixupMethod )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_kin += kin;
     m_uinal += uinal;
     m_tun += tun;

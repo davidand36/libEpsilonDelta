@@ -9,7 +9,7 @@
 
 
 #include "ISO8601Calendar.hpp"
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include "DateFixupMethod.hpp"
 #include <string>
 
@@ -21,17 +21,17 @@ namespace EpsilonDelta
 
 
 class ISO8601Date
-    :   public DateJD
+    :   public JDDate
 {
 public:
     explicit ISO8601Date( bool today = false );
     explicit ISO8601Date( long julianDay );
     ISO8601Date( int day, int week, long year );
-    explicit ISO8601Date( const DateJD & date );
+    explicit ISO8601Date( const JDDate & date );
     ISO8601Date( const ISO8601Date & date );
     virtual ~ISO8601Date( );
 
-    ISO8601Date & operator=( const DateJD & rhs );
+    ISO8601Date & operator=( const JDDate & rhs );
     ISO8601Date & operator=( const ISO8601Date & rhs );
 
     virtual void Set( bool today );
@@ -84,7 +84,7 @@ inline
 void 
 ISO8601Date::Set( int day, int week, long year )
 {
-    DateJD::Set( DateJD::INVALID );
+    JDDate::Set( JDDate::INVALID );
     m_day = day;
     m_week = week;
     m_year = year;
@@ -94,7 +94,7 @@ ISO8601Date::Set( int day, int week, long year )
 
 inline 
 ISO8601Date::ISO8601Date( int day, int week, long year )
-    :   DateJD( false ),
+    :   JDDate( false ),
         m_day( day ),
         m_week( week ),
         m_year( year )
@@ -105,11 +105,11 @@ ISO8601Date::ISO8601Date( int day, int week, long year )
 
 inline 
 ISO8601Date::ISO8601Date( const ISO8601Date & date )
-    :    DateJD( false )
+    :    JDDate( false )
 {
     Set( date.m_day, date.m_week, date.m_year );
-    if ( date.DateJD::Valid() )
-        DateJD::Set( date.JulianDay() );
+    if ( date.JDDate::Valid() )
+        JDDate::Set( date.JulianDay() );
 }
 
 //-----------------------------------------------------------------------------
@@ -128,8 +128,8 @@ ISO8601Date::operator=( const ISO8601Date & rhs )
     if ( &rhs == this )
         return *this;
     Set( rhs.m_day, rhs.m_week, rhs.m_year );
-    if ( rhs.DateJD::Valid() )
-        DateJD::Set( rhs.JulianDay() );
+    if ( rhs.JDDate::Valid() )
+        JDDate::Set( rhs.JulianDay() );
     return *this;
 }
 

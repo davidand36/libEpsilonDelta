@@ -14,7 +14,7 @@
 #include "AstroPhenomena.hpp"
 #include "TimeStandards.hpp"
 #include "Angle.hpp"
-#include "DateJD.hpp"
+#include "JDDate.hpp"
 #include <string>
 #include <vector>
 #ifdef DEBUG
@@ -303,7 +303,7 @@ ChineseCalendar::MakeValid( int * pDay, int * pMonth, long * pYear,
             if ( *pDay > daysInMonth )
                 *pDay = daysInMonth;
         }
-        return DateJD::INVALID;
+        return JDDate::INVALID;
     }
 }
 

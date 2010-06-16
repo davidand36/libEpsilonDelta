@@ -25,7 +25,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-template <typename Cal> class DateDMY;
+template <typename Cal> class DMYDate;
 
 
 //*****************************************************************************
@@ -50,8 +50,8 @@ public:
 private:
     static void Today( int * pDay, int * pMonth, long * pYear );
 
-    friend class DateJD;
-    friend class DateDMY<GregorianCalendar>;
+    friend class JDDate;
+    friend class DMYDate<GregorianCalendar>;
 };
 
 

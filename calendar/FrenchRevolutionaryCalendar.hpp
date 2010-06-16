@@ -24,15 +24,15 @@ namespace EpsilonDelta
 class FrenchRevolutionaryCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static bool IsLeapYear( int year );
-    static int MonthsInYear( int year = 0 );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year = 0 );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static bool IsLeapYear( long year );
+    static int MonthsInYear( long year = 0 );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year = 0 );
     static int DaysInDecade( );
-    static const std::string & DayName( int day, int month, int year = 0 );
+    static const std::string & DayName( int day, int month, long year = 0 );
 
     enum EMonth
     { Vendemiaire = 1, Brumaire, Frimaire,
@@ -48,7 +48,7 @@ public:
 
 inline
 int
-FrenchRevolutionaryCalendar::MonthsInYear( int /*year*/ )
+FrenchRevolutionaryCalendar::MonthsInYear( long /*year*/ )
 {
     return 13;  //including the sansculottides
 }

@@ -24,8 +24,8 @@ class FrenchRevolutionaryDate
 {
 public:
     explicit FrenchRevolutionaryDate( bool today = false );
-    explicit FrenchRevolutionaryDate( int julianDay );
-    FrenchRevolutionaryDate( int day, int month, int year );
+    explicit FrenchRevolutionaryDate( long julianDay );
+    FrenchRevolutionaryDate( int day, int month, long year );
     explicit FrenchRevolutionaryDate( const DateJD & date );
     FrenchRevolutionaryDate( const FrenchRevolutionaryDate & date );
     virtual ~FrenchRevolutionaryDate( );

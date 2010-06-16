@@ -34,10 +34,10 @@ TestPersianDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     astronomicalTestDates[]
             = {
@@ -78,10 +78,10 @@ TestPersianDate( )
 
     for ( int i = 0; i < ARRAY_LENGTH( astronomicalTestDates ); ++i )
     {
-        int jd = astronomicalTestDates[i].julianDay;
+        long jd = astronomicalTestDates[i].julianDay;
         int d = astronomicalTestDates[i].day;
         int m = astronomicalTestDates[i].month;
-        int y = astronomicalTestDates[i].year;
+        long y = astronomicalTestDates[i].year;
         cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
         PersianDate persDate( d, m, y );
         TESTCHECK( persDate.Valid( ), true, &ok );
@@ -103,39 +103,40 @@ TestPersianDate( )
     TESTCHECK( persDate.Valid( ), true, &ok );
     TESTCHECK( persDate.Day( ), 1, &ok );
     TESTCHECK( persDate.Month( ), 1, &ok );
-    TESTCHECK( persDate.Year( ), 1, &ok );
-    TESTCHECK( persDate.JulianDay( ), 1948321, &ok );
+    TESTCHECK( persDate.Year( ), 1L, &ok );
+    TESTCHECK( persDate.JulianDay( ), 1948321L, &ok );
     TESTCHECK( persDate.DayOfWeek( ), 6, &ok );
     TESTCHECK( persDate.ToString( ), string( "Jom'eh, 1 Farvardin 1" ), &ok );
 
     int d = 21;
     int m = 8;
-    int y = 1324;
+    long y = 1324;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     persDate.Set( d, m, y );
     TESTCHECK( persDate.Valid( ), true, &ok );
     TESTCHECK( persDate.Day( ), d, &ok );
     TESTCHECK( persDate.Month( ), m, &ok );
     TESTCHECK( persDate.Year( ), y, &ok );
-    TESTCHECK( persDate.JulianDay( ), 2431772, &ok );
+    TESTCHECK( persDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( persDate.DayOfWeek( ), 2, &ok );
     TESTCHECK( persDate.ToString( ), string( "Do-shanbeh, 21 Aban 1324" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     persDate.Increment( incr );
-    TESTCHECK( persDate.JulianDay( ), 2431812, &ok );
+    TESTCHECK( persDate.JulianDay( ), 2431812L, &ok );
     TESTCHECK( persDate.ToString( ), string( "Shanbeh, 1 Dey 1324" ), &ok );
     incr = 12;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     persDate.Increment( 0, incr, 0 );
-    TESTCHECK( persDate.JulianDay( ), 2432177, &ok );
+    TESTCHECK( persDate.JulianDay( ), 2432177L, &ok );
     TESTCHECK( persDate.ToString( ), string( "Yek-shanbeh, 1 Dey 1325" ), &ok );
 
     cout << "PersianDate( true ) [today constructor]" << endl;
     PersianDate persToday( true );
     TESTCHECK( persToday.Valid( ), true, &ok );
     cout << "persToday.JulianDay( )=" << persToday.JulianDay( );
-    if ( (persToday.JulianDay( ) > 2451545) && (persToday.JulianDay( ) < 2500000) )
+    if ( (persToday.JulianDay( ) > 2451545)
+         && (persToday.JulianDay( ) < 2500000) ) //test good until 1511 A.H.S.
         cout << "\tOK" << endl;
     else
     {
@@ -146,7 +147,7 @@ TestPersianDate( )
     TESTCHECK( (persDate < persToday), true, &ok );
     cout << "persToday.ToString()=" << persToday.ToString( ) << endl;
 
-    int jd = 2431772;
+    long jd = 2431772;
     cout << "PersianDate( " << jd << " ) [Julian Day constructor]" << endl;
     PersianDate persJD( jd );
     TESTCHECK( persJD.Valid( ), true, &ok );
@@ -164,7 +165,7 @@ TestPersianDate( )
     TESTCHECK( persDMY.Valid( ), true, &ok );
     TESTCHECK( (persJD < persDMY), true, &ok );
     TESTCHECK( (persDMY < persToday), true, &ok );
-    TESTCHECK( persDMY.JulianDay( ), 2431773, &ok );
+    TESTCHECK( persDMY.JulianDay( ), 2431773L, &ok );
     TESTCHECK( persDMY.ToString( ), string( "Se-shanbeh, 22 Aban 1324" ), &ok );
 
     jd = 1948320;
@@ -183,7 +184,7 @@ TestPersianDate( )
     TESTCHECK( pers110.Valid( ), true, &ok );
     TESTCHECK( (pers110 < persJD), true, &ok );
     TESTCHECK( (pers110 < persToday), true, &ok );
-    TESTCHECK( pers110.JulianDay( ), 1947955, &ok );
+    TESTCHECK( pers110.JulianDay( ), 1947955L, &ok );
     TESTCHECK( pers110.ToString( ), string( "Chahar-shanbeh, 1 Farvardin 0" ), &ok );
 
     cout << "PersianDate( pers0 ) [copy constructor]" << endl;
@@ -222,10 +223,10 @@ TestPersianDate( )
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     arithmeticTestDates[]
             = {

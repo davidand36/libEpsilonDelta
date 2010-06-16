@@ -39,7 +39,7 @@ GeodeticLocation Mecca( AngleDMS( 39, 49, 24. ), AngleDMS( 21, 25, 24 ),
 namespace
 {                                                                   //namespace
 
-const int s_islamicEpoch = 1948440;
+const long s_islamicEpoch = 1948440;
 const double s_synodicMonth = 29.5305888531;
 const shared_ptr< IslamicCalendar::LocalMonthFunc > s_spUmmAlQuraMonthFunc(
     new IslamicCalendar::LocalMonthFunc( IslamicCalendar::UmmAlQuraVisibility,
@@ -57,8 +57,8 @@ shared_ptr< IslamicCalendar::System > IslamicCalendar::ms_pSystem(
 
 
 void
-IslamicCalendar::JulianDayToDMY( int julianDay,
-                                 int * pDay, int * pMonth, int * pYear )
+IslamicCalendar::JulianDayToDMY( long julianDay,
+                                 int * pDay, int * pMonth, long * pYear )
 {
     Assert( ms_pSystem );
     ms_pSystem->JulianDayToDMY( julianDay, pDay, pMonth, pYear );
@@ -66,8 +66,8 @@ IslamicCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-IslamicCalendar::DMYToJulianDay( int day, int month, int year )
+long
+IslamicCalendar::DMYToJulianDay( int day, int month, long year )
 {
     Assert( ms_pSystem );
     return ms_pSystem->DMYToJulianDay( day, month, year );
@@ -76,7 +76,7 @@ IslamicCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 int
-IslamicCalendar::DaysInMonth( int month, int year )
+IslamicCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     Assert( ms_pSystem );
@@ -86,7 +86,7 @@ IslamicCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-IslamicCalendar::MonthName( int month, int /*year*/ )
+IslamicCalendar::MonthName( int month, long /*year*/ )
 {
     return MonthName( month );
 }
@@ -103,7 +103,7 @@ IslamicCalendar::MonthName( int month )
 //=============================================================================
 
 bool
-IslamicCalendar::IsLeapYear( int year )
+IslamicCalendar::IsLeapYear( long year )
 {
     Assert( ms_pSystem );
     return ms_pSystem->IsLeapYear( year );
@@ -114,13 +114,13 @@ IslamicCalendar::IsLeapYear( int year )
 
 
 void 
-IslamicCalendar::ArithmeticSystem::JulianDayToDMY( int julianDay,
+IslamicCalendar::ArithmeticSystem::JulianDayToDMY( long julianDay,
                                                    int * pDay, int * pMonth,
-                                                   int * pYear )
+                                                   long * pYear )
 {
     int day = 0;
     int month = 0;
-    int year = 0;
+    long year = 0;
 
     switch ( m_leapSequence )
     {
@@ -129,8 +129,8 @@ IslamicCalendar::ArithmeticSystem::JulianDayToDMY( int julianDay,
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89.*/
-        year = DivF( (30 * (julianDay - s_islamicEpoch) + 10646), 10631 );
-        int priorDays = julianDay - DMYToJulianDay( 1, 1, year );
+        year = DivF( (30 * (julianDay - s_islamicEpoch) + 10646), 10631L );
+        int priorDays = (int)(julianDay - DMYToJulianDay( 1, 1, year ));
         month = DivF( (11 * priorDays + 330), 325 );
         day = julianDay - DMYToJulianDay( 1, month, year ) + 1;
         break;
@@ -140,8 +140,8 @@ IslamicCalendar::ArithmeticSystem::JulianDayToDMY( int julianDay,
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89, footnote.*/
-        year = DivF( (30 * (julianDay - s_islamicEpoch) + 10645), 10631 );
-        int priorDays = julianDay - DMYToJulianDay( 1, 1, year );
+        year = DivF( (30 * (julianDay - s_islamicEpoch) + 10645), 10631L );
+        int priorDays = (int)(julianDay - DMYToJulianDay( 1, 1, year ));
         month = DivF( (11 * priorDays + 330), 325 );
         day = julianDay - DMYToJulianDay( 1, month, year ) + 1;
         break;
@@ -155,9 +155,9 @@ IslamicCalendar::ArithmeticSystem::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 IslamicCalendar::ArithmeticSystem::DMYToJulianDay( int day, int month,
-                                                   int year )
+                                                   long year )
 {
     switch ( m_leapSequence )
     {
@@ -167,7 +167,7 @@ IslamicCalendar::ArithmeticSystem::DMYToJulianDay( int day, int month,
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89.*/
         return (s_islamicEpoch - 1
-                + (year - 1) * 354  +  DivF( (11 * year + 3), 30 )
+                + (year - 1) * 354  +  DivF( (11 * year + 3), 30L )
                 + (month - 1) * 29  +  DivF( month, 2 )
                 + day);
     }
@@ -177,7 +177,7 @@ IslamicCalendar::ArithmeticSystem::DMYToJulianDay( int day, int month,
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89, footnote.*/
         return (s_islamicEpoch - 1
-                + (year - 1) * 354  +  DivF( (11 * year + 4), 30 )
+                + (year - 1) * 354  +  DivF( (11 * year + 4), 30L )
                 + (month - 1) * 29  +  DivF( month, 2 )
                 + day);
     }
@@ -187,7 +187,7 @@ IslamicCalendar::ArithmeticSystem::DMYToJulianDay( int day, int month,
 //=============================================================================
 
 int 
-IslamicCalendar::ArithmeticSystem::DaysInMonth( int month, int year )
+IslamicCalendar::ArithmeticSystem::DaysInMonth( int month, long year )
 {
     static const int daysInMonth[ 12 ]
             = { 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29 };
@@ -199,7 +199,7 @@ IslamicCalendar::ArithmeticSystem::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 bool 
-IslamicCalendar::ArithmeticSystem::IsLeapYear( int year )
+IslamicCalendar::ArithmeticSystem::IsLeapYear( long year )
 {
     switch ( m_leapSequence )
     {
@@ -208,14 +208,14 @@ IslamicCalendar::ArithmeticSystem::IsLeapYear( int year )
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89.*/
-        return ( ModF( (11 * year + 14), 30 ) < 11 );
+        return ( ModF( (11 * year + 14), 30L ) < 11 );
     }
 
     case Labban:
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, Millennium Edition", p. 89, footnote.*/
-        return ( ModF( (11 * year + 15), 30 ) < 11 );
+        return ( ModF( (11 * year + 15), 30L ) < 11 );
     }
     }
 }
@@ -225,49 +225,49 @@ IslamicCalendar::ArithmeticSystem::IsLeapYear( int year )
 
 
 void 
-IslamicCalendar::AstronomicalSystem::JulianDayToDMY( int julianDay,
+IslamicCalendar::AstronomicalSystem::JulianDayToDMY( long julianDay,
                                                      int * pDay, int * pMonth,
-                                                     int * pYear )
+                                                     long * pYear )
 {
     /*Adapted from Edward M. Reingold and Nachum Dershowitz,
       "Calendrical Calculations, Millennium Edition", p 206.*/
-    int monthStart = MonthStart( julianDay );
-    int elapsedMonths = static_cast< int >(
-        std::floor( ((monthStart - s_islamicEpoch) / s_synodicMonth) + 0.5 ) );
-    int month;
-    int year;
-    DivModF( elapsedMonths, 12, &year, &month );
-    *pDay = julianDay - monthStart + 1;
-    *pMonth = month + 1;
+    long monthStart = MonthStart( julianDay );
+    long elapsedMonths = (long)(
+        floor( ((monthStart - s_islamicEpoch) / s_synodicMonth) + 0.5 ) );
+    long month;
+    long year;
+    DivModF( elapsedMonths, 12L, &year, &month );
+    *pDay = (int)(julianDay - monthStart + 1);
+    *pMonth = (int)(month + 1);
     *pYear = year + 1;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 IslamicCalendar::AstronomicalSystem::DMYToJulianDay( int day, int month,
-                                                     int year )
+                                                     long year )
 {
     /*Adapted from Edward M. Reingold and Nachum Dershowitz,
       "Calendrical Calculations, Millennium Edition", p 206.*/
-    int midMonth = s_islamicEpoch
-            + static_cast<int>( std::floor( ((year - 1) * 12  +  month  -  0.5)
+    long midMonth = s_islamicEpoch
+            + (long)( floor( ((year - 1) * 12  +  month  -  0.5)
                                             * s_synodicMonth ) );
-    int monthStart = MonthStart( midMonth );
+    long monthStart = MonthStart( midMonth );
     return monthStart + day - 1;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-IslamicCalendar::AstronomicalSystem::MonthStart( int julianDay )
+long 
+IslamicCalendar::AstronomicalSystem::MonthStart( long julianDay )
 {
     /*Adapted from Edward M. Reingold and Nachum Dershowitz,
       "Calendrical Calculations, Millennium Edition", p 205.*/
     Angle phase = LunarPhase( julianDay + 1 );
     phase.NormalizePositive( );
-    int jd = julianDay -
-            static_cast<int>( std::floor( phase.Cycles() * s_synodicMonth ) );
+    long jd = julianDay -
+            (long)( floor( phase.Cycles() * s_synodicMonth ) );
     if ( (julianDay - jd <= 3) && (! (*m_pMonthFunc)( julianDay )) )
         jd -= 30;
     else
@@ -280,7 +280,7 @@ IslamicCalendar::AstronomicalSystem::MonthStart( int julianDay )
 //=============================================================================
 
 int 
-IslamicCalendar::AstronomicalSystem::DaysInMonth( int month, int year )
+IslamicCalendar::AstronomicalSystem::DaysInMonth( int month, long year )
 {
     if ( month < MonthsInYear( year ) )
         return DMYToJulianDay( 1, month + 1, year )
@@ -293,7 +293,7 @@ IslamicCalendar::AstronomicalSystem::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 bool 
-IslamicCalendar::AstronomicalSystem::IsLeapYear( int year )
+IslamicCalendar::AstronomicalSystem::IsLeapYear( long year )
 {
     return ( (DMYToJulianDay( 1, 1, year + 1 ) - DMYToJulianDay( 1, 1, year ))
             > 354 );
@@ -304,7 +304,7 @@ IslamicCalendar::AstronomicalSystem::IsLeapYear( int year )
 
 
 bool 
-IslamicCalendar::ISNA_Hijri::operator()( int julianDay )
+IslamicCalendar::ISNA_Hijri::operator()( long julianDay )
 {
     /*The rule is simply that New Moon (conjunction) occur before 12:00 GMT.
       See http://www.fiqhcouncil.org/articles/Lunar_Calendar.html*/
@@ -317,7 +317,7 @@ IslamicCalendar::ISNA_Hijri::operator()( int julianDay )
 
 
 bool 
-IslamicCalendar::LocalMonthFunc::operator()( int julianDay )
+IslamicCalendar::LocalMonthFunc::operator()( long julianDay )
 {
     double jd = julianDay  - 1. - m_location.Longitude().Cycles();
     return m_visibilityFunc( jd, m_location );
@@ -334,7 +334,7 @@ IslamicCalendar::UmmAlQuraVisibility( double julianDay,
     /* Using rules reported by the Islamic Crescents' Observation Project
        on http://www.icoproject.org/sau.html.
        See also http://www.phys.uu.nl/~vgent/islam/ummalqura.htm.*/
-    int refJD = static_cast< int >( julianDay + 1.
+    long refJD = (long)( julianDay + 1.
                                     + location.Longitude().Cycles() );
     RiseSet::Result sunsetRslt
             = RiseSet::FindNext( julianDay, SolarSystem::Sun,

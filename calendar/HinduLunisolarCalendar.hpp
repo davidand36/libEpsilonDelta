@@ -21,22 +21,22 @@ namespace EpsilonDelta
 class HinduLunisolarCalendar
 {
 public:
-    static void JulianDayToDLMLY( int julianDay, 
+    static void JulianDayToDLMLY( long julianDay, 
                                   int * pDay, bool * pDayLeap,
                                   int * pMonth, bool * pMonthLeap,
-                                  int * pYear );
-    static int DLMLYToJulianDay( int day, bool dayLeap,
-                                 int month, bool monthLeap, int year );
+                                  long * pYear );
+    static long DLMLYToJulianDay( int day, bool dayLeap,
+                                 int month, bool monthLeap, long year );
 
     static bool Valid( int day, bool dayLeap, int month, bool monthLeap,
-                       int year );
-    static int MakeValid( int * pDay, bool *pDayLeap,
+                       long year );
+    static long MakeValid( int * pDay, bool *pDayLeap,
                           int * pMonth, bool * pMonthLeap,
-                          int * pYear, DateFixup::EMethod fixupMethod );
-    static int LastDayOfMonth( int month, bool monthLeap, int year );
-    static int LostDay( int month, bool monthLeap, int year );
-    static int LeapDay( int month, bool monthLeap, int year );
-    static bool IsMonthLeap( int month, int year );
+                          long * pYear, DateFixup::EMethod fixupMethod );
+    static int LastDayOfMonth( int month, bool monthLeap, long year );
+    static int LostDay( int month, bool monthLeap, long year );
+    static int LeapDay( int month, bool monthLeap, long year );
+    static bool IsMonthLeap( int month, long year );
 
     static const std::string & MonthName( int month );
 

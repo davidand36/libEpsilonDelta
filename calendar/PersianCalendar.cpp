@@ -28,7 +28,7 @@ namespace EpsilonDelta
 namespace
 {                                                                   //namespace
 
-const int s_persianEpoch = 1948321;
+const long s_persianEpoch = 1948321;
 #if 1
 //Longitude of Iranian Standard Time (UT+3.5h) used, following note 244
 // in errata to Reingold & Dershowitz
@@ -39,10 +39,10 @@ const double s_localZone = Angle( 51.42, Angle::Degree ).Cycles();
 #endif
 const double s_tropicalYear = 365.2421896698;
 
-double JDItoJD( int jdi );
-int JDtoJDI( double jd );
-Angle SolarLongitude( int jdi );
-int PriorSpringEquinox( int jdi );
+double JDItoJD( long jdi );
+long JDtoJDI( double jd );
+Angle SolarLongitude( long jdi );
+long PriorSpringEquinox( long jdi );
 
 }                                                                   //namespace
 
@@ -54,8 +54,8 @@ PersianCalendar::EMethod PersianCalendar::ms_method
 //=============================================================================
 
 void
-PersianCalendar::JulianDayToDMY( int julianDay,
-                                 int * pDay, int * pMonth, int * pYear )
+PersianCalendar::JulianDayToDMY( long julianDay,
+                                 int * pDay, int * pMonth, long * pYear )
 {
     switch ( ms_method )
     {
@@ -63,16 +63,16 @@ PersianCalendar::JulianDayToDMY( int julianDay,
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, the Millennium Edition", p. 214.*/
-        int newYear = PriorSpringEquinox( julianDay ) + 1;
-        int year = static_cast<int>( std::floor( ((newYear - s_persianEpoch)
+        long newYear = PriorSpringEquinox( julianDay ) + 1;
+        long year = (long)( floor( ((newYear - s_persianEpoch)
                                              / s_tropicalYear) + 0.5 ) )  +  1;
-        int dayOfYear = julianDay  -  DMYToJulianDay( 1, 1, year )  +  1;
+        int dayOfYear = (int)(julianDay  -  DMYToJulianDay( 1, 1, year )  +  1);
         int month;
         if ( dayOfYear <= 186 )
-            month = static_cast<int>( std::ceil( dayOfYear / 31. ) );
+            month = (int)( ceil( dayOfYear / 31. ) );
         else
-            month = static_cast<int>( std::ceil( (dayOfYear - 6) / 30. ) );
-        int day = julianDay  -  DMYToJulianDay( 1, month, year )  +  1;
+            month = (int)( ceil( (dayOfYear - 6) / 30. ) );
+        int day = (int)(julianDay  -  DMYToJulianDay( 1, month, year )  +  1);
         if ( pDay )
             *pDay = day;
         if ( pMonth )
@@ -85,23 +85,23 @@ PersianCalendar::JulianDayToDMY( int julianDay,
     {
         /*Adapted from Nachum Dershowitz and Edward M. Reingold,
           "Calendrical Calculations" (1st ed.), p. 73.*/
-        const int jd475 = 2121446; /*DMYToJulianDay( 1, 1, 475 )*/
-        int d0 = julianDay - jd475;
-        int n = DivF( d0, 1029983 );
-        int d1 = ModF( d0, 1029983 );
-        int y;
+        const long jd475 = 2121446; /*DMYToJulianDay( 1, 1, 475 )*/
+        long d0 = julianDay - jd475;
+        long n = DivF( d0, 1029983L );
+        long d1 = ModF( d0, 1029983L );
+        long y;
         if ( d1 == 1029982 )
             y = 2820;
         else
         {
-            int a, b;
-            DivModF( d1, 366, &a, &b );
-            y = 1 + a + DivF( (2134 * a + 2816 * b + 2815), 1028522 );
+            long a, b;
+            DivModF( d1, 366L, &a, &b );
+            y = 1 + a + DivF( (2134 * a + 2816 * b + 2815), 1028522L );
         }
-        int year = y + 2820 * n + 474;
-        int dy = julianDay - DMYToJulianDay( 1, 1, year ) + 1;
+        long year = y + 2820 * n + 474;
+        int dy = (int)(julianDay - DMYToJulianDay( 1, 1, year ) + 1);
         int month = (dy <= 186) ? DivC( dy, 31 ) : DivC( (dy - 6), 30 );
-        int day = julianDay - DMYToJulianDay( 1, month, year ) + 1;
+        int day = (int)(julianDay - DMYToJulianDay( 1, month, year ) + 1);
         *pDay = day;
         *pMonth = month;
         *pYear = year;
@@ -115,8 +115,8 @@ PersianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-PersianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+PersianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     switch ( ms_method )
     {
@@ -124,10 +124,10 @@ PersianCalendar::DMYToJulianDay( int day, int month, int year )
     {
         /*Adapted from Edward M. Reingold and Nachum Dershowitz,
           "Calendrical Calculations, the Millennium Edition", p. 214.*/
-        int d = s_persianEpoch  +  180
-                + static_cast<int>( std::floor( s_tropicalYear * (year - 1) ) );
-        int newYear = PriorSpringEquinox( d ) + 1;
-        int jd;
+        long d = s_persianEpoch  +  180
+                + (long)( floor( s_tropicalYear * (year - 1) ) );
+        long newYear = PriorSpringEquinox( d ) + 1;
+        long jd;
         if ( month <= 7 )
             jd = newYear  +  31 * (month - 1)  +  day  -  1;
         else
@@ -138,11 +138,11 @@ PersianCalendar::DMYToJulianDay( int day, int month, int year )
     {
         /*Adapted from Nachum Dershowitz and Edward M. Reingold,
           "Calendrical Calculations" (1st ed.), p. 72.*/
-        int y = year - 474;
-        int yr = ModF( y, 2820 ) + 474;
-        int md = (month <= 7) ? (31 * (month - 1)) : ((30 * (month - 1)) + 6);
-        return (s_persianEpoch - 1 + 365 * (yr - 1) + 1029983 * DivF( y, 2820 )
-                + DivF( (682 * yr - 110), 2816 ) + md + day);
+        long y = year - 474;
+        long yr = ModF( y, 2820L ) + 474;
+        long md = (month <= 7) ? (31 * (month - 1)) : ((30 * (month - 1)) + 6);
+        return (s_persianEpoch - 1 + 365 * (yr - 1) + 1029983 * DivF( y, 2820L )
+                + DivF( (682 * yr - 110), 2816L ) + md + day);
     }
     default:
         Assert( 0 && "Unexpected method for Persian calendar" );
@@ -153,7 +153,7 @@ PersianCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 int
-PersianCalendar::DaysInMonth( int month, int year )
+PersianCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 12 ]
@@ -166,7 +166,7 @@ PersianCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-PersianCalendar::MonthName( int month, int /*year*/ )
+PersianCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= 12) );
     return g_persianMonthNames[ month - 1 ];
@@ -175,13 +175,13 @@ PersianCalendar::MonthName( int month, int /*year*/ )
 //=============================================================================
 
 bool
-PersianCalendar::IsLeapYear( int year )
+PersianCalendar::IsLeapYear( long year )
 {
     switch ( ms_method )
     {
     case Astronomical:
     {
-        int daysInYear = DMYToJulianDay( 1, 1, year + 1 )
+        long daysInYear = DMYToJulianDay( 1, 1, year + 1 )
                 -  DMYToJulianDay( 1, 1, year );
         return daysInYear > 365;
     }
@@ -189,9 +189,9 @@ PersianCalendar::IsLeapYear( int year )
     {
         /*Adapted from Nachum Dershowitz and Edward M. Reingold,
           "Calendrical Calculations" (1st ed.), p. 71.*/
-        int y = year - 474;
-        int yy = ModF( y, 2820 ) + 474;
-        return ( ModF( ((yy + 38) * 682), 2816) < 682 );
+        long y = year - 474;
+        long yy = ModF( y, 2820L ) + 474;
+        return ( ModF( ((yy + 38) * 682), 2816L ) < 682 );
     }
     default:
         Assert( 0 && "Unexpected method for Persian calendar" );
@@ -207,7 +207,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 double
-JDItoJD( int jdi )
+JDItoJD( long jdi )
 {
     double tdb_ut = TDB_UT( jdi ).Days();
     double jd = jdi - s_localZone + tdb_ut;
@@ -217,18 +217,18 @@ JDItoJD( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 JDtoJDI( double jd )
 {
     double ut_tdb = - TDB_UT( jd ).Days();
     double eot = EquationOfTime( jd ).Days();
-    return  static_cast<int>( std::floor( jd + s_localZone + ut_tdb + eot ) );
+    return  (long)( floor( jd + s_localZone + ut_tdb + eot ) );
 }
 
 //=============================================================================
 
 Angle
-SolarLongitude( int jdi )
+SolarLongitude( long jdi )
 {
     double jd = JDItoJD( jdi );
     return EpsilonDelta::SolarLongitude( jd );
@@ -236,8 +236,8 @@ SolarLongitude( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
-PriorSpringEquinox( int jdi )
+long 
+PriorSpringEquinox( long jdi )
 {
     const double spring2000 = 2451623.8159722;
     double jd = JDItoJD( jdi );

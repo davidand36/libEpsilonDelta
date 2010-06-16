@@ -27,23 +27,23 @@ namespace EpsilonDelta
 class BadiCalendar
 {
 public:
-    static void JulianDayToDMYVK( int julianDay,
+    static void JulianDayToDMYVK( long julianDay,
                                   int * pDay, int * pMonth, int * pYear,
-                                  int * pVahid, int * pKulliShay );
-    static int DMYVKToJulianDay( int day, int month,
-                                 int year, int vahid, int kulliShay );
-    static int DaysInMonth( int month, int year, int vahid, int kulliShay );
+                                  int * pVahid, long * pKulliShay );
+    static long DMYVKToJulianDay( int day, int month,
+                                 int year, int vahid, long kulliShay );
+    static int DaysInMonth( int month, int year, int vahid, long kulliShay );
     static int MonthsInYear( );
     static int YearsInVahid( );
     static int VahidsInKulliShay( );
     static const std::string & DayName( int day );
     static const std::string & MonthName( int month );
     static const std::string & YearName( int year );
-    static bool IsLeapYear( int year, int vahid, int kulliShay );
+    static bool IsLeapYear( int year, int vahid, long kulliShay );
 
-    static void YearToYVK( int seqYear,
-                           int * pYear, int * pVahid, int * pKulliShay );
-    static int YVKToYear( int year, int vahid, int kulliShay );
+    static void YearToYVK( long seqYear,
+                           int * pYear, int * pVahid, long * pKulliShay );
+    static long YVKToYear( int year, int vahid, long kulliShay );
 
     enum EMonth
     { Baha = 1, Jalal, Jamal, Azamat, Nur, Rahmat, Kalimat, Kamal, Asma,

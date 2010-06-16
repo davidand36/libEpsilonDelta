@@ -31,7 +31,8 @@ DateDMY< GregorianCalendar >::Set( bool today )
 {
     if ( today )
     {
-        int day, month, year;
+        int day, month;
+        long year;
         GregorianCalendar::Today( &day, &month, &year );
         Set( day, month, year );
     }
@@ -54,8 +55,8 @@ TestGregorianDate( )
     TESTCHECK( gregDate.Valid( ), true, &ok );
     TESTCHECK( gregDate.Day( ), 1, &ok );
     TESTCHECK( gregDate.Month( ), 1, &ok );
-    TESTCHECK( gregDate.Year( ), 1, &ok );
-    TESTCHECK( gregDate.JulianDay( ), 1721426, &ok );
+    TESTCHECK( gregDate.Year( ), 1L, &ok );
+    TESTCHECK( gregDate.JulianDay( ), 1721426L, &ok );
     TESTCHECK( gregDate.DayOfWeek( ), 1, &ok );
     TESTCHECK( gregDate.ToString( ), string( "Monday, 1 January 1" ), &ok );
     TESTCHECK( gregDate.ToString( "%2W %02d %3M %4y" ),
@@ -63,14 +64,14 @@ TestGregorianDate( )
 
     int d = 1;
     int m = 1;
-    int y = 1600;
+    long y = 1600;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     gregDate.Set( d, m, y );
     TESTCHECK( gregDate.Valid( ), true, &ok );
     TESTCHECK( gregDate.Day( ), d, &ok );
     TESTCHECK( gregDate.Month( ), m, &ok );
     TESTCHECK( gregDate.Year( ), y, &ok );
-    TESTCHECK( gregDate.JulianDay( ), 2305448, &ok );
+    TESTCHECK( gregDate.JulianDay( ), 2305448L, &ok );
     TESTCHECK( gregDate.DayOfWeek( ), 6, &ok );
     TESTCHECK( gregDate.ToString( ), string( "Saturday, 1 January 1600" ), &ok );
     TESTCHECK( gregDate.ToString( "%2W %02d %3M %4y" ),
@@ -78,12 +79,12 @@ TestGregorianDate( )
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     gregDate.Increment( incr );
-    TESTCHECK( gregDate.JulianDay( ), 2305488, &ok );
+    TESTCHECK( gregDate.JulianDay( ), 2305488L, &ok );
     TESTCHECK( gregDate.ToString( ), string( "Thursday, 10 February 1600" ), &ok );
     incr = 12;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     gregDate.Increment( 0, incr, 0 );
-    TESTCHECK( gregDate.JulianDay( ), 2305854, &ok );
+    TESTCHECK( gregDate.JulianDay( ), 2305854L, &ok );
     TESTCHECK( gregDate.ToString( ), string( "Saturday, 10 February 1601" ), &ok );
     cout << "Increment( Monday, 1 )" << endl;
     gregDate.Increment( Monday, 1 );
@@ -99,7 +100,8 @@ TestGregorianDate( )
     GregorianDate gregToday( true );
     TESTCHECK( gregToday.Valid( ), true, &ok );
     cout << "gregToday.JulianDay( )=" << gregToday.JulianDay( );
-    if ( (gregToday.JulianDay( ) > 2451545) && (gregToday.JulianDay( ) < 2500000) )
+    if ( (gregToday.JulianDay( ) > 2451545)
+         && (gregToday.JulianDay( ) < 2500000) ) //test good until 2132 A.D.
         cout << "\tOK" << endl;
     else
     {
@@ -110,7 +112,7 @@ TestGregorianDate( )
     TESTCHECK( (gregDate < gregToday), true, &ok );
     cout << "gregToday.ToString()=" << gregToday.ToString( ) << endl;
 
-    int jd = 2451545;
+    long jd = 2451545;
     cout << "GregorianDate( " << jd << " ) [Julian Day constructor]" << endl;
     GregorianDate gregJD( jd );
     TESTCHECK( gregJD.Valid( ), true, &ok );
@@ -128,7 +130,7 @@ TestGregorianDate( )
     TESTCHECK( gregDMY.Valid( ), true, &ok );
     TESTCHECK( (gregDMY < gregJD), true, &ok );
     TESTCHECK( (gregDMY < gregToday), true, &ok );
-    TESTCHECK( gregDMY.JulianDay( ), 2435133, &ok );
+    TESTCHECK( gregDMY.JulianDay( ), 2435133L, &ok );
     TESTCHECK( gregDMY.ToString( "%2W %02d %3M %2y" ),
                string( "Tu 25 Jan 55" ), &ok );
 
@@ -148,7 +150,7 @@ TestGregorianDate( )
     TESTCHECK( greg110.Valid( ), true, &ok );
     TESTCHECK( (greg110 < gregJD), true, &ok );
     TESTCHECK( (greg110 < gregToday), true, &ok );
-    TESTCHECK( greg110.JulianDay( ), 1721060, &ok );
+    TESTCHECK( greg110.JulianDay( ), 1721060L, &ok );
     TESTCHECK( greg110.ToString( "%2W %02d %3M %4y" ),
                string( "Sa 01 Jan    0" ), &ok );
 
@@ -169,8 +171,8 @@ TestGregorianDate( )
     TESTCHECK( gregToday.Valid( ), true, &ok );
     TESTCHECK( gregToday.Day( ), 1, &ok );
     TESTCHECK( gregToday.Month( ), 1, &ok );
-    TESTCHECK( gregToday.Year( ), 1, &ok );
-    TESTCHECK( gregToday.JulianDay( ), 1721426, &ok );
+    TESTCHECK( gregToday.Year( ), 1L, &ok );
+    TESTCHECK( gregToday.JulianDay( ), 1721426L, &ok );
     TESTCHECK( gregToday.DayOfWeek( ), 1, &ok );
     TESTCHECK( gregToday.ToString( ), string( "Monday, 1 January 1" ), &ok );
     TESTCHECK( gregToday.ToString( "%2W %02d %3M %4y" ),
@@ -180,7 +182,8 @@ TestGregorianDate( )
     gregToday.Set( true );
     TESTCHECK( gregToday.Valid( ), true, &ok );
     cout << "gregToday.JulianDay( )=" << gregToday.JulianDay( );
-    if ( (gregToday.JulianDay( ) > 2451545) && (gregToday.JulianDay( ) < 2500000) )
+    if ( (gregToday.JulianDay( ) > 2451545)
+         && (gregToday.JulianDay( ) < 2500000) ) //test good until 2132 A.D.
         cout << "\tOK" << endl;
     else
     {
@@ -193,10 +196,10 @@ TestGregorianDate( )
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

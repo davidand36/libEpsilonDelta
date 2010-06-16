@@ -51,8 +51,8 @@ class DateDMYW
 {
 public:
     explicit DateDMYW( bool today = false );
-    explicit DateDMYW( int julianDay );
-    DateDMYW( int day, int month, int year );
+    explicit DateDMYW( long julianDay );
+    DateDMYW( int day, int month, long year );
     DateDMYW( const DateJD & date );
     DateDMYW( const DateDMY<Cal> & date );
     virtual ~DateDMYW( );
@@ -64,7 +64,7 @@ public:
     virtual int DaysUntilWeekday( int weekday, int n ) const;
 
     virtual void Increment( int days );
-    virtual void Increment( int days, int months, int years,
+    virtual void Increment( int days, int months, long years,
                             DateFixup::EMethod fixupMethod = DateFixup::Carry );
     virtual void Increment( int weekday, int n );
 
@@ -93,7 +93,7 @@ DateDMYW<Cal, WeekType>::DateDMYW( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal, typename WeekType>
-DateDMYW<Cal, WeekType>::DateDMYW( int julianDay )
+DateDMYW<Cal, WeekType>::DateDMYW( long julianDay )
     :   DateDMY<Cal>( julianDay )
 {
 }
@@ -102,7 +102,7 @@ DateDMYW<Cal, WeekType>::DateDMYW( int julianDay )
 
 template <typename Cal, typename WeekType>
 inline 
-DateDMYW<Cal, WeekType>::DateDMYW( int day, int month, int year )
+DateDMYW<Cal, WeekType>::DateDMYW( int day, int month, long year )
     :   DateDMY<Cal>( day, month, year )
 {
 }
@@ -158,7 +158,7 @@ int
 DateDMYW<Cal, WeekType>::DayOfWeek( ) const
 {
     return ModF( (this->JulianDay( ) + Week::DayOfWeekOfJD0()),
-                 Week::DaysInWeek() );
+                 (long)Week::DaysInWeek() );
 }
 
 //-----------------------------------------------------------------------------
@@ -167,8 +167,9 @@ template <typename Cal, typename WeekType>
 int
 DateDMYW<Cal, WeekType>::DaysUntilWeekday( int weekday, int n ) const
 {
-    int daysUntilNext = - ModC( (this->JulianDay( ) + Week::DayOfWeekOfJD0()
-                                 - weekday), Week::DaysInWeek() );
+    int daysUntilNext
+            = - (int)ModC( (this->JulianDay( ) + Week::DayOfWeekOfJD0()
+                            - weekday), (long)Week::DaysInWeek() );
     return ( daysUntilNext + n * Week::DaysInWeek() );
 }
 
@@ -185,7 +186,7 @@ DateDMYW<Cal, WeekType>::Increment( int days )
 
 template <typename Cal, typename WeekType>
 void 
-DateDMYW<Cal, WeekType>::Increment( int days, int months, int years,
+DateDMYW<Cal, WeekType>::Increment( int days, int months, long years,
                                     DateFixup::EMethod fixupMethod )
 {
     DateDMY<Cal>::Increment( days, months, years, fixupMethod );
@@ -257,7 +258,7 @@ DateDMYW<Cal, WeekType>::ToString( const std::string & format ) const
             case 'y':
             case 'Y':
             {
-                int y = this->m_year;
+                long y = this->m_year;
                 if ( width == 2 )
                     y %= 100;
                 else if ( width == 3 )

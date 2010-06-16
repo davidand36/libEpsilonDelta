@@ -30,16 +30,17 @@ TestArmenianDate( )
     cout << "Testing ArmenianDate" << endl;
 
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     ArmenianDate armDate;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

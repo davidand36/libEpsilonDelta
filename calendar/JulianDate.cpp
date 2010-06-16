@@ -34,20 +34,20 @@ TestJulianDate( )
     TESTCHECK( julDate.Valid( ), true, &ok );
     TESTCHECK( julDate.Day( ), 1, &ok );
     TESTCHECK( julDate.Month( ), 1, &ok );
-    TESTCHECK( julDate.Year( ), 1, &ok );
-    TESTCHECK( julDate.JulianDay( ), 1721424, &ok );
+    TESTCHECK( julDate.Year( ), 1L, &ok );
+    TESTCHECK( julDate.JulianDay( ), 1721424L, &ok );
     TESTCHECK( julDate.DayOfWeek( ), 6, &ok );
     TESTCHECK( julDate.ToString( ), string( "Saturday, 1 January 1" ), &ok );
     TESTCHECK( julDate.ToString( "%2W %02d %3M %4y" ),
                string( "Sa 01 Jan    1" ), &ok );
 
-    int jd = 2026872;
+    long jd = 2026872;
     cout << "Set(" << jd << ") :" << endl;
     julDate.Set( jd );
     TESTCHECK( julDate.Valid( ), true, &ok );
     TESTCHECK( julDate.Day( ), 10, &ok );
     TESTCHECK( julDate.Month( ), 4, &ok );
-    TESTCHECK( julDate.Year( ), 837, &ok );
+    TESTCHECK( julDate.Year( ), 837L, &ok );
     TESTCHECK( julDate.JulianDay( ), jd, &ok );
     TESTCHECK( julDate.DayOfWeek( ), 2, &ok );
     TESTCHECK( julDate.ToString( ), string( "Tuesday, 10 April 837" ), &ok );
@@ -67,7 +67,8 @@ TestJulianDate( )
     JulianDate julToday( true );
     TESTCHECK( julToday.Valid( ), true, &ok );
     cout << "julToday.JulianDay( )=" << julToday.JulianDay( );
-    if ( (julToday.JulianDay( ) > 2451545) && (julToday.JulianDay( ) < 2500000) )
+    if ( (julToday.JulianDay( ) > 2451545)
+         && (julToday.JulianDay( ) < 2500000) ) //test good until 2132
         cout << "\tOK" << endl;
     else
     {
@@ -87,14 +88,15 @@ TestJulianDate( )
     TESTCHECK( (julJD == julDate), false, &ok );
     TESTCHECK( julJD.ToString( ), string( "Thursday, 12 July -1000" ), &ok );
 
-    int d = 29, m = 2, y = -1000;
+    int d = 29, m = 2;
+    long y = -1000;
     cout << "JulianDate( " << d << ", " << m << ", " << y
          << " ) [D,M,Y constructor]" << endl;
     JulianDate julDMY( d, m, y );
     TESTCHECK( julDMY.Valid( ), true, &ok );
     TESTCHECK( (julDMY < julJD), true, &ok );
     TESTCHECK( (julDMY < julToday), true, &ok );
-    TESTCHECK( julDMY.JulianDay( ), 1355867, &ok );
+    TESTCHECK( julDMY.JulianDay( ), 1355867L, &ok );
     TESTCHECK( julDMY.ToString( "%2W %02d %3M %4y" ),
                string( "We 29 Feb -1000" ), &ok );
 
@@ -114,7 +116,7 @@ TestJulianDate( )
     TESTCHECK( jul110.Valid( ), true, &ok );
     TESTCHECK( (jul110 < julJD), false, &ok );
     TESTCHECK( (jul110 < julToday), true, &ok );
-    TESTCHECK( jul110.JulianDay( ), 1721058, &ok );
+    TESTCHECK( jul110.JulianDay( ), 1721058L, &ok );
     TESTCHECK( jul110.ToString( "%2W %02d %3M %4y" ),
                string( "Th 01 Jan    0" ), &ok );
 
@@ -147,10 +149,10 @@ TestJulianDate( )
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

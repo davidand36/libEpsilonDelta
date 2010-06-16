@@ -30,13 +30,13 @@
      There are also 60-day and 60-month cycles.
   2. Aside from the matter of the year discussed in Note 1, the common
      representation of a Chinese date is
-     { int day, int month, bool leap, int year },
+     { int day, int month, bool leap, long year },
      where month ranges from 1 to 12, and there may be two months in a year
      with the same number, the second of which is a leap month. I denote this
      representation as DMLY.
   3. An internal representation which seems to be easier to work with
      computationally is what I call DMYL:
-     { int day, int month, int year, int leapMonth },
+     { int day, int month, long year, int leapMonth },
      where month ranges from 1 to 12, or 1 to 13 in years that contain a leap
      month, and leapMonth is the leapMonth for that year. (leapMonth = LMNone
      if there is no leap month, and leapMonth = LMUnknown if it has not yet
@@ -57,39 +57,39 @@ namespace EpsilonDelta
 class ChineseCalendar
 {
 public:
-    static void JulianDayToDMYL( int julianDay,
-                                 int * pDay, int * pMonth, int * pYear,
+    static void JulianDayToDMYL( long julianDay,
+                                 int * pDay, int * pMonth, long * pYear,
                                  int * pLeapMonth );
-    static void JulianDayToDMLY( int julianDay,
+    static void JulianDayToDMLY( long julianDay,
                                  int * pDay, int * pMonth, bool * pLeap,
-                                 int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int DMLYToJulianDay( int day, int month, bool leap, int year );
+                                 long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static long DMLYToJulianDay( int day, int month, bool leap, long year );
 
-    static bool Valid( int day, int month, int year, int leapMonth );
-    static int MakeValid( int * pDay, int * pMonth, int * pYear,
+    static bool Valid( int day, int month, long year, int leapMonth );
+    static long MakeValid( int * pDay, int * pMonth, long * pYear,
                           int * pLeapMonth, DateFixup::EMethod fixupMethod );
-    static int LeapMonth( int year );
-    static int DaysInMonth( int month, int year );
+    static int LeapMonth( long year );
+    static int DaysInMonth( int month, long year );
 
-    static void SolarTerms( int julianDay,
+    static void SolarTerms( long julianDay,
                             int * pMajorTerm, int * pMinorTerm );
-    static int JDofNextSolarTerm( int julianDay, int term, bool major = true );
+    static long JDofNextSolarTerm( long julianDay, int term, bool major = true );
 
-    static int SexagesimalToLinear( int cyclical, int cycle );
-    static void LinearToSexagesimal( int linear,
-                                     int * pCyclical, int * pCycle );
+    static long SexagesimalToLinear( int cyclical, long cycle );
+    static void LinearToSexagesimal( long linear,
+                                     int * pCyclical, long * pCycle );
     static void StemAndBranch( int cyclical, int * pCelestialStem,
                                int * pTerrestrialBranch );
     static int StemToElement( int celestialStem );
-    static int DayCyclical( int julianDay );
-    static int MonthCyclical( int month, int year );
-    static void DayStemAndBranch( int julianDay, int * pCelestialStem,
+    static int DayCyclical( long julianDay );
+    static int MonthCyclical( int month, long year );
+    static void DayStemAndBranch( long julianDay, int * pCelestialStem,
                                  int * pTerrestrialBranch );
-    static void MonthStemAndBranch( int month, int year,
+    static void MonthStemAndBranch( int month, long year,
                                     int * pCelestialStem,
                                     int * pTerrestrialBranch );
-    static void YearStemAndBranch( int year,
+    static void YearStemAndBranch( long year,
                                     int * pCelestialStem,
                                     int * pTerrestrialBranch );
 

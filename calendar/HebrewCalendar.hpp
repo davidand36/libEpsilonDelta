@@ -31,13 +31,13 @@ namespace EpsilonDelta
 class HebrewCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year );
-    static bool IsLeapYear( int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year );
+    static bool IsLeapYear( long year );
 
     enum EMonth
     { Nisan = 1, Iyyar, Sivan, Tammuz, Av, Elul, 

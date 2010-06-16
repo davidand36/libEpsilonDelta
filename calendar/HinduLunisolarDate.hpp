@@ -25,9 +25,9 @@ class HinduLunisolarDate
 {
 public:
     explicit HinduLunisolarDate( bool today = false );
-    explicit HinduLunisolarDate( int julianDay );
+    explicit HinduLunisolarDate( long julianDay );
     HinduLunisolarDate( int day, bool dayLeap,
-                        int month, bool monthLeap, int year );
+                        int month, bool monthLeap, long year );
     explicit HinduLunisolarDate( const DateJD & date );
     HinduLunisolarDate( const HinduLunisolarDate & date );
     virtual ~HinduLunisolarDate( );
@@ -36,18 +36,18 @@ public:
     HinduLunisolarDate & operator=( const HinduLunisolarDate & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
-    void Set( int day, bool dayLeap, int month, bool monthLeap, int year );
+    virtual void Set( long julianDay );
+    void Set( int day, bool dayLeap, int month, bool monthLeap, long year );
 
     virtual bool Valid( ) const;
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Day( ) const;
     bool IsDayLeap( ) const;
     int Month( ) const;
     bool IsMonthLeap( ) const;
-    int Year( ) const;
+    long Year( ) const;
 
     virtual int DayOfWeek( ) const;
     virtual int DaysUntilWeekday( int weekday, int n ) const;
@@ -69,7 +69,7 @@ protected:
     bool m_dayLeap;
     int m_month;
     bool m_monthLeap;
-    int m_year;
+    long m_year;
 
     static std::string m_defaultFormat;
 };
@@ -92,7 +92,7 @@ bool TestHinduLunisolarDate( );
 inline 
 void 
 HinduLunisolarDate::Set( int day, bool dayLeap,
-                         int month, bool monthLeap, int year )
+                         int month, bool monthLeap, long year )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -106,7 +106,7 @@ HinduLunisolarDate::Set( int day, bool dayLeap,
 
 inline 
 HinduLunisolarDate::HinduLunisolarDate( int day, bool dayLeap,
-                                        int month, bool monthLeap, int year )
+                                        int month, bool monthLeap, long year )
     :   DateJD( false ),
         m_day( day ),
         m_dayLeap( dayLeap ),
@@ -188,7 +188,7 @@ HinduLunisolarDate::IsMonthLeap( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-int 
+long 
 HinduLunisolarDate::Year( ) const
 {
     return m_year;

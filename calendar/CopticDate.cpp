@@ -34,37 +34,38 @@ TestCopticDate( )
     TESTCHECK( coptDate.Valid( ), true, &ok );
     TESTCHECK( coptDate.Day( ), 1, &ok );
     TESTCHECK( coptDate.Month( ), 1, &ok );
-    TESTCHECK( coptDate.Year( ), 1, &ok );
-    TESTCHECK( coptDate.JulianDay( ), 1825030, &ok );
+    TESTCHECK( coptDate.Year( ), 1L, &ok );
+    TESTCHECK( coptDate.JulianDay( ), 1825030L, &ok );
     TESTCHECK( coptDate.ToString( ), string( "Psoou, 1 Thoout 1" ), &ok );
 
     int d = 3;
     int m = 3;
-    int y = 1662;
+    long y = 1662;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     coptDate.Set( d, m, y );
     TESTCHECK( coptDate.Valid( ), true, &ok );
     TESTCHECK( coptDate.Day( ), d, &ok );
     TESTCHECK( coptDate.Month( ), m, &ok );
     TESTCHECK( coptDate.Year( ), y, &ok );
-    TESTCHECK( coptDate.JulianDay( ), 2431772, &ok );
+    TESTCHECK( coptDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( coptDate.ToString( ), string( "Pesnau, 3 Athor 1662" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     coptDate.Increment( incr );
-    TESTCHECK( coptDate.JulianDay( ), 2431812, &ok );
+    TESTCHECK( coptDate.JulianDay( ), 2431812L, &ok );
     TESTCHECK( coptDate.ToString( ), string( "Psabbaton, 13 Koiak 1662" ), &ok );
     incr = 13;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     coptDate.Increment( 0, incr, 0 );
-    TESTCHECK( coptDate.JulianDay( ), 2432177, &ok );
+    TESTCHECK( coptDate.JulianDay( ), 2432177L, &ok );
     TESTCHECK( coptDate.ToString( ), string( "Tkyriake, 13 Koiak 1663" ), &ok );
 
     cout << "CopticDate( true ) [today constructor]" << endl;
     CopticDate coptToday( true );
     TESTCHECK( coptToday.Valid( ), true, &ok );
     cout << "coptToday.JulianDay( )=" << coptToday.JulianDay( );
-    if ( (coptToday.JulianDay( ) > 2451545) && (coptToday.JulianDay( ) < 2500000) )
+    if ( (coptToday.JulianDay( ) > 2451545)
+         && (coptToday.JulianDay( ) < 2500000) ) //test good until 1848 A.M.
         cout << "\tOK" << endl;
     else
     {
@@ -75,7 +76,7 @@ TestCopticDate( )
     TESTCHECK( (coptDate < coptToday), true, &ok );
     cout << "coptToday.ToString()=" << coptToday.ToString( ) << endl;
 
-    int jd = 2431772;
+    long jd = 2431772;
     cout << "CopticDate( " << jd << " ) [Julian Day constructor]" << endl;
     CopticDate coptJD( jd );
     TESTCHECK( coptJD.Valid( ), true, &ok );
@@ -93,7 +94,7 @@ TestCopticDate( )
     TESTCHECK( coptDMY.Valid( ), true, &ok );
     TESTCHECK( (coptJD < coptDMY), true, &ok );
     TESTCHECK( (coptDMY < coptToday), true, &ok );
-    TESTCHECK( coptDMY.JulianDay( ), 2431773, &ok );
+    TESTCHECK( coptDMY.JulianDay( ), 2431773L, &ok );
     TESTCHECK( coptDMY.ToString( ), string( "Pshoment, 4 Athor 1662" ), &ok );
 
     jd = 1825029;
@@ -112,7 +113,7 @@ TestCopticDate( )
     TESTCHECK( copt110.Valid( ), true, &ok );
     TESTCHECK( (copt110 < coptJD), true, &ok );
     TESTCHECK( (copt110 < coptToday), true, &ok );
-    TESTCHECK( copt110.JulianDay( ), 1824665, &ok );
+    TESTCHECK( copt110.JulianDay( ), 1824665L, &ok );
     TESTCHECK( copt110.ToString( ), string( "Ptiou, 1 Thoout 0" ), &ok );
 
     cout << "CopticDate( copt0 ) [copy constructor]" << endl;
@@ -138,10 +139,10 @@ TestCopticDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

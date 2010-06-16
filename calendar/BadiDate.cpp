@@ -29,7 +29,7 @@ BadiDate::BadiDate( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-BadiDate::BadiDate( int julianDay )
+BadiDate::BadiDate( long julianDay )
     :   DateJD( false )
 {
     DateJD::Set( julianDay );
@@ -39,7 +39,7 @@ BadiDate::BadiDate( int julianDay )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-BadiDate::BadiDate( int day, int month, int year, int vahid, int kulliShay )
+BadiDate::BadiDate( int day, int month, int year, int vahid, long kulliShay )
     :   DateJD( false ),
         m_day( day ),
         m_month( month ),
@@ -97,7 +97,7 @@ BadiDate::Set( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-BadiDate::Set( int julianDay )
+BadiDate::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     BadiCalendar::JulianDayToDMYVK( JulianDay(), &m_day, &m_month,
@@ -107,7 +107,7 @@ BadiDate::Set( int julianDay )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-BadiDate::Set( int day, int month, int year, int vahid, int kulliShay )
+BadiDate::Set( int day, int month, int year, int vahid, long kulliShay )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -175,7 +175,7 @@ BadiDate::MakeValid( DateFixup::EMethod fixupMethod )
         else if ( m_year > BadiCalendar::YearsInVahid() )
             m_year = BadiCalendar::YearsInVahid();
     }
-    int yr = BadiCalendar::YVKToYear( m_year, m_vahid, m_kulliShay );
+    long yr = BadiCalendar::YVKToYear( m_year, m_vahid, m_kulliShay );
     BahaiDate bahaiDate( m_day, m_month, yr );
     bahaiDate.MakeValid( fixupMethod );
     m_day = bahaiDate.Day();
@@ -187,7 +187,7 @@ BadiDate::MakeValid( DateFixup::EMethod fixupMethod )
 
 //=============================================================================
 
-int 
+long 
 BadiDate::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -201,8 +201,8 @@ BadiDate::JulianDay( ) const
 int 
 BadiDate::DayOfWeek( ) const
 {
-    return ModF( (JulianDay( ) + BahaiWeek::DayOfWeekOfJD0()),
-                 BahaiWeek::DaysInWeek() );
+    return (int)ModF( (JulianDay( ) + BahaiWeek::DayOfWeekOfJD0()),
+                      (long)BahaiWeek::DaysInWeek() );
 }
 
 //-----------------------------------------------------------------------------
@@ -210,9 +210,10 @@ BadiDate::DayOfWeek( ) const
 int 
 BadiDate::DaysUntilWeekday( int weekday, int n ) const
 {
-    int daysUntilNext = - ModC( (JulianDay( ) + BahaiWeek::DayOfWeekOfJD0()
-                                 - weekday), BahaiWeek::DaysInWeek() );
-    return ( daysUntilNext + n * BahaiWeek::DaysInWeek() );
+    long daysUntilNext
+            = - ModC( (JulianDay( ) + BahaiWeek::DayOfWeekOfJD0() - weekday),
+                      (long)BahaiWeek::DaysInWeek() );
+    return (int)( daysUntilNext  +  n * BahaiWeek::DaysInWeek() );
 }
 
 //=============================================================================
@@ -229,7 +230,7 @@ BadiDate::Increment( int days )
 
 void 
 BadiDate::Increment( int days, int months,
-                     int years, int vahids, int kulliShays,
+                     int years, int vahids, long kulliShays,
                      DateFixup::EMethod fixupMethod )
 {
     DateJD::Set( DateJD::INVALID );
@@ -440,12 +441,12 @@ TestBadiDate( )
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
         int year;
         int vahid;
-        int kulliShay;
+        long kulliShay;
     } 
     testDates[]
             = {
@@ -486,12 +487,12 @@ TestBadiDate( )
 
     for ( int i = 0; i < sizeof(testDates)/sizeof(testDates[0]); ++i )
     {
-        int jd = testDates[i].julianDay;
+        long jd = testDates[i].julianDay;
         int d = testDates[i].day;
         int m = testDates[i].month;
         int y = testDates[i].year;
         int v = testDates[i].vahid;
-        int k = testDates[i].kulliShay;
+        long k = testDates[i].kulliShay;
         cout << "BadiDate( " << d << ", " << m << ", " << y << ", " << v
              << ", " << k << " ) :" << endl;
         BadiDate badiDate( d, m, y, v, k );

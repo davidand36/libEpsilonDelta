@@ -29,10 +29,10 @@ namespace EpsilonDelta
 class ISO8601Calendar
 {
 public:
-    static void JulianDayToDWY( int julianDay,
-                                int * pDay, int * pWeek, int * pYear );
-    static int DWYToJulianDay( int day, int week, int year );
-    static int WeeksInYear( int year );
+    static void JulianDayToDWY( long julianDay,
+                                int * pDay, int * pWeek, long * pYear );
+    static long DWYToJulianDay( int day, int week, long year );
+    static int WeeksInYear( long year );
     static int DaysInWeek( );
 
     enum EWeekDay 

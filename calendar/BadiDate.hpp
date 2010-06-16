@@ -52,8 +52,8 @@ class BadiDate
 {
 public:
     explicit BadiDate( bool today = false );
-    explicit BadiDate( int julianDay );
-    BadiDate( int day, int month, int year, int vahid, int kulliShay );
+    explicit BadiDate( long julianDay );
+    BadiDate( int day, int month, int year, int vahid, long kulliShay );
     explicit BadiDate( const DateJD & date );
     BadiDate( const BadiDate & date );
     virtual ~BadiDate( );
@@ -62,24 +62,24 @@ public:
     BadiDate & operator=( const BadiDate & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
-    void Set( int day, int month, int year, int vahid, int kulliShay );
+    virtual void Set( long julianDay );
+    void Set( int day, int month, int year, int vahid, long kulliShay );
 
     virtual bool Valid( ) const;
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Day( ) const;
     int Month( ) const;
     int Year( ) const;
     int Vahid( ) const;
-    int KulliShay( ) const;
+    long KulliShay( ) const;
     int DayOfWeek( ) const;
     int DaysUntilWeekday( int weekday, int n ) const;
 
     virtual void Increment( int days );
     void Increment( int days, int months,
-                    int years, int vahids, int kulliShays,
+                    int years, int vahids, long kulliShays,
                     DateFixup::EMethod fixupMethod = DateFixup::Carry );
     void Increment( int weekday, int n );
 
@@ -98,7 +98,7 @@ private:
     int m_month;
     int m_year;
     int m_vahid;
-    int m_kulliShay;
+    long m_kulliShay;
 
     static std::string m_defaultFormat;
 };
@@ -153,7 +153,7 @@ BadiDate::Vahid( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-int 
+long 
 BadiDate::KulliShay( ) const
 {
     return m_kulliShay;

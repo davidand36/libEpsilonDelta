@@ -34,14 +34,14 @@ namespace EpsilonDelta
 class BahaiCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year );
     static const std::string & MonthName( int month );
-    static bool IsLeapYear( int year );
+    static bool IsLeapYear( long year );
 
     enum EMonth
     { Baha = 1, Jalal, Jamal, Azamat, Nur, Rahmat, Kalimat, Kamal, Asma,
@@ -55,7 +55,7 @@ public:
 
 inline
 int
-BahaiCalendar::MonthsInYear( int /*year*/ )
+BahaiCalendar::MonthsInYear( long /*year*/ )
 {
     return 20;  //Includes the intercalary period, Ayyam-i-Ha.
 }

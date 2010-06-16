@@ -11,12 +11,12 @@
      class Cal
      {
      public:
-         static void JulianDayToDMY( int julianDay,
-                                     int * pDay, int * pMonth, int * pYear );
-         static int DMYToJulianDay( int day, int month, int year );
-         static int MonthsInYear( int year );
-         static int DaysInMonth( int month, int year );
-         static const std::string & MonthName( int month, int year );
+         static void JulianDayToDMY( long julianDay,
+                                     int * pDay, int * pMonth, long * pYear );
+         static long DMYToJulianDay( int day, int month, long year );
+         static int MonthsInYear( long year );
+         static int DaysInMonth( int month, long year );
+         static const std::string & MonthName( int month, long year );
      };
   2. Day and month numbering start at 1.
   3. Years can be 0 or negative. So, e.g., -2 = 3 B.C.
@@ -63,8 +63,8 @@ class DateDMY
 {
 public:
     explicit DateDMY( bool today = false );
-    explicit DateDMY( int julianDay );
-    DateDMY( int day, int month, int year );
+    explicit DateDMY( long julianDay );
+    DateDMY( int day, int month, long year );
     explicit DateDMY( const DateJD & date );
     DateDMY( const DateDMY & date );
     virtual ~DateDMY( );
@@ -73,19 +73,19 @@ public:
     virtual DateDMY & operator=( const DateDMY & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
-    virtual void Set( int day, int month, int year );
+    virtual void Set( long julianDay );
+    virtual void Set( int day, int month, long year );
 
     virtual bool Valid( ) const;
     virtual void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Day( ) const;
     int Month( ) const;
-    int Year( ) const;
+    long Year( ) const;
 
     virtual void Increment( int days );
-    virtual void Increment( int days, int months, int years,
+    virtual void Increment( int days, int months, long years,
                             DateFixup::EMethod fixupMethod = DateFixup::Carry );
 
     virtual std::string ToString( const std::string & format
@@ -99,7 +99,7 @@ public:
 protected:
     int m_day;
     int m_month;
-    int m_year;
+    long m_year;
 
     static std::string m_defaultFormat;
 };
@@ -124,7 +124,7 @@ DateDMY<Cal>::DateDMY( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 template <typename Cal>
-DateDMY<Cal>::DateDMY( int julianDay )
+DateDMY<Cal>::DateDMY( long julianDay )
     :   DateJD( false )
 {
     DateJD::Set( julianDay );
@@ -135,7 +135,7 @@ DateDMY<Cal>::DateDMY( int julianDay )
 
 template <typename Cal>
 inline
-DateDMY<Cal>::DateDMY( int day, int month, int year )
+DateDMY<Cal>::DateDMY( int day, int month, long year )
     :   DateJD( false ),
         m_day( day ),
         m_month( month ),
@@ -223,7 +223,7 @@ DateDMY<Cal>::Set( bool today )
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Set( int julianDay )
+DateDMY<Cal>::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     Cal::JulianDayToDMY( julianDay, &m_day, &m_month, &m_year );
@@ -234,7 +234,7 @@ DateDMY<Cal>::Set( int julianDay )
 template <typename Cal>
 inline 
 void 
-DateDMY<Cal>::Set( int day, int month, int year )
+DateDMY<Cal>::Set( int day, int month, long year )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -332,7 +332,7 @@ DateDMY<Cal>::MakeValid( DateFixup::EMethod fixupMethod )
 //=============================================================================
 
 template <typename Cal>
-int 
+long 
 DateDMY<Cal>::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -364,7 +364,7 @@ DateDMY<Cal>::Month( ) const
 
 template <typename Cal>
 inline 
-int 
+long 
 DateDMY<Cal>::Year( ) const
 {
     return m_year;
@@ -385,7 +385,7 @@ DateDMY<Cal>::Increment( int days )
 
 template <typename Cal>
 void 
-DateDMY<Cal>::Increment( int days, int months, int years,
+DateDMY<Cal>::Increment( int days, int months, long years,
                          DateFixup::EMethod fixupMethod )
 {
     DateJD::Set( DateJD::INVALID );
@@ -455,7 +455,7 @@ DateDMY<Cal>::ToString( const std::string & format ) const
             case 'y':
             case 'Y':
             {
-                int y = m_year;
+                long y = m_year;
                 if ( width == 2 )
                     y %= 100;
                 else if ( width == 3 )

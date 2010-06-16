@@ -24,24 +24,24 @@ class DateJD
 {
 public:
     explicit DateJD( bool today = false );
-    explicit DateJD( int julianDay );
+    explicit DateJD( long julianDay );
     virtual ~DateJD( );
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
+    virtual void Set( long julianDay );
     virtual bool Valid( ) const;
-    virtual int JulianDay( ) const;
-    virtual void Increment( int days );
+    virtual long JulianDay( ) const;
+    virtual void Increment( long days );
 #ifdef DEBUG
     static bool Test( );
 #endif
 
-    static const int INVALID = -1000000000;
+    static const long INVALID = -10000000000000;
 
 protected:
-    mutable int m_julianDay; /*allows for lazy evaluation in derived classes*/
+    mutable long m_julianDay; /*allows for lazy evaluation in derived classes*/
 
 private:
-    static int Today( );
+    static long Today( );
 };
 
 //.............................................................................
@@ -62,7 +62,7 @@ DateJD::DateJD( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 inline
-DateJD::DateJD( int julianDay )
+DateJD::DateJD( long julianDay )
     :    m_julianDay( julianDay )
 {
 }
@@ -78,7 +78,7 @@ DateJD::~DateJD( )
 
 inline
 void
-DateJD::Set( int julianDay )
+DateJD::Set( long julianDay )
 {
     m_julianDay = julianDay;
 }
@@ -95,7 +95,7 @@ DateJD::Valid( ) const
 //=============================================================================
 
 inline
-int
+long
 DateJD::JulianDay( ) const
 {
     return m_julianDay;
@@ -105,7 +105,7 @@ DateJD::JulianDay( ) const
 
 inline
 void
-DateJD::Increment( int days )
+DateJD::Increment( long days )
 {
     if ( m_julianDay != INVALID )
         m_julianDay += days;

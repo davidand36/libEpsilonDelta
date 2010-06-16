@@ -25,8 +25,8 @@ class ISO8601Date
 {
 public:
     explicit ISO8601Date( bool today = false );
-    explicit ISO8601Date( int julianDay );
-    ISO8601Date( int day, int week, int year );
+    explicit ISO8601Date( long julianDay );
+    ISO8601Date( int day, int week, long year );
     explicit ISO8601Date( const DateJD & date );
     ISO8601Date( const ISO8601Date & date );
     virtual ~ISO8601Date( );
@@ -35,19 +35,19 @@ public:
     ISO8601Date & operator=( const ISO8601Date & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
-    void Set( int day, int week, int year );
+    virtual void Set( long julianDay );
+    void Set( int day, int week, long year );
 
     virtual bool Valid( ) const;
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Day( ) const;
     int Week( ) const;
-    int Year( ) const;
+    long Year( ) const;
 
     virtual void Increment( int days );
-    void Increment( int days, int weeks, int years,
+    void Increment( int days, int weeks, long years,
                     DateFixup::EMethod fixupMethod = DateFixup::Carry );
 
     std::string ToString( const std::string & format
@@ -62,7 +62,7 @@ public:
 private:
     int m_day;
     int m_week;
-    int m_year;
+    long m_year;
 
     static std::string m_defaultFormat;
 };
@@ -82,7 +82,7 @@ bool TestISO8601Date( );
 
 inline 
 void 
-ISO8601Date::Set( int day, int week, int year )
+ISO8601Date::Set( int day, int week, long year )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -93,7 +93,7 @@ ISO8601Date::Set( int day, int week, int year )
 //=============================================================================
 
 inline 
-ISO8601Date::ISO8601Date( int day, int week, int year )
+ISO8601Date::ISO8601Date( int day, int week, long year )
     :   DateJD( false ),
         m_day( day ),
         m_week( week ),
@@ -154,7 +154,7 @@ ISO8601Date::Week( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-int 
+long 
 ISO8601Date::Year( ) const
 {
     return m_year;

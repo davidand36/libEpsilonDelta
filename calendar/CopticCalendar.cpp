@@ -19,21 +19,21 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_copticEpoch = 1825030;
+static const long s_copticEpoch = 1825030;
 
 
 //=============================================================================
 
 
 void
-CopticCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+CopticCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 58.*/
-    int year = DivF( (4 * (julianDay - s_copticEpoch) + 1463), 1461 );
-    int month = DivF( (julianDay - DMYToJulianDay( 1, 1, year )), 30 ) + 1;
-    int day = julianDay + 1 - DMYToJulianDay( 1, month, year );
+    long year = DivF( (4 * (julianDay - s_copticEpoch) + 1463), 1461L );
+    int month = (int)DivF( (julianDay - DMYToJulianDay( 1, 1, year )), 30L ) + 1;
+    int day = (int)(julianDay + 1 - DMYToJulianDay( 1, month, year ));
     *pDay = day;
     *pMonth = month;
     *pYear = year;
@@ -41,19 +41,19 @@ CopticCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-CopticCalendar::DMYToJulianDay( int day, int month, int year )
+long
+CopticCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 58.*/
-    return (s_copticEpoch  +  365 * (year - 1)  +  DivF( year, 4 )
+    return (s_copticEpoch  +  365 * (year - 1)  +  DivF( year, 4L )
             +  30 * (month - 1)  +  day  -  1);
 }
 
 //=============================================================================
 
 int
-CopticCalendar::DaysInMonth( int month, int year )
+CopticCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     if ( month < 13 )
@@ -64,7 +64,7 @@ CopticCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-CopticCalendar::MonthName( int month, int /*year*/ )
+CopticCalendar::MonthName( int month, long /*year*/ )
 {
     return MonthName( month );
 }
@@ -81,9 +81,9 @@ CopticCalendar::MonthName( int month )
 //=============================================================================
 
 bool
-CopticCalendar::IsLeapYear( int year )
+CopticCalendar::IsLeapYear( long year )
 {
-    return ( ModF( year, 4 ) == 3 );
+    return ( ModF( year, 4L ) == 3 );
 }
 
 

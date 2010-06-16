@@ -23,12 +23,12 @@ namespace EpsilonDelta
 class EgyptianCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year = 0 );
-    static int DaysInMonth( int month, int year = 0 );
-    static const std::string & MonthName( int month, int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year = 0 );
+    static int DaysInMonth( int month, long year = 0 );
+    static const std::string & MonthName( int month, long year );
     static const std::string & MonthName( int month );
 
     enum EMonth
@@ -42,7 +42,7 @@ public:
 
 inline
 int
-EgyptianCalendar::DaysInMonth( int month, int /*year*/ )
+EgyptianCalendar::DaysInMonth( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= MonthsInYear( )) );
     return  ( (month < 13)  ?  30  :  5 );
@@ -52,7 +52,7 @@ EgyptianCalendar::DaysInMonth( int month, int /*year*/ )
 
 inline
 int
-EgyptianCalendar::MonthsInYear( int /*year*/ )
+EgyptianCalendar::MonthsInYear( long /*year*/ )
 {
     return 13;  //including the Epagomenae.
 }

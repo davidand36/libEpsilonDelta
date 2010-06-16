@@ -24,17 +24,18 @@ namespace EpsilonDelta
 
 
 void 
-BahaiCalendar::JulianDayToDMY( int julianDay,
-                               int * pDay, int * pMonth, int * pYear )
+BahaiCalendar::JulianDayToDMY( long julianDay,
+                               int * pDay, int * pMonth, long * pYear )
 {
-    int gd, gm, gy;
+    int gd, gm;
+    long gy;
     GregorianCalendar::JulianDayToDMY( julianDay, &gd, &gm, &gy );
-    int year;
+    long year;
     if ( (gm < 3) || ((gm == 3) && (gd < 21)) )
         year = gy - 1844;
     else
         year = gy - 1844 + 1;
-    int days = julianDay - DMYToJulianDay( 1, 1, year );
+    int days = (int)(julianDay - DMYToJulianDay( 1, 1, year ));
     Assert( days >= 0 );
     int daysInAyyamiHa = DaysInMonth( AyyamiHa, year );
     if ( days >= (19 * 18 + daysInAyyamiHa) )
@@ -49,10 +50,10 @@ BahaiCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int 
-BahaiCalendar::DMYToJulianDay( int day, int month, int year )
+long 
+BahaiCalendar::DMYToJulianDay( int day, int month, long year )
 {
-    int jd = GregorianCalendar::DMYToJulianDay( 20, 3, (year - 1 + 1844) );
+    long jd = GregorianCalendar::DMYToJulianDay( 20, 3, (year - 1 + 1844) );
     jd += 19 * (month - 1);
     if ( month == Ala)
         jd -= (19 - DaysInMonth( AyyamiHa, year ));
@@ -63,7 +64,7 @@ BahaiCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 int 
-BahaiCalendar::DaysInMonth( int month, int year )
+BahaiCalendar::DaysInMonth( int month, long year )
 {
     if ( month == AyyamiHa )
         return ( IsLeapYear( year )  ?  5  :  4 );
@@ -74,7 +75,7 @@ BahaiCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const std::string & 
-BahaiCalendar::MonthName( int month, int /*year*/ )
+BahaiCalendar::MonthName( int month, long /*year*/ )
 {
     return MonthName( month );
 }
@@ -91,7 +92,7 @@ BahaiCalendar::MonthName( int month )
 //=============================================================================
 
 bool 
-BahaiCalendar::IsLeapYear( int year )
+BahaiCalendar::IsLeapYear( long year )
 {
     return GregorianCalendar::IsLeapYear( year + 1844 );
 }

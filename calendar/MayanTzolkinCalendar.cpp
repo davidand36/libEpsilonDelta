@@ -22,19 +22,19 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_mayanTzolkinEpoch = 584124;
+static const long s_mayanTzolkinEpoch = 584124;
 
 
 //=============================================================================
 
 
 void 
-MayanTzolkinCalendar::JulianDayToTzolkin( int julianDay,
+MayanTzolkinCalendar::JulianDayToTzolkin( long julianDay,
                                           int * pTrecena, int * pVeintena )
 {
-    int days = julianDay - s_mayanTzolkinEpoch;
-    int trecena = ModP( days, 13 ) + 1;
-    int veintena = ModP( days, 20 ) + 1;
+    long days = julianDay - s_mayanTzolkinEpoch;
+    int trecena = (int)ModP( days, 13L ) + 1;
+    int veintena = (int)ModP( days, 20L ) + 1;
     if ( pTrecena )
         *pTrecena = trecena;
     if ( pVeintena )
@@ -60,11 +60,11 @@ MayanTzolkinCalendar::Test( )
     bool ok = true;
     cout << "Testing MayanTzolkinCalendar" << endl;
 
-    int jd;
+    long jd;
     int t, v;
     struct
     {
-        int julianDay;
+        long julianDay;
         int trecena;
         int veintena;
     } 

@@ -25,7 +25,7 @@ class MayanLongCountDate
 {
 public:
     explicit MayanLongCountDate( bool today = false );
-    explicit MayanLongCountDate( int julianDay );
+    explicit MayanLongCountDate( long julianDay );
     MayanLongCountDate( int kin, int uinal, int tun, int katun, int baktun,
                         int pictun = 0, int calabtun = 0,
                         int kinchiltun = 0, int alautun = 0 );
@@ -37,7 +37,7 @@ public:
     MayanLongCountDate & operator=( const MayanLongCountDate & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
+    virtual void Set( long julianDay );
     void Set( int kin, int uinal, int tun, int katun, int baktun,
               int pictun = 0, int calabtun = 0,
               int kinchiltun = 0, int alautun = 0 );
@@ -45,7 +45,7 @@ public:
     virtual bool Valid( ) const;
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Kin( ) const;
     int Uinal( ) const;
     int Tun( ) const;

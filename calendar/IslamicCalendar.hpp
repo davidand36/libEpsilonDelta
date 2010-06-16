@@ -45,14 +45,14 @@ extern GeodeticLocation Mecca;
 class IslamicCalendar
 {                                                             //IslamicCalendar
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year );
     static const std::string & MonthName( int month );
-    static bool IsLeapYear( int year );
+    static bool IsLeapYear( long year );
 
     enum EMonth
     { Muharram = 1, Safar, RabiI, RabiII, JumadaI, JumadaII,
@@ -70,11 +70,11 @@ public:
         virtual ~System( ) { }
 
     protected:
-        virtual void JulianDayToDMY( int julianDay,
-                                     int * pDay, int * pMonth, int * pYear ) = 0;
-        virtual int DMYToJulianDay( int day, int month, int year ) = 0;
-        virtual int DaysInMonth( int month, int year ) = 0;
-        virtual bool IsLeapYear( int year ) = 0;
+        virtual void JulianDayToDMY( long julianDay,
+                                     int * pDay, int * pMonth, long * pYear ) = 0;
+        virtual long DMYToJulianDay( int day, int month, long year ) = 0;
+        virtual int DaysInMonth( int month, long year ) = 0;
+        virtual bool IsLeapYear( long year ) = 0;
 
         friend class IslamicCalendar;
     };
@@ -98,11 +98,11 @@ public:
         ELeapSequence LeapSequence( ) const;
 
     protected:
-        virtual void JulianDayToDMY( int julianDay,
-                                     int * pDay, int * pMonth, int * pYear );
-        virtual int DMYToJulianDay( int day, int month, int year );
-        virtual int DaysInMonth( int month, int year );
-        virtual bool IsLeapYear( int year );
+        virtual void JulianDayToDMY( long julianDay,
+                                     int * pDay, int * pMonth, long * pYear );
+        virtual long DMYToJulianDay( int day, int month, long year );
+        virtual int DaysInMonth( int month, long year );
+        virtual bool IsLeapYear( long year );
 
     private:
         ELeapSequence   m_leapSequence;
@@ -119,14 +119,14 @@ public:
         std::tr1::shared_ptr< MonthFunc > GetMonthFunc( ) const;
 
     protected:
-        virtual void JulianDayToDMY( int julianDay,
-                                     int * pDay, int * pMonth, int * pYear );
-        virtual int DMYToJulianDay( int day, int month, int year );
-        virtual int DaysInMonth( int month, int year );
-        virtual bool IsLeapYear( int year );
+        virtual void JulianDayToDMY( long julianDay,
+                                     int * pDay, int * pMonth, long * pYear );
+        virtual long DMYToJulianDay( int day, int month, long year );
+        virtual int DaysInMonth( int month, long year );
+        virtual bool IsLeapYear( long year );
 
     private:
-        int MonthStart( int julianDay );
+        long MonthStart( long julianDay );
 
         std::tr1::shared_ptr< MonthFunc >   m_pMonthFunc;
     };
@@ -137,7 +137,7 @@ public:
     {
     public:
         virtual ~MonthFunc( ) { }
-        virtual bool operator()( int julianDay ) = 0;
+        virtual bool operator()( long julianDay ) = 0;
     };
 
 //.............................................................................
@@ -146,7 +146,7 @@ public:
         :   public MonthFunc
     {
     public:
-        virtual bool operator()( int julianDay );
+        virtual bool operator()( long julianDay );
     };
 
 //.............................................................................
@@ -164,7 +164,7 @@ public:
         VisibilityFunc GetVisibilityFunc( ) const;
         void SetLocation( const GeodeticLocation & location );
         const GeodeticLocation & Location( ) const;
-        virtual bool operator()( int julianDay );
+        virtual bool operator()( long julianDay );
 
     private:
         VisibilityFunc  m_visibilityFunc;
@@ -193,7 +193,7 @@ private:
 
 inline
 int
-IslamicCalendar::MonthsInYear( int /*year*/ )
+IslamicCalendar::MonthsInYear( long /*year*/ )
 {
     return 12;
 }

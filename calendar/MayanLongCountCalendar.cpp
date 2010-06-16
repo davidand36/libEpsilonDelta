@@ -17,14 +17,14 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_mayanLongCountEpoch = 584283;
+static const long s_mayanLongCountEpoch = 584283;
 
 
 //=============================================================================
 
 
 void 
-MayanLongCountCalendar::JulianDayToLongCount( int julianDay,
+MayanLongCountCalendar::JulianDayToLongCount( long julianDay,
                                               int * pKin, int * pUinal,
                                               int * pTun, int * pKatun,
                                               int * pBaktun, int * pPictun,
@@ -32,52 +32,63 @@ MayanLongCountCalendar::JulianDayToLongCount( int julianDay,
                                               int * pKinchiltun,
                                               int * pAlautun )
 {
-    int rem;
-    int calabtun;
-    DivModP( julianDay - s_mayanLongCountEpoch, 57600000, &calabtun, &rem );
-    int pictun;
-    DivModP( rem, 2880000, &pictun, &rem );
-    int baktun;
-    DivModP( rem, 144000, &baktun, &rem );
-    int katun;
-    DivModP( rem, 7200, &katun, &rem );
-    int tun;
-    DivModP( rem, 360, &tun, &rem );
-    int uinal;
-    int kin;
-    DivModP( rem, 20, &uinal, &kin );
+    long d = julianDay - s_mayanLongCountEpoch;
+    long kin;
+    DivModP( d, (long)KinInUinal, &d, &kin );
+    long uinal;
+    DivModP( d, (long)UinalInTun, &d, &uinal );
+    long tun;
+    DivModP( d, (long)TunInKatun, &d, &tun );
+    long katun;
+    DivModP( d, (long)KatunInBaktun, &d, &katun );
+    long baktun;
+    DivModP( d, (long)BaktunInPictun, &d, &baktun );
+    long pictun;
+    DivModP( d, (long)PictunInCalabtun, &d, &pictun );
+    long calabtun;
+    DivModP( d, (long)CalabtunInKinchiltun, &d, &calabtun );
+    long kinchiltun;
+    long alautun;
+    DivModP( d, (long)KinchiltunInAlautun, &alautun, &kinchiltun );
     if ( pKin )
-        *pKin = kin;
+        *pKin = (int)kin;
     if ( pUinal )
-        *pUinal = uinal;
+        *pUinal = (int)uinal;
     if ( pTun )
-        *pTun = tun;
+        *pTun = (int)tun;
     if ( pKatun )
-        *pKatun = katun;
+        *pKatun = (int)katun;
     if ( pBaktun )
-        *pBaktun = baktun;
+        *pBaktun = (int)baktun;
     if ( pPictun )
-        *pPictun = pictun;
+        *pPictun = (int)pictun;
     if ( pCalabtun )
-        *pCalabtun = calabtun;
+        *pCalabtun = (int)calabtun;
     if ( pKinchiltun )
-        *pKinchiltun = 0;
+        *pKinchiltun = (int)kinchiltun;
     if ( pAlautun )
-        *pAlautun = 0;
+        *pAlautun = (int)alautun;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 MayanLongCountCalendar::LongCountToJulianDay( int kin, int uinal, int tun,
                                               int katun, int baktun,
                                               int pictun, int calabtun,
-                                              int /*kinchiltun*/,
-                                              int /*alautun*/ )
+                                              int kinchiltun,
+                                              int alautun )
 {
-    int jd = s_mayanLongCountEpoch  +  kin  +  uinal * 20  +  tun * 360
-            +  katun * 7200  +  baktun * 144000
-            +  pictun * 2880000  +  calabtun * 57600000;
+    long jd = s_mayanLongCountEpoch
+            +  kin
+            +  KinInUinal * (uinal
+            +  UinalInTun * (tun
+            +  TunInKatun * (katun
+            +  KatunInBaktun * (baktun
+            +  BaktunInPictun * (pictun
+            +  PictunInCalabtun * (calabtun
+            +  CalabtunInKinchiltun * kinchiltun
+            +  KinchiltunInAlautun * (long)alautun))))));
     return jd;
 }
 

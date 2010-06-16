@@ -24,15 +24,15 @@ namespace EpsilonDelta
 
 namespace
 {
-const int s_frenchRevolutionaryEpoch = 2375840;
+const long s_frenchRevolutionaryEpoch = 2375840;
 //Local time in Paris + noon-to-midnight offset
 const double s_localZone = TimeIncrement( 0, 9, 21. ).Days() + 0.5;
 const double s_tropicalYear = 365.2421896698;
 
-double JDItoJD( int jdi );
-int JDtoJDI( double jd );
-Angle SolarLongitude( int jdi );
-int PriorAutumnalEquinox( int jdi );
+double JDItoJD( long jdi );
+long JDtoJDI( double jd );
+Angle SolarLongitude( long jdi );
+long PriorAutumnalEquinox( long jdi );
 }
 
 
@@ -40,18 +40,17 @@ int PriorAutumnalEquinox( int jdi );
 
 
 void
-FrenchRevolutionaryCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+FrenchRevolutionaryCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 236-7.*/
-    int newYear = PriorAutumnalEquinox( julianDay );
-    int year = static_cast< int >( std::floor(
-                                       ((newYear - s_frenchRevolutionaryEpoch)
-                                        / s_tropicalYear) + 0.5 ) );
+    long newYear = PriorAutumnalEquinox( julianDay );
+    long year = (long)( floor(((newYear - s_frenchRevolutionaryEpoch)
+                               / s_tropicalYear) + 0.5 ) );
     int month;
     int day;
-    DivModP( (julianDay - newYear), 30, &month, &day );
+    DivModP( (int)(julianDay - newYear), 30, &month, &day );
     if ( pDay )
         *pDay = day + 1;
     if ( pMonth )
@@ -62,23 +61,23 @@ FrenchRevolutionaryCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-FrenchRevolutionaryCalendar::DMYToJulianDay( int day, int month, int year )
+long
+FrenchRevolutionaryCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 236.*/
-    int jdi = static_cast< int >( (year - 1) * s_tropicalYear )
+    long jdi = (long)( (year - 1) * s_tropicalYear )
             +  s_frenchRevolutionaryEpoch  +  180;
-    int newYear = PriorAutumnalEquinox( jdi );
+    long newYear = PriorAutumnalEquinox( jdi );
     return  newYear  +  (month - 1) * 30  +  day  -  1;
 }
 
 //=============================================================================
 
 bool 
-FrenchRevolutionaryCalendar::IsLeapYear( int year )
+FrenchRevolutionaryCalendar::IsLeapYear( long year )
 {
-    int daysInYear = DMYToJulianDay( 1, 1, (year + 1) )
+    long daysInYear = DMYToJulianDay( 1, 1, (year + 1) )
             - DMYToJulianDay( 1, 1, year );
     return ( daysInYear > 365 );
 }
@@ -86,7 +85,7 @@ FrenchRevolutionaryCalendar::IsLeapYear( int year )
 //=============================================================================
 
 int
-FrenchRevolutionaryCalendar::DaysInMonth( int month, int year )
+FrenchRevolutionaryCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     if ( month < 13 )
@@ -101,7 +100,7 @@ FrenchRevolutionaryCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-FrenchRevolutionaryCalendar::MonthName( int month, int /*year*/ )
+FrenchRevolutionaryCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= 13) );
     return g_frenchRevolutionaryMonthNames[ month - 1 ];
@@ -109,8 +108,8 @@ FrenchRevolutionaryCalendar::MonthName( int month, int /*year*/ )
 
 //-----------------------------------------------------------------------------
 
-const std::string & 
-FrenchRevolutionaryCalendar::DayName( int day, int month, int /*year*/ )
+const string & 
+FrenchRevolutionaryCalendar::DayName( int day, int month, long /*year*/ )
 {
     if ( month < 13 )
         return  g_frenchRevolutionaryDecadeNames[ (day - 1) % 10 ];
@@ -126,7 +125,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 double
-JDItoJD( int jdi )
+JDItoJD( long jdi )
 {
     double tdb_ut = TDB_UT( jdi ).Days();
     return  jdi - s_localZone + tdb_ut;
@@ -134,17 +133,17 @@ JDItoJD( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 JDtoJDI( double jd )
                          {
     double ut_tdb = - TDB_UT( jd ).Days();
-    return  static_cast<int>( std::floor( jd + s_localZone + ut_tdb ) );
+    return  (long)( floor( jd + s_localZone + ut_tdb ) );
 }
 
 //=============================================================================
 
 Angle
-SolarLongitude( int jdi )
+SolarLongitude( long jdi )
 {
     double jd = JDItoJD( jdi );
     return EpsilonDelta::SolarLongitude( jd );
@@ -152,8 +151,8 @@ SolarLongitude( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
-PriorAutumnalEquinox( int jdi )
+long 
+PriorAutumnalEquinox( long jdi )
 {
     double jd = JDItoJD( jdi );
     const Angle autumnLong( M_PI );

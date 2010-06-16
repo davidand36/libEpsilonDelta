@@ -20,16 +20,16 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_copticEpoch = 1825030;
-static const int s_ethiopianEpoch = 1724221;
+static const long s_copticEpoch = 1825030;
+static const long s_ethiopianEpoch = 1724221;
 
 
 //=============================================================================
 
 
 void
-EthiopianCalendar::JulianDayToDMY( int julianDay,
-                                   int * pDay, int * pMonth, int * pYear )
+EthiopianCalendar::JulianDayToDMY( long julianDay,
+                                   int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 59.*/
@@ -39,8 +39,8 @@ EthiopianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-EthiopianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+EthiopianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 59.*/
@@ -51,7 +51,7 @@ EthiopianCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 int
-EthiopianCalendar::DaysInMonth( int month, int year )
+EthiopianCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     if ( month < 13 )
@@ -62,7 +62,7 @@ EthiopianCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-EthiopianCalendar::MonthName( int month, int /*year*/ )
+EthiopianCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= 13) );
     return g_ethiopianMonthNames[ month - 1 ];
@@ -71,9 +71,9 @@ EthiopianCalendar::MonthName( int month, int /*year*/ )
 //=============================================================================
 
 bool
-EthiopianCalendar::IsLeapYear( int year )
+EthiopianCalendar::IsLeapYear( long year )
 {
-    return ( ModF( year, 4 ) == 3 );
+    return ( ModF( year, 4L ) == 3 );
 }
 
 

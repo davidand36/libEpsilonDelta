@@ -22,35 +22,35 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_mayanHaabEpoch = 583935;
+static const long s_mayanHaabEpoch = 583935;
 
 
 //=============================================================================
 
 
 void 
-MayanHaabCalendar::JulianDayToDMY( int julianDay, int * pDay, int * pMonth,
-                                   int * pYear )
+MayanHaabCalendar::JulianDayToDMY( long julianDay, int * pDay, int * pMonth,
+                                   long * pYear )
 {
-    int days = julianDay - s_mayanHaabEpoch;
-    int year;
-    int rem;
-    DivModP( days, 365, &year, &rem );
+    long days = julianDay - s_mayanHaabEpoch;
+    long year;
+    long rem;
+    DivModP( days, 365L, &year, &rem );
     int month;
     int day;
-    DivModP( rem, 20, &month, &day );
+    DivModP( (int)rem, 20, &month, &day );
     if ( pDay )
         *pDay = day;
     if ( pMonth )
-        *pMonth = month + 1;
+        *pMonth = (int)(month + 1);
     if ( pYear )
-        *pYear = year;
+        *pYear = (int)year;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-MayanHaabCalendar::DMYToJulianDay( int day, int month, int year )
+long 
+MayanHaabCalendar::DMYToJulianDay( int day, int month, long year )
 {
     return  s_mayanHaabEpoch  +  year * 365  +  (month - 1) * 20  +  day;
 }
@@ -58,7 +58,7 @@ MayanHaabCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 const std::string & 
-MayanHaabCalendar::MonthName( int month, int /*year*/ )
+MayanHaabCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month >= 1) && (month <= 19) );
     return g_mayanHaabMonthNames[ month - 1 ];

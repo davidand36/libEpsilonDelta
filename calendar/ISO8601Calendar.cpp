@@ -17,14 +17,14 @@ namespace EpsilonDelta
 
 
 void 
-ISO8601Calendar::JulianDayToDWY( int julianDay,
-                                 int * pDay, int * pWeek, int * pYear )
+ISO8601Calendar::JulianDayToDWY( long julianDay,
+                                 int * pDay, int * pWeek, long * pYear )
 {
     GregorianDate date3( julianDay - 3 );
-    int year = date3.Year();
+    long year = date3.Year();
     if ( DWYToJulianDay( 1, 1, year + 1 ) <= julianDay )
         ++year;
-    int days = julianDay - DWYToJulianDay( 1, 1, year );
+    int days = (int)(julianDay - DWYToJulianDay( 1, 1, year ));
     int week = (days / 7) + 1;
     int day = (days % 7) + 1;
     if ( pDay )
@@ -37,8 +37,8 @@ ISO8601Calendar::JulianDayToDWY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int 
-ISO8601Calendar::DWYToJulianDay( int day, int week, int year )
+long 
+ISO8601Calendar::DWYToJulianDay( int day, int week, long year )
 {
     GregorianDate greg( 28, GregorianCalendar::December, year - 1 );
     greg.Increment( WesternWeek::Sunday, (week - 1) );
@@ -48,10 +48,10 @@ ISO8601Calendar::DWYToJulianDay( int day, int week, int year )
 //=============================================================================
 
 int 
-ISO8601Calendar::WeeksInYear( int year )
+ISO8601Calendar::WeeksInYear( long year )
 {
-    return ( (DWYToJulianDay( 1, 1, year + 1 ) - DWYToJulianDay( 1, 1, year ))
-             / 7 );
+    return (int)((DWYToJulianDay( 1, 1, year + 1 )
+                  - DWYToJulianDay( 1, 1, year )) / 7);
 }
 
 

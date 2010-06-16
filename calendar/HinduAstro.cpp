@@ -11,6 +11,7 @@
 #include "DivMod.hpp"
 #include "RootFinder.hpp"
 #include <cmath>
+using namespace std;
 
 
 namespace EpsilonDelta
@@ -70,8 +71,7 @@ HinduAstro::SolarLongitude( double kaliYugaTime )   //sidereal longitude
 int 
 HinduAstro::Zodiac( double kaliYugaTime )
 {
-    return static_cast< int >( std::floor( SolarLongitude( kaliYugaTime )
-                                           / 30. )  +  1 );
+    return (int)( floor( SolarLongitude( kaliYugaTime ) / 30. )  +  1 );
 }
 
 //=============================================================================
@@ -99,7 +99,7 @@ HinduAstro::PriorNewMoon( double kaliYugaTime )
     double offset = LunarPhase( kaliYugaTime ) * s_synodicMonth / 360.;
     double kyt = kaliYugaTime - offset;
     double lowEst = kyt - 1.;
-    double highEst = std::min( kaliYugaTime, (kyt + 1.) );
+    double highEst = min( kaliYugaTime, (kyt + 1.) );
     int lowZodiac = Zodiac( lowEst );
     int highZodiac = Zodiac( highEst );
     for ( int i = 0; i < 1000; ++i )
@@ -126,8 +126,7 @@ HinduAstro::PriorNewMoon( double kaliYugaTime )
 int 
 HinduAstro::LunarDay( double kaliYugaTime )
 {
-    return static_cast< int >( std::floor( LunarPhase( kaliYugaTime ) / 12. ) )
-            +  1;
+    return (int)( floor( LunarPhase( kaliYugaTime ) / 12. ) )  +  1;
 }
 
 //=============================================================================
@@ -180,8 +179,8 @@ Sin( double degrees )
 {
     double t = degrees * 60. / 225.;
     double fract = ModRP( t, 1. );
-    double s = fract * SinTable( static_cast< int >( std::ceil( t ) ) )
-            + (1. - fract) * SinTable( static_cast< int >( std::floor( t ) ) );
+    double s = fract * SinTable( (int)( ceil( t ) ) )
+            + (1. - fract) * SinTable( (int)( floor( t ) ) );
     return s / 3438.;
 }
 
@@ -224,7 +223,7 @@ TruePosition( double kyTime, double period,
 {
     double mean = MeanPosition( kyTime, period );
     double offset = Sin( MeanPosition( kyTime, anomalisticPeriod ) );
-    double contraction = std::fabs( offset ) * epicycleChange * epicycleSize;
+    double contraction = fabs( offset ) * epicycleChange * epicycleSize;
     double equation = ArcSin( offset * (epicycleSize - contraction) );
     return  ModRP( (mean - equation), 360. );
 }
@@ -243,9 +242,9 @@ LunarPhase( double kyTime )
 double 
 TropicalSolarLongitude( double kyTime )
 {
-    double midnight = std::floor( kyTime );
+    double midnight = floor( kyTime );
     double precession = 27. 
-            -  std::fabs( 54.
+            -  fabs( 54.
                        -  ModRP( 27. + 108. * (600. / 1577917828.) * midnight,
                                  108. ) );
     return  ModRP( (HinduAstro::SolarLongitude( kyTime ) - precession), 360. );
@@ -270,8 +269,8 @@ DailyMotion( double kyTime )
 {
     double meanMotion = 360. / s_siderealYear;
     double anomaly = MeanPosition( kyTime, s_anomalisticYear );
-    double epicycle = (14. / 360.)  -  std::fabs( Sin( anomaly ) ) / 1080.;
-    int entry = static_cast< int >( std::floor( anomaly / (225. / 60.) ) );
+    double epicycle = (14. / 360.)  -  fabs( Sin( anomaly ) ) / 1080.;
+    int entry = (int)( floor( anomaly / (225. / 60.) ) );
     double sinTableStep = SinTable( entry + 1 )  -  SinTable( entry );
     double equationOfMotionFactor =  epicycle * sinTableStep * (-1. / 225.);
     return  meanMotion * (equationOfMotionFactor + 1.);
@@ -284,8 +283,7 @@ RisingSign( double kyTime )
 {
     const double risingSigns[ 6 ]
             = { 1670., 1795., 1935., 1935., 1795., 1670. };
-    int i = static_cast< int >( std::floor( TropicalSolarLongitude( kyTime )
-                                            / 30. ) )  %  6;
+    int i = (int)( floor( TropicalSolarLongitude( kyTime ) / 30. ) )  %  6;
     Assert( (i >= 0) && (i < 6) );
     return  risingSigns[ i ] / 1800.;
 }
@@ -305,7 +303,7 @@ EquationOfTime( double kyTime )
 {
     double offset = Sin( MeanPosition( kyTime, s_anomalisticYear ) );
     double equationSun = offset * (3438. / 60.)
-            * ( (std::fabs( offset ) / 1080.) - (14. / 360.) );
+            * ( (fabs( offset ) / 1080.) - (14. / 360.) );
     return  - DailyMotion( kyTime ) * equationSun * s_siderealYear
             / (360. * 360.);
 }

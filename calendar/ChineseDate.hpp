@@ -24,14 +24,14 @@ class ChineseDate
 {
 public:
     explicit ChineseDate( bool today = false );
-    explicit ChineseDate( int julianDay );
-    ChineseDate( int day, int month, int year,
+    explicit ChineseDate( long julianDay );
+    ChineseDate( int day, int month, long year,
                  int leapMonth = ChineseCalendar::LMUnknown );
-    ChineseDate( int day, int month, bool leap, int year );
-    ChineseDate( int day, int month, int yearCyclical, int yearCycle,
+    ChineseDate( int day, int month, bool leap, long year );
+    ChineseDate( int day, int month, int yearCyclical, long yearCycle,
                  int leapMonth );
     ChineseDate( int day, int month, bool leap,
-                 int yearCyclical, int yearCycle );
+                 int yearCyclical, long yearCycle );
     explicit ChineseDate( const DateJD & date );
     ChineseDate( const ChineseDate & date );
     virtual ~ChineseDate( );
@@ -40,28 +40,28 @@ public:
     ChineseDate & operator=( const ChineseDate & rhs );
 
     virtual void Set( bool today );
-    virtual void Set( int julianDay );
-    void Set( int day, int month, int year,
+    virtual void Set( long julianDay );
+    void Set( int day, int month, long year,
                       int leapMonth = ChineseCalendar::LMUnknown );
-    void Set( int day, int month, bool leap, int year );
-    void Set( int day, int month, int yearCyclical, int yearCycle,
+    void Set( int day, int month, bool leap, long year );
+    void Set( int day, int month, int yearCyclical, long yearCycle,
               int leapMonth );
-    void Set( int day, int month, bool leap, int yearCyclical, int yearCycle );
+    void Set( int day, int month, bool leap, int yearCyclical, long yearCycle );
 
     virtual bool Valid( ) const;
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
 
-    virtual int JulianDay( ) const;
+    virtual long JulianDay( ) const;
     int Day( ) const;
     int TrueMonth( ) const;
     int MonthNumber( ) const;
     bool IsMonthLeap( ) const;
-    int Year( ) const;
+    long Year( ) const;
 
     int DayCyclical( ) const;
     int MonthCyclical( ) const;
     int YearCyclical( ) const;
-    int YearCycle( ) const;
+    long YearCycle( ) const;
     int DayCelestialStem( ) const;
     int DayTerrestrialBranch( ) const;
     int MonthCelestialStem( ) const;
@@ -72,7 +72,7 @@ public:
     int MinorSolarTerm( ) const;
 
     virtual void Increment( int days );
-    void Increment( int days, int months, int years, 
+    void Increment( int days, int months, long years, 
                     DateFixup::EMethod fixupMethod = DateFixup::Carry );
 
     std::string ToString( const std::string & format
@@ -86,7 +86,7 @@ public:
 protected:
     int m_day;
     int m_month;
-    int m_year;
+    long m_year;
     mutable int m_leapMonth;
 
     static std::string m_defaultFormat;
@@ -107,7 +107,7 @@ bool TestChineseDate( );
 
 inline 
 void 
-ChineseDate::Set( int day, int month, int year, int leapMonth )
+ChineseDate::Set( int day, int month, long year, int leapMonth )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -119,7 +119,7 @@ ChineseDate::Set( int day, int month, int year, int leapMonth )
 //=============================================================================
 
 inline 
-ChineseDate::ChineseDate( int day, int month, int year, int leapMonth )
+ChineseDate::ChineseDate( int day, int month, long year, int leapMonth )
     :   DateJD( false ),
         m_day( day ),
         m_month( month ),
@@ -183,7 +183,7 @@ ChineseDate::TrueMonth( ) const
 //-----------------------------------------------------------------------------
 
 inline 
-int 
+long 
 ChineseDate::Year( ) const
 {
     return m_year;

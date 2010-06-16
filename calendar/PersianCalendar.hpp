@@ -28,13 +28,13 @@ namespace EpsilonDelta
 class PersianCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year = 0 );
-    static bool IsLeapYear( int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year = 0 );
+    static bool IsLeapYear( long year );
 
     enum EMonth
     { Farvardin = 1, Ordibehesht, Khordad, Tir, Mordad, Shahrivar,
@@ -60,7 +60,7 @@ private:
 
 inline
 int
-PersianCalendar::MonthsInYear( int /*year*/ )
+PersianCalendar::MonthsInYear( long /*year*/ )
 {
     return 12;
 }

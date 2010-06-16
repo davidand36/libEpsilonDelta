@@ -21,12 +21,12 @@ namespace EpsilonDelta
 class HinduSolarCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay, 
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year );
+    static void JulianDayToDMY( long julianDay, 
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year );
 
     enum EMonth
     { Mesha = 1, Vrishabha, Mithuna, Karka, Simha, Kanya,
@@ -43,7 +43,7 @@ public:
     static EVersion GetVersion( );
 
 private:
-    static int KaliYugaYear( double kaliYugaTime );
+    static long KaliYugaYear( double kaliYugaTime );
 
     static EVersion ms_version;
     
@@ -56,7 +56,7 @@ private:
 
 inline 
 int 
-HinduSolarCalendar::MonthsInYear( int /*year*/ )
+HinduSolarCalendar::MonthsInYear( long /*year*/ )
 {
     return 12;
 }

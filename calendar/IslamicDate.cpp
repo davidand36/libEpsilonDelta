@@ -46,39 +46,40 @@ TestIslamicDate( )
     TESTCHECK( islDate.Valid( ), true, &ok );
     TESTCHECK( islDate.Day( ), 1, &ok );
     TESTCHECK( islDate.Month( ), 1, &ok );
-    TESTCHECK( islDate.Year( ), 1, &ok );
-    TESTCHECK( islDate.JulianDay( ), 1948440, &ok );
+    TESTCHECK( islDate.Year( ), 1L, &ok );
+    TESTCHECK( islDate.JulianDay( ), 1948440L, &ok );
     TESTCHECK( islDate.DayOfWeek( ), 5, &ok );
     TESTCHECK( islDate.ToString( ), string( "yawm al-jum`a, 1 Muharram 1" ), &ok );
 
     int d = 6;
     int m = 12;
-    int y = 1364;
+    long y = 1364;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     islDate.Set( d, m, y );
     TESTCHECK( islDate.Valid( ), true, &ok );
     TESTCHECK( islDate.Day( ), d, &ok );
     TESTCHECK( islDate.Month( ), m, &ok );
     TESTCHECK( islDate.Year( ), y, &ok );
-    TESTCHECK( islDate.JulianDay( ), 2431772, &ok );
+    TESTCHECK( islDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( islDate.DayOfWeek( ), 1, &ok );
     TESTCHECK( islDate.ToString( ), string( "yawm al-'ithnayn, 6 Dhu al-Hijja 1364" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     islDate.Increment( incr );
-    TESTCHECK( islDate.JulianDay( ), 2431812, &ok );
+    TESTCHECK( islDate.JulianDay( ), 2431812L, &ok );
     TESTCHECK( islDate.ToString( ), string( "yawm as-sabt, 17 Muharram 1365" ), &ok );
     incr = 12;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     islDate.Increment( 0, incr, 0 );
-    TESTCHECK( islDate.JulianDay( ), 2432166, &ok );
+    TESTCHECK( islDate.JulianDay( ), 2432166L, &ok );
     TESTCHECK( islDate.ToString( ), string( "yawm al-'arba`a', 17 Muharram 1366" ), &ok );
 
     cout << "IslamicDate( true ) [today constructor]" << endl;
     IslamicDate islToday( true );
     TESTCHECK( islToday.Valid( ), true, &ok );
     cout << "islToday.JulianDay( )=" << islToday.JulianDay( );
-    if ( (islToday.JulianDay( ) > 2451545) && (islToday.JulianDay( ) < 2500000) )
+    if ( (islToday.JulianDay( ) > 2451545)
+         && (islToday.JulianDay( ) < 2500000) ) //test good until 1557 A.H.
         cout << "\tOK" << endl;
     else
     {
@@ -89,7 +90,7 @@ TestIslamicDate( )
     TESTCHECK( (islDate < islToday), true, &ok );
     cout << "islToday.ToString()=" << islToday.ToString( ) << endl;
 
-    int jd = 2431772;
+    long jd = 2431772;
     cout << "IslamicDate( " << jd << " ) [Julian Day constructor]" << endl;
     IslamicDate islJD( jd );
     TESTCHECK( islJD.Valid( ), true, &ok );
@@ -107,7 +108,7 @@ TestIslamicDate( )
     TESTCHECK( islDMY.Valid( ), true, &ok );
     TESTCHECK( (islJD < islDMY), true, &ok );
     TESTCHECK( (islDMY < islToday), true, &ok );
-    TESTCHECK( islDMY.JulianDay( ), 2431773, &ok );
+    TESTCHECK( islDMY.JulianDay( ), 2431773L, &ok );
     TESTCHECK( islDMY.ToString( ), string( "yawm ath-thalatha', 7 Dhu al-Hijja 1364" ), &ok );
 
     jd = 1948439;
@@ -126,7 +127,7 @@ TestIslamicDate( )
     TESTCHECK( isl110.Valid( ), true, &ok );
     TESTCHECK( (isl110 < islJD), true, &ok );
     TESTCHECK( (isl110 < islToday), true, &ok );
-    TESTCHECK( isl110.JulianDay( ), 1948086, &ok );
+    TESTCHECK( isl110.JulianDay( ), 1948086L, &ok );
     TESTCHECK( isl110.ToString( ), string( "yawm al-'ithnayn, 1 Muharram 0" ), &ok );
 
     cout << "IslamicDate( isl0 ) [copy constructor]" << endl;
@@ -152,10 +153,10 @@ TestIslamicDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDatesArithmetic[]
             = {
@@ -231,10 +232,10 @@ TestIslamicDate( )
     IslamicCalendar::SetSystem( spAstronomicalSystem );
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDatesShaukat1996[]
             = {
@@ -302,10 +303,10 @@ TestIslamicDate( )
     {
         int id;
         int im;
-        int iy;
+        long iy;
         int gd;
         int gm;
-        int gy;
+        long gy;
     }
     testDatesUmmAlQura[]
             = {
@@ -469,10 +470,10 @@ TestIslamicDate( )
     {
         int id = testDatesUmmAlQura[i].id;
         int im = testDatesUmmAlQura[i].im;
-        int iy = testDatesUmmAlQura[i].iy;
+        long iy = testDatesUmmAlQura[i].iy;
         int gd = testDatesUmmAlQura[i].gd;
         int gm = testDatesUmmAlQura[i].gm;
-        int gy = testDatesUmmAlQura[i].gy;
+        long gy = testDatesUmmAlQura[i].gy;
         cout << "Set( " << id << ", " << im << ", " << iy << " ) :" << endl;
         islDate.Set( id, im, iy );
         TESTCHECK( islDate.Valid( ), true, &ok );
@@ -497,10 +498,10 @@ TestIslamicDate( )
     {
         int id;
         int im;
-        int iy;
+        long iy;
         int gd;
         int gm;
-        int gy;
+        long gy;
     }
     testDatesISNA_Hijri[]
             = {
@@ -664,10 +665,10 @@ TestIslamicDate( )
     {
         int id = testDatesISNA_Hijri[i].id;
         int im = testDatesISNA_Hijri[i].im;
-        int iy = testDatesISNA_Hijri[i].iy;
+        long iy = testDatesISNA_Hijri[i].iy;
         int gd = testDatesISNA_Hijri[i].gd;
         int gm = testDatesISNA_Hijri[i].gm;
-        int gy = testDatesISNA_Hijri[i].gy;
+        long gy = testDatesISNA_Hijri[i].gy;
         cout << "Set( " << id << ", " << im << ", " << iy << " ) :" << endl;
         islDate.Set( id, im, iy );
         TESTCHECK( islDate.Valid( ), true, &ok );

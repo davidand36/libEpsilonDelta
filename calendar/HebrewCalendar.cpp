@@ -23,9 +23,9 @@ namespace EpsilonDelta
 namespace
 {
 
-const int s_hebrewEpoch = 347998;
+const long s_hebrewEpoch = 347998;
 
-int DaysElapsed( int year );
+long DaysElapsed( long year );
 
 }
 
@@ -34,17 +34,16 @@ int DaysElapsed( int year );
 
 
 void
-HebrewCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+HebrewCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 94.*/
-    int approx = static_cast<int>( DivRF(
-        static_cast<double>( julianDay - s_hebrewEpoch ),
-        (35975351. / 98496.) ) );
-    int year = approx - 1;
+    long approx = (long)( DivRF( (double)( julianDay - s_hebrewEpoch ),
+                                (35975351. / 98496.) ) );
+    long year = approx - 1;
     //Year begins with month 7 (Tishri)
-    for ( int y = approx; DMYToJulianDay( 1, 7, y ) <= julianDay; ++y )
+    for ( long y = approx; DMYToJulianDay( 1, 7, y ) <= julianDay; ++y )
         ++year;
     int start;
     if ( julianDay < DMYToJulianDay( 1, 1, year ) )
@@ -55,7 +54,7 @@ HebrewCalendar::JulianDayToDMY( int julianDay,
     for ( int m = start;
           DMYToJulianDay( DaysInMonth( m, year ), m, year ) < julianDay; ++m )
         ++month;
-    int day = julianDay - DMYToJulianDay( 1, month, year ) + 1;
+    int day = (int)(julianDay - DMYToJulianDay( 1, month, year ) + 1);
     *pDay = day;
     *pMonth = month;
     *pYear = year;
@@ -63,20 +62,20 @@ HebrewCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-HebrewCalendar::DMYToJulianDay( int day, int month, int year )
+long
+HebrewCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 91-93.*/
-    int elapsedM1 = DaysElapsed( year - 1 );
-    int elapsed = DaysElapsed( year );
-    int elapsedP1 = DaysElapsed( year + 1 );
+    long elapsedM1 = DaysElapsed( year - 1 );
+    long elapsed = DaysElapsed( year );
+    long elapsedP1 = DaysElapsed( year + 1 );
     int newYearDelay = 0;
     if ( elapsedP1 - elapsed == 356 )
         newYearDelay = 2;
     else if ( elapsed - elapsedM1 == 382 )
         newYearDelay = 1;
-    int jd = s_hebrewEpoch + elapsed + newYearDelay + day - 1;
+    long jd = s_hebrewEpoch + elapsed + newYearDelay + day - 1;
     if ( month < 7 )  //Year begins with month 7 (Tishri).
     {
         int monthsInYear = MonthsInYear( year );
@@ -98,16 +97,16 @@ HebrewCalendar::DMYToJulianDay( int day, int month, int year )
 namespace
 {
 
-int
-DaysElapsed( int year )
+long
+DaysElapsed( long year )
 {
-    int monthsElapsed = DivF( (235 * year - 234), 19 );
-    int partsElapsed = 204 + 793 * ModF( monthsElapsed, 1080 );
+    long monthsElapsed = DivF( (235 * year - 234), 19L );
+    long partsElapsed = 204 + 793 * ModF( monthsElapsed, 1080L );
     //In Hebrew time, there are 1080 parts per hour. (1 part = 3-1/3 sec.)
-    int hoursElapsed = 11 + 12 * monthsElapsed
-        + 793 * DivF( monthsElapsed, 1080 ) + DivF( partsElapsed, 1080 );
-    int day = 29 * monthsElapsed + DivF( hoursElapsed, 24 );
-    if ( ModF( 3 * (day + 1), 7 ) < 3 )
+    long hoursElapsed = 11 + 12 * monthsElapsed
+        + 793 * DivF( monthsElapsed, 1080L ) + DivF( partsElapsed, 1080L );
+    long day = 29 * monthsElapsed + DivF( hoursElapsed, 24L );
+    if ( ModF( 3 * (day + 1), 7L ) < 3 )
         return day + 1;
     return day;
 }
@@ -117,7 +116,7 @@ DaysElapsed( int year )
 //=============================================================================
 
 int
-HebrewCalendar::MonthsInYear( int year )
+HebrewCalendar::MonthsInYear( long year )
 {
     return ( IsLeapYear( year ) ? 13 : 12 );
 }
@@ -125,7 +124,7 @@ HebrewCalendar::MonthsInYear( int year )
 //-----------------------------------------------------------------------------
 
 int
-HebrewCalendar::DaysInMonth( int month, int year )
+HebrewCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 13 ]
@@ -159,7 +158,7 @@ HebrewCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-HebrewCalendar::MonthName( int month, int year )
+HebrewCalendar::MonthName( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     if ( IsLeapYear( year ) )
@@ -171,11 +170,11 @@ HebrewCalendar::MonthName( int month, int year )
 //-----------------------------------------------------------------------------
 
 bool
-HebrewCalendar::IsLeapYear( int year )
+HebrewCalendar::IsLeapYear( long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations", p. 86.*/
-    return ( ModF( (7 * year + 1), 19 ) < 7 );
+    return ( ModF( (7 * year + 1), 19L ) < 7 );
 }
 
 

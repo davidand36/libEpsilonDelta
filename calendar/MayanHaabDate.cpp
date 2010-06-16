@@ -28,12 +28,12 @@ TestMayanHaabDate( )
     bool ok = true;
     cout << "Testing MayanHaabDate" << endl;
 
-    int jd;
+    long jd;
     MayanHaabDate mhDate;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
     } 

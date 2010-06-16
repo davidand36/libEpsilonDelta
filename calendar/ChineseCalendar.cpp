@@ -34,23 +34,23 @@ namespace EpsilonDelta
 namespace
 {                                                                   //namespace
 
-const int s_chineseEpoch = 758326;   //15 Feb -2636 Gregorian
-const int s_chineseEpochWS = 758269; //20 Dec -2637 Gregorian
+const long s_chineseEpoch = 758326;   //15 Feb -2636 Gregorian
+const long s_chineseEpochWS = 758269; //20 Dec -2637 Gregorian
 //About 1 Jan 1929, switched from using local Beijing time to standard zone.
-const int s_switchToStdZone = 2425613;
+const long s_switchToStdZone = 2425613;
 const double s_localZone = TimeIncrement( 7, 45, 40. ).Days() + 0.5;
 const double s_stdZone = TimeIncrement( 8, 0, 0. ).Days() + 0.5;
 const double s_tropicalYear = 365.2421896698;
 const double s_synodicMonth = 29.5305888531;
 
-double JDItoJD( int jdi );
-int JDtoJDI( double jd );
-Angle SolarLongitude( int jdi );
-Angle LunarPhase( int jdi );
-int NextWinterSolstice( int jdi );
-int PriorNewMoon( int jdi );
-int NextNewMoon( int jdi );
-int MajorSolarTerm( int jdi );
+double JDItoJD( long jdi );
+long JDtoJDI( double jd );
+Angle SolarLongitude( long jdi );
+Angle LunarPhase( long jdi );
+long NextWinterSolstice( long jdi );
+long PriorNewMoon( long jdi );
+long NextNewMoon( long jdi );
+int MajorSolarTerm( long jdi );
 
 }                                                                   //namespace
 
@@ -59,24 +59,22 @@ int MajorSolarTerm( int jdi );
 
 
 void 
-ChineseCalendar::JulianDayToDMYL( int julianDay,
-                                  int * pDay, int * pMonth, int * pYear,
+ChineseCalendar::JulianDayToDMYL( long julianDay,
+                                  int * pDay, int * pMonth, long * pYear,
                                   int * pLeapMonth )
 {
-    int lastWS = NextWinterSolstice( julianDay + 1 );
-    int lastNM = PriorNewMoon( lastWS );
+    long lastWS = NextWinterSolstice( julianDay + 1 );
+    long lastNM = PriorNewMoon( lastWS );
     lastNM = PriorNewMoon( lastNM - 1 );
-    int firstWS = NextWinterSolstice( lastWS - 370 );
-    int firstNM = PriorNewMoon( firstWS );
-    int currNM = PriorNewMoon( julianDay );
-    int day = julianDay - currNM + 1;
-    int month = static_cast< int >(
-        ((currNM - firstNM) / s_synodicMonth) + 0.5 );
-    int year = static_cast< int >(
-        ((firstWS - s_chineseEpochWS) / s_tropicalYear) + 0.5 ) + 1;
+    long firstWS = NextWinterSolstice( lastWS - 370 );
+    long firstNM = PriorNewMoon( firstWS );
+    long currNM = PriorNewMoon( julianDay );
+    int day = (int)(julianDay - currNM + 1);
+    int month = (int)(((currNM - firstNM) / s_synodicMonth) + 0.5 );
+    long year
+           = (long)(((firstWS - s_chineseEpochWS) / s_tropicalYear) + 0.5 ) + 1;
     int leapMonth = LMUnknown;
-    int monthsInYear = static_cast< int >(
-        ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+    int monthsInYear = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
     bool prevSolYear = false;
     bool nextSolYear = false;
     if ( monthsInYear == 12 )
@@ -92,8 +90,8 @@ ChineseCalendar::JulianDayToDMYL( int julianDay,
             lastNM = PriorNewMoon( lastNM - 1 );
             firstWS = NextWinterSolstice( lastWS - 370 );
             firstNM = PriorNewMoon( firstWS );
-            monthsInYear = static_cast< int >(
-                ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+            monthsInYear
+                    = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
             if ( monthsInYear == 12 )
                 leapMonth = LMNone;
             else    //A leap month will be found in the next section.
@@ -110,8 +108,8 @@ ChineseCalendar::JulianDayToDMYL( int julianDay,
             lastWS = NextWinterSolstice( firstWS + 1 );
             lastNM = PriorNewMoon( lastWS );
             lastNM = PriorNewMoon( lastNM - 1 );
-            monthsInYear = static_cast< int >(
-                ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+            monthsInYear
+                    = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
             if ( monthsInYear == 12 )
                 leapMonth = LMNone;
             else    //A leap month may be found in the next section.
@@ -123,7 +121,7 @@ ChineseCalendar::JulianDayToDMYL( int julianDay,
         Assert( monthsInYear == 13 );
         //Search for leap month
         // (= first lunar month w/ no change in major solar term).
-        int nm = NextNewMoon( firstNM + 1 );
+        long nm = NextNewMoon( firstNM + 1 );
         //Month begins w/solar term at end of previous day.
         int startMajor = MajorSolarTerm( nm - 1 );
         for ( int m = 1; m < 13; ++m )
@@ -189,9 +187,9 @@ ChineseCalendar::JulianDayToDMYL( int julianDay,
 //-----------------------------------------------------------------------------
 
 void 
-ChineseCalendar::JulianDayToDMLY( int julianDay,
+ChineseCalendar::JulianDayToDMLY( long julianDay,
                                   int * pDay, int * pMonth, bool * pLeap,
-                                  int * pYear )
+                                  long * pYear )
 {
     int leapMonth;
     JulianDayToDMYL( julianDay, pDay, pMonth, pYear, &leapMonth );
@@ -202,33 +200,32 @@ ChineseCalendar::JulianDayToDMLY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int 
-ChineseCalendar::DMYToJulianDay( int day, int month, int year )
+long 
+ChineseCalendar::DMYToJulianDay( int day, int month, long year )
 {
-    int firstWS = static_cast< int >( s_chineseEpochWS
-                                      +  (year - 1) * s_tropicalYear - 10 );
+    long firstWS
+            = (long)( s_chineseEpochWS  +  (year - 1) * s_tropicalYear - 10 );
     firstWS = NextWinterSolstice( firstWS );
-    int firstNM = PriorNewMoon( firstWS );
-    int lastWS = NextWinterSolstice( firstWS + 1 );
-    int lastNM = PriorNewMoon( lastWS );
+    long firstNM = PriorNewMoon( firstWS );
+    long lastWS = NextWinterSolstice( firstWS + 1 );
+    long lastNM = PriorNewMoon( lastWS );
     lastNM = PriorNewMoon( lastNM - 1 );
-    int monthsInYear = static_cast< int >(
-        ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
-    int newYear;
+    int monthsInYear = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+    long newYear;
     if ( monthsInYear == 12 )
     {
-        int m12 = NextNewMoon( firstNM + 1 );
+        long m12 = NextNewMoon( firstNM + 1 );
         newYear = NextNewMoon( m12 + 1 );
     }
     else
     {
         Assert( monthsInYear == 13 );
-        int nm = NextNewMoon( firstNM + 1 );
+        long nm = NextNewMoon( firstNM + 1 );
         int startMajor = MajorSolarTerm( nm - 1 );
         int m = 11;
-        for ( int i = 0; i < 4; ++i )   //Limit iterations just for safety.
+        for ( int i = 0; i < 4; ++i )   //Limit iterations to be safe.
         {
-            int nextNM = NextNewMoon( nm + 1 );
+            long nextNM = NextNewMoon( nm + 1 );
             int endMajor = MajorSolarTerm( nextNM - 1 );
             if ( endMajor != startMajor )
                 if ( ++m > 12 )
@@ -239,15 +236,15 @@ ChineseCalendar::DMYToJulianDay( int day, int month, int year )
         Assert( m == 13 );
         newYear = nm;
     }
-    int jd = newYear  +  (month - 1) * 29;
+    long jd = newYear  +  (month - 1) * 29;
     jd = NextNewMoon( jd ) + day - 1;
     return jd;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-ChineseCalendar::DMLYToJulianDay( int day, int month, bool leap, int year )
+long 
+ChineseCalendar::DMLYToJulianDay( int day, int month, bool leap, long year )
 {
     int leapMonth = LeapMonth( year );
     if ( leap || (month >= leapMonth) )
@@ -258,7 +255,7 @@ ChineseCalendar::DMLYToJulianDay( int day, int month, bool leap, int year )
 //=============================================================================
 
 bool 
-ChineseCalendar::Valid( int day, int month, int year, int leapMonth )
+ChineseCalendar::Valid( int day, int month, long year, int leapMonth )
 {
     if ( (day < 1) || (day > 30) || (month < 1) || (month > 13) )
         return false;
@@ -275,14 +272,14 @@ ChineseCalendar::Valid( int day, int month, int year, int leapMonth )
 
 //-----------------------------------------------------------------------------
 
-int 
-ChineseCalendar::MakeValid( int * pDay, int * pMonth, int * pYear,
+long 
+ChineseCalendar::MakeValid( int * pDay, int * pMonth, long * pYear,
                             int * pLeapMonth, DateFixup::EMethod fixupMethod )
 {
     Assert( pDay && pMonth && pYear && pLeapMonth );
     if ( fixupMethod == DateFixup::Carry )
     {
-        int julianDay = DMYToJulianDay( *pDay, *pMonth, *pYear );
+        long julianDay = DMYToJulianDay( *pDay, *pMonth, *pYear );
         JulianDayToDMYL( julianDay, pDay, pMonth, pYear, pLeapMonth );
         return julianDay;
     }
@@ -313,17 +310,16 @@ ChineseCalendar::MakeValid( int * pDay, int * pMonth, int * pYear,
 //=============================================================================
 
 int 
-ChineseCalendar::LeapMonth( int year )
+ChineseCalendar::LeapMonth( long year )
 {
-    int firstWS = static_cast< int >( s_chineseEpochWS
+    long firstWS = (long)( s_chineseEpochWS
                                       +  (year - 1) * s_tropicalYear - 10 );
     firstWS = NextWinterSolstice( firstWS );
-    int firstNM = PriorNewMoon( firstWS );
-    int lastWS = NextWinterSolstice( firstWS + 1 );
-    int lastNM = PriorNewMoon( lastWS );
+    long firstNM = PriorNewMoon( firstWS );
+    long lastWS = NextWinterSolstice( firstWS + 1 );
+    long lastNM = PriorNewMoon( lastWS );
     lastNM = PriorNewMoon( lastNM - 1 );
-    int monthsInYear = static_cast< int >(
-        ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+    int monthsInYear = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
     bool firstSolarYear = true;
     if ( monthsInYear == 12 )
     {
@@ -332,18 +328,17 @@ ChineseCalendar::LeapMonth( int year )
         lastWS = NextWinterSolstice( firstWS + 1 );
         lastNM = PriorNewMoon( lastWS );
         lastNM = PriorNewMoon( lastNM - 1 );
-        monthsInYear = static_cast< int >(
-            ((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
+        monthsInYear = (int)(((lastNM - firstNM) / s_synodicMonth) + 0.5 ) + 1;
         if ( monthsInYear == 12 )
             return LMNone;
         firstSolarYear = false;
     }
     Assert( monthsInYear == 13 );
-    int nm = NextNewMoon( firstNM + 1 );
+    long nm = NextNewMoon( firstNM + 1 );
     int startMajor = MajorSolarTerm( nm - 1 );
     for ( int m = 1; m < 13; ++m )
     {
-        int nextNM = NextNewMoon( nm + 1 );
+        long nextNM = NextNewMoon( nm + 1 );
         int endMajor = MajorSolarTerm( nextNM - 1 );
         if ( endMajor == startMajor )
         {
@@ -374,7 +369,7 @@ ChineseCalendar::LeapMonth( int year )
 //-----------------------------------------------------------------------------
 
 int 
-ChineseCalendar::DaysInMonth( int month, int year )
+ChineseCalendar::DaysInMonth( int month, long year )
 {
     return  (DMYToJulianDay( 1, (month + 1), year )
              - DMYToJulianDay( 1, month, year ));
@@ -383,7 +378,7 @@ ChineseCalendar::DaysInMonth( int month, int year )
 //=============================================================================
 
 void 
-ChineseCalendar::SolarTerms( int julianDay,
+ChineseCalendar::SolarTerms( long julianDay,
                              int * pMajorTerm, int * pMinorTerm )
 {
     //Add 1 to date, because the solar term is based on the solar longitude
@@ -396,7 +391,7 @@ ChineseCalendar::SolarTerms( int julianDay,
         Angle adjSolarLong = solarLong + Angle( M_PI / 6. );
         adjSolarLong.NormalizePositive( );
         double quot = DivRP( adjSolarLong.Radians(), (M_PI / 6.) );
-        *pMajorTerm = static_cast<int>( quot ) + 1;
+        *pMajorTerm = (int)( quot ) + 1;
     }
     if ( pMinorTerm )
     {
@@ -405,14 +400,14 @@ ChineseCalendar::SolarTerms( int julianDay,
         Angle adjSolarLong = solarLong + Angle( M_PI / 4. );
         adjSolarLong.NormalizePositive( );
         double quot = DivRP( adjSolarLong.Radians(), (M_PI / 6.) );
-        *pMinorTerm = static_cast<int>( quot ) + 1;
+        *pMinorTerm = (int)( quot ) + 1;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-ChineseCalendar::JDofNextSolarTerm( int julianDay, int term, bool major )
+long 
+ChineseCalendar::JDofNextSolarTerm( long julianDay, int term, bool major )
 {
     Angle solarLongOfTerm = Angle( (term - 1) * (M_PI / 6.)
                                  -  (major  ?  (M_PI / 6.)  :  (M_PI / 4.)) );
@@ -432,7 +427,7 @@ ChineseCalendar::JDofNextSolarTerm( int julianDay, int term, bool major )
         if ( (SolarLongitude( julianDay ) - solarLongOfTerm).Radians() <= 0. )
             offset = 0.;
     }
-    int jdi = JDtoJDI( jd + offset );    //first estimate
+    long jdi = JDtoJDI( jd + offset );    //first estimate
     Angle diff = SolarLongitude( jdi ) - solarLongOfTerm;
     if ( diff.Radians() < 0. )
         while ( (SolarLongitude( jdi + 1 ) - solarLongOfTerm).Radians() < 0. )
@@ -445,8 +440,8 @@ ChineseCalendar::JDofNextSolarTerm( int julianDay, int term, bool major )
 
 //=============================================================================
 
-int 
-ChineseCalendar::SexagesimalToLinear( int cyclical, int cycle )
+long 
+ChineseCalendar::SexagesimalToLinear( int cyclical, long cycle )
 {
     return  60 * (cycle - 1)  +  cyclical;
 }
@@ -454,14 +449,14 @@ ChineseCalendar::SexagesimalToLinear( int cyclical, int cycle )
 //-----------------------------------------------------------------------------
 
 void 
-ChineseCalendar::LinearToSexagesimal( int linear,
-                                      int * pCyclical, int * pCycle )
+ChineseCalendar::LinearToSexagesimal( long linear,
+                                      int * pCyclical, long * pCycle )
 {
-    int cycle;
-    int cyclical;
-    DivModP( (linear - 1), 60, &cycle, &cyclical );
+    long cycle;
+    long cyclical;
+    DivModP( (linear - 1), 60L, &cycle, &cyclical );
     if ( pCyclical )
-        *pCyclical = cyclical + 1;
+        *pCyclical = (int)(cyclical + 1);
     if ( pCycle )
         *pCycle = cycle + 1;
 }
@@ -490,7 +485,7 @@ ChineseCalendar::StemToElement( int celestialStem )
 //-----------------------------------------------------------------------------
 
 int 
-ChineseCalendar::DayCyclical( int julianDay )
+ChineseCalendar::DayCyclical( long julianDay )
 {
     int cyclical;
     LinearToSexagesimal( (julianDay + 40), &cyclical, 0 );
@@ -500,7 +495,7 @@ ChineseCalendar::DayCyclical( int julianDay )
 //-----------------------------------------------------------------------------
 
 int 
-ChineseCalendar::MonthCyclical( int month, int year )
+ChineseCalendar::MonthCyclical( int month, long year )
 {
     int cyclical;
     LinearToSexagesimal( (12 * year + month + 44), &cyclical, 0 );
@@ -510,7 +505,7 @@ ChineseCalendar::MonthCyclical( int month, int year )
 //-----------------------------------------------------------------------------
 
 void 
-ChineseCalendar::DayStemAndBranch( int julianDay,
+ChineseCalendar::DayStemAndBranch( long julianDay,
                                    int * pCelestialStem,
                                    int * pTerrestrialBranch )
 {
@@ -521,7 +516,7 @@ ChineseCalendar::DayStemAndBranch( int julianDay,
 //-----------------------------------------------------------------------------
 
 void 
-ChineseCalendar::MonthStemAndBranch( int month, int year,
+ChineseCalendar::MonthStemAndBranch( int month, long year,
                                      int * pCelestialStem,
                                      int * pTerrestrialBranch )
 {
@@ -532,7 +527,7 @@ ChineseCalendar::MonthStemAndBranch( int month, int year,
 //-----------------------------------------------------------------------------
 
 void 
-ChineseCalendar::YearStemAndBranch( int year,
+ChineseCalendar::YearStemAndBranch( long year,
                                     int * pCelestialStem,
                                     int * pTerrestrialBranch )
 {
@@ -604,7 +599,7 @@ namespace
 //-----------------------------------------------------------------------------
 
 double
-JDItoJD( int jdi )
+JDItoJD( long jdi )
 {
     double tdb_ut = TDB_UT( jdi ).Days();
     if ( jdi < s_switchToStdZone )
@@ -615,20 +610,20 @@ JDItoJD( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 JDtoJDI( double jd )
 {
     double ut_tdb = - TDB_UT( jd ).Days();
     if ( jd < s_switchToStdZone )
-        return  static_cast<int>( std::floor( jd + s_localZone + ut_tdb ) );
+        return  (long)( std::floor( jd + s_localZone + ut_tdb ) );
     else
-        return  static_cast<int>( std::floor( jd + s_stdZone + ut_tdb ) );
+        return  (long)( std::floor( jd + s_stdZone + ut_tdb ) );
 }
 
 //=============================================================================
 
 Angle
-SolarLongitude( int jdi )
+SolarLongitude( long jdi )
 {
     double jd = JDItoJD( jdi );
     return EpsilonDelta::SolarLongitude( jd );
@@ -637,7 +632,7 @@ SolarLongitude( int jdi )
 //-----------------------------------------------------------------------------
 
 Angle 
-LunarPhase( int jdi )
+LunarPhase( long jdi )
 {
     double jd = JDItoJD( jdi );
     return EpsilonDelta::LunarPhase( jd );
@@ -645,21 +640,21 @@ LunarPhase( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
-NextWinterSolstice( int jdi )
+long 
+NextWinterSolstice( long jdi )
 {
     return ChineseCalendar::JDofNextSolarTerm( jdi, 11, true );
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-PriorNewMoon( int jdi )
+long 
+PriorNewMoon( long jdi )
 {
     Angle lunarPhase = LunarPhase( jdi + 1 );
     lunarPhase.NormalizePositive( );
     double offset = lunarPhase.Cycles() * s_synodicMonth;
-    int nm = JDtoJDI( JDItoJD( jdi ) - offset );    //first estimate
+    long nm = JDtoJDI( JDItoJD( jdi ) - offset );    //first estimate
     lunarPhase = LunarPhase( nm );
     if ( lunarPhase.Radians() < 0 )
         while ( LunarPhase( nm + 1 ).Radians() < 0. )
@@ -672,13 +667,13 @@ PriorNewMoon( int jdi )
 
 //-----------------------------------------------------------------------------
 
-int 
-NextNewMoon( int jdi )
+long 
+NextNewMoon( long jdi )
 {
     Angle lunarPhase = - LunarPhase( jdi );
     lunarPhase.NormalizePositive( );
     double offset = lunarPhase.Cycles() * s_synodicMonth;
-    int nm = JDtoJDI( JDItoJD( jdi ) + offset );    //first estimate
+    long nm = JDtoJDI( JDItoJD( jdi ) + offset );    //first estimate
     lunarPhase = LunarPhase( nm );
     if ( lunarPhase.Radians() < 0 )
         while ( LunarPhase( nm + 1 ).Radians() < 0. )
@@ -692,7 +687,7 @@ NextNewMoon( int jdi )
 //-----------------------------------------------------------------------------
 
 int
-MajorSolarTerm( int jdi )
+MajorSolarTerm( long jdi )
 {
     int majorTerm;
     ChineseCalendar::SolarTerms( jdi, &majorTerm, 0 );
@@ -713,9 +708,9 @@ ChineseCalendar::Test( )
     bool ok = true;
     cout << "Testing ChineseCalendar" << endl;
 
-    int d = 22;  int m = December;  int y = 1989;
+    int d = 22;  int m = December;  long y = 1989;
     cout << "Date( " << d << ", " << m << ", " << y << " )" << endl;
-    int jd = Date( d, m, y ).JulianDay();
+    long jd = Date( d, m, y ).JulianDay();
     TESTCHECK( NextWinterSolstice( jd ),
                Date( 22, December, 1989 ).JulianDay(), &ok );
     y = 1990;
@@ -726,7 +721,7 @@ ChineseCalendar::Test( )
     d = 22;  y = 1989;
     jd = Date( d, m, y ).JulianDay();
     cout << "New moons beginning Date( " << d << ", " << m << ", " << y << " )" << endl;
-    int nm = NextNewMoon( jd );
+    long nm = NextNewMoon( jd );
     TESTCHECK( nm, Date( 28, December, 1989 ).JulianDay(), &ok );
     nm = NextNewMoon( nm + 1 );
     TESTCHECK( PriorNewMoon( nm - 1 ), Date( 28, December, 1989 ).JulianDay(),

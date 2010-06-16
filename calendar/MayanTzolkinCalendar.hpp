@@ -21,7 +21,7 @@ namespace EpsilonDelta
 class MayanTzolkinCalendar
 {
 public:
-    static void JulianDayToTzolkin( int julianDay,
+    static void JulianDayToTzolkin( long julianDay,
                                     int * pTrecena, int * pVeintena );
     static const std::string & VeintenaName( int veintena );
 

@@ -17,15 +17,15 @@ namespace EpsilonDelta
 class MayanLongCountCalendar
 {
 public:
-    static void JulianDayToLongCount( int julianDay,
+    static void JulianDayToLongCount( long julianDay,
                                       int * pKin, int * pUinal, int * pTun,
                                       int * pKatun, int * pBaktun,
                                       int * pPictun = 0, int * pCalabtun = 0,
                                       int * pKinchiltun = 0, int * pAlautun = 0 );
-    static int LongCountToJulianDay( int kin, int uinal, int tun,
-                                     int katun, int baktun,
-                                     int pictun = 0, int calabtun = 0,
-                                     int kinchiltun = 0, int alautun = 0 );
+    static long LongCountToJulianDay( int kin, int uinal, int tun,
+                                      int katun, int baktun,
+                                      int pictun = 0, int calabtun = 0,
+                                      int kinchiltun = 0, int alautun = 0 );
     static const int KinInUinal = 20;
     static const int UinalInTun = 18;
     static const int TunInKatun = 20;

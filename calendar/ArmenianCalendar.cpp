@@ -18,25 +18,25 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-static const int s_armenianEpoch = 1922868;
+static const long s_armenianEpoch = 1922868;
 
 
 //=============================================================================
 
 
 void
-ArmenianCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+ArmenianCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 25.*/
-    int days = julianDay - s_armenianEpoch;
-    int year;
-    int rem;
-    DivModP( days, 365, &year, &rem );
+    long days = julianDay - s_armenianEpoch;
+    long year;
+    long rem;
+    DivModP( days, 365L, &year, &rem );
     int month;
     int day;
-    DivModP( rem, 30, &month, &day );
+    DivModP( (int)rem, 30, &month, &day );
     *pDay = day + 1;
     *pMonth = month + 1;
     *pYear = year + 1;
@@ -44,8 +44,8 @@ ArmenianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-ArmenianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+ArmenianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 25.*/
@@ -56,7 +56,7 @@ ArmenianCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 const string &
-ArmenianCalendar::MonthName( int month, int /*year*/ )
+ArmenianCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= 13) );
     return g_armenianMonthNames[ month - 1 ];

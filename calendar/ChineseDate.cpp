@@ -30,7 +30,7 @@ ChineseDate::ChineseDate( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ChineseDate::ChineseDate( int julianDay )
+ChineseDate::ChineseDate( long julianDay )
     :   DateJD( false )
 {
     Set( julianDay );
@@ -38,7 +38,7 @@ ChineseDate::ChineseDate( int julianDay )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ChineseDate::ChineseDate( int day, int month, bool leap, int year )
+ChineseDate::ChineseDate( int day, int month, bool leap, long year )
     :   DateJD( false )
 {
     Set( day, month, leap, year );
@@ -46,7 +46,7 @@ ChineseDate::ChineseDate( int day, int month, bool leap, int year )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ChineseDate::ChineseDate( int day, int month, int yearCyclical, int yearCycle,
+ChineseDate::ChineseDate( int day, int month, int yearCyclical, long yearCycle,
                           int leapMonth )
     :   DateJD( false )
 {
@@ -56,7 +56,7 @@ ChineseDate::ChineseDate( int day, int month, int yearCyclical, int yearCycle,
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ChineseDate::ChineseDate( int day, int month, bool leap,
-                          int yearCyclical, int yearCycle )
+                          int yearCyclical, long yearCycle )
     :   DateJD( false )
 {
     Set( day, month, leap, yearCyclical, yearCycle );
@@ -103,7 +103,7 @@ ChineseDate::Set( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ChineseDate::Set( int julianDay )
+ChineseDate::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     Calendar::JulianDayToDMYL( julianDay,
@@ -113,7 +113,7 @@ ChineseDate::Set( int julianDay )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ChineseDate::Set( int day, int month, bool leap, int year )
+ChineseDate::Set( int day, int month, bool leap, long year )
 {
     DateJD::Set( DateJD::INVALID );
     m_day = day;
@@ -135,10 +135,10 @@ ChineseDate::Set( int day, int month, bool leap, int year )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ChineseDate::Set( int day, int month, int yearCyclical, int yearCycle,
+ChineseDate::Set( int day, int month, int yearCyclical, long yearCycle,
                   int leapMonth )
 {
-    int year = Calendar::SexagesimalToLinear( yearCyclical, yearCycle );
+    long year = Calendar::SexagesimalToLinear( yearCyclical, yearCycle );
     Set( day, month, year, leapMonth );
 }
 
@@ -146,9 +146,9 @@ ChineseDate::Set( int day, int month, int yearCyclical, int yearCycle,
 
 void 
 ChineseDate::Set( int day, int month, bool leap,
-                  int yearCyclical, int yearCycle )
+                  int yearCyclical, long yearCycle )
 {
-    int year = Calendar::SexagesimalToLinear( yearCyclical, yearCycle );
+    long year = Calendar::SexagesimalToLinear( yearCyclical, yearCycle );
     Set( day, month, leap, year );
 }
 
@@ -165,14 +165,14 @@ ChineseDate::Valid( ) const
 void 
 ChineseDate::MakeValid( DateFixup::EMethod fixupMethod )
 {
-    int julianDay = Calendar::MakeValid( &m_day, &m_month, &m_year,
+    long julianDay = Calendar::MakeValid( &m_day, &m_month, &m_year,
                                          &m_leapMonth, fixupMethod );
     DateJD::Set( julianDay );
 }
 
 //=============================================================================
 
-int 
+long 
 ChineseDate::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -231,10 +231,10 @@ ChineseDate::YearCyclical( ) const
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 ChineseDate::YearCycle( ) const
 {
-    int cycle;
+    long cycle;
     Calendar::LinearToSexagesimal( m_year, 0, &cycle );
     return cycle;
 }
@@ -331,7 +331,7 @@ ChineseDate::Increment( int days )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ChineseDate::Increment( int days, int months, int years, 
+ChineseDate::Increment( int days, int months, long years, 
                         DateFixup::EMethod fixupMethod )
 {
     m_day += days;
@@ -366,8 +366,9 @@ TestChineseDate( )
     if ( ! ChineseCalendar::Test( ) )
         ok = false;
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     bool l;
     cout << "ChineseDate() [default constructor]" << endl;
     ChineseDate chinDate;
@@ -376,8 +377,8 @@ TestChineseDate( )
     TESTCHECK( chinDate.TrueMonth( ), 1, &ok );
     TESTCHECK( chinDate.MonthNumber( ), 1, &ok );
     TESTCHECK( chinDate.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDate.Year( ), 1, &ok );
-    TESTCHECK( chinDate.JulianDay( ), 758326, &ok );
+    TESTCHECK( chinDate.Year( ), 1L, &ok );
+    TESTCHECK( chinDate.JulianDay( ), 758326L, &ok );
     TESTCHECK( chinDate.ToString( ), string( "" ), &ok );
     TESTCHECK( chinDate.ToString( "" ),
                string( "" ), &ok );
@@ -389,8 +390,8 @@ TestChineseDate( )
     TESTCHECK( chinDate.TrueMonth( ), 5, &ok );
     TESTCHECK( chinDate.MonthNumber( ), 5, &ok );
     TESTCHECK( chinDate.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDate.Year( ), 4627, &ok );
-    TESTCHECK( chinDate.JulianDay( ), 2448036, &ok );
+    TESTCHECK( chinDate.Year( ), 4627L, &ok );
+    TESTCHECK( chinDate.JulianDay( ), 2448036L, &ok );
     TESTCHECK( chinDate.ToString( ), string( "" ), &ok );
     TESTCHECK( chinDate.ToString( "" ),
                string( "" ), &ok );
@@ -402,7 +403,7 @@ TestChineseDate( )
     TESTCHECK( chinDate.TrueMonth( ), 6, &ok );
     TESTCHECK( chinDate.MonthNumber( ), 5, &ok );
     TESTCHECK( chinDate.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDate.Year( ), 4627, &ok );
+    TESTCHECK( chinDate.Year( ), 4627L, &ok );
     TESTCHECK( chinDate.JulianDay( ), jd + 30, &ok );
     TESTCHECK( chinDate.ToString( ), string( "" ), &ok );
 
@@ -410,8 +411,8 @@ TestChineseDate( )
     ChineseDate chinToday( true );
     TESTCHECK( chinToday.Valid( ), true, &ok );
     cout << "chinToday.JulianDay( )=" << chinToday.JulianDay( );
-    if ( (chinToday.JulianDay( ) > 2451545)
-         && (chinToday.JulianDay( ) < 2500000) )
+    if ( (chinToday.JulianDay( ) > 2451545)       //test good until 2132 A.D.
+         && (chinToday.JulianDay( ) < 2500000) )  // (mid 80th cycle)
         cout << "\tOK" << endl;
     else
     {
@@ -430,7 +431,7 @@ TestChineseDate( )
     TESTCHECK( chinJD.TrueMonth( ), 12, &ok );
     TESTCHECK( chinJD.MonthNumber( ), 12, &ok );
     TESTCHECK( chinJD.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinJD.Year( ), 4626, &ok );
+    TESTCHECK( chinJD.Year( ), 4626L, &ok );
     TESTCHECK( (chinJD == chinJD), true, &ok );
     TESTCHECK( (chinJD < chinDate), true, &ok );
     TESTCHECK( (chinJD == chinDate), false, &ok );
@@ -444,7 +445,7 @@ TestChineseDate( )
     TESTCHECK( chinJD.TrueMonth( ), 13, &ok );
     TESTCHECK( chinJD.MonthNumber( ), 12, &ok );
     TESTCHECK( chinJD.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinJD.Year( ), 4627, &ok );
+    TESTCHECK( chinJD.Year( ), 4627L, &ok );
     TESTCHECK( (chinJD == chinJD), true, &ok );
     TESTCHECK( (chinJD < chinDate), false, &ok );
     TESTCHECK( (chinJD == chinDate), false, &ok );
@@ -456,7 +457,7 @@ TestChineseDate( )
     ChineseDate chinDMY( d, m, y );
     TESTCHECK( chinDMY.Valid( ), true, &ok );
     TESTCHECK( (chinJD < chinDMY), true, &ok );
-    TESTCHECK( chinDMY.JulianDay( ), 2463954, &ok );
+    TESTCHECK( chinDMY.JulianDay( ), 2463954L, &ok );
     TESTCHECK( chinDMY.ToString( "" ),
                string( "" ), &ok );
     incr = 1;
@@ -467,8 +468,8 @@ TestChineseDate( )
     TESTCHECK( chinDMY.TrueMonth( ), 13, &ok );
     TESTCHECK( chinDMY.MonthNumber( ), 12, &ok );
     TESTCHECK( chinDMY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMY.JulianDay( ), 2463983, &ok );
+    TESTCHECK( chinDMY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMY.JulianDay( ), 2463983L, &ok );
     incr = -1;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     chinDMY.Increment( 0, incr, 0 );
@@ -477,8 +478,8 @@ TestChineseDate( )
     TESTCHECK( chinDMY.TrueMonth( ), 12, &ok );
     TESTCHECK( chinDMY.MonthNumber( ), 11, &ok );
     TESTCHECK( chinDMY.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDMY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMY.JulianDay( ), 2463954, &ok );
+    TESTCHECK( chinDMY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMY.JulianDay( ), 2463954L, &ok );
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     chinDMY.Increment( 0, incr, 0 );
     TESTCHECK( chinDMY.Valid( ), true, &ok );
@@ -486,8 +487,8 @@ TestChineseDate( )
     TESTCHECK( chinDMY.TrueMonth( ), 11, &ok );
     TESTCHECK( chinDMY.MonthNumber( ), 11, &ok );
     TESTCHECK( chinDMY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMY.JulianDay( ), 2463924, &ok );
+    TESTCHECK( chinDMY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMY.JulianDay( ), 2463924L, &ok );
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     chinDMY.Increment( 0, incr, 0 );
     TESTCHECK( chinDMY.Valid( ), true, &ok );
@@ -495,8 +496,8 @@ TestChineseDate( )
     TESTCHECK( chinDMY.TrueMonth( ), 10, &ok );
     TESTCHECK( chinDMY.MonthNumber( ), 10, &ok );
     TESTCHECK( chinDMY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMY.JulianDay( ), 2463894, &ok );
+    TESTCHECK( chinDMY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMY.JulianDay( ), 2463894L, &ok );
     l = false;
     d = 15; m = 5; y = 4627;
     cout << "ChineseDate( " << d << ", " << m << ", " << l << ", " << y
@@ -507,8 +508,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 5, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 5, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4627, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2448050, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4627L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2448050L, &ok );
     l = true;
     cout << "Set( " << d << ", " << m << ", " << l << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, l, y );
@@ -517,8 +518,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 6, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 5, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4627, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2448080, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4627L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2448080L, &ok );
     m = 6; l = false;
     cout << "Set( " << d << ", " << m << ", " << l << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, l, y );
@@ -527,8 +528,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 7, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 6, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4627, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2448109, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4627L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2448109L, &ok );
     cout << "Set( " << d << ", " << m << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, y );
     TESTCHECK( chinDMLY.Valid( ), true, &ok );
@@ -536,8 +537,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 6, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 5, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4627, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2448080, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4627L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2448080L, &ok );
     d = 1; m = 12; y = 4670;
     cout << "Set( " << d << ", " << m << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, y );
@@ -546,8 +547,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 12, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 11, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2463954, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2463954L, &ok );
     l = false;
     cout << "Set( " << d << ", " << m << ", " << l << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, l, y );
@@ -556,8 +557,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 13, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 12, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2463983, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2463983L, &ok );
     m = 13;
     cout << "Set( " << d << ", " << m << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, y );
@@ -566,8 +567,8 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 13, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 12, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), false, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2463983, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2463983L, &ok );
     m = 11; l = true;
     cout << "Set( " << d << ", " << m << ", " << l << ", " << y << " )" << endl;
     chinDMLY.Set( d, m, l, y );
@@ -576,17 +577,17 @@ TestChineseDate( )
     TESTCHECK( chinDMLY.TrueMonth( ), 12, &ok );
     TESTCHECK( chinDMLY.MonthNumber( ), 11, &ok );
     TESTCHECK( chinDMLY.IsMonthLeap( ), true, &ok );
-    TESTCHECK( chinDMLY.Year( ), 4670, &ok );
-    TESTCHECK( chinDMLY.JulianDay( ), 2463954, &ok );
+    TESTCHECK( chinDMLY.Year( ), 4670L, &ok );
+    TESTCHECK( chinDMLY.JulianDay( ), 2463954L, &ok );
  
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
         bool leap;
         int yearCyclical;
-        int yearCycle;
+        long yearCycle;
     } 
     testDates[]
             = {
@@ -631,8 +632,8 @@ TestChineseDate( )
         d = testDates[i].day;
         m = testDates[i].month;
         l = testDates[i].leap;
-        y = testDates[i].yearCyclical;
-        int c = testDates[i].yearCycle;
+        int y = testDates[i].yearCyclical;
+        long c = testDates[i].yearCycle;
         cout << "Set( " << d << ", " << m <<  ", " << l << ", " << y
              << ", " << c << " ) :" << endl;
         chinDate.Set( d, m, l, y, c );

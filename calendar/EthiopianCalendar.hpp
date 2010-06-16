@@ -24,14 +24,14 @@ namespace EpsilonDelta
 class EthiopianCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int MonthsInYear( int year );
-    static int DaysInMonth( int month, int year );
-    static const std::string & MonthName( int month, int year );
+    static void JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int MonthsInYear( long year );
+    static int DaysInMonth( int month, long year );
+    static const std::string & MonthName( int month, long year );
     static const std::string & MonthName( int month );
-    static bool IsLeapYear( int year );
+    static bool IsLeapYear( long year );
 
     enum EMonth
     { Maskaram = 1, Teqemt, Khedar, Takhsas, Ter, Yakatit,
@@ -44,7 +44,7 @@ public:
 
 inline
 int
-EthiopianCalendar::MonthsInYear( int /*year*/ )
+EthiopianCalendar::MonthsInYear( long /*year*/ )
 {
     return 13;
 }

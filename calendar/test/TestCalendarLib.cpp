@@ -158,7 +158,8 @@ ComputeEpochs( )
 
 #ifdef DEBUG
 
-    int d, m, y, jd, d1, m1, y1;
+    int d, m, d1, m1;
+    long y, jd, y1;
 
     JulianDate julDate;
     GregorianDate gregDate;
@@ -168,7 +169,7 @@ ComputeEpochs( )
     y = 1;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Gregorian epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Gregorian epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -181,7 +182,7 @@ ComputeEpochs( )
     d = 1;    m = 1;    y = 1;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Julian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Julian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -194,7 +195,7 @@ ComputeEpochs( )
     d = 30;    m = 12;    y = 0;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Julian epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Julian epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -210,7 +211,7 @@ ComputeEpochs( )
     y = 622;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Persian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Persian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -226,7 +227,7 @@ ComputeEpochs( )
     y = 622;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Persian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Persian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -241,7 +242,7 @@ ComputeEpochs( )
     y = 622;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Islamic epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Islamic epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -301,7 +302,7 @@ ComputeEpochs( )
     y = -3760;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Hebrew epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Hebrew epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -316,7 +317,7 @@ ComputeEpochs( )
     y = 284;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Coptic epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Coptic epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -331,7 +332,7 @@ ComputeEpochs( )
     y = 8;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Ethiopian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Ethiopian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -346,7 +347,7 @@ ComputeEpochs( )
     y = 1844;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Baha'i epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Baha'i epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -361,7 +362,7 @@ ComputeEpochs( )
     y = -3113;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Mayan epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Mayan epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -378,7 +379,7 @@ ComputeEpochs( )
     y = -3101;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -393,7 +394,7 @@ ComputeEpochs( )
     y = -3101;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     GregorianCalendar::JulianDayToDMY( jd, &d1, &m1, &y1 );
@@ -411,7 +412,7 @@ ComputeEpochs( )
     y = -3101;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Old Hindu (Kali Yuga) epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     GregorianCalendar::JulianDayToDMY( jd, &d1, &m1, &y1 );
@@ -427,7 +428,7 @@ ComputeEpochs( )
     y = 1792;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "French Rev. epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "French Rev. epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -442,7 +443,7 @@ ComputeEpochs( )
     y = -2636;
     gregDate.Set( d, m, y );
     jd = gregDate.JulianDay( );
-    printf( "Chinese epoch: %d/%d/%d (Gregorian) => jd=%d\n",  d, m, y, jd );
+    printf( "Chinese epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
     gregDate.Set( jd );
     d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -457,7 +458,7 @@ ComputeEpochs( )
     y = -746;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Egyptian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Egyptian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -472,7 +473,7 @@ ComputeEpochs( )
     y = 552;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Armenian epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Armenian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );
@@ -487,7 +488,7 @@ ComputeEpochs( )
     y = 632;
     julDate.Set( d, m, y );
     jd = julDate.JulianDay( );
-    printf( "Yazdegerd epoch: %d/%d/%d (Julian) => jd=%d\n",  d, m, y, jd );
+    printf( "Yazdegerd epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
     julDate.Set( jd );
     d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
     TESTCHECK( d1, d, &ok );

@@ -35,7 +35,7 @@ HinduLunisolarDate::HinduLunisolarDate( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-HinduLunisolarDate::HinduLunisolarDate( int julianDay )
+HinduLunisolarDate::HinduLunisolarDate( long julianDay )
     :   DateJD( false )
 {
     Set( julianDay );
@@ -83,7 +83,7 @@ HinduLunisolarDate::Set( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-HinduLunisolarDate::Set( int julianDay )
+HinduLunisolarDate::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     Calendar::JulianDayToDLMLY( julianDay,
@@ -104,7 +104,7 @@ HinduLunisolarDate::Valid( ) const
 void 
 HinduLunisolarDate::MakeValid( DateFixup::EMethod fixupMethod )
 {
-    int julianDay = Calendar::MakeValid( &m_day, &m_dayLeap,
+    long julianDay = Calendar::MakeValid( &m_day, &m_dayLeap,
                                          &m_month, &m_monthLeap,
                                          &m_year, fixupMethod );
     DateJD::Set( julianDay );
@@ -112,7 +112,7 @@ HinduLunisolarDate::MakeValid( DateFixup::EMethod fixupMethod )
 
 //=============================================================================
 
-int 
+long 
 HinduLunisolarDate::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -127,7 +127,8 @@ HinduLunisolarDate::JulianDay( ) const
 int
 HinduLunisolarDate::DayOfWeek( ) const
 {
-    return ModF( (JulianDay( ) + Week::DayOfWeekOfJD0()), Week::DaysInWeek() );
+    return (int)ModF( (JulianDay( ) + Week::DayOfWeekOfJD0()),
+                      (long)Week::DaysInWeek() );
 }
 
 //-----------------------------------------------------------------------------
@@ -135,8 +136,9 @@ HinduLunisolarDate::DayOfWeek( ) const
 int
 HinduLunisolarDate::DaysUntilWeekday( int weekday, int n ) const
 {
-    int daysUntilNext = - ModC( (JulianDay( ) + Week::DayOfWeekOfJD0()
-                                 - weekday), Week::DaysInWeek() );
+    int daysUntilNext
+            = - (int)ModC( (JulianDay( ) + Week::DayOfWeekOfJD0() - weekday),
+                           (long)Week::DaysInWeek() );
     return ( daysUntilNext + n * Week::DaysInWeek() );
 }
 
@@ -172,8 +174,9 @@ TestHinduLunisolarDate( )
     bool ok = true;
     cout << "Testing HinduLunisolarDate" << endl;
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     bool ld, lm;
     HinduLunisolarDate hlDate;
 
@@ -181,12 +184,12 @@ TestHinduLunisolarDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         bool dayLeap;
         int month;
         bool monthLeap;
-        int year;
+        long year;
     } 
     modernTestDates[]
             = {
@@ -253,11 +256,11 @@ TestHinduLunisolarDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
         bool leap;
-        int year;
+        long year;
     } 
     oldTestDates[]
             = {

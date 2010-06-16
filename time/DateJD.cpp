@@ -33,10 +33,11 @@ DateJD::Set( bool today )
 
 //-----------------------------------------------------------------------------
 
-int
+long
 DateJD::Today( )
 {
-    int day, month, year;
+    int day, month;
+    long year;
     GregorianCalendar::Today( &day, &month, &year );
     return ( GregorianCalendar::DMYToJulianDay( day, month, year ) );
 }
@@ -60,7 +61,7 @@ DateJD::Test( )
     jdDate.Increment( incr );
     TESTCHECK( jdDate.JulianDay( ), INVALID, &ok );
     TESTCHECK( jdDate.Valid( ), false, &ok );
-    int jd = 2000000;
+    long jd = 2000000;
     cout << "Set(" << jd << ") :" << endl;
     jdDate.Set( jd );
     TESTCHECK( jdDate.JulianDay( ), jd, &ok );

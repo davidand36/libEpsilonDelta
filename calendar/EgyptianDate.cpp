@@ -28,16 +28,17 @@ TestEgyptianDate( )
     bool ok = true;
     cout << "Testing EgyptianDate" << endl;
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     EgyptianDate egyptDate;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

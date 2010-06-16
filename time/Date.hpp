@@ -10,8 +10,8 @@
   1. So that the reader doesn't have to refer to the various included headers,
      the class Date has the following public interface:
     Date( bool today = false );
-    Date( int day, int month, int year );
-    Date( int julianDay );
+    Date( int day, int month, long year );
+    Date( long julianDay );
     Date( const DateJD & date );
     Date( const Date & date );
     ~Date( );
@@ -21,14 +21,14 @@
     void MakeValid( DateFixup::EMethod fixupMethod = DateFixup::Clamp );
     int Day( ) const;
     int Month( ) const;
-    int Year( ) const;
-    int JulianDay( ) const;
+    long Year( ) const;
+    long JulianDay( ) const;
     int DayOfWeek( ) const;
     void Set( bool today );
-    void Set( int day, int month, int year );
-    void Set( int julianDay );
+    void Set( int day, int month, long year );
+    void Set( long julianDay );
     void Increment( int days );
-    void Increment( int days, int months, int years,
+    void Increment( int days, int months, long years,
                     DateFixup::EMethod fixupMethod = DateFixup::Carry );
     void Increment( int weekday, int n );
     virtual int DaysUntilWeekday( int weekday, int n ) const;

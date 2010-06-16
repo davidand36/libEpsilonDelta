@@ -21,12 +21,12 @@ namespace EpsilonDelta
 class MayanHaabCalendar
 {
 public:
-    static void JulianDayToDMY( int julianDay, int * pDay, int * pMonth,
-                                 int * pYear = 0 );
-    static int DMYToJulianDay( int day, int month, int year );
-    static int DaysInMonth( int month, int year = 0 );
-    static int MonthsInYear( int year = 0 );
-    static const std::string & MonthName( int month, int year = 0 );
+    static void JulianDayToDMY( long julianDay, int * pDay, int * pMonth,
+                                 long * pYear = 0 );
+    static long DMYToJulianDay( int day, int month, long year );
+    static int DaysInMonth( int month, long year = 0 );
+    static int MonthsInYear( long year = 0 );
+    static const std::string & MonthName( int month, long year = 0 );
 
     enum EMonth 
     { Pop = 1, Uo, Zip, Zotz, Tzec, Xul, Yaxkin, Mol, Chen, Yax,
@@ -39,7 +39,7 @@ public:
 
 inline 
 int 
-MayanHaabCalendar::DaysInMonth( int month, int /*year*/ )
+MayanHaabCalendar::DaysInMonth( int month, long /*year*/ )
 {
     Assert( (month >= 1) && (month <= 19) );
     return  ((month < 19)  ?  20  :  5);
@@ -49,7 +49,7 @@ MayanHaabCalendar::DaysInMonth( int month, int /*year*/ )
 
 inline 
 int 
-MayanHaabCalendar::MonthsInYear( int /*year*/ )
+MayanHaabCalendar::MonthsInYear( long /*year*/ )
 {
     return 19;
 }

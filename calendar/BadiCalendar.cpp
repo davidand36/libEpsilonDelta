@@ -20,20 +20,20 @@ namespace EpsilonDelta
 
 
 void 
-BadiCalendar::JulianDayToDMYVK( int julianDay,
+BadiCalendar::JulianDayToDMYVK( long julianDay,
                                 int * pDay, int * pMonth, 
-                                int * pYear, int * pVahid, int * pKulliShay )
+                                int * pYear, int * pVahid, long * pKulliShay )
 {
-    int y;
+    long y;
     BahaiCalendar::JulianDayToDMY( julianDay, pDay, pMonth, &y );
     YearToYVK( y, pYear, pVahid, pKulliShay );
 }
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 BadiCalendar::DMYVKToJulianDay( int day, int month,
-                                int year, int vahid, int kulliShay )
+                                int year, int vahid, long kulliShay )
 {
     return BahaiCalendar::DMYToJulianDay( day, month,
                                          YVKToYear( year, vahid, kulliShay ) );
@@ -42,7 +42,7 @@ BadiCalendar::DMYVKToJulianDay( int day, int month,
 //=============================================================================
 
 int 
-BadiCalendar::DaysInMonth( int month, int year, int vahid, int kulliShay )
+BadiCalendar::DaysInMonth( int month, int year, int vahid, long kulliShay )
 {
     return BahaiCalendar::DaysInMonth( month,
                                        YVKToYear( year, vahid, kulliShay ) );
@@ -78,7 +78,7 @@ BadiCalendar::YearName( int year )
 //=============================================================================
 
 bool 
-BadiCalendar::IsLeapYear( int year, int vahid, int kulliShay )
+BadiCalendar::IsLeapYear( int year, int vahid, long kulliShay )
 {
     return BahaiCalendar::IsLeapYear( YVKToYear( year, vahid, kulliShay ) );
 }
@@ -86,21 +86,21 @@ BadiCalendar::IsLeapYear( int year, int vahid, int kulliShay )
 //=============================================================================
 
 void 
-BadiCalendar::YearToYVK( int seqYear,
-                         int * pYear, int * pVahid, int * pKulliShay )
+BadiCalendar::YearToYVK( long seqYear,
+                         int * pYear, int * pVahid, long * pKulliShay )
 {
-    int y, v, k;
-    DivModF( seqYear, (19 * 19), &k, &y );
-    DivModF( y - 1, 19, &v, &y );
-    *pYear = y + 1;
-    *pVahid = v + 1;
+    long y, v, k;
+    DivModF( seqYear, (19L * 19L), &k, &y );
+    DivModF( y - 1, 19L, &v, &y );
+    *pYear = (int)(y + 1);
+    *pVahid = (int)(v + 1);
     *pKulliShay = k + 1;
 }
 
 //-----------------------------------------------------------------------------
 
-int 
-BadiCalendar::YVKToYear( int year, int vahid, int kulliShay )
+long 
+BadiCalendar::YVKToYear( int year, int vahid, long kulliShay )
 {
     return (year  +  19 * ((vahid - 1)  +  19 * (kulliShay - 1)));
 }

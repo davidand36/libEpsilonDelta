@@ -20,23 +20,23 @@ namespace EpsilonDelta
 
 
 void
-GregorianCalendar::JulianDayToDMY( int julianDay,
-                                   int * pDay, int * pMonth, int * pYear )
+GregorianCalendar::JulianDayToDMY( long julianDay,
+                                   int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Jean Meeus, "Astronomical Algorithms", p. 63.*/
-    int alpha = static_cast<int>( (julianDay - 1867216.25) / 36524.25 );
-    int a = julianDay + 1 + alpha - alpha / 4;
-    int b = a + 1524;
-    int c = static_cast<int>( (b - 122.1) / 365.25 );
-    int d = static_cast<int>( c * 365.25 );
-    int e = static_cast<int>( (b - d) / 30.6001 );
-    int day = b - d - static_cast<int>( e * 30.6001 );
+    long alpha = (long)( (julianDay - 1867216.25) / 36524.25 );
+    long a = julianDay + 1 + alpha - alpha / 4;
+    long b = a + 1524;
+    long c = (long)( (b - 122.1) / 365.25 );
+    long d = (long)( c * 365.25 );
+    long e = (long)( (b - d) / 30.6001 );
+    int day = (int)(b - d - (long)( e * 30.6001 ));
     int month;
     if ( e < 14 )
-        month = e - 1;
+        month = (int)(e - 1);
     else
-        month = e - 13;
-    int year;
+        month = (int)(e - 13);
+    long year;
     if ( month > 2 )
         year = c - 4716;
     else
@@ -48,8 +48,8 @@ GregorianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-GregorianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+GregorianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Jean Meeus, "Astronomical Algorithms", p. 63.*/
     if ( month <= 2 )
@@ -57,17 +57,17 @@ GregorianCalendar::DMYToJulianDay( int day, int month, int year )
         month += 12;
         --year;
     }
-    int a = year / 100;
-    int b = 2 - a + a / 4;
-    return ( static_cast<int>( 365.25 * (year + 4716) )
-             + static_cast<int>( 30.6001 * (month + 1) )
+    long a = year / 100;
+    long b = 2 - a + a / 4;
+    return ( (long)( 365.25 * (year + 4716) )
+             + (long)( 30.6001 * (month + 1) )
              + day + b - 1524 );
 }
 
 //=============================================================================
 
 int
-GregorianCalendar::DaysInMonth( int month, int year )
+GregorianCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 12 ]
@@ -80,7 +80,7 @@ GregorianCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-GregorianCalendar::MonthName( int month, int /*year*/ )
+GregorianCalendar::MonthName( int month, long /*year*/ )
 {
     return MonthName( month );
 }
@@ -97,7 +97,7 @@ GregorianCalendar::MonthName( int month )
 //=============================================================================
 
 bool
-GregorianCalendar::IsLeapYear( int year )
+GregorianCalendar::IsLeapYear( long year )
 {
     if ( (year & 3) == 0 )    //fast implementation of year % 4
         if ( (year % 100) == 0 )
@@ -114,7 +114,7 @@ GregorianCalendar::IsLeapYear( int year )
 //=============================================================================
 
 void
-GregorianCalendar::Today( int * pDay, int * pMonth, int * pYear )
+GregorianCalendar::Today( int * pDay, int * pMonth, long * pYear )
 {
     std::time_t t = std::time( 0 );
     Assert( t != time_t( -1 ) );

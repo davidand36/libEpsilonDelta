@@ -19,21 +19,21 @@ namespace EpsilonDelta
 
 
 void
-JulianCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+JulianCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Jean Meeus, "Astronomical Algorithms", p. 63.*/
-    int b = julianDay + 1524;
-    int c = static_cast<int>( (b - 122.1) / 365.25 );
-    int d = static_cast<int>( c * 365.25 );
-    int e = static_cast<int>( (b - d) / 30.6001 );
-    int day = b - d - static_cast<int>( e * 30.6001 );
+    long b = julianDay + 1524;
+    long c = (long)( (b - 122.1) / 365.25 );
+    long d = (long)( c * 365.25 );
+    long e = (long)( (b - d) / 30.6001 );
+    int day = (int)(b - d - (long)( e * 30.6001 ));
     int month;
     if ( e < 14 )
         month = e - 1;
     else
         month = e - 13;
-    int year;
+    long year;
     if ( month > 2 )
         year = c - 4716;
     else
@@ -45,8 +45,8 @@ JulianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-JulianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+JulianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Jean Meeus, "Astronomical Algorithms", p. 63.*/
     if ( month <= 2 )
@@ -54,15 +54,15 @@ JulianCalendar::DMYToJulianDay( int day, int month, int year )
         month += 12;
         --year;
     }
-    return ( static_cast<int>( 365.25 * (year + 4716) )
-             + static_cast<int>( 30.6001 * (month + 1) )
+    return ( (long)( 365.25 * (year + 4716) )
+             + (long)( 30.6001 * (month + 1) )
              + day - 1524 );
 }
 
 //=============================================================================
 
 int
-JulianCalendar::DaysInMonth( int month, int year )
+JulianCalendar::DaysInMonth( int month, long year )
 {
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 12 ]
@@ -75,7 +75,7 @@ JulianCalendar::DaysInMonth( int month, int year )
 //-----------------------------------------------------------------------------
 
 const string &
-JulianCalendar::MonthName( int month, int /*year*/ )
+JulianCalendar::MonthName( int month, long /*year*/ )
 {
     return MonthName( month );
 }
@@ -92,7 +92,7 @@ JulianCalendar::MonthName( int month )
 //=============================================================================
 
 bool
-JulianCalendar::IsLeapYear( int year )
+JulianCalendar::IsLeapYear( long year )
 {
     return ( year % 4 == 0 );
 }

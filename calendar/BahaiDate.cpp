@@ -34,39 +34,40 @@ TestBahaiDate( )
     TESTCHECK( bahDate.Valid( ), true, &ok );
     TESTCHECK( bahDate.Day( ), 1, &ok );
     TESTCHECK( bahDate.Month( ), 1, &ok );
-    TESTCHECK( bahDate.Year( ), 1, &ok );
-    TESTCHECK( bahDate.JulianDay( ), 2394647, &ok );
+    TESTCHECK( bahDate.Year( ), 1L, &ok );
+    TESTCHECK( bahDate.JulianDay( ), 2394647L, &ok );
     TESTCHECK( bahDate.DayOfWeek( ), 5, &ok );
     TESTCHECK( bahDate.ToString( ), string( "Istijlal, 1 Baha 1" ), &ok );
 
     int d = 9;
     int m = 13;
-    int y = 102;
+    long y = 102;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     bahDate.Set( d, m, y );
     TESTCHECK( bahDate.Valid( ), true, &ok );
     TESTCHECK( bahDate.Day( ), d, &ok );
     TESTCHECK( bahDate.Month( ), m, &ok );
     TESTCHECK( bahDate.Year( ), y, &ok );
-    TESTCHECK( bahDate.JulianDay( ), 2431772, &ok );
+    TESTCHECK( bahDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( bahDate.DayOfWeek( ), 2, &ok );
     TESTCHECK( bahDate.ToString( ), string( "Kamal, 9 Qudrat 102" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     bahDate.Increment( incr );
-    TESTCHECK( bahDate.JulianDay( ), 2431812, &ok );
+    TESTCHECK( bahDate.JulianDay( ), 2431812L, &ok );
     TESTCHECK( bahDate.ToString( ), string( "Jalal, 11 Masa'il 102" ), &ok );
     incr = 20;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     bahDate.Increment( 0, incr, 0 );
-    TESTCHECK( bahDate.JulianDay( ), 2432177, &ok );
+    TESTCHECK( bahDate.JulianDay( ), 2432177L, &ok );
     TESTCHECK( bahDate.ToString( ), string( "Jamal, 11 Masa'il 103" ), &ok );
 
     cout << "BahaiDate( true ) [today constructor]" << endl;
     BahaiDate bahToday( true );
     TESTCHECK( bahToday.Valid( ), true, &ok );
     cout << "bahToday.JulianDay( )=" << bahToday.JulianDay( );
-    if ( (bahToday.JulianDay( ) > 2451545) && (bahToday.JulianDay( ) < 2500000) )
+    if ( (bahToday.JulianDay( ) > 2451545)
+         && (bahToday.JulianDay( ) < 2500000) ) //test good until 289 B.E.
         cout << "\tOK" << endl;
     else
     {
@@ -77,7 +78,7 @@ TestBahaiDate( )
     TESTCHECK( (bahDate < bahToday), true, &ok );
     cout << "bahToday.ToString()=" << bahToday.ToString( ) << endl;
 
-    int jd = 2431772;
+    long jd = 2431772;
     cout << "BahaiDate( " << jd << " ) [Julian Day constructor]" << endl;
     BahaiDate bahJD( jd );
     TESTCHECK( bahJD.Valid( ), true, &ok );
@@ -95,7 +96,7 @@ TestBahaiDate( )
     TESTCHECK( bahDMY.Valid( ), true, &ok );
     TESTCHECK( (bahJD < bahDMY), true, &ok );
     TESTCHECK( (bahDMY < bahToday), true, &ok );
-    TESTCHECK( bahDMY.JulianDay( ), 2431773, &ok );
+    TESTCHECK( bahDMY.JulianDay( ), 2431773L, &ok );
     TESTCHECK( bahDMY.ToString( ), string( "Fidal, 10 Qudrat 102" ), &ok );
 
     jd = 2394646;
@@ -114,7 +115,7 @@ TestBahaiDate( )
     TESTCHECK( bah110.Valid( ), true, &ok );
     TESTCHECK( (bah110 < bahJD), true, &ok );
     TESTCHECK( (bah110 < bahToday), true, &ok );
-    TESTCHECK( bah110.JulianDay( ), 2394281, &ok );
+    TESTCHECK( bah110.JulianDay( ), 2394281L, &ok );
     TESTCHECK( bah110.ToString( ), string( "Fidal, 1 Baha 0" ), &ok );
 
     cout << "BahaiDate( bah0 ) [copy constructor]" << endl;

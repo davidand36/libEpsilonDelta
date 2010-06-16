@@ -58,39 +58,40 @@ TestHebrewDate( )
     TESTCHECK( hebDate.Valid( ), true, &ok );
     TESTCHECK( hebDate.Day( ), 1, &ok );
     TESTCHECK( hebDate.Month( ), 7, &ok );
-    TESTCHECK( hebDate.Year( ), 1, &ok );
-    TESTCHECK( hebDate.JulianDay( ), 347998, &ok );
+    TESTCHECK( hebDate.Year( ), 1L, &ok );
+    TESTCHECK( hebDate.JulianDay( ), 347998L, &ok );
     TESTCHECK( hebDate.DayOfWeek( ), 1, &ok );
     TESTCHECK( hebDate.ToString( ), string( "Yom Shaynee, 1 Tishri 1" ), &ok );
 
     int d = 7;
     int m = 9;
-    int y = 5706;
+    long y = 5706;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     hebDate.Set( d, m, y );
     TESTCHECK( hebDate.Valid( ), true, &ok );
     TESTCHECK( hebDate.Day( ), d, &ok );
     TESTCHECK( hebDate.Month( ), m, &ok );
     TESTCHECK( hebDate.Year( ), y, &ok );
-    TESTCHECK( hebDate.JulianDay( ), 2431772, &ok );
+    TESTCHECK( hebDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( hebDate.DayOfWeek( ), 1, &ok );
     TESTCHECK( hebDate.ToString( ), string( "Yom Shaynee, 7 Kislev 5706" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     hebDate.Increment( incr );
-    TESTCHECK( hebDate.JulianDay( ), 2431812, &ok );
+    TESTCHECK( hebDate.JulianDay( ), 2431812L, &ok );
     TESTCHECK( hebDate.ToString( ), string( "Shabbat, 18 Teveth 5706" ), &ok );
     incr = 13;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     hebDate.Increment( 0, incr, 0 );
-    TESTCHECK( hebDate.JulianDay( ), 2432196, &ok );
+    TESTCHECK( hebDate.JulianDay( ), 2432196L, &ok );
     TESTCHECK( hebDate.ToString( ), string( "Yom Ha'shee'shee, 18 Teveth 5707" ), &ok );
 
     cout << "HebrewDate( true ) [today constructor]" << endl;
     HebrewDate hebToday( true );
     TESTCHECK( hebToday.Valid( ), true, &ok );
     cout << "hebToday.JulianDay( )=" << hebToday.JulianDay( );
-    if ( (hebToday.JulianDay( ) > 2451545) && (hebToday.JulianDay( ) < 2500000) )
+    if ( (hebToday.JulianDay( ) > 2451545)
+         && (hebToday.JulianDay( ) < 2500000) ) //test good until 5892 A.M.
         cout << "\tOK" << endl;
     else
     {
@@ -101,7 +102,7 @@ TestHebrewDate( )
     TESTCHECK( (hebDate < hebToday), true, &ok );
     cout << "hebToday.ToString()=" << hebToday.ToString( ) << endl;
 
-    int jd = 2431772;
+    long jd = 2431772;
     cout << "HebrewDate( " << jd << " ) [Julian Day constructor]" << endl;
     HebrewDate hebJD( jd );
     TESTCHECK( hebJD.Valid( ), true, &ok );
@@ -119,7 +120,7 @@ TestHebrewDate( )
     TESTCHECK( hebDMY.Valid( ), true, &ok );
     TESTCHECK( (hebJD < hebDMY), true, &ok );
     TESTCHECK( (hebDMY < hebToday), true, &ok );
-    TESTCHECK( hebDMY.JulianDay( ), 2431773, &ok );
+    TESTCHECK( hebDMY.JulianDay( ), 2431773L, &ok );
     TESTCHECK( hebDMY.ToString( ), string( "Yom Shlee'shee, 8 Kislev 5706" ), &ok );
 
     jd = 347820;
@@ -138,7 +139,7 @@ TestHebrewDate( )
     TESTCHECK( heb110.Valid( ), true, &ok );
     TESTCHECK( (heb110 < hebJD), true, &ok );
     TESTCHECK( (heb110 < hebToday), true, &ok );
-    TESTCHECK( heb110.JulianDay( ), 347437, &ok );
+    TESTCHECK( heb110.JulianDay( ), 347437L, &ok );
     TESTCHECK( heb110.ToString( ), string( "Yom Reeshone, 1 Nisan -1" ), &ok );
 
     cout << "HebrewDate( heb0 ) [copy constructor]" << endl;
@@ -164,10 +165,10 @@ TestHebrewDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

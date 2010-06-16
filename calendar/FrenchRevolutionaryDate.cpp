@@ -28,7 +28,7 @@ FrenchRevolutionaryDate::FrenchRevolutionaryDate( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-FrenchRevolutionaryDate::FrenchRevolutionaryDate( int julianDay )
+FrenchRevolutionaryDate::FrenchRevolutionaryDate( long julianDay )
     :   DateDMY< FrenchRevolutionaryCalendar >( julianDay )
 {
 }
@@ -36,7 +36,7 @@ FrenchRevolutionaryDate::FrenchRevolutionaryDate( int julianDay )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 FrenchRevolutionaryDate::FrenchRevolutionaryDate( int day, int month,
-                                                  int year )
+                                                  long year )
     :   DateDMY< FrenchRevolutionaryCalendar >( day, month, year )
 {
 }
@@ -119,16 +119,17 @@ TestFrenchRevolutionaryDate( )
     bool ok = true;
     cout << "Testing FrenchRevolutionaryDate" << endl;
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     FrenchRevolutionaryDate frDate;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

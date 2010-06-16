@@ -26,7 +26,7 @@ namespace EpsilonDelta
 
 
 string 
-IntToString( int i, int width, char comma, bool zeroFill, bool showSign )
+IntToString( long i, int width, char comma, bool zeroFill, bool showSign )
 {
     return IntToBasicString< char, char_traits< char >, allocator< char > >
             ( i, width, comma, zeroFill, showSign );
@@ -35,7 +35,7 @@ IntToString( int i, int width, char comma, bool zeroFill, bool showSign )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 wstring 
-IntToWString( int i, int width, char comma, bool zeroFill, bool showSign )
+IntToWString( long i, int width, char comma, bool zeroFill, bool showSign )
 {
     return IntToBasicString< wchar_t, char_traits<wchar_t>, allocator<wchar_t> >
             ( i, width, comma, zeroFill, showSign );
@@ -64,10 +64,10 @@ RealToWString( double r, int width, int decimals, char point, char comma,
 //-----------------------------------------------------------------------------
 
 string 
-OrdinalToString( int i, int width, char comma )
+OrdinalToString( long i, int width, char comma )
 {
     string intStr = IntToString( i, width - 2, comma );
-    int r = i % 100;
+    int r = (int)(abs( i ) % 100L);
     if ( (r >= 4) && (r <= 20) )
         return (intStr + "th");
     else
@@ -87,10 +87,10 @@ OrdinalToString( int i, int width, char comma )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 wstring 
-OrdinalToWString( int i, int width, char comma )
+OrdinalToWString( long i, int width, char comma )
 {
     wstring intStr = IntToWString( i, width - 2, comma );
-    int r = i % 100;
+    int r = (int)(abs( i ) % 100L);
     if ( (r >= 4) && (r <= 20) )
         return (intStr + L"th");
     else

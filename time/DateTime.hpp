@@ -29,14 +29,14 @@ public:
     explicit DateTime( bool now = false );
     explicit DateTime( std::time_t stdTime );
     DateTime( const Date & date, const Time & time );
-    DateTime( int day, int month, int year,
+    DateTime( int day, int month, long year,
               int hour, int minute, double second = 0. );
     explicit DateTime( double julianDay );
     virtual ~DateTime( );
     void Set( bool now );
     void Set( std::time_t stdTime );
     void Set( const Date & date, const Time & time );
-    void Set( int day, int month, int year,
+    void Set( int day, int month, long year,
               int hour, int minute, double second = 0. );
     void Set( double julianDay );
     bool Valid( ) const;
@@ -45,13 +45,13 @@ public:
     Time GetTime( ) const;
     int Day( ) const;
     int Month( ) const;
-    int Year( ) const;
+    long Year( ) const;
     int Hour( ) const;
     int Minute( ) const;
     double Second( ) const;
     double JulianDay( ) const;
     int DayOfWeek( ) const;
-    void Increment( int days, int months, int years,
+    void Increment( int days, int months, long years,
                     int hours = 0, int minutes = 0, double seconds = 0. );
     void Increment( const TimeIncrement & increment );
     void Increment( double days );

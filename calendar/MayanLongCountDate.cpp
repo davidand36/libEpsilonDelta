@@ -33,7 +33,7 @@ MayanLongCountDate::MayanLongCountDate( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-MayanLongCountDate::MayanLongCountDate( int julianDay )
+MayanLongCountDate::MayanLongCountDate( long julianDay )
     :   DateJD( false )
 {
     DateJD::Set( julianDay );
@@ -110,7 +110,7 @@ MayanLongCountDate::Set( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-MayanLongCountDate::Set( int julianDay )
+MayanLongCountDate::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     Calendar::JulianDayToLongCount( julianDay,
@@ -317,7 +317,7 @@ MayanLongCountDate::MakeValid( DateFixup::EMethod fixupMethod )
 
 //=============================================================================
 
-int 
+long 
 MayanLongCountDate::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -451,12 +451,12 @@ TestMayanLongCountDate( )
     bool ok = true;
     cout << "Testing MayanLongCountDate" << endl;
 
-    int jd;
+    long jd;
     int kin, uinal, tun, katun, baktun;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int kin;
         int uinal;
         int tun;

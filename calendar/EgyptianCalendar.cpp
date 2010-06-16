@@ -20,25 +20,25 @@ namespace EpsilonDelta
 
 namespace
 {
-const int s_egyptianEpoch = 1448638;
+const long s_egyptianEpoch = 1448638;
 }
 
 //=============================================================================
 
 
 void
-EgyptianCalendar::JulianDayToDMY( int julianDay,
-                                int * pDay, int * pMonth, int * pYear )
+EgyptianCalendar::JulianDayToDMY( long julianDay,
+                                int * pDay, int * pMonth, long * pYear )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 25.*/
-    int days = julianDay - s_egyptianEpoch;
-    int year;
-    int rem;
-    DivModP( days, 365, &year, &rem );
+    long days = julianDay - s_egyptianEpoch;
+    long year;
+    long rem;
+    DivModP( days, 365L, &year, &rem );
     int month;
     int day;
-    DivModP( rem, 30, &month, &day );
+    DivModP( (int)rem, 30, &month, &day );
     *pDay = day + 1;
     *pMonth = month + 1;
     *pYear = year + 1;
@@ -46,8 +46,8 @@ EgyptianCalendar::JulianDayToDMY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int
-EgyptianCalendar::DMYToJulianDay( int day, int month, int year )
+long
+EgyptianCalendar::DMYToJulianDay( int day, int month, long year )
 {
     /*Adapted from Nachum Dershowitz and Edward M. Reingold,
       "Calendrical Calculations - Millennium Ed.", p. 25.*/
@@ -58,7 +58,7 @@ EgyptianCalendar::DMYToJulianDay( int day, int month, int year )
 //=============================================================================
 
 const string &
-EgyptianCalendar::MonthName( int month, int /*year*/ )
+EgyptianCalendar::MonthName( int month, long /*year*/ )
 {
     Assert( (month > 0) && (month <= 13) );
     return g_egyptianMonthNames[ month - 1 ];

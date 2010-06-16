@@ -46,7 +46,7 @@ DateTime::DateTime( const Date & date, const Time & time )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-DateTime::DateTime( int day, int month, int year,
+DateTime::DateTime( int day, int month, long year,
                     int hour, int minute, double second )
     :    m_date( day, month, year ),
          m_time( hour, minute, second )
@@ -106,7 +106,7 @@ DateTime::Set( const Date & date, const Time & time )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-DateTime::Set( int day, int month, int year,
+DateTime::Set( int day, int month, long year,
                int hour, int minute, double second )
 {
     m_date.Set( day, month, year );
@@ -126,7 +126,7 @@ DateTime::Set( double julianDay )
         fraction -= 1.;
         whole += 1.;
     }
-    m_date.Set( static_cast<int>( whole ) );
+    m_date.Set( static_cast<long>( whole ) );
     m_time.Set( fraction );
 }
 
@@ -181,7 +181,7 @@ DateTime::Month( ) const
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 DateTime::Year( ) const
 {
     return m_date.Year( );
@@ -230,7 +230,7 @@ DateTime::DayOfWeek( ) const
 //=============================================================================
 
 void
-DateTime::Increment( int days, int months, int years,
+DateTime::Increment( int days, int months, long years,
                      int hours, int minutes, double seconds )
 {
     days += m_time.Increment( hours, minutes, seconds );
@@ -292,7 +292,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 1, &ok );
     TESTCHECK( dateTime.Month( ), 1, &ok );
-    TESTCHECK( dateTime.Year( ), 1, &ok );
+    TESTCHECK( dateTime.Year( ), 1L, &ok );
     TESTCHECK( dateTime.Hour( ), 0, &ok );
     TESTCHECK( dateTime.Minute( ), 0, &ok );
     TESTCHECK( dateTime.Second( ), 0., &ok );
@@ -312,7 +312,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 1, &ok );
     TESTCHECK( dateTime.Month( ), 1, &ok );
-    TESTCHECK( dateTime.Year( ), 1, &ok );
+    TESTCHECK( dateTime.Year( ), 1L, &ok );
     TESTCHECK( dateTime.Hour( ), 0, &ok );
     TESTCHECK( dateTime.Minute( ), 0, &ok );
     TESTCHECK( dateTime.Second( ), 0., &ok );
@@ -321,7 +321,7 @@ DateTime::Test( )
 
     int d = 9;
     int m = 2;
-    int y = 1601;
+    long y = 1601;
     int h = 44;
     int mm = 13;
     double s = 16.;
@@ -334,7 +334,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 10, &ok );
     TESTCHECK( dateTime.Month( ), 2, &ok );
-    TESTCHECK( dateTime.Year( ), 1601, &ok );
+    TESTCHECK( dateTime.Year( ), 1601L, &ok );
     TESTCHECK( dateTime.Hour( ), 20, &ok );
     TESTCHECK( dateTime.Minute( ), 13, &ok );
     TESTCHECK( dateTime.Second( ), 16., &ok );
@@ -349,7 +349,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 25, &ok );
     TESTCHECK( dateTime.Month( ), 1, &ok );
-    TESTCHECK( dateTime.Year( ), 1955, &ok );
+    TESTCHECK( dateTime.Year( ), 1955L, &ok );
     TESTCHECK( dateTime.Hour( ), 19, &ok );
     TESTCHECK( dateTime.Minute( ), 42, &ok );
     TESTCHECK( dateTime.Second( ), 0., &ok );
@@ -362,7 +362,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 1, &ok );
     TESTCHECK( dateTime.Month( ), 1, &ok );
-    TESTCHECK( dateTime.Year( ), 2000, &ok );
+    TESTCHECK( dateTime.Year( ), 2000L, &ok );
     TESTCHECK( dateTime.Hour( ), 23, &ok );
 //    TESTCHECK( dateTime.Minute( ), 42, &ok );
 //    TESTCHECKF( dateTime.Second( ), 0., &ok );
@@ -385,7 +385,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 10, &ok );
     TESTCHECK( dateTime.Month( ), 2, &ok );
-    TESTCHECK( dateTime.Year( ), 2001, &ok );
+    TESTCHECK( dateTime.Year( ), 2001L, &ok );
     TESTCHECK( dateTime.Hour( ), 17, &ok );
     TESTCHECK( dateTime.Minute( ), 42, &ok );
     TESTCHECK( dateTime.Second( ), 0., &ok );
@@ -399,7 +399,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 8, &ok );
     TESTCHECK( dateTime.Month( ), 2, &ok );
-    TESTCHECK( dateTime.Year( ), 2001, &ok );
+    TESTCHECK( dateTime.Year( ), 2001L, &ok );
     TESTCHECK( dateTime.Hour( ), 18, &ok );
     TESTCHECK( dateTime.Minute( ), 0, &ok );
     TESTCHECK( dateTime.Second( ), 0., &ok );
@@ -412,7 +412,7 @@ DateTime::Test( )
     TESTCHECK( dateTime.Valid( ), true, &ok );
     TESTCHECK( dateTime.Day( ), 1, &ok );
     TESTCHECK( dateTime.Month( ), 1, &ok );
-    TESTCHECK( dateTime.Year( ), 2000, &ok );
+    TESTCHECK( dateTime.Year( ), 2000L, &ok );
     TESTCHECK( dateTime.Hour( ), 6, &ok );
     TESTCHECK( dateTime.Minute( ), 22, &ok );
     TESTCHECK( dateTime.Second( ), 30., &ok );
@@ -440,7 +440,7 @@ DateTime::Test( )
     TESTCHECK( dateTimeDT.Valid( ), true, &ok );
     TESTCHECK( dateTimeDT.Day( ), 25, &ok );
     TESTCHECK( dateTimeDT.Month( ), 1, &ok );
-    TESTCHECK( dateTimeDT.Year( ), 1955, &ok );
+    TESTCHECK( dateTimeDT.Year( ), 1955L, &ok );
     TESTCHECK( dateTimeDT.Hour( ), 19, &ok );
     TESTCHECK( dateTimeDT.Minute( ), 42, &ok );
     TESTCHECK( dateTimeDT.Second( ), 0., &ok );
@@ -461,7 +461,7 @@ DateTime::Test( )
     TESTCHECK( dateTimeDMYHMS.Valid( ), true, &ok );
     TESTCHECK( dateTimeDMYHMS.Day( ), 1, &ok );
     TESTCHECK( dateTimeDMYHMS.Month( ), 1, &ok );
-    TESTCHECK( dateTimeDMYHMS.Year( ), 1600, &ok );
+    TESTCHECK( dateTimeDMYHMS.Year( ), 1600L, &ok );
     TESTCHECK( dateTimeDMYHMS.Hour( ), 23, &ok );
     TESTCHECK( dateTimeDMYHMS.Minute( ), 42, &ok );
     TESTCHECK( dateTimeDMYHMS.Second( ), 0., &ok );
@@ -480,7 +480,7 @@ DateTime::Test( )
     TESTCHECK( dateTimeJD.Valid( ), true, &ok );
     TESTCHECK( dateTimeJD.Day( ), 1, &ok );
     TESTCHECK( dateTimeJD.Month( ), 1, &ok );
-    TESTCHECK( dateTimeJD.Year( ), 1600, &ok );
+    TESTCHECK( dateTimeJD.Year( ), 1600L, &ok );
     TESTCHECK( dateTimeJD.Hour( ), 23, &ok );
 //    TESTCHECK( dateTimeJD.Minute( ), 42, &ok );
 //    TESTCHECKF( dateTimeJD.Second( ), 0., &ok );

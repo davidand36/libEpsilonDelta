@@ -34,37 +34,38 @@ TestEthiopianDate( )
     TESTCHECK( ethDate.Valid( ), true, &ok );
     TESTCHECK( ethDate.Day( ), 1, &ok );
     TESTCHECK( ethDate.Month( ), 1, &ok );
-    TESTCHECK( ethDate.Year( ), 1, &ok );
-    TESTCHECK( ethDate.JulianDay( ), 1724221, &ok );
+    TESTCHECK( ethDate.Year( ), 1L, &ok );
+    TESTCHECK( ethDate.JulianDay( ), 1724221L, &ok );
     TESTCHECK( ethDate.ToString( ), string( "Rob, 1 Maskaram 1" ), &ok );
 
     int d = 4;
     int m = 3;
-    int y = 1939;
+    long y = 1939;
     cout << "Set( " << d << ", " << m << ", " << y << " ) :" << endl;
     ethDate.Set( d, m, y );
     TESTCHECK( ethDate.Valid( ), true, &ok );
     TESTCHECK( ethDate.Day( ), d, &ok );
     TESTCHECK( ethDate.Month( ), m, &ok );
     TESTCHECK( ethDate.Year( ), y, &ok );
-    TESTCHECK( ethDate.JulianDay( ), 2432138, &ok );
+    TESTCHECK( ethDate.JulianDay( ), 2432138L, &ok );
     TESTCHECK( ethDate.ToString( ), string( "Rob, 4 Hedar 1939" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     ethDate.Increment( incr );
-    TESTCHECK( ethDate.JulianDay( ), 2432178, &ok );
+    TESTCHECK( ethDate.JulianDay( ), 2432178L, &ok );
     TESTCHECK( ethDate.ToString( ), string( "Sanyo, 14 Takhsas 1939" ), &ok );
     incr = 13;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     ethDate.Increment( 0, incr, 0 );
-    TESTCHECK( ethDate.JulianDay( ), 2432544, &ok );
+    TESTCHECK( ethDate.JulianDay( ), 2432544L, &ok );
     TESTCHECK( ethDate.ToString( ), string( "Rob, 14 Takhsas 1940" ), &ok );
 
     cout << "EthiopianDate( true ) [today constructor]" << endl;
     EthiopianDate ethToday( true );
     TESTCHECK( ethToday.Valid( ), true, &ok );
     cout << "ethToday.JulianDay( )=" << ethToday.JulianDay( );
-    if ( (ethToday.JulianDay( ) > 2451545) && (ethToday.JulianDay( ) < 2500000) )
+    if ( (ethToday.JulianDay( ) > 2451545)
+         && (ethToday.JulianDay( ) < 2500000) ) //test good until 2124 E.E.
         cout << "\tOK" << endl;
     else
     {
@@ -75,7 +76,7 @@ TestEthiopianDate( )
     TESTCHECK( (ethDate < ethToday), true, &ok );
     cout << "ethToday.ToString()=" << ethToday.ToString( ) << endl;
 
-    int jd = 2432138;
+    long jd = 2432138;
     cout << "EthiopianDate( " << jd << " ) [Julian Day constructor]" << endl;
     EthiopianDate ethJD( jd );
     TESTCHECK( ethJD.Valid( ), true, &ok );
@@ -93,7 +94,7 @@ TestEthiopianDate( )
     TESTCHECK( ethDMY.Valid( ), true, &ok );
     TESTCHECK( (ethJD < ethDMY), true, &ok );
     TESTCHECK( (ethDMY < ethToday), true, &ok );
-    TESTCHECK( ethDMY.JulianDay( ), 2432139, &ok );
+    TESTCHECK( ethDMY.JulianDay( ), 2432139L, &ok );
     TESTCHECK( ethDMY.ToString( ), string( "Hamus, 5 Hedar 1939" ), &ok );
 
     jd = 1724220;
@@ -112,7 +113,7 @@ TestEthiopianDate( )
     TESTCHECK( eth110.Valid( ), true, &ok );
     TESTCHECK( (eth110 < ethJD), true, &ok );
     TESTCHECK( (eth110 < ethToday), true, &ok );
-    TESTCHECK( eth110.JulianDay( ), 1723856, &ok );
+    TESTCHECK( eth110.JulianDay( ), 1723856L, &ok );
     TESTCHECK( eth110.ToString( ), string( "Maksanyo, 1 Maskaram 0" ), &ok );
 
     cout << "EthiopianDate( eth0 ) [copy constructor]" << endl;
@@ -138,10 +139,10 @@ TestEthiopianDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     testDates[]
             = {

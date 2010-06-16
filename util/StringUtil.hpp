@@ -205,7 +205,7 @@ Split( const std::basic_string< Ch, Tr, A > & str,
 
 template < typename Ch, typename Tr, typename A >
 std::basic_string< Ch, Tr, A > 
-IntToBasicString( int i, int width = 0, Ch comma = 0,
+IntToBasicString( long i, int width = 0, Ch comma = 0,
                   bool zeroFill = false, bool showSign = false );
 
 template < typename Ch, typename Tr, typename A >
@@ -215,11 +215,11 @@ RealToBasicString( double r, int width = 0, int decimals = 0,
                    bool zeroFill = false, bool showSign = false );
 
 std::string 
-IntToString( int i, int width = 0, char comma = 0,
+IntToString( long i, int width = 0, char comma = 0,
              bool zeroFill = false, bool showSign = false );
 
 std::wstring 
-IntToWString( int i, int width = 0, char comma = 0,
+IntToWString( long i, int width = 0, char comma = 0,
               bool zeroFill = false, bool showSign = false );
 
 std::string 
@@ -233,10 +233,10 @@ RealToWString( double r, int width = 0, int decimals = 0,
               bool zeroFill = false, bool showSign = false );
 
 std::string 
-OrdinalToString( int i, int width = 0, char comma = 0 );
+OrdinalToString( long i, int width = 0, char comma = 0 );
 
 std::wstring 
-OrdinalToWString( int i, int width = 0, char comma = 0 );
+OrdinalToWString( long i, int width = 0, char comma = 0 );
 
 enum LineBreakAction
 {
@@ -782,7 +782,7 @@ Split( const std::basic_string< Ch, Tr, A > & str,
 
 template < typename Ch, typename Tr, typename A >
 std::basic_string< Ch, Tr, A >
-IntToBasicString( int i, int width, Ch comma, bool zeroFill, bool showSign )
+IntToBasicString( long i, int width, Ch comma, bool zeroFill, bool showSign )
 {
     Assert( width <= 29 ); //Enough for 64-bit signed value
     Ch buff[ 30 ];

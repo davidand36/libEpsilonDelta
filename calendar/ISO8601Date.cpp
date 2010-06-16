@@ -30,7 +30,7 @@ ISO8601Date::ISO8601Date( bool today )
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-ISO8601Date::ISO8601Date( int julianDay )
+ISO8601Date::ISO8601Date( long julianDay )
     :   DateJD( false )
 {
     Set( julianDay );
@@ -77,7 +77,7 @@ ISO8601Date::Set( bool today )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ISO8601Date::Set( int julianDay )
+ISO8601Date::Set( long julianDay )
 {
     DateJD::Set( julianDay );
     Calendar::JulianDayToDWY( julianDay,
@@ -168,7 +168,7 @@ ISO8601Date::MakeValid( DateFixup::EMethod fixupMethod )
 
 //=============================================================================
 
-int 
+long 
 ISO8601Date::JulianDay( ) const
 {
     if ( ! DateJD::Valid() )
@@ -189,7 +189,7 @@ ISO8601Date::Increment( int days )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 void 
-ISO8601Date::Increment( int days, int weeks, int years,
+ISO8601Date::Increment( int days, int weeks, long years,
                         DateFixup::EMethod fixupMethod )
 {
     DateJD::Set( DateJD::INVALID );
@@ -222,16 +222,17 @@ TestISO8601Date( )
     bool ok = true;
     cout << "Testing ISO8601Date" << endl;
 
-    int jd;
-    int d, w, y;
+    long jd;
+    int d, w;
+    long y;
     ISO8601Date isoDate;
 
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int week;
-        int year;
+        long year;
     } 
     testDates[]
             = {

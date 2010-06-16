@@ -26,8 +26,8 @@ namespace EpsilonDelta
 namespace 
 {
 
-const int s_kaliYugaEpoch = 588466; //JD of Kali Yuga (Iron Age) epoch
-const int s_vikramaEra = 3044;      //Kali Yuga era year of Vikrama era year 0
+const long s_kaliYugaEpoch = 588466; //JD of Kali Yuga (Iron Age) epoch
+const long s_vikramaEra = 3044;      //Kali Yuga era year of Vikrama era year 0
 const double s_siderealYear = 1577917500. / 4320000.;
 const double s_solarMonth = s_siderealYear / 12.;
 const double s_lunarMonth = 1577917500. / 53433336.;
@@ -45,10 +45,10 @@ HinduLunisolarCalendar::EVersion HinduLunisolarCalendar::ms_version
 
 
 void 
-HinduLunisolarCalendar::JulianDayToDLMLY( int julianDay, 
+HinduLunisolarCalendar::JulianDayToDLMLY( long julianDay, 
                                          int * pDay, bool * pDayLeap,
                                          int * pMonth, bool * pMonthLeap,
-                                         int * pYear )
+                                         long * pYear )
 {
     switch ( ms_version )
     {
@@ -66,12 +66,12 @@ HinduLunisolarCalendar::JulianDayToDLMLY( int julianDay,
         int nextSolarMonth = HinduAstro::Zodiac( nextNewMoon );
         bool monthLeap = (solarMonth == nextSolarMonth);
         int month = ModP( solarMonth, 12 ) + 1;
-        int kyYear;
+        long kyYear;
         if ( month <= 2 )
             kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon + 180. );
         else
             kyYear = HinduSolarCalendar::KaliYugaYear( nextNewMoon );
-        int year = kyYear - s_vikramaEra;
+        long year = kyYear - s_vikramaEra;
         if ( pDay )
             *pDay = day;
         if ( pDayLeap )
@@ -95,15 +95,15 @@ HinduLunisolarCalendar::JulianDayToDLMLY( int julianDay,
         double month = ModRP( std::ceil( newMoon / s_solarMonth ), 12. );
         double year = (newMoon + s_solarMonth) / s_siderealYear;
         if ( pDay )
-            *pDay = static_cast< int >( day ) + 1;
+            *pDay = (int)( day ) + 1;
         if ( pDayLeap )
             *pDayLeap = false;
         if ( pMonth )
-            *pMonth = static_cast< int >( month ) + 1;
+            *pMonth = (int)( month ) + 1;
         if ( pMonthLeap )
             *pMonthLeap = monthLeap;
         if ( pYear )
-            *pYear = static_cast< int >( std::ceil( year ) ) - 1;
+            *pYear = (long)( std::ceil( year ) ) - 1;
         break;
     }
     default:
@@ -114,10 +114,10 @@ HinduLunisolarCalendar::JulianDayToDLMLY( int julianDay,
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
                                           int month, bool monthLeap,
-                                          int year )
+                                          long year )
 {
     switch ( ms_version )
     {
@@ -133,7 +133,7 @@ HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
                    -  180.);
         kyt = std::floor( kyt - offset );
         int k = HinduAstro::LunarDay( kyt + (1. / 4.) );
-        int midJD = static_cast< int >( kyt )  -  15  +  s_kaliYugaEpoch;
+        long midJD = (long)( kyt )  -  15  +  s_kaliYugaEpoch;
         HinduLunisolarDate hlDate1( midJD );
         kyt += day;
         if ( (k > 3) && (k < 27) )
@@ -145,7 +145,7 @@ HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
             kyt -= (ModP( (k + 15), 30 ) + 15);
         kyt += 14 - ModP( (HinduAstro::LunarDay( kyt + (1. / 4.) ) - day + 15),
                           30 );
-        int jd = static_cast< int >( kyt ) + s_kaliYugaEpoch;
+        long jd = (long)( kyt ) + s_kaliYugaEpoch;
         hlDate1.Set( jd );
         while ( hlDate1 < hlDate0 )
             hlDate1.Set( ++jd );
@@ -160,7 +160,7 @@ HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
             --month;
         double jd = s_kaliYugaEpoch  +  newYear  +  month * s_lunarMonth
                 +  (day - 1) * s_lunarDay  +  3. / 4.;
-        return static_cast< int >( std::floor( jd ) );
+        return (long)( std::floor( jd ) );
     }
     default:
         Assert( 0 && "Unexpected version of HinduLunisolarCalendar" );
@@ -173,7 +173,7 @@ HinduLunisolarCalendar::DLMLYToJulianDay( int day, bool dayLeap,
 bool 
 HinduLunisolarCalendar::Valid( int day, bool dayLeap,
                                int month, bool monthLeap,
-                               int year )
+                               long year )
 {
     if ( (month < 1) || (month > 12) )
         return false;
@@ -192,15 +192,15 @@ HinduLunisolarCalendar::Valid( int day, bool dayLeap,
 
 //-----------------------------------------------------------------------------
 
-int 
+long 
 HinduLunisolarCalendar::MakeValid( int * pDay, bool * pDayLeap, int * pMonth,
-                                      bool * pMonthLeap, int * pYear,
+                                      bool * pMonthLeap, long * pYear,
                                       DateFixup::EMethod fixupMethod )
 {
     Assert( pDay && pDayLeap && pMonth && pMonthLeap && pYear );
     if ( fixupMethod == DateFixup::Carry )
     {
-        int julianDay = DLMLYToJulianDay( *pDay, *pDayLeap, *pMonth,
+        long julianDay = DLMLYToJulianDay( *pDay, *pDayLeap, *pMonth,
                                           *pMonthLeap, *pYear );
         JulianDayToDLMLY( julianDay, pDay, pDayLeap, pMonth, pMonthLeap,
                           pYear );
@@ -237,10 +237,10 @@ HinduLunisolarCalendar::MakeValid( int * pDay, bool * pDayLeap, int * pMonth,
 
 int 
 HinduLunisolarCalendar::LastDayOfMonth( int month, bool monthLeap,
-                                           int year )
+                                           long year )
 {
-    int jd0 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
-    int year1 = year;
+    long jd0 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+    long year1 = year;
     int month1 = month + 1;
     if ( monthLeap )
         --month1;
@@ -249,7 +249,7 @@ HinduLunisolarCalendar::LastDayOfMonth( int month, bool monthLeap,
         month1 = 1;
         --year1;
     }
-    int jd1 = DLMLYToJulianDay( 1, false, month1, false, year1 );
+    long jd1 = DLMLYToJulianDay( 1, false, month1, false, year1 );
     if ( jd1 > jd0 + 40 )
         jd1 = DLMLYToJulianDay( 1, false, month1, true, year1 );
     Assert( jd1 < jd0 + 40 );
@@ -261,14 +261,14 @@ HinduLunisolarCalendar::LastDayOfMonth( int month, bool monthLeap,
 //-----------------------------------------------------------------------------
 
 int 
-HinduLunisolarCalendar::LostDay( int month, bool monthLeap, int year )
+HinduLunisolarCalendar::LostDay( int month, bool monthLeap, long year )
 {
     switch ( ms_version )
     {
     case Modern:
     {
-        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
-        int kyDay = jd1 - s_kaliYugaEpoch;
+        long jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        long kyDay = jd1 - s_kaliYugaEpoch;
         int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
         int prevDay = 1;
         for ( int d = 1; d <= lastDayOfMonth; ++d )
@@ -285,10 +285,10 @@ HinduLunisolarCalendar::LostDay( int month, bool monthLeap, int year )
     case Old:
     {
         static const double solarLunarDayDiff = 1. - s_lunarDay;
-        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        long jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
         double rise = jd1 - s_kaliYugaEpoch +  1. / 4.;
         double dayGap = ModRP( rise, s_lunarDay );
-        return static_cast< int >( std::ceil( (1. - dayGap)
+        return (int)( std::ceil( (1. - dayGap)
                                               / solarLunarDayDiff ) );
     }
     default:
@@ -300,14 +300,14 @@ HinduLunisolarCalendar::LostDay( int month, bool monthLeap, int year )
 //-----------------------------------------------------------------------------
 
 int 
-HinduLunisolarCalendar::LeapDay( int month, bool monthLeap, int year )
+HinduLunisolarCalendar::LeapDay( int month, bool monthLeap, long year )
 {
     switch ( ms_version )
     {
     case Modern:
     {
-        int jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
-        int kyDay = jd1 - s_kaliYugaEpoch;
+        long jd1 = DLMLYToJulianDay( 1, false, month, monthLeap, year );
+        long kyDay = jd1 - s_kaliYugaEpoch;
         int lastDayOfMonth = LastDayOfMonth( month, monthLeap, year );
         int prevDay = -1;
         for ( int d = 1; d <= lastDayOfMonth + 1; ++d )
@@ -334,13 +334,13 @@ HinduLunisolarCalendar::LeapDay( int month, bool monthLeap, int year )
 //=============================================================================
 
 bool 
-HinduLunisolarCalendar::IsMonthLeap( int month, int year )
+HinduLunisolarCalendar::IsMonthLeap( int month, long year )
 {
     switch ( ms_version )
     {
     case Modern:
     {
-        int jd = DLMLYToJulianDay( 15, false, month, true, year );
+        long jd = DLMLYToJulianDay( 15, false, month, true, year );
         int mnth = month;
         bool monthLeap = true;
         JulianDayToDLMLY( jd, 0, 0, &mnth, &monthLeap, 0 );
@@ -350,7 +350,7 @@ HinduLunisolarCalendar::IsMonthLeap( int month, int year )
     {
         double mina = (12. * year - 1) * s_solarMonth;
         double newYear = (std::floor( mina / s_lunarMonth ) + 1) * s_lunarMonth;
-        int leapMonth = static_cast< int >( std::ceil( (newYear - mina)
+        int leapMonth = (int)( std::ceil( (newYear - mina)
                                                     / s_solarLunarMonthDiff ) );
         return (month == leapMonth);
     }

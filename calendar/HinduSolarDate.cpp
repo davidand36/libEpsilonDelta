@@ -54,18 +54,19 @@ TestHinduSolarDate( )
     bool ok = true;
     cout << "Testing HinduSolarDate" << endl;
 
-    int jd;
-    int d, m, y;
+    long jd;
+    int d, m;
+    long y;
     HinduSolarDate hinduSolarDate;
 
     cout << "Modern:" << endl;
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     modernTestDates[]
             = {
@@ -127,10 +128,10 @@ TestHinduSolarDate( )
     
     struct
     {
-        int julianDay;
+        long julianDay;
         int day;
         int month;
-        int year;
+        long year;
     } 
     oldTestDates[]
             = {

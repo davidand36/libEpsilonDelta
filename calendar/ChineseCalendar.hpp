@@ -7,27 +7,33 @@
   Class ChineseCalendar, which defines the Chinese calendar.
 
   The Chinese calendar is used in much of East Asia, particularly for festivals
-  and holidays. Historical usage dates from about 1384 B.C., though Chinese 
+  and holidays. Historical usage dates from about 1384 B.C.E., though Chinese 
   tradition is that the calendar was invented by the Yellow Emperor, Huang Di,
-  in 2637 B.C. (For civil purposes, the Gregorian calendar has been used since
-  1912 A.D.)
+  in 2637 B.C.E. (For civil purposes, the Gregorian calendar has been used since
+  1912 C.E.)
   There have been a number of calendar reforms. The calendar implemented here
-  is the modern one, developed by Jesuit missionaries in 1645 A.D. It is an
+  is the modern one, developed by Jesuit missionaries in 1645 C.E. It is an
   astronomical calendar, in that the true longitudes of the Sun and Moon are
   used. (Originally, motions of the mean Sun and Moon were used. The reform of
-  619 A.D. introduced the true Moon, but retained the mean Sun.)
+  619 C.E. introduced the true Moon, but retained the mean Sun.)
   The Chinese calendar is a lunisolar calendar, meaning that months are based
   on actual lunar phases (beginning with the New Moon), but leap months are
-  intercalated so that the Winter Solstice always falls in the eleventh month.
+  intercalated when necessary so that the Winter Solstice always falls in the
+  eleventh month.
   NOTES:
   1. Years are not generally counted in a linear fashion, as here.
      Traditionally, the year count began in the year following the death of
      the previous emperor, though some emperors divided their reigns into
      regnal periods (nien hao). In addition, years are also denoted by their
-     position in 10- and 12-year cycles, which together constitute a 60-year
-     cycle. There is some disagreement about numbering these cycles, however.
-     Here we adopt the convention that begins the first cycle in 2637 B.C.
-     There are also 60-day and 60-month cycles.
+     position in 10- and 12-year cycles (celestial stems and terrestrial
+     branches), which together generate a 60-year cycle. There is some
+     disagreement about numbering these cycles, however. Here we adopt the
+     convention that begins the first cycle in 2637 B.C.E., so that the epoch
+     is Julian Day 758326.
+     There are also 60-day and 60-month cycles. (The animal names
+     traditionally associated with the terrestrial branches are not
+     translations of the Chinese names of those branches, which, like those
+     of the stems, are untranslatable.)
   2. Aside from the matter of the year discussed in Note 1, the common
      representation of a Chinese date is
      { int day, int month, bool leap, long year },

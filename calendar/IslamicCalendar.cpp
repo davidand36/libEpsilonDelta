@@ -29,7 +29,7 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-GeodeticLocation Mecca( AngleDMS( 39, 49, 24. ), AngleDMS( 21, 25, 24 ),
+GeodeticLocation Mecca( AngleDMS( 39, 49, 34. ), AngleDMS( 21, 25, 21. ),
                         1000 );
 
 
@@ -334,23 +334,24 @@ IslamicCalendar::UmmAlQuraVisibility( double julianDay,
     /* Using rules reported by the Islamic Crescents' Observation Project
        on http://www.icoproject.org/sau.html.
        See also http://www.phys.uu.nl/~vgent/islam/ummalqura.htm.*/
-    long refJD = (long)( julianDay + 1.
-                                    + location.Longitude().Cycles() );
+    long refJD = (long)( julianDay + 1. + location.Longitude().Cycles() );
     RiseSet::Result sunsetRslt
             = RiseSet::FindNext( julianDay, SolarSystem::Sun,
                                  RiseSet::Set, location );
     if ( sunsetRslt.m_status != RiseSet::OK )
         return true;
     double sunset = sunsetRslt.m_julianDay;
-    if ( refJD < 2451286 ) //before 1420 A.H.
+    //It is not clear what the rule was before 1395 A.H.
+    if ( (2442425 <= refJD) && (refJD < 2451286) ) //between 1395 and 1420 A.H.
     {
         //New Moon is before or within 12 hours of sunset
+        //This rule often starts months a day earlier than other systems.
         double newMoon
                 = MoonPhases::FindNext( julianDay - 15., MoonPhases::New );
         return ( newMoon < sunset + 0.5 );
     }
-    else if ( refJD < 2452349 ) //before 1423 A.H.
-    {
+    else if ( (2451286 <= refJD) && (refJD < 2452349) )
+    {                                           //between 1421 and 1423 A.H.
         //Moonset is after sunset
         RiseSet::Result moonsetRslt
                 = RiseSet::FindNext( julianDay, SolarSystem::Moon,
@@ -360,7 +361,7 @@ IslamicCalendar::UmmAlQuraVisibility( double julianDay,
         double moonset = moonsetRslt.m_julianDay;
         return ( (moonset > sunset) && (moonset < sunset + 0.25) );
     }
-    else    //since 1423 A.H.
+    else    //since 1423 A.H. (or before 1395 A.H.)
     {
         //New Moon is before sunset and moonset is after sunset
         double newMoon

@@ -49,7 +49,7 @@ TestIslamicDate( )
     TESTCHECK( islDate.Year( ), 1L, &ok );
     TESTCHECK( islDate.JulianDay( ), 1948440L, &ok );
     TESTCHECK( islDate.DayOfWeek( ), 5, &ok );
-    TESTCHECK( islDate.ToString( ), string( "yawm al-jum`a, 1 Muharram 1" ), &ok );
+    TESTCHECK( islDate.ToString( ), string( "yawm al-jumu`ah, 1 Muḥarram 1" ), &ok );
 
     int d = 6;
     int m = 12;
@@ -62,17 +62,17 @@ TestIslamicDate( )
     TESTCHECK( islDate.Year( ), y, &ok );
     TESTCHECK( islDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( islDate.DayOfWeek( ), 1, &ok );
-    TESTCHECK( islDate.ToString( ), string( "yawm al-'ithnayn, 6 Dhu al-Hijja 1364" ), &ok );
+    TESTCHECK( islDate.ToString( ), string( "yawm al-ithnayn, 6 Dhū al-Ḥijja 1364" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     islDate.Increment( incr );
     TESTCHECK( islDate.JulianDay( ), 2431812L, &ok );
-    TESTCHECK( islDate.ToString( ), string( "yawm as-sabt, 17 Muharram 1365" ), &ok );
+    TESTCHECK( islDate.ToString( ), string( "yawm as-sabt, 17 Muḥarram 1365" ), &ok );
     incr = 12;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     islDate.Increment( 0, incr, 0 );
     TESTCHECK( islDate.JulianDay( ), 2432166L, &ok );
-    TESTCHECK( islDate.ToString( ), string( "yawm al-'arba`a', 17 Muharram 1366" ), &ok );
+    TESTCHECK( islDate.ToString( ), string( "yawm al-arba`aa', 17 Muḥarram 1366" ), &ok );
 
     cout << "IslamicDate( true ) [today constructor]" << endl;
     IslamicDate islToday( true );
@@ -97,7 +97,7 @@ TestIslamicDate( )
     TESTCHECK( (islJD == islJD), true, &ok );
     TESTCHECK( (islJD < islToday), true, &ok );
     TESTCHECK( (islJD == islDate), false, &ok );
-    TESTCHECK( islJD.ToString( ), string( "yawm al-'ithnayn, 6 Dhu al-Hijja 1364" ), &ok );
+    TESTCHECK( islJD.ToString( ), string( "yawm al-ithnayn, 6 Dhū al-Ḥijja 1364" ), &ok );
 
     d = 7;
     m = 12;
@@ -109,7 +109,7 @@ TestIslamicDate( )
     TESTCHECK( (islJD < islDMY), true, &ok );
     TESTCHECK( (islDMY < islToday), true, &ok );
     TESTCHECK( islDMY.JulianDay( ), 2431773L, &ok );
-    TESTCHECK( islDMY.ToString( ), string( "yawm ath-thalatha', 7 Dhu al-Hijja 1364" ), &ok );
+    TESTCHECK( islDMY.ToString( ), string( "yawm ath-thulaathaa', 7 Dhū al-Ḥijja 1364" ), &ok );
 
     jd = 1948439;
     cout << "IslamicDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -118,7 +118,7 @@ TestIslamicDate( )
     TESTCHECK( (isl0 == isl0), true, &ok );
     TESTCHECK( (isl0 < islDate), true, &ok );
     TESTCHECK( (isl0 == islDate), false, &ok );
-    TESTCHECK( isl0.ToString( ), string( "yawm al-khamis, 29 Dhu al-Hijja 0" ), &ok );
+    TESTCHECK( isl0.ToString( ), string( "yawm al-khamīs, 29 Dhū al-Ḥijja 0" ), &ok );
 
     d = 1; m = 1; y = 0;
     cout << "IslamicDate( " << d << ", " << m << ", " << y
@@ -128,28 +128,28 @@ TestIslamicDate( )
     TESTCHECK( (isl110 < islJD), true, &ok );
     TESTCHECK( (isl110 < islToday), true, &ok );
     TESTCHECK( isl110.JulianDay( ), 1948086L, &ok );
-    TESTCHECK( isl110.ToString( ), string( "yawm al-'ithnayn, 1 Muharram 0" ), &ok );
+    TESTCHECK( isl110.ToString( ), string( "yawm al-ithnayn, 1 Muḥarram 0" ), &ok );
 
     cout << "IslamicDate( isl0 ) [copy constructor]" << endl;
     IslamicDate islEq = isl0;
     TESTCHECK( islEq.Valid( ), true, &ok );
     TESTCHECK( (islEq == isl0), true, &ok );
-    TESTCHECK( islEq.ToString( ), string( "yawm al-khamis, 29 Dhu al-Hijja 0" ), &ok );
+    TESTCHECK( islEq.ToString( ), string( "yawm al-khamīs, 29 Dhū al-Ḥijja 0" ), &ok );
     cout << "= isl110 [assignment]" << endl;
     islEq = isl110;
     TESTCHECK( islEq.Valid( ), true, &ok );
     TESTCHECK( (islEq == isl0), false, &ok );
     TESTCHECK( (islEq == isl110), true, &ok );
-    TESTCHECK( isl110.ToString( ), string( "yawm al-'ithnayn, 1 Muharram 0" ), &ok );
+    TESTCHECK( isl110.ToString( ), string( "yawm al-ithnayn, 1 Muḥarram 0" ), &ok );
 
     cout << "IslamicDate( GregorianDate( 19, 7, 622 ) ) [DateDMY constructor]" << endl;
     IslamicDate islGreg( GregorianDate( 19, 7, 622 ) );
     TESTCHECK( islGreg.Valid( ), true, &ok );
-    TESTCHECK( islGreg.ToString( ), string( "yawm al-jum`a, 1 Muharram 1" ), &ok );
+    TESTCHECK( islGreg.ToString( ), string( "yawm al-jumu`ah, 1 Muḥarram 1" ), &ok );
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     islGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( islGreg.Valid( ), true, &ok );
-    TESTCHECK( islGreg.ToString( ), string( "yawm al-'ithnayn, 6 Dhu al-Hijja 1364" ), &ok );
+    TESTCHECK( islGreg.ToString( ), string( "yawm al-ithnayn, 6 Dhū al-Ḥijja 1364" ), &ok );
     
     struct
     {

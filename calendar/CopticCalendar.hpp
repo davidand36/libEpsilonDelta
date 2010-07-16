@@ -7,8 +7,13 @@
   Class CopticCalendar, which defines the Coptic calendar.
 
   The calendar of the Egyptian Christians, the Copts, was established in the
-  fourth century A.D. It is very similar to the ancient Egyptian civil
-  calendar. Its epoch is JD 1,825,030. The day begins at sunset.
+  fourth century C.E.. It is based on the ancient Egyptian civil calendar, but
+  leap days are added to the epagomenê to maintain a closer correspondence
+  with the tropical year. This reform was originally proposed in the Decree
+  of Canopus honoring Pharaoh Ptolemy III in 238 B.C.E., but was only
+  implemented in 25 B.C.E. by the the Roman Emperor Augusus. Its epoch is
+  JD 1,825,030, Anno Martyrum, the year Diocletian became the Emperor of Rome.
+  The day begins at sunset.
 */
 
 

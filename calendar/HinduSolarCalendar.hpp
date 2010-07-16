@@ -4,7 +4,7 @@
   HinduSolarCalendar.hpp
   Copyright (C) 2007 David M. Anderson
 
-  Class HinduSolarCalendar, representing the modern Hindu solar calendar.
+  Class HinduSolarCalendar, representing the Hindu solar calendar.
 */
 
 

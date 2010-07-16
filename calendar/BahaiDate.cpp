@@ -37,7 +37,7 @@ TestBahaiDate( )
     TESTCHECK( bahDate.Year( ), 1L, &ok );
     TESTCHECK( bahDate.JulianDay( ), 2394647L, &ok );
     TESTCHECK( bahDate.DayOfWeek( ), 5, &ok );
-    TESTCHECK( bahDate.ToString( ), string( "Istijlal, 1 Baha 1" ), &ok );
+    TESTCHECK( bahDate.ToString( ), string( "Istijlāl, 1 Bahā` 1" ), &ok );
 
     int d = 9;
     int m = 13;
@@ -50,17 +50,17 @@ TestBahaiDate( )
     TESTCHECK( bahDate.Year( ), y, &ok );
     TESTCHECK( bahDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( bahDate.DayOfWeek( ), 2, &ok );
-    TESTCHECK( bahDate.ToString( ), string( "Kamal, 9 Qudrat 102" ), &ok );
+    TESTCHECK( bahDate.ToString( ), string( "Kamāl, 9 Qudrat 102" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     bahDate.Increment( incr );
     TESTCHECK( bahDate.JulianDay( ), 2431812L, &ok );
-    TESTCHECK( bahDate.ToString( ), string( "Jalal, 11 Masa'il 102" ), &ok );
+    TESTCHECK( bahDate.ToString( ), string( "Jalāl, 11 Masā'il 102" ), &ok );
     incr = 20;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     bahDate.Increment( 0, incr, 0 );
     TESTCHECK( bahDate.JulianDay( ), 2432177L, &ok );
-    TESTCHECK( bahDate.ToString( ), string( "Jamal, 11 Masa'il 103" ), &ok );
+    TESTCHECK( bahDate.ToString( ), string( "Jamāl, 11 Masā'il 103" ), &ok );
 
     cout << "BahaiDate( true ) [today constructor]" << endl;
     BahaiDate bahToday( true );
@@ -85,7 +85,7 @@ TestBahaiDate( )
     TESTCHECK( (bahJD == bahJD), true, &ok );
     TESTCHECK( (bahJD < bahToday), true, &ok );
     TESTCHECK( (bahJD == bahDate), false, &ok );
-    TESTCHECK( bahJD.ToString( ), string( "Kamal, 9 Qudrat 102" ), &ok );
+    TESTCHECK( bahJD.ToString( ), string( "Kamāl, 9 Qudrat 102" ), &ok );
 
     d = 10;
     m = 13;
@@ -97,7 +97,7 @@ TestBahaiDate( )
     TESTCHECK( (bahJD < bahDMY), true, &ok );
     TESTCHECK( (bahDMY < bahToday), true, &ok );
     TESTCHECK( bahDMY.JulianDay( ), 2431773L, &ok );
-    TESTCHECK( bahDMY.ToString( ), string( "Fidal, 10 Qudrat 102" ), &ok );
+    TESTCHECK( bahDMY.ToString( ), string( "Fidāl, 10 Qudrat 102" ), &ok );
 
     jd = 2394646;
     cout << "BahaiDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -106,7 +106,7 @@ TestBahaiDate( )
     TESTCHECK( (bah0 == bah0), true, &ok );
     TESTCHECK( (bah0 < bahDate), true, &ok );
     TESTCHECK( (bah0 == bahDate), false, &ok );
-    TESTCHECK( bah0.ToString( ), string( "`Idal, 19 `Ala' 0" ), &ok );
+    TESTCHECK( bah0.ToString( ), string( "`Idāl, 19 `Alā' 0" ), &ok );
 
     d = 1; m = 1; y = 0;
     cout << "BahaiDate( " << d << ", " << m << ", " << y
@@ -116,28 +116,28 @@ TestBahaiDate( )
     TESTCHECK( (bah110 < bahJD), true, &ok );
     TESTCHECK( (bah110 < bahToday), true, &ok );
     TESTCHECK( bah110.JulianDay( ), 2394281L, &ok );
-    TESTCHECK( bah110.ToString( ), string( "Fidal, 1 Baha 0" ), &ok );
+    TESTCHECK( bah110.ToString( ), string( "Fidāl, 1 Bahā` 0" ), &ok );
 
     cout << "BahaiDate( bah0 ) [copy constructor]" << endl;
     BahaiDate bahEq = bah0;
     TESTCHECK( bahEq.Valid( ), true, &ok );
     TESTCHECK( (bahEq == bah0), true, &ok );
-    TESTCHECK( bahEq.ToString( ), string( "`Idal, 19 `Ala' 0" ), &ok );
+    TESTCHECK( bahEq.ToString( ), string( "`Idāl, 19 `Alā' 0" ), &ok );
     cout << "= bah110 [assignment]" << endl;
     bahEq = bah110;
     TESTCHECK( bahEq.Valid( ), true, &ok );
     TESTCHECK( (bahEq == bah0), false, &ok );
     TESTCHECK( (bahEq == bah110), true, &ok );
-    TESTCHECK( bah110.ToString( ), string( "Fidal, 1 Baha 0" ), &ok );
+    TESTCHECK( bah110.ToString( ), string( "Fidāl, 1 Bahā` 0" ), &ok );
 
     cout << "BahaiDate( GregorianDate( 21, 3, 1844 ) ) [DateDMY constructor]" << endl;
     BahaiDate bahGreg( GregorianDate( 21, 3, 1844 ) );
     TESTCHECK( bahGreg.Valid( ), true, &ok );
-    TESTCHECK( bahGreg.ToString( ), string( "Istijlal, 1 Baha 1" ), &ok );
+    TESTCHECK( bahGreg.ToString( ), string( "Istijlāl, 1 Bahā` 1" ), &ok );
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     bahGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( bahGreg.Valid( ), true, &ok );
-    TESTCHECK( bahGreg.ToString( ), string( "Kamal, 9 Qudrat 102" ), &ok );
+    TESTCHECK( bahGreg.ToString( ), string( "Kamāl, 9 Qudrat 102" ), &ok );
     cout << "GregorianDate( BahaiDate( 16, 10, 118 ) ) [conversion]" << endl;
     GregorianDate gregBah( BahaiDate( 16, 10, 118 ) );
     TESTCHECK( gregBah.Valid( ), true, &ok );

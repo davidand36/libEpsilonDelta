@@ -7,8 +7,8 @@
   Class EthiopianCalendar, which defines the Ethiopian calendar.
 
   The calendar of the Ethiopian Christians is the same as the Coptic
-  calendar, except for its epoch, which is JD 1,724,221. The day begins at
-  sunset. Month names are also different.
+  calendar, except for its epoch, which is JD 1,724,221 (27 August 8 C.E.
+  Gregorian), calculated to be the year of the Annunciation of Jesus.
 */
 
 

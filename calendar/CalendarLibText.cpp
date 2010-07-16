@@ -7,8 +7,9 @@
   but keeping them all in one file makes localization and other maintainance
   easier.
   NOTES:
-  1. Unless otherwise noted, these are the names listed in Dershowitz &
-     Reingold, "Calendrical Calculations".
+  1. These are generally the forms of the names given in Wikipedia. I have also
+     used Dershowitz & Reingold, "Calendrical Calculations" (various editions)
+     and other sources as noted.
 */
 
 
@@ -22,255 +23,157 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-const string g_islamicMonthNames[ 12 ]
-    = { //diacritics lost
-        "Muharram",
-        "Safar",
-        "Rabi` I",
-        "Rabi` II",
-        "Jumada I",
-        "Jumada II",
-        "Rajab",
-        "Sha`ban",
-        "Ramadan",
-        "Shawwal",
-        "Dhu al-Qa`da",
-        "Dhu al-Hijja"
-    };
-const string g_islamicWeekDayNames[ 7 ]
-    = { //diacritics lost
-        "yawm al-'ahad",
-        "yawm al-'ithnayn",
-        "yawm ath-thalatha'",
-        "yawm al-'arba`a'",
-        "yawm al-khamis",
-        "yawm al-jum`a",
-        "yawm as-sabt"
-    };
-const string g_persianMonthNames[ 12 ]
-    = { //diacritics lost
-        "Farvardin",
-        "Ordibehesht",
-        "Khordad",
-        "Tir",
-        "Mordad",
-        "Shahrivar",
-        "Mehr",
-        "Aban",
-        "Azar",
-        "Dey",
-        "Bahman",
-        "Esfand"
-    };
-const string g_persianWeekDayNames[ 7 ]
+const string g_egyptianMonthNames[ 13 ]
     = {
-        "Shanbeh",
-        "Yek-shanbeh",
-        "Do-shanbeh",
-        "Se-shanbeh",
-        "Chahar-shanbeh",
-        "Panj-shanbeh",
-        "Jom'eh"
-    };
-const string g_hebrewMonthNamesCY[ 12 ]
-    = { //diacritics lost
-        "Nisan",
-        "Iyyar",
-        "Sivan",
-        "Tammuz",
-        "Av",
-        "Elul",
-        "Tishri",
-        "Heshvan",
-        "Kislev",
-        "Teveth",
-        "Shevat",
-        "Adar"
-    };
-const string g_hebrewMonthNamesLY[ 13 ]
-    = { //diacritics lost
-        "Nisan",
-        "Iyyar",
-        "Sivan",
-        "Tammuz",
-        "Av",
-        "Elul",
-        "Tishri",
-        "Heshvan",
-        "Kislev",
-        "Teveth",
-        "Shevat",
-        "Adar I",
-        "Adar II"
-    };
-const string g_hebrewWeekDayNames[ 7 ]
-    = {
-        "Yom Reeshone",
-        "Yom Shaynee",
-        "Yom Shlee'shee",
-        "Yom Revee'ee",
-        "Yom Khah'mee'shee",
-        "Yom Ha'shee'shee",
-        "Shabbat"
-    };
-const string g_copticMonthNames[ 13 ]
-    = {  //diacritics lost
-        "Thoout",
-        "Paope",
-        "Athor",
-        "Koiak",
-        "Tobe",
-        "Meshir",
-        "Paremotep",
-        "Parmoute",
-        "Pashons",
-        "Paone",
-        "Epap",
+    //These are the Hellenized forms.
+        "Thoth",
+        "Phaophi",
+        "Athyr",
+        "Choiak",
+        "Tybi",
+        "Mechir",
+        "Phamenoth",
+        "Pharmouthi",
+        "Pachon",
+        "Payni",
+        "Epiphi",
         "Mesore",
-        "Epagomene"
+        "Epagomenae"
     };
-const std::string g_copticWeekDayNames[ 7 ]
-    = { //diacritics lost
-        "Tkyriake",
-        "Pesnau",
-        "Pshoment",
-        "Peftoou",
-        "Ptiou",
-        "Psoou",
-        "Psabbaton"
+const std::string g_mayanHaabMonthNames[ 19 ]
+    = {
+    //Orthography of the Guatemalan Academia de Lenguas Mayas
+        "Pop",
+        "Wo'",
+        "Sip",
+        "Sotz'",
+        "Sek",
+        "Xul",
+        "Yaxk'in'",
+        "Mol",
+        "Ch'en",
+        "Yax",
+        "Sak'",
+        "Keh",
+        "Mak",
+        "K'ank'in",
+        "Muwan'",
+        "Pax",
+        "K'ayab",
+        "Kumk'u",
+        "Wayeb'"
     };
-const string g_ethiopianMonthNames[ 13 ]
-    = {  //diacritics lost
-        "Maskaram",
-        "Teqemt",
-        "Hedar",
-        "Takhsas",
-        "Ter",
-        "Yakatit",
-        "Magabit",
-        "Miyazya",
-        "Genbot",
-        "Sane",
-        "Hamle",
-        "Nahase",
-        "Paguemen"
+const std::string g_mayanTzolkinVeintenaNames[ 20 ]
+    = {
+    //Orthography of the Guatemalan Academia de Lenguas Mayas
+        "Imix'",
+        "Ik'",
+        "Ak'b'al",
+        "K'an",
+        "Chikchan",
+        "Kimi",
+        "Manik'",
+        "Lamat",
+        "Muluk",
+        "Ok",
+        "Chuwen",
+        "Eb'",
+        "B'en",
+        "Ix",
+        "Men",
+        "K'ib'",
+        "Kab'an",
+        "Etz'nab'",
+        "Kawak",
+        "Ajaw"
     };
-const std::string g_ethiopianWeekDayNames[ 7 ]
-    = { //diacritics lost
-        "Ihud",
-        "Sanyo",
-        "Maksanyo",
-        "Rob",      //or Rabu`e
-        "Hamus",
-        "Arb",
-        "Kidamme"
+const std::string g_chineseCelestialStemNames[ 10 ]
+    = {
+        "Jiǎ",
+        "Yǐ",
+        "Bǐng",
+        "Dīng",
+        "Wù",
+        "Jǐ",
+        "Gēng",
+        "Xīn",
+        "Rén",
+        "Guǐ"
     };
-const std::string g_bahaiDayNames[ 19 ]
-    = {  //diacritics lost
-        "Baha",
-        "Jalal",
-        "Jamal",
-        "`Azamat",
-        "Nur",
-        "Rahmat",
-        "Kalimat",
-        "Kamal",
-        "Asma'",
-        "`Izzat",  
-        "Mashiyyat",
-        "`Ilm",
-        "Qudrat",
-        "Qawl",
-        "Masa'il",
-        "Sharaf",
-        "Sultan",
-        "Mulk",
-        "`Ala'"
+const std::string g_chineseTerrestrialBranchNames[ 12 ]
+    = {
+        "Zǐ",
+        "Chǒu",
+        "Yín",
+        "Mǎo",
+        "Chén",
+        "Sì",
+        "Wǔ",
+        "Wèi",
+        "Shēn",
+        "Yǒu",
+        "Xū",
+        "Hài"
     };
-const std::string g_bahaiMonthNames[ 20 ]
-    = { //diacritics lost
-        "Baha",
-        "Jalal",
-        "Jamal",
-        "`Azamat",
-        "Nur",
-        "Rahmat",
-        "Kalimat",
-        "Kamal",
-        "Asma'",
-        "`Izzat",  
-        "Mashiyyat",
-        "`Ilm",
-        "Qudrat",
-        "Qawl",
-        "Masa'il",
-        "Sharaf",
-        "Sultan",
-        "Mulk",
-        "Ayyam-i-Ha",
-        "`Ala'"
+const std::string g_chineseCelestialStemEnglishNames[ 10 ]
+    = { //From Lance Latham, "Standard C Date/Time Library", 
+        // in the file strnameen.c on the accompanying CD-ROM.
+        // The stem names are actually not translatable.
+        "Helmet",
+        "Germination",
+        "Fire",
+        "Nail",
+        "Halberd",
+        "Self",
+        "Age",
+        "Bitterness",
+        "Burden",
+        "Grass"
     };
-const std::string g_bahaiYearNames[ 19 ]
-    = { //diacritics lost
-        "Alif",
-        "Ba'",
-        "Ab",
-        "Dal",
-        "Bab",
-        "Vav",
-        "Abad",
-        "Jad",
-        "Baha",
-        "Hubb",
-        "Bahhaj",
-        "Javab",
-        "Ahad",
-        "Vahhab",
-        "Vidad",
-        "Badi",
-        "Bahi",
-        "Abha",
-        "Vahid"
-    };
-const std::string g_bahaiWeekDayNames[ 7 ]
-    = { //diacritics lost
-        "Jalal",
-        "Jamal",
-        "Kamal",
-        "Fidal",
-        "`Idal",
-        "Istijlal",
-        "Istiqlal"
+const std::string g_chineseTerrestrialBranchEnglishNames[ 12 ]
+    = {
+        "Rat",
+        "Ox",
+        "Tiger",
+        "Hare",
+        "Dragon",
+        "Snake",
+        "Horse",
+        "Sheep",
+        "Monkey",
+        "Fowl",
+        "Dog",
+        "Pig"
     };
 const std::string g_chineseMajorSolarTermNames[ 12 ]
     = {
-        "Yushui",
-        "Chunfen",
-        "Guyu",
-        "Xiaoman",
-        "Xiazhi",
-        "Dashu",
-        "Chushu",
-        "Qiufen",
-        "Shuangjiang",
-        "Xiaoxue",
-        "Dongzhi",
-        "Dahan"
+        "Yǔshuǐ",
+        "Chūnfēn",
+        "Gǔyǔ",
+        "Xiǎomǎn",
+        "Xiàzhì",
+        "Dàshǎ",
+        "Chǔshǔ",
+        "Qiūfēn",
+        "Shuāngjiàng",
+        "Xiǎoxuě",
+        "Dōngzhì",
+        "Dàhán"
     };
 const std::string g_chineseMinorSolarTermNames[ 12 ]
     = {
-        "Lichun",
-        "Jingzhe",
-        "Qingming",
-        "Lixia",
-        "Mangzhong",
-        "Xiaoshu",
-        "Liqiu",
-        "Bailu",
-        "Hanlu",
-        "Lidong",
-        "Daxue",
-        "Xiaohan"
+        "Lìchūn",
+        "Jīngzhé",
+        "Qīngmíng",
+        "Lìxià",
+        "Mángzhòng",
+        "Xiǎoshǔ",
+        "Lìqiū",
+        "Báilù",
+        "Hánlù",
+        "Lìdōng",
+        "Dàxuě",
+        "Xiǎohán"
     };
 const std::string g_chineseMajorSolarTermEnglishNames[ 12 ]
     = {
@@ -302,63 +205,6 @@ const std::string g_chineseMinorSolarTermEnglishNames[ 12 ]
         "Great Snow",
         "Slight Cold"
     };
-const std::string g_chineseCelestialStemNames[ 10 ]
-    = {
-        "Jia",
-        "Yi",
-        "Bing",
-        "Ding",
-        "Wu",
-        "Ji",
-        "Geng",
-        "Xin",
-        "Ren",
-        "Gui"
-    };
-const std::string g_chineseTerrestrialBranchNames[ 12 ]
-    = {
-        "Zi",
-        "Chou",
-        "Yin",
-        "Mao",
-        "Chen",
-        "Si",
-        "Wu",
-        "Wei",
-        "Shen",
-        "You",
-        "Xu",
-        "Hai"
-    };
-const std::string g_chineseCelestialStemEnglishNames[ 10 ]
-    = { //From Lance Latham, "Standard C Date/Time Library", 
-        // in the file strnameen.c on the accompanying CD-ROM.
-        "Helmet",
-        "Germination",
-        "Fire",
-        "Nail",
-        "Halberd",
-        "Self",
-        "Age",
-        "Bitterness",
-        "Burden",
-        "Grass"
-    };
-const std::string g_chineseTerrestrialBranchEnglishNames[ 12 ]
-    = {
-        "Rat",
-        "Ox",
-        "Tiger",
-        "Hare",
-        "Dragon",
-        "Snake",
-        "Horse",
-        "Sheep",
-        "Monkey",
-        "Fowl",
-        "Dog",
-        "Pig"
-    };
 const std::string g_chineseElementNames[ 5 ]
     = {
         "Mu",
@@ -375,68 +221,12 @@ const std::string g_chineseElementEnglishNames[ 5 ]
         "Metal",
         "Water"
     };
-const std::string g_hinduSolarMonthNames[ 12 ]
-    = { //diacritics lost
-        "Mesha",
-        "Vrishabha",
-        "Mithuna",
-        "Karka",
-        "Simha",
-        "Kanya",
-        "Tula",
-        "Vrischika",
-        "Dhanu",
-        "Makara",
-        "Kumbha",
-        "Mina"
-    };
-const std::string g_hinduLunarMonthNames[ 12 ]
-    = { //diacritics lost
-        "Chaitra",
-        "Vaisakha",
-        "Jyaishtha",
-        "Ashadha",
-        "Sravana",
-        "Bhadrapada",
-        "Asvina",
-        "Karttika",
-        "Margasira",
-        "Pausha",
-        "Magha",
-        "Phalguna"
-    };
-const std::string g_hinduWeekDayNames[ 7 ]
-    = { //diacritics lost
-        "Ravivara",         //or Adityavara
-        "Chandravara",      //or Somavara
-        "Mangalavara",      //or Bhaumavara
-        "Buddhavara",       //or Saumyavara
-        "Brihaspatvara",    //or Guruvara
-        "Sukravara",
-        "Sanivara"
-    };
-const string g_egyptianMonthNames[ 13 ]
-    = {
-        "Thoth",
-        "Phaophi",
-        "Athyr",
-        "Choiak",
-        "Tybi",
-        "Mechir",
-        "Phamenoth",
-        "Pharmuthi",
-        "Pachon",
-        "Payni",
-        "Epiphi",
-        "Mesori",
-        "Epagomenae"
-    };
 const string g_armenianMonthNames[ 13 ]
     = {
         "Nawasardi",
-        "Hori",
+        "Hoi",
         "Sahmi",
-        "Tre",
+        "Trē",
         "K`aloch",
         "Arach",
         "Mehekani",
@@ -457,66 +247,281 @@ const std::string g_armenianWeekDayNames[ 13 ]
         "Urbath",
         "Shabath"
     };
-const std::string g_mayanHaabMonthNames[ 19 ]
+const string g_copticMonthNames[ 13 ]
     = {
-        "Pop",
-        "Uo",
-        "Zip",
-        "Zotz",
-        "Tzec",
-        "Xul",
-        "Yaxkin",
-        "Mol",
-        "Chen",
-        "Yax",
-        "Zac",
-        "Ceh",
-        "Mac",
-        "Kankin",
-        "Muan",
-        "Pax",
-        "Kayab",
-        "Cumku",
-        "Uayeb"
+        "Thoout",
+        "Paope",
+        "Athôr",
+        "Koiak",
+        "Tôbe",
+        "Meshir",
+        "Paremotep",
+        "Parmoute",
+        "Pashons",
+        "Paône",
+        "Epêp",
+        "Mesorê",
+        "Epagomenê"
     };
-const std::string g_mayanTzolkinVeintenaNames[ 20 ]
+const std::string g_copticWeekDayNames[ 7 ]
     = {
-        "Imix",
-        "Ik",
-        "Akbal",
-        "Kan",
-        "Chicchan",
-        "Cimi",
-        "Manik",
-        "Lamat",
-        "Muluc",
-        "Oc",
-        "Chuen",
-        "Eb",
-        "Ben",
-        "Ix",
-        "Men",
-        "Cib",
-        "Caban",
-        "Etznab",
-        "Cauac",
-        "Ahau"
+        "Tkyriakê",
+        "Pesnau",
+        "Pshoment",
+        "Peftoou",
+        "Ptiou",
+        "Psoou",
+        "Psabbaton"
+    };
+const string g_ethiopianMonthNames[ 13 ]
+    = {
+        "Maskaram",
+        "Teqemt",
+        "Ḫedār",
+        "Tākhśāś",
+        "Ṫer",
+        "Yakātit",
+        "Magābit",
+        "Miyāzyā",
+        "Genbot",
+        "Sanē",
+        "Ḥamlē",
+        "Naḥasē",
+        "Pāguemēn"
+    };
+const std::string g_ethiopianWeekDayNames[ 7 ]
+    = {
+        "Iḥud",
+        "Sanyo",
+        "Maksanyo",
+        "Rob",      //or Rabu`e
+        "Ḫamus",
+        "Arb",
+        "Kidāmmē"
+    };
+const string g_hebrewMonthNamesCY[ 12 ] //common year
+    = {
+        "Nisan",
+        "Iyyar",
+        "Sivan",
+        "Tammuz",
+        "Av",
+        "Elul",
+        "Tishri",
+        "Marḥeshvan",
+        "Kislev",
+        "Tevet",
+        "Shevat",
+        "Adar"
+    };
+const string g_hebrewMonthNamesLY[ 13 ] //leap year
+    = {
+        "Nisan",
+        "Iyyar",
+        "Sivan",
+        "Tammuz",
+        "Av",
+        "Elul",
+        "Tishri",
+        "Marḥeshvan",
+        "Kislev",
+        "Tevet",
+        "Shevat",
+        "Adar I",
+        "Adar II"
+    };
+const string g_hebrewWeekDayNames[ 7 ]
+    = {
+        "yom rishon",
+        "yom sheni",
+        "yom shelishi",
+        "yom revi`i",
+        "yom ḥamishi",
+        "yom shishi",
+        "yom shabbat"
+    };
+const std::string g_hinduSolarMonthNames[ 12 ]
+    = {
+        "Mesh",
+        "Vrishabh",
+        "Mithun",
+        "Karkat",
+        "Simha",
+        "Kanya",
+        "Tula",
+        "Vrishchik",
+        "Dhanu",
+        "Makar",
+        "Kumbha",
+        "Meen"
+    };
+const std::string g_hinduLunarMonthNames[ 12 ]
+    = {
+        "Chaitra",
+        "Vaishākh",
+        "Jyaishtha",
+        "Āshādha",
+        "Shrāvana",
+        "Bhādrapad",        //or Bhaadra
+        "Āshwin",
+        "Kārtik",
+        "Mārgashīrsha",     //or Agrahayana
+        "Paush",
+        "Māgh",
+        "Phālgun"
+    };
+const std::string g_hinduWeekDayNames[ 7 ]
+    = {
+        "Ravi vāsara",      //or Adityavara
+        "Soma vāsara",      //or Chandravara
+        "Mangala vāsara",   //or Bhaumavara
+        "Budha vāsara",     //or Saumyavara
+        "Guru vāsara",      //or Brihaspatvara
+        "Shukra vāsara",
+        "Shani vāsara"
+    };
+const string g_islamicMonthNames[ 12 ]
+    = {
+        "Muḥarram",
+        "Ṣafar",
+        "Rabī` I",
+        "Rabī` II",
+        "Jumādā I",
+        "Jumādā II",
+        "Rajab",
+        "Sha`bān",
+        "Ramaḍān",
+        "Shawwāl",
+        "Dhū al-Qa`da",
+        "Dhū al-Ḥijja"
+    };
+const string g_islamicWeekDayNames[ 7 ]
+    = {
+        "yawm al-aḥad",
+        "yawm al-ithnayn",
+        "yawm ath-thulaathaa'",
+        "yawm al-arba`aa'",
+        "yawm al-khamīs",
+        "yawm al-jumu`ah",
+        "yawm as-sabt"
+    };
+const string g_persianMonthNames[ 12 ]
+    = {
+        "Farvardīn",
+        "Ordībehesht",
+        "Xordād",
+        "Tīr",
+        "Mordād",
+        "Shahrīvar",
+        "Mehr",
+        "Ābān",
+        "Āzar",
+        "Dey",
+        "Bahman",
+        "Esfand"
+    };
+const string g_persianWeekDayNames[ 7 ]
+    = {
+        "Shanbēh",
+        "Yek-shanbēh",
+        "Do-shanbēh",
+        "Se-shanbēh",
+        "Chār-shanbēh",
+        "Panj-shanbēh",
+        "Jom'ēh"
+    };
+const std::string g_bahaiDayNames[ 19 ]
+    = {
+        "Bahā`",
+        "Jalāl",
+        "Jamāl",
+        "`Aẓamat",
+        "Nūr",
+        "Raḥmat",
+        "Kalimāt",
+        "Kamāl",
+        "Asmā'",
+        "`Izzat",  
+        "Mashīyyat",
+        "`Ilm",
+        "Qudrat",
+        "Qawl",
+        "Masā'il",
+        "Sharaf",
+        "Sulṭān",
+        "Mulk",
+        "`Alā'"
+    };
+const std::string g_bahaiMonthNames[ 20 ]
+    = {
+        "Bahā`",
+        "Jalāl",
+        "Jamāl",
+        "`Aẓamat",
+        "Nūr",
+        "Raḥmat",
+        "Kalimāt",
+        "Kamāl",
+        "Asmā'",
+        "`Izzat",  
+        "Mashīyyat",
+        "`Ilm",
+        "Qudrat",
+        "Qawl",
+        "Masā'il",
+        "Sharaf",
+        "Sulṭān",
+        "Mulk",
+        "Ayyām-i-Hā",
+        "`Alā'"
+    };
+const std::string g_bahaiYearNames[ 19 ]
+    = {
+        "Alif",
+        "Bā'",
+        "Āb",
+        "Dāl",
+        "Bāb",
+        "Vāv",
+        "Abad",
+        "Jād",
+        "Bahā'",
+        "Ḥubb",
+        "Bahhāj",
+        "Javāb",
+        "Aḥad",
+        "Vahhāb",
+        "Vidād",
+        "Badī'",
+        "Bahī",
+        "Abhā",
+        "Vāḥid"
+    };
+const std::string g_bahaiWeekDayNames[ 7 ]
+    = {
+        "Jalāl",
+        "Jamāl",
+        "Kamāl",
+        "Fidāl",
+        "`Idāl",
+        "Istijlāl",
+        "Istiqlāl"
     };
 const std::string g_frenchRevolutionaryMonthNames[ 13 ]
     = {
-        "Vendemiaire",
+        "Vendémiaire",
         "Brumaire",
         "Frimaire",
-        "Nicose",
-        "Pluviose",
-        "Ventose",
+        "Nivôse",
+        "Pluviôse",
+        "Ventôse",
         "Germinal",
-        "Floreal",
+        "Floréal",
         "Prairial",
         "Messidor",
         "Thermidor",
         "Fructidor",
-        "Sanscullottides"
+        "Sansculottides"
     };
 const std::string g_frenchRevolutionaryDecadeNames[ 10 ]
     = {
@@ -529,16 +534,16 @@ const std::string g_frenchRevolutionaryDecadeNames[ 10 ]
         "Septidi",
         "Octidi",
         "Nonidi",
-        "Decadi"
+        "Décadi"
     };
 const std::string g_frenchRevolutionarySansculottidesNames[ 6 ]
-    = { //diacritics lost
-        "Fete de la Vertu",
-        "Fete du Genie",
-        "Fete du Travail",
-        "Fete de l'Opinion",
-        "Fete de la Recompense",
-        "Fete de la Revolution"
+    = {
+        "Fête de la Vertu",
+        "Fête du Génie",
+        "Fête du Travail",
+        "Fête de l'Opinion",
+        "Fête de la Récompense",
+        "Jour de la Révolution"
     };
 
 

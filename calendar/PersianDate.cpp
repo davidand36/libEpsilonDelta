@@ -106,7 +106,7 @@ TestPersianDate( )
     TESTCHECK( persDate.Year( ), 1L, &ok );
     TESTCHECK( persDate.JulianDay( ), 1948321L, &ok );
     TESTCHECK( persDate.DayOfWeek( ), 6, &ok );
-    TESTCHECK( persDate.ToString( ), string( "Jom'eh, 1 Farvardin 1" ), &ok );
+    TESTCHECK( persDate.ToString( ), string( "Jom'ēh, 1 Farvardīn 1" ), &ok );
 
     int d = 21;
     int m = 8;
@@ -119,17 +119,17 @@ TestPersianDate( )
     TESTCHECK( persDate.Year( ), y, &ok );
     TESTCHECK( persDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( persDate.DayOfWeek( ), 2, &ok );
-    TESTCHECK( persDate.ToString( ), string( "Do-shanbeh, 21 Aban 1324" ), &ok );
+    TESTCHECK( persDate.ToString( ), string( "Do-shanbēh, 21 Ābān 1324" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     persDate.Increment( incr );
     TESTCHECK( persDate.JulianDay( ), 2431812L, &ok );
-    TESTCHECK( persDate.ToString( ), string( "Shanbeh, 1 Dey 1324" ), &ok );
+    TESTCHECK( persDate.ToString( ), string( "Shanbēh, 1 Dey 1324" ), &ok );
     incr = 12;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     persDate.Increment( 0, incr, 0 );
     TESTCHECK( persDate.JulianDay( ), 2432177L, &ok );
-    TESTCHECK( persDate.ToString( ), string( "Yek-shanbeh, 1 Dey 1325" ), &ok );
+    TESTCHECK( persDate.ToString( ), string( "Yek-shanbēh, 1 Dey 1325" ), &ok );
 
     cout << "PersianDate( true ) [today constructor]" << endl;
     PersianDate persToday( true );
@@ -154,7 +154,7 @@ TestPersianDate( )
     TESTCHECK( (persJD == persJD), true, &ok );
     TESTCHECK( (persJD < persToday), true, &ok );
     TESTCHECK( (persJD == persDate), false, &ok );
-    TESTCHECK( persJD.ToString( ), string( "Do-shanbeh, 21 Aban 1324" ), &ok );
+    TESTCHECK( persJD.ToString( ), string( "Do-shanbēh, 21 Ābān 1324" ), &ok );
 
     d = 22;
     m = 8;
@@ -166,7 +166,7 @@ TestPersianDate( )
     TESTCHECK( (persJD < persDMY), true, &ok );
     TESTCHECK( (persDMY < persToday), true, &ok );
     TESTCHECK( persDMY.JulianDay( ), 2431773L, &ok );
-    TESTCHECK( persDMY.ToString( ), string( "Se-shanbeh, 22 Aban 1324" ), &ok );
+    TESTCHECK( persDMY.ToString( ), string( "Se-shanbēh, 22 Ābān 1324" ), &ok );
 
     jd = 1948320;
     cout << "PersianDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -175,7 +175,7 @@ TestPersianDate( )
     TESTCHECK( (pers0 == pers0), true, &ok );
     TESTCHECK( (pers0 < persDate), true, &ok );
     TESTCHECK( (pers0 == persDate), false, &ok );
-    TESTCHECK( pers0.ToString( ), string( "Panj-shanbeh, 30 Esfand 0" ), &ok );
+    TESTCHECK( pers0.ToString( ), string( "Panj-shanbēh, 30 Esfand 0" ), &ok );
 
     d = 1; m = 1; y = 0;
     cout << "PersianDate( " << d << ", " << m << ", " << y
@@ -185,28 +185,28 @@ TestPersianDate( )
     TESTCHECK( (pers110 < persJD), true, &ok );
     TESTCHECK( (pers110 < persToday), true, &ok );
     TESTCHECK( pers110.JulianDay( ), 1947955L, &ok );
-    TESTCHECK( pers110.ToString( ), string( "Chahar-shanbeh, 1 Farvardin 0" ), &ok );
+    TESTCHECK( pers110.ToString( ), string( "Chār-shanbēh, 1 Farvardīn 0" ), &ok );
 
     cout << "PersianDate( pers0 ) [copy constructor]" << endl;
     PersianDate persEq = pers0;
     TESTCHECK( persEq.Valid( ), true, &ok );
     TESTCHECK( (persEq == pers0), true, &ok );
-    TESTCHECK( persEq.ToString( ), string( "Panj-shanbeh, 30 Esfand 0" ), &ok );
+    TESTCHECK( persEq.ToString( ), string( "Panj-shanbēh, 30 Esfand 0" ), &ok );
     cout << "= pers110 [assignment]" << endl;
     persEq = pers110;
     TESTCHECK( persEq.Valid( ), true, &ok );
     TESTCHECK( (persEq == pers0), false, &ok );
     TESTCHECK( (persEq == pers110), true, &ok );
-    TESTCHECK( pers110.ToString( ), string( "Chahar-shanbeh, 1 Farvardin 0" ), &ok );
+    TESTCHECK( pers110.ToString( ), string( "Chār-shanbēh, 1 Farvardīn 0" ), &ok );
 
     cout << "PersianDate( GregorianDate( 22, 3, 622 ) ) [DateDMY constructor]" << endl;
     PersianDate persGreg( GregorianDate( 22, 3, 622 ) );
     TESTCHECK( persGreg.Valid( ), true, &ok );
-    TESTCHECK( persGreg.ToString( ), string( "Jom'eh, 1 Farvardin 1" ), &ok );
+    TESTCHECK( persGreg.ToString( ), string( "Jom'ēh, 1 Farvardīn 1" ), &ok );
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     persGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( persGreg.Valid( ), true, &ok );
-    TESTCHECK( persGreg.ToString( ), string( "Do-shanbeh, 21 Aban 1324" ), &ok );
+    TESTCHECK( persGreg.ToString( ), string( "Do-shanbēh, 21 Ābān 1324" ), &ok );
     cout << "GregorianDate( PersianDate( 1, 7, 1340 ) ) [conversion]" << endl;
     GregorianDate gregPers( PersianDate( 1, 7, 1340 ) );
     TESTCHECK( gregPers.Valid( ), true, &ok );

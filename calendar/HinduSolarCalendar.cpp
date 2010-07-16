@@ -2,7 +2,7 @@
   HinduSolarCalendar.cpp
   Copyright (C) 2007 David M. Anderson
 
-  Class HinduSolarCalendar, representing the modern Hindu solar calendar.
+  Class HinduSolarCalendar, representing the Hindu solar calendar.
   Algorithms are based on Edward M. Reingold and Nachum Dershowitz,
   "Calendrical Calculations, the Millennium Edition".
 */

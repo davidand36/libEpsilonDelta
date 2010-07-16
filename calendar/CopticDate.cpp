@@ -48,7 +48,7 @@ TestCopticDate( )
     TESTCHECK( coptDate.Month( ), m, &ok );
     TESTCHECK( coptDate.Year( ), y, &ok );
     TESTCHECK( coptDate.JulianDay( ), 2431772L, &ok );
-    TESTCHECK( coptDate.ToString( ), string( "Pesnau, 3 Athor 1662" ), &ok );
+    TESTCHECK( coptDate.ToString( ), string( "Pesnau, 3 Athôr 1662" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     coptDate.Increment( incr );
@@ -58,7 +58,7 @@ TestCopticDate( )
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     coptDate.Increment( 0, incr, 0 );
     TESTCHECK( coptDate.JulianDay( ), 2432177L, &ok );
-    TESTCHECK( coptDate.ToString( ), string( "Tkyriake, 13 Koiak 1663" ), &ok );
+    TESTCHECK( coptDate.ToString( ), string( "Tkyriakê, 13 Koiak 1663" ), &ok );
 
     cout << "CopticDate( true ) [today constructor]" << endl;
     CopticDate coptToday( true );
@@ -83,7 +83,7 @@ TestCopticDate( )
     TESTCHECK( (coptJD == coptJD), true, &ok );
     TESTCHECK( (coptJD < coptToday), true, &ok );
     TESTCHECK( (coptJD == coptDate), false, &ok );
-    TESTCHECK( coptJD.ToString( ), string( "Pesnau, 3 Athor 1662" ), &ok );
+    TESTCHECK( coptJD.ToString( ), string( "Pesnau, 3 Athôr 1662" ), &ok );
 
     d = 4;
     m = 3;
@@ -95,7 +95,7 @@ TestCopticDate( )
     TESTCHECK( (coptJD < coptDMY), true, &ok );
     TESTCHECK( (coptDMY < coptToday), true, &ok );
     TESTCHECK( coptDMY.JulianDay( ), 2431773L, &ok );
-    TESTCHECK( coptDMY.ToString( ), string( "Pshoment, 4 Athor 1662" ), &ok );
+    TESTCHECK( coptDMY.ToString( ), string( "Pshoment, 4 Athôr 1662" ), &ok );
 
     jd = 1825029;
     cout << "CopticDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -104,7 +104,7 @@ TestCopticDate( )
     TESTCHECK( (copt0 == copt0), true, &ok );
     TESTCHECK( (copt0 < coptDate), true, &ok );
     TESTCHECK( (copt0 == coptDate), false, &ok );
-    TESTCHECK( copt0.ToString( ), string( "Ptiou, 5 Epagomene 0" ), &ok );
+    TESTCHECK( copt0.ToString( ), string( "Ptiou, 5 Epagomenê 0" ), &ok );
 
     d = 1; m = 1; y = 0;
     cout << "CopticDate( " << d << ", " << m << ", " << y
@@ -120,7 +120,7 @@ TestCopticDate( )
     CopticDate coptEq( copt0 );
     TESTCHECK( coptEq.Valid( ), true, &ok );
     TESTCHECK( (coptEq == copt0), true, &ok );
-    TESTCHECK( coptEq.ToString( ), string( "Ptiou, 5 Epagomene 0" ), &ok );
+    TESTCHECK( coptEq.ToString( ), string( "Ptiou, 5 Epagomenê 0" ), &ok );
     cout << "= copt110 [assignment]" << endl;
     coptEq = copt110;
     TESTCHECK( coptEq.Valid( ), true, &ok );
@@ -135,7 +135,7 @@ TestCopticDate( )
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     coptGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( coptGreg.Valid( ), true, &ok );
-    TESTCHECK( coptGreg.ToString( ), string( "Pesnau, 3 Athor 1662" ), &ok );
+    TESTCHECK( coptGreg.ToString( ), string( "Pesnau, 3 Athôr 1662" ), &ok );
     
     struct
     {

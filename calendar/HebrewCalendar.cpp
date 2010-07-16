@@ -129,7 +129,7 @@ HebrewCalendar::DaysInMonth( int month, long year )
     Assert( (month > 0) && (month <= MonthsInYear( year )) );
     static const int daysInMonth[ 13 ]
         = { 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 29 };
-    if ( month == Heshvan )
+    if ( month == Marheshvan )
     {
         int daysInYear = DMYToJulianDay( 1, 7, year + 1 )
             - DMYToJulianDay( 1, 7, year );

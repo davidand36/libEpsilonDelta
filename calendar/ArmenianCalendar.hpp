@@ -6,7 +6,9 @@
 
   Class ArmenianCalendar, which defines the Armenian calendar.
 
-  The calendar of the ancient Armenians.
+  The traditional calendar of Armenia is derived from Zoroastrian modifications
+  of the Egyptian calendar, but uses a different epoch, Julian Day 1922868
+  (13 July 552 C.E. Gregorian).
 */
 
 

@@ -164,6 +164,81 @@ ComputeEpochs( )
     JulianDate julDate;
     GregorianDate gregDate;
 
+    d = 26;
+    m = 2;
+    y = -746;
+    julDate.Set( d, m, y );
+    jd = julDate.JulianDay( );
+    printf( "Egyptian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
+    julDate.Set( jd );
+    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
+    TESTCHECK( d1, d, &ok );
+    TESTCHECK( m1, m, &ok );
+    TESTCHECK( y1, y, &ok );
+    TESTCHECK( EgyptianDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == EgyptianDate(), true, &ok );
+    TESTCHECK( julDate == EgyptianDate( 1, 1, 1 ), true, &ok );
+
+    d = 6;
+    m = 9;
+    y = -3113;
+    julDate.Set( d, m, y );
+    jd = julDate.JulianDay( );
+    printf( "Mayan epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
+    julDate.Set( jd );
+    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
+    TESTCHECK( d1, d, &ok );
+    TESTCHECK( m1, m, &ok );
+    TESTCHECK( y1, y, &ok );
+    TESTCHECK( MayanLongCountDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == MayanLongCountDate(), true, &ok );
+    TESTCHECK( julDate == MayanLongCountDate( 0, 0, 0, 0, 0 ), true, &ok );
+
+    d = 15;
+    m = 2;
+    y = -2636;
+    gregDate.Set( d, m, y );
+    jd = gregDate.JulianDay( );
+    printf( "Chinese epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
+    gregDate.Set( jd );
+    d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
+    TESTCHECK( d1, d, &ok );
+    TESTCHECK( m1, m, &ok );
+    TESTCHECK( y1, y, &ok );
+    TESTCHECK( ChineseDate().JulianDay(), jd, &ok );
+    TESTCHECK( gregDate == ChineseDate(), true, &ok );
+    TESTCHECK( gregDate == ChineseDate( 1, 1, 1 ), true, &ok );
+
+    d = 11;
+    m = 7;
+    y = 552;
+    julDate.Set( d, m, y );
+    jd = julDate.JulianDay( );
+    printf( "Armenian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
+    julDate.Set( jd );
+    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
+    TESTCHECK( d1, d, &ok );
+    TESTCHECK( m1, m, &ok );
+    TESTCHECK( y1, y, &ok );
+    TESTCHECK( ArmenianDate().JulianDay(), jd, &ok );
+    TESTCHECK( julDate == ArmenianDate(), true, &ok );
+    TESTCHECK( julDate == ArmenianDate( 1, 1, 1 ), true, &ok );
+
+    d = 16;
+    m = 6;
+    y = 632;
+    julDate.Set( d, m, y );
+    jd = julDate.JulianDay( );
+    printf( "Yazdegerd epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
+    julDate.Set( jd );
+    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
+    TESTCHECK( d1, d, &ok );
+    TESTCHECK( m1, m, &ok );
+    TESTCHECK( y1, y, &ok );
+//    TESTCHECK( YazdegerdDate().JulianDay(), jd, &ok );
+//    TESTCHECK( julDate == YazdegerdDate(), true, &ok );
+//    TESTCHECK( julDate == YazdegerdDate( 1, 1, 1 ), true, &ok );
+
     d = 1;
     m = 1;
     y = 1;
@@ -357,21 +432,6 @@ ComputeEpochs( )
     TESTCHECK( gregDate == BahaiDate(), true, &ok );
     TESTCHECK( gregDate == BahaiDate( 1, 1, 1 ), true, &ok );
 
-    d = 6;
-    m = 9;
-    y = -3113;
-    julDate.Set( d, m, y );
-    jd = julDate.JulianDay( );
-    printf( "Mayan epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
-    julDate.Set( jd );
-    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
-    TESTCHECK( d1, d, &ok );
-    TESTCHECK( m1, m, &ok );
-    TESTCHECK( y1, y, &ok );
-    TESTCHECK( MayanLongCountDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == MayanLongCountDate(), true, &ok );
-    TESTCHECK( julDate == MayanLongCountDate( 0, 0, 0, 0, 0 ), true, &ok );
-
     HinduSolarCalendar::SetVersion( HinduSolarCalendar::Old );
     
     d = 18;
@@ -437,66 +497,6 @@ ComputeEpochs( )
     TESTCHECK( FrenchRevolutionaryDate().JulianDay(), jd, &ok );
     TESTCHECK( gregDate == FrenchRevolutionaryDate(), true, &ok );
     TESTCHECK( gregDate == FrenchRevolutionaryDate( 1, 1, 1 ), true, &ok );
-
-    d = 15;
-    m = 2;
-    y = -2636;
-    gregDate.Set( d, m, y );
-    jd = gregDate.JulianDay( );
-    printf( "Chinese epoch: %d/%d/%ld (Gregorian) => jd=%ld\n",  d, m, y, jd );
-    gregDate.Set( jd );
-    d1 = gregDate.Day();    m1 = gregDate.Month();    y1 = gregDate.Year();
-    TESTCHECK( d1, d, &ok );
-    TESTCHECK( m1, m, &ok );
-    TESTCHECK( y1, y, &ok );
-    TESTCHECK( ChineseDate().JulianDay(), jd, &ok );
-    TESTCHECK( gregDate == ChineseDate(), true, &ok );
-    TESTCHECK( gregDate == ChineseDate( 1, 1, 1 ), true, &ok );
-
-    d = 26;
-    m = 2;
-    y = -746;
-    julDate.Set( d, m, y );
-    jd = julDate.JulianDay( );
-    printf( "Egyptian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
-    julDate.Set( jd );
-    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
-    TESTCHECK( d1, d, &ok );
-    TESTCHECK( m1, m, &ok );
-    TESTCHECK( y1, y, &ok );
-    TESTCHECK( EgyptianDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == EgyptianDate(), true, &ok );
-    TESTCHECK( julDate == EgyptianDate( 1, 1, 1 ), true, &ok );
-
-    d = 11;
-    m = 7;
-    y = 552;
-    julDate.Set( d, m, y );
-    jd = julDate.JulianDay( );
-    printf( "Armenian epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
-    julDate.Set( jd );
-    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
-    TESTCHECK( d1, d, &ok );
-    TESTCHECK( m1, m, &ok );
-    TESTCHECK( y1, y, &ok );
-    TESTCHECK( ArmenianDate().JulianDay(), jd, &ok );
-    TESTCHECK( julDate == ArmenianDate(), true, &ok );
-    TESTCHECK( julDate == ArmenianDate( 1, 1, 1 ), true, &ok );
-
-    d = 16;
-    m = 6;
-    y = 632;
-    julDate.Set( d, m, y );
-    jd = julDate.JulianDay( );
-    printf( "Yazdegerd epoch: %d/%d/%ld (Julian) => jd=%ld\n",  d, m, y, jd );
-    julDate.Set( jd );
-    d1 = julDate.Day();    m1 = julDate.Month();    y1 = julDate.Year();
-    TESTCHECK( d1, d, &ok );
-    TESTCHECK( m1, m, &ok );
-    TESTCHECK( y1, y, &ok );
-//    TESTCHECK( YazdegerdDate().JulianDay(), jd, &ok );
-//    TESTCHECK( julDate == YazdegerdDate(), true, &ok );
-//    TESTCHECK( julDate == YazdegerdDate( 1, 1, 1 ), true, &ok );
 
 #endif //DEBUG
     if ( ok )

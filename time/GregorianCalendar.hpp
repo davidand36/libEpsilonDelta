@@ -10,8 +10,8 @@
   15 October 1582 A.D. (which would have been 5 October 1582 A.D. in the
   Julian calendar). It was adopted immediately in Catholic states, and
   gradually by Protestant ones. (Great Britain and her colonies, including
-  the United States, waited until 1752; Russia, until 1918; and Turkey,
-  until 1927.) It is the standard civil calendar in most of the world today.
+  the United States, waited until 1752; Russia, until 1918.) It is the
+  standard civil calendar in most of the world today.
   Its epoch (A.D., anno Domini) is JD 1,721,426. The day begins at midnight.
 */
 

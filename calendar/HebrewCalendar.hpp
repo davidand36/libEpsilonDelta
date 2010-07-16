@@ -7,7 +7,7 @@
   Class HebrewCalendar, which defines the Hebrew calendar.
 
   The Hebrew calander, a.k.a. the Jewish calendar, was promulgated in the
-  mid-fourth century (perhaps 359) A.D. by the Patriarch, Hillel II.
+  mid-fourth century (perhaps 359) C.E. by the Patriarch, Hillel II.
   It is a lunisolar calendar with a number of complications. For one thing,
   the year begins with month seven, Tishri. For another, in addition to 
   leap months (Adar II), two of the months, Heshvan (8) and Kislev (9)
@@ -41,7 +41,7 @@ public:
 
     enum EMonth
     { Nisan = 1, Iyyar, Sivan, Tammuz, Av, Elul, 
-      Tishri, Heshvan, Kislev, Teveth, Shevat, Adar, AdarII };
+      Tishri, Marheshvan, Kislev, Teveth, Shevat, Adar, AdarII };
 };
 
 

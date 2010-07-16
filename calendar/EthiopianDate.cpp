@@ -48,17 +48,17 @@ TestEthiopianDate( )
     TESTCHECK( ethDate.Month( ), m, &ok );
     TESTCHECK( ethDate.Year( ), y, &ok );
     TESTCHECK( ethDate.JulianDay( ), 2432138L, &ok );
-    TESTCHECK( ethDate.ToString( ), string( "Rob, 4 Hedar 1939" ), &ok );
+    TESTCHECK( ethDate.ToString( ), string( "Rob, 4 Ḫedār 1939" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     ethDate.Increment( incr );
     TESTCHECK( ethDate.JulianDay( ), 2432178L, &ok );
-    TESTCHECK( ethDate.ToString( ), string( "Sanyo, 14 Takhsas 1939" ), &ok );
+    TESTCHECK( ethDate.ToString( ), string( "Sanyo, 14 Tākhśāś 1939" ), &ok );
     incr = 13;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     ethDate.Increment( 0, incr, 0 );
     TESTCHECK( ethDate.JulianDay( ), 2432544L, &ok );
-    TESTCHECK( ethDate.ToString( ), string( "Rob, 14 Takhsas 1940" ), &ok );
+    TESTCHECK( ethDate.ToString( ), string( "Rob, 14 Tākhśāś 1940" ), &ok );
 
     cout << "EthiopianDate( true ) [today constructor]" << endl;
     EthiopianDate ethToday( true );
@@ -83,7 +83,7 @@ TestEthiopianDate( )
     TESTCHECK( (ethJD == ethJD), true, &ok );
     TESTCHECK( (ethJD < ethToday), true, &ok );
     TESTCHECK( (ethJD == ethDate), false, &ok );
-    TESTCHECK( ethJD.ToString( ), string( "Rob, 4 Hedar 1939" ), &ok );
+    TESTCHECK( ethJD.ToString( ), string( "Rob, 4 Ḫedār 1939" ), &ok );
 
     d = 5;
     m = 3;
@@ -95,7 +95,7 @@ TestEthiopianDate( )
     TESTCHECK( (ethJD < ethDMY), true, &ok );
     TESTCHECK( (ethDMY < ethToday), true, &ok );
     TESTCHECK( ethDMY.JulianDay( ), 2432139L, &ok );
-    TESTCHECK( ethDMY.ToString( ), string( "Hamus, 5 Hedar 1939" ), &ok );
+    TESTCHECK( ethDMY.ToString( ), string( "Ḫamus, 5 Ḫedār 1939" ), &ok );
 
     jd = 1724220;
     cout << "EthiopianDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -104,7 +104,7 @@ TestEthiopianDate( )
     TESTCHECK( (eth0 == eth0), true, &ok );
     TESTCHECK( (eth0 < ethDate), true, &ok );
     TESTCHECK( (eth0 == ethDate), false, &ok );
-    TESTCHECK( eth0.ToString( ), string( "Maksanyo, 5 Paguemen 0" ), &ok );
+    TESTCHECK( eth0.ToString( ), string( "Maksanyo, 5 Pāguemēn 0" ), &ok );
 
     d = 1; m = 1; y = 0;
     cout << "EthiopianDate( " << d << ", " << m << ", " << y
@@ -120,7 +120,7 @@ TestEthiopianDate( )
     EthiopianDate ethEq = eth0;
     TESTCHECK( ethEq.Valid( ), true, &ok );
     TESTCHECK( (ethEq == eth0), true, &ok );
-    TESTCHECK( ethEq.ToString( ), string( "Maksanyo, 5 Paguemen 0" ), &ok );
+    TESTCHECK( ethEq.ToString( ), string( "Maksanyo, 5 Pāguemēn 0" ), &ok );
     cout << "= eth110 [assignment]" << endl;
     ethEq = eth110;
     TESTCHECK( ethEq.Valid( ), true, &ok );
@@ -135,7 +135,7 @@ TestEthiopianDate( )
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     ethGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( ethGreg.Valid( ), true, &ok );
-    TESTCHECK( ethGreg.ToString( ), string( "Sanyo, 3 Hedar 1938" ), &ok );
+    TESTCHECK( ethGreg.ToString( ), string( "Sanyo, 3 Ḫedār 1938" ), &ok );
     
     struct
     {

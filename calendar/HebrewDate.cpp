@@ -61,7 +61,7 @@ TestHebrewDate( )
     TESTCHECK( hebDate.Year( ), 1L, &ok );
     TESTCHECK( hebDate.JulianDay( ), 347998L, &ok );
     TESTCHECK( hebDate.DayOfWeek( ), 1, &ok );
-    TESTCHECK( hebDate.ToString( ), string( "Yom Shaynee, 1 Tishri 1" ), &ok );
+    TESTCHECK( hebDate.ToString( ), string( "yom sheni, 1 Tishri 1" ), &ok );
 
     int d = 7;
     int m = 9;
@@ -74,17 +74,17 @@ TestHebrewDate( )
     TESTCHECK( hebDate.Year( ), y, &ok );
     TESTCHECK( hebDate.JulianDay( ), 2431772L, &ok );
     TESTCHECK( hebDate.DayOfWeek( ), 1, &ok );
-    TESTCHECK( hebDate.ToString( ), string( "Yom Shaynee, 7 Kislev 5706" ), &ok );
+    TESTCHECK( hebDate.ToString( ), string( "yom sheni, 7 Kislev 5706" ), &ok );
     int incr = 40;
     cout << "Increment(" << incr << ") :" << endl;
     hebDate.Increment( incr );
     TESTCHECK( hebDate.JulianDay( ), 2431812L, &ok );
-    TESTCHECK( hebDate.ToString( ), string( "Shabbat, 18 Teveth 5706" ), &ok );
+    TESTCHECK( hebDate.ToString( ), string( "yom shabbat, 18 Tevet 5706" ), &ok );
     incr = 13;
     cout << "Increment( 0, " << incr << ", 0) :" << endl;
     hebDate.Increment( 0, incr, 0 );
     TESTCHECK( hebDate.JulianDay( ), 2432196L, &ok );
-    TESTCHECK( hebDate.ToString( ), string( "Yom Ha'shee'shee, 18 Teveth 5707" ), &ok );
+    TESTCHECK( hebDate.ToString( ), string( "yom shishi, 18 Tevet 5707" ), &ok );
 
     cout << "HebrewDate( true ) [today constructor]" << endl;
     HebrewDate hebToday( true );
@@ -109,7 +109,7 @@ TestHebrewDate( )
     TESTCHECK( (hebJD == hebJD), true, &ok );
     TESTCHECK( (hebJD < hebToday), true, &ok );
     TESTCHECK( (hebJD == hebDate), false, &ok );
-    TESTCHECK( hebJD.ToString( ), string( "Yom Shaynee, 7 Kislev 5706" ), &ok );
+    TESTCHECK( hebJD.ToString( ), string( "yom sheni, 7 Kislev 5706" ), &ok );
 
     d = 8;
     m = 9;
@@ -121,7 +121,7 @@ TestHebrewDate( )
     TESTCHECK( (hebJD < hebDMY), true, &ok );
     TESTCHECK( (hebDMY < hebToday), true, &ok );
     TESTCHECK( hebDMY.JulianDay( ), 2431773L, &ok );
-    TESTCHECK( hebDMY.ToString( ), string( "Yom Shlee'shee, 8 Kislev 5706" ), &ok );
+    TESTCHECK( hebDMY.ToString( ), string( "yom shelishi, 8 Kislev 5706" ), &ok );
 
     jd = 347820;
     cout << "HebrewDate( " << jd << " ) [Julian Day constructor]" << endl;
@@ -130,7 +130,7 @@ TestHebrewDate( )
     TESTCHECK( (heb0 == heb0), true, &ok );
     TESTCHECK( (heb0 < hebDate), true, &ok );
     TESTCHECK( (heb0 == hebDate), false, &ok );
-    TESTCHECK( heb0.ToString( ), string( "Yom Ha'shee'shee, 29 Adar II 0" ), &ok );
+    TESTCHECK( heb0.ToString( ), string( "yom shishi, 29 Adar II 0" ), &ok );
 
     d = 1; m = 1; y = -1;
     cout << "HebrewDate( " << d << ", " << m << ", " << y
@@ -140,28 +140,28 @@ TestHebrewDate( )
     TESTCHECK( (heb110 < hebJD), true, &ok );
     TESTCHECK( (heb110 < hebToday), true, &ok );
     TESTCHECK( heb110.JulianDay( ), 347437L, &ok );
-    TESTCHECK( heb110.ToString( ), string( "Yom Reeshone, 1 Nisan -1" ), &ok );
+    TESTCHECK( heb110.ToString( ), string( "yom rishon, 1 Nisan -1" ), &ok );
 
     cout << "HebrewDate( heb0 ) [copy constructor]" << endl;
     HebrewDate hebEq = heb0;
     TESTCHECK( hebEq.Valid( ), true, &ok );
     TESTCHECK( (hebEq == heb0), true, &ok );
-    TESTCHECK( hebEq.ToString( ), string( "Yom Ha'shee'shee, 29 Adar II 0" ), &ok );
+    TESTCHECK( hebEq.ToString( ), string( "yom shishi, 29 Adar II 0" ), &ok );
     cout << "= heb110 [assignment]" << endl;
     hebEq = heb110;
     TESTCHECK( hebEq.Valid( ), true, &ok );
     TESTCHECK( (hebEq == heb0), false, &ok );
     TESTCHECK( (hebEq == heb110), true, &ok );
-    TESTCHECK( heb110.ToString( ), string( "Yom Reeshone, 1 Nisan -1" ), &ok );
+    TESTCHECK( heb110.ToString( ), string( "yom rishon, 1 Nisan -1" ), &ok );
 
     cout << "HebrewDate( GregorianDate( 7, 9, -3760 ) ) [DMYDate constructor]" << endl;
     HebrewDate hebGreg( GregorianDate( 7, 9, -3760 ) );
     TESTCHECK( hebGreg.Valid( ), true, &ok );
-    TESTCHECK( hebGreg.ToString( ), string( "Yom Shaynee, 1 Tishri 1" ), &ok );
+    TESTCHECK( hebGreg.ToString( ), string( "yom sheni, 1 Tishri 1" ), &ok );
     cout << "= GregorianDate( 12, 11, 1945 )" << endl;
     hebGreg = GregorianDate( 12, 11, 1945 );
     TESTCHECK( hebGreg.Valid( ), true, &ok );
-    TESTCHECK( hebGreg.ToString( ), string( "Yom Shaynee, 7 Kislev 5706" ), &ok );
+    TESTCHECK( hebGreg.ToString( ), string( "yom sheni, 7 Kislev 5706" ), &ok );
     
     struct
     {

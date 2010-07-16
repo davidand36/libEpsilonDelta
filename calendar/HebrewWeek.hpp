@@ -26,8 +26,8 @@ public:
     static const std::string & WeekDayName( int weekday );
 
     enum EWeekDay
-    { YomReeshone = 0, YomShaynee, YomShleeshee, YomReveeee,
-      YomKhahmeeshee, YomHasheeshee, Shabbat };
+    { YomRishon = 0, YomSheni, YomSelishi, YomRevii,
+      YomHamishi, YomShishi, Shabbat };
 };
 
 
@@ -47,7 +47,7 @@ inline
 int
 HebrewWeek::DayOfWeekOfJD0( )
 {
-    return YomShaynee;
+    return YomSheni;
 }
 
 

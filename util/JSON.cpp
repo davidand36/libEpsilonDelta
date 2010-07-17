@@ -639,9 +639,10 @@ SplitJSONArray( const string & json, vector< string > * pStringVec )
 class A
 {
 public:
-    void Set( char ch, int i, float f, string s[3], bool b[5] );
+    void Set( char ch, int i, long l, float f, string s[3], bool b[5] );
     char Character( ) const;
     int Integer( ) const;
+    long Long( ) const;
     float Real( ) const;
     string ArrayString( int i ) const;
     int BoolVectorSize( ) const;
@@ -650,6 +651,7 @@ public:
 private:
     char    m_character;
     int     m_integer;
+    long    m_long;
     float   m_real;
     array< string, 3 >  m_stringArray;
     vector< bool >  m_boolVector;
@@ -661,10 +663,11 @@ private:
 //.............................................................................
 
 void
-A::Set(char ch, int i, float f, string s[3], bool b[5] )
+A::Set(char ch, int i, long l, float f, string s[3], bool b[5] )
 {
     m_character = ch;
     m_integer = i;
+    m_long = l;
     m_real = f;
     for ( int j = 0; j < 3; ++j )
         m_stringArray[j] = s[j];
@@ -687,6 +690,14 @@ int
 A::Integer( ) const
 {
     return m_integer;
+}
+
+//.............................................................................
+
+long
+A::Long( ) const
+{
+    return m_long;
 }
 
 //.............................................................................
@@ -729,6 +740,7 @@ ToJSON( const A & a )
     JSONObject jsonObj;
     jsonObj[ "character" ] = ToJSON( a.m_character );
     jsonObj[ "integer" ] = ToJSON( a.m_integer );
+    jsonObj[ "long" ] = ToJSON( a.m_long );
     jsonObj[ "real" ] = ToJSON( a.m_real );
     jsonObj[ "stringArray" ] = ToJSON( a.m_stringArray );
     jsonObj[ "boolVector" ] = ToJSON( a.m_boolVector );
@@ -744,6 +756,7 @@ FromJSON( const string & json, A * pA )
     FromJSON( json, &jsonObj );
     FromJSON( jsonObj[ "character" ], &(pA->m_character) );
     FromJSON( jsonObj[ "integer" ], &(pA->m_integer) );
+    FromJSON( jsonObj[ "long" ], &(pA->m_long) );
     FromJSON( jsonObj[ "real" ], &(pA->m_real) );
     FromJSON( jsonObj[ "stringArray" ], &(pA->m_stringArray) );
     FromJSON( jsonObj[ "boolVector" ], &(pA->m_boolVector) );
@@ -784,7 +797,7 @@ TestJSON( )
     bool ok = true;
     cout << "Testing JSON" << endl;
 
-    string s0[] = { "bir", "\tiki", "uç\n" };
+    string s0[] = { "bir", "\tiki", "üç\n" };
     bool b0[5] = { true, false, true, false, true };
     string s1[] = { "uno\n", "\"dos\"", "tres\\" };
     bool b1[5] = { false, false, true, true, false };
@@ -794,11 +807,11 @@ TestJSON( )
     cout << "s1 = { " << s1[0] << ", " << s1[1] << ", " << s1[2] << " }"
          << endl;
     cout << "b1 = { false, false, true, true, false }" << endl;
-    cout << "s.m_aa[0].Set( 'd', 137, -1.61803f, s0, b0 )" << endl;
+    cout << "s.m_aa[0].Set( 'd', 137, 1000L, -1.61803f, s0, b0 )" << endl;
     cout << "s.m_aa[1].Set( 'm', -1, 1e10f, s1, b1 )" << endl;
     S s;
-    s.m_aa[0].Set( 'd', 137, -1.61803f, s0, b0 );
-    s.m_aa[1].Set( 'm', -1, 1e10f, s1, b1 );
+    s.m_aa[0].Set( 'd', 137, 1000L, -1.61803f, s0, b0 );
+    s.m_aa[1].Set( 'm', -1, -1000L, 1e10f, s1, b1 );
     TESTCHECK( ToJSON( s ),
                string( "{\n"
                        "\"aa\": [ "
@@ -806,13 +819,15 @@ TestJSON( )
                        "\"boolVector\": [ true, false, true, false, true ],\n"
                        "\"character\": 100,\n"
                        "\"integer\": 137,\n"
+                       "\"long\": 1000,\n"
                        "\"real\": -1.61803e+00,\n"
-                       "\"stringArray\": [ \"bir\", \"\\tiki\", \"uç\\n\" ]\n"
+                       "\"stringArray\": [ \"bir\", \"\\tiki\", \"üç\\n\" ]\n"
                        "}, "
                        "{\n"
                        "\"boolVector\": [ false, false, true, true, false ],\n"
                        "\"character\": 109,\n"
                        "\"integer\": -1,\n"
+                       "\"long\": -1000,\n"
                        "\"real\": +1.00000e+10,\n"
                        "\"stringArray\": [ \"uno\\n\", \"\\\"dos\\\"\","
                        " \"tres\\\\\" ]\n"
@@ -826,10 +841,11 @@ TestJSON( )
     FromJSON( ToJSON( s ), &sf );
     TESTCHECK( sf.m_aa[0].Character(), 100, &ok );
     TESTCHECK( sf.m_aa[0].Integer(), 137, &ok );
+    TESTCHECK( sf.m_aa[0].Long(), 1000L, &ok );
     TESTCHECKF( sf.m_aa[0].Real(), -1.61803f, &ok );
     TESTCHECK( sf.m_aa[0].ArrayString( 0 ), string( "bir" ), &ok );
     TESTCHECK( sf.m_aa[0].ArrayString( 1 ), string( "\tiki" ), &ok );
-    TESTCHECK( sf.m_aa[0].ArrayString( 2 ), string( "uç\n" ), &ok );
+    TESTCHECK( sf.m_aa[0].ArrayString( 2 ), string( "üç\n" ), &ok );
     TESTCHECK( sf.m_aa[0].BoolVectorSize(), 5, &ok );
     TESTCHECK( sf.m_aa[0].VectorBool( 0 ), true, &ok );
     TESTCHECK( sf.m_aa[0].VectorBool( 1 ), false, &ok );
@@ -838,6 +854,7 @@ TestJSON( )
     TESTCHECK( sf.m_aa[0].VectorBool( 4 ), true, &ok );
     TESTCHECK( sf.m_aa[1].Character(), 109, &ok );
     TESTCHECK( sf.m_aa[1].Integer(), -1, &ok );
+    TESTCHECK( sf.m_aa[1].Long(), -1000L, &ok );
     TESTCHECK( sf.m_aa[1].Real(), 1e10f, &ok );
     TESTCHECK( sf.m_aa[1].ArrayString( 0 ), string( "uno\n" ), &ok );
     TESTCHECK( sf.m_aa[1].ArrayString( 1 ), string( "\"dos\"" ), &ok );

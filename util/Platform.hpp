@@ -36,8 +36,12 @@
 #define OS_WIN64
 #endif
 
-#if defined(__i386__) || defined(__i386) || defined(i386) || defined(_M_IX86)
+#if defined(__i386) || defined(__i386__) || defined(i386) || defined(_M_IX86)
 #define CPU_X86
+#endif
+#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64) || defined(__amd64__)
+#define CPU_X86
+#define CPU_X86_64
 #endif
 
 

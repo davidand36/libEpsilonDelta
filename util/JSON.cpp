@@ -36,7 +36,7 @@ ToJSON( bool b )
 //-----------------------------------------------------------------------------
 
 string
-ToJSON( signed char i )
+ToJSON( char i )
 {
     return IntToString( static_cast< long >( i ) );
 }
@@ -253,19 +253,19 @@ FromJSON( const std::string & json, char * pC )
     *pC = static_cast< char >( i );
 }
 
-//.............................................................................
+//-----------------------------------------------------------------------------
 
 void 
-FromJSON( const std::string & json, wchar_t * pC )
+FromJSON( const std::string & json, unsigned char * pC )
 {
     long int i = strtol( json.c_str(), 0, 0 );
-    *pC = static_cast< wchar_t >( i );
+    *pC = static_cast< char >( i );
 }
 
 //-----------------------------------------------------------------------------
 
 void 
-FromJSON( const string & json, int8_t * pI )
+FromJSON( const string & json, short * pI )
 {
     long int i = strtol( json.c_str(), 0, 0 );
     *pI = static_cast< int8_t >( i );
@@ -274,7 +274,7 @@ FromJSON( const string & json, int8_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, uint8_t * pI )
+FromJSON( const string & json, unsigned short * pI )
 {
     unsigned long int i = strtoul( json.c_str(), 0, 0 );
     *pI = static_cast< uint8_t >( i );
@@ -283,7 +283,7 @@ FromJSON( const string & json, uint8_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, int16_t * pI )
+FromJSON( const string & json, int * pI )
 {
     long int i = strtol( json.c_str(), 0, 0 );
     *pI = static_cast< int16_t >( i );
@@ -292,7 +292,7 @@ FromJSON( const string & json, int16_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, uint16_t * pI )
+FromJSON( const string & json, unsigned int * pI )
 {
     unsigned long int i = strtoul( json.c_str(), 0, 0 );
     *pI = static_cast< uint16_t >( i );
@@ -301,7 +301,7 @@ FromJSON( const string & json, uint16_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, int32_t * pI )
+FromJSON( const string & json, long * pI )
 {
     long int i = strtol( json.c_str(), 0, 0 );
     *pI = static_cast< int32_t >( i );
@@ -310,7 +310,7 @@ FromJSON( const string & json, int32_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, uint32_t * pI )
+FromJSON( const string & json, unsigned long * pI )
 {
     unsigned long int i = strtoul( json.c_str(), 0, 0 );
     *pI = static_cast< uint32_t >( i );
@@ -319,7 +319,7 @@ FromJSON( const string & json, uint32_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, int64_t * pI )
+FromJSON( const string & json, long long * pI )
 {
     long long int i = strtoll( json.c_str(), 0, 0 );
     *pI = static_cast< int64_t >( i );
@@ -328,10 +328,19 @@ FromJSON( const string & json, int64_t * pI )
 //.............................................................................
 
 void 
-FromJSON( const string & json, uint64_t * pI )
+FromJSON( const string & json, unsigned long long * pI )
 {
     unsigned long long int i = strtoull( json.c_str(), 0, 0 );
     *pI = static_cast< uint64_t >( i );
+}
+
+//.............................................................................
+
+void 
+FromJSON( const std::string & json, wchar_t * pC )
+{
+    long int i = strtol( json.c_str(), 0, 0 );
+    *pC = static_cast< wchar_t >( i );
 }
 
 //-----------------------------------------------------------------------------

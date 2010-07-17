@@ -26,7 +26,7 @@ namespace EpsilonDelta
 typedef std::map< std::string, std::string >  JSONObject;
 
 std::string ToJSON( bool b );
-std::string ToJSON( signed char i );
+std::string ToJSON( char i );
 std::string ToJSON( unsigned char i );
 std::string ToJSON( short i );
 std::string ToJSON( unsigned short i );
@@ -49,16 +49,17 @@ std::string ToJSON( const std::vector< T > & v );
 std::string ToJSON( const JSONObject & o );
 
 void FromJSON( const std::string & json, bool * pB );
-void FromJSON( const std::string & json, char * pC );
+void FromJSON( const std::string & json, char * pI );
+void FromJSON( const std::string & json, unsigned char * pI );
+void FromJSON( const std::string & json, short * pI );
+void FromJSON( const std::string & json, unsigned short * pI );
+void FromJSON( const std::string & json, int * pI );
+void FromJSON( const std::string & json, unsigned int * pI );
+void FromJSON( const std::string & json, long * pI );
+void FromJSON( const std::string & json, unsigned long * pI );
+void FromJSON( const std::string & json, long long * pI );
+void FromJSON( const std::string & json, unsigned long long * pI );
 void FromJSON( const std::string & json, wchar_t * pC );
-void FromJSON( const std::string & json, int8_t * pI );
-void FromJSON( const std::string & json, uint8_t * pI );
-void FromJSON( const std::string & json, int16_t * pI );
-void FromJSON( const std::string & json, uint16_t * pI );
-void FromJSON( const std::string & json, int32_t * pI );
-void FromJSON( const std::string & json, uint32_t * pI );
-void FromJSON( const std::string & json, int64_t * pI );
-void FromJSON( const std::string & json, uint64_t * pI );
 void FromJSON( const std::string & json, float * pR );
 void FromJSON( const std::string & json, double * pR );
 void FromJSON( const std::string & json, long double * pR );

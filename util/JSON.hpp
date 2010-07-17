@@ -11,6 +11,7 @@
 
 #include "StringUtil.hpp"
 #include "StdInt.hpp"
+#include "Platform.hpp"
 #include <tr1/array>
 #include "VMap.hpp"
 #include <map>
@@ -25,14 +26,16 @@ namespace EpsilonDelta
 typedef std::map< std::string, std::string >  JSONObject;
 
 std::string ToJSON( bool b );
-std::string ToJSON( int8_t i );
-std::string ToJSON( uint8_t i );
-std::string ToJSON( int16_t i );
-std::string ToJSON( uint16_t i );
-std::string ToJSON( int32_t i );
-std::string ToJSON( uint32_t i );
-std::string ToJSON( int64_t i );
-std::string ToJSON( uint64_t i );
+std::string ToJSON( signed char i );
+std::string ToJSON( unsigned char i );
+std::string ToJSON( short i );
+std::string ToJSON( unsigned short i );
+std::string ToJSON( int i );
+std::string ToJSON( unsigned int i );
+std::string ToJSON( long i );
+std::string ToJSON( unsigned long i );
+std::string ToJSON( long long i );
+std::string ToJSON( unsigned long long i );
 std::string ToJSON( float r );
 std::string ToJSON( double r );
 std::string ToJSON( long double r );

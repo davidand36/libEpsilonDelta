@@ -36,65 +36,81 @@ ToJSON( bool b )
 //-----------------------------------------------------------------------------
 
 string
-ToJSON( int8_t i )
+ToJSON( signed char i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( uint8_t i )
+ToJSON( unsigned char i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( int16_t i )
+ToJSON( short i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( uint16_t i )
+ToJSON( unsigned short i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( int32_t i )
+ToJSON( int i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( uint32_t i )
+ToJSON( unsigned int i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................
 
 string
-ToJSON( int64_t i )
+ToJSON( long i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( i );
 }
 
 //.............................................................................
 
 string
-ToJSON( uint64_t i )
+ToJSON( unsigned long i )
 {
-    return IntToString( static_cast< int >( i ) );
+    return IntToString( static_cast< long >( i ) );
+}
+
+//.............................................................................
+
+string
+ToJSON( long long i )
+{
+    return IntToString( static_cast< long >( i ) );
+}
+
+//.............................................................................
+
+string
+ToJSON( unsigned long long i )
+{
+    return IntToString( static_cast< long >( i ) );
 }
 
 //.............................................................................

@@ -197,9 +197,11 @@ Hypergeometric_PDF( int x, int populationSize, int subsetSize, int sampleSize )
     Assert( subsetSize <= populationSize );
     Assert( sampleSize >= 0 );
     Assert( sampleSize <= populationSize );
-    if ( x < 0 )
+    int minX = max( 0, subsetSize + sampleSize - populationSize );
+    int maxX = min( subsetSize, sampleSize );
+    if ( x < minX )
         return 0.;
-    if ( x > sampleSize )
+    if ( x > maxX )
         return 0.;
     return BinomialCoefficient( subsetSize, x )
             * BinomialCoefficient( (populationSize - subsetSize),
@@ -217,20 +219,29 @@ Hypergeometric_DF( int x, int populationSize, int subsetSize, int sampleSize )
     Assert( subsetSize <= populationSize );
     Assert( sampleSize >= 0 );
     Assert( sampleSize <= populationSize );
-    if ( x < 0 )
+    int minX = max( 0, subsetSize + sampleSize - populationSize );
+    int maxX = min( subsetSize, sampleSize );
+    if ( x < minX )
         return 0.;
-    if ( x >= sampleSize )
+    if ( x >= maxX )
         return 1.;
-    double prob = exp( LogFactorial( populationSize - subsetSize )
-                       + LogFactorial( populationSize - sampleSize )
-                       - LogFactorial( populationSize )
-                       - LogFactorial( populationSize - subsetSize
-                                       - sampleSize ) );
+    double prob = 0.;
+    if ( minX == 0 )
+        prob = exp( LogFactorial( populationSize - subsetSize )
+                    + LogFactorial( populationSize - sampleSize )
+                    - LogFactorial( populationSize )
+                    - LogFactorial( populationSize - subsetSize
+                                    - sampleSize ) );
+    else
+        prob = exp( LogFactorial( subsetSize )
+                    + LogFactorial( sampleSize )
+                    - LogFactorial( populationSize )
+                    - LogFactorial( minX ) );
     double cumProb = prob;
-    for ( int i = 1; i <= x; ++i )
+    for ( int i = minX + 1; i <= x; ++i )
     {
-        prob *= (subsetSize - i + 1) * (sampleSize - i + 1)
-                / (i * (populationSize - subsetSize - sampleSize + i - 1) );
+        prob *= (subsetSize - i + 1.) * (sampleSize - i + 1.)
+                / (i * (populationSize - subsetSize - sampleSize + i));
         cumProb += prob;
     }
     return cumProb;
@@ -606,7 +617,9 @@ TestProbabilityDistributions( )
     TESTCHECKF( Binomial_DF( 19, 0.35, 19 ), 1., &ok );
     TESTCHECK( Binomial_DF( 20, 0.35, 19 ), 1., &ok );
 
-    //!!!Hypergeometric
+    TESTCHECKF( Hypergeometric_PDF( 4, 50, 5, 10 ), 0.003964583, &ok );
+    TESTCHECKF( Hypergeometric_PDF( 5, 50, 5, 10 ), 0.0001189375, &ok );
+    TESTCHECKF( Hypergeometric_DF( 3, 50, 5, 10 ), 0.99591648, &ok );
 
     TESTCHECK( Poisson_PDF( -1, 1. ), 0., &ok );
     TESTCHECKFE( Poisson_PDF( 0, 0.6 ), 0.5488, &ok, 0.0001 );

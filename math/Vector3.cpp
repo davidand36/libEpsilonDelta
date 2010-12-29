@@ -163,6 +163,7 @@ TestVector3( )
     short * ps = vs0.Array();
     TESTCHECK( ps[0], xs, &ok );
     TESTCHECK( ps[1], ys, &ok );
+    TESTCHECK( ps[2], zs, &ok );
     xs = 32;
     cout << "ps[0] = " << xs << endl;
     ps[0] = xs;

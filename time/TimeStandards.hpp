@@ -44,6 +44,9 @@
       never differs from UT1 by more than 0.9 s. (The difference
       DUT1 = UT1 - UTC is also broadcast.) Introduced in its present form in
       1972.
+  GPST (Global Positioning System Time): The time used on the atomic clocks on
+      GPS satellites. Matched UTC in 1980, but does not incorporate leap
+      seconds, thus maintaining a constant offset from TAI (19 seconds).
   NOTES:
   1. These functions are named XXX_YYY, where XXX and YYY are the two standards
      and the functions return the difference (XXX - YYY) as a TimeIncrement.
@@ -98,6 +101,7 @@ TimeIncrement TAI_UTC( double julianDay );
 TimeIncrement TT_UTC( double julianDay );
 TimeIncrement TDB_UTC( double julianDay );
 TimeIncrement TDB_UT( double julianDay );
+TimeIncrement TAI_GPST( );
 
 
 //*****************************************************************************
@@ -108,6 +112,15 @@ TimeIncrement
 TT_TAI( )
 {
     return TimeIncrement( 0, 0, 32.184 );
+}
+
+//=============================================================================
+
+inline
+TimeIncrement
+TAI_GPST( )
+{
+    return TimeIncrement( 0, 0, 19. );
 }
 
 

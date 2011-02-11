@@ -7,7 +7,7 @@
   File class: Basic file operations, wrapped for platform-independence.
   NOTES:
   1. Seek() combines the standard seek() and tell() operations, in that it
-     returns the resulting file position.
+     returns the resulting file position. It returns -1 on failure.
 */
 
 

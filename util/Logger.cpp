@@ -75,10 +75,7 @@ Logger::Log( int level, const char * format, ... )
     {
         va_list args;
         va_start( args, format );
-        if ( args )
-            LogVA( level, format, args );
-        else
-            Log( level, string( format ) );
+        LogVA( level, format, args );
         va_end( args );
     }
 }

@@ -8,11 +8,15 @@
 */
 
 
+#include "Platform.hpp"
 #include <cstdlib>
 
-#if defined(__GNUC__)
+#if defined(COMPILER_GNU)
+#if defined(OS_ANDROID)
+#define strtold     strtod
+#endif
 
-#elif defined(_MSC_VER)
+#elif defined(COMPILER_MSC)
 #define strtoll     _strtoi64
 #define strtoull    _strtoui64
 #define strtof      strtod

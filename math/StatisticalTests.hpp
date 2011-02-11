@@ -58,65 +58,138 @@ double Mean( const std::vector< double > & sample );
 double Variance( const std::vector< double > & sample, double mean );
 double Median( std::vector< double > & sample );
 
+//=============================================================================
+
+//Test return types:
+struct TTestResult
+{
+    double probability;
+    double t;
+    int degreesOfFreedom;
+};
+
+//-----------------------------------------------------------------------------
+
+struct FTestResult
+{
+    double probability;
+    double F;
+    int degreesOfFreedom1;
+    int degreesOfFreedom2;
+};
+
+//-----------------------------------------------------------------------------
+
+struct ChiSquareTestResult
+{
+    double probability;
+    double chiSquare;
+    int degreesOfFreedom;
+};
+
+//-----------------------------------------------------------------------------
+
+struct ContingencyTableResult
+{
+    ChiSquareTestResult chiSquareResult;
+    double minExpectedCellFreq;
+    int sampleTotal;
+};
+
+//-----------------------------------------------------------------------------
+
+struct CorrelationTestResult
+{
+    TTestResult tResult;
+    double r;
+    double mean0;
+    double mean1;
+    double variance0;
+    double variance1;
+};
+
+//-----------------------------------------------------------------------------
+
+struct KendallsTauTestResult
+{
+    double probability;
+    double kendallsTau;
+};
+
+//-----------------------------------------------------------------------------
+
+struct SimpleRegressionResult
+{
+    double alpha;
+    double beta;
+    double varianceAlpha;
+    double varianceBeta;
+    double residualVariance;
+};
+
+//=============================================================================
+
 //One-sample tests:
-double MeanTest( int sampleSize, double sampleMean, double sampleVariance,
-                 double hypothMean = 0., double * pT = 0 );
-double VarianceTest( int sampleSize, double sampleVariance,
-                     double hypothVariance, double * pChiSquare = 0 );
+TTestResult MeanTest( int sampleSize, double sampleMean, double sampleVariance,
+                      double hypothMean = 0., int tails = 1 );
+ChiSquareTestResult VarianceTest( int sampleSize, double sampleVariance,
+                                  double hypothVariance, int tails = 1 );
 template < typename DistribFunc >
 double KolmogorovSmirnovTest( std::vector< double > & sample,
                               DistribFunc hypothFunc, bool sorted = false );
-double ChiSquareGoodnessOfFitTest( const std::vector< int > & sampleFreqs,
-                                   const std::vector< double > & hypothFreqs,
-                                   bool probabilities = true,
-                                   int constraints = 0,
-                                   double * pChiSquare = 0 );
+ChiSquareTestResult ChiSquareGoodnessOfFitTest(
+    const std::vector< int > & sampleFreqs,
+    const std::vector< double > & hypothFreqs,
+    bool probabilities = true,
+    int constraints = 0 );
 
 //Two-sample comparison tests:
-double MeansTest( int sampleSize1, double sampleMean1, double sampleVariance1,
-                  int sampleSize2, double sampleMean2, double sampleVariance2,
-                  bool equalVariances = false, double * pT = 0 );
-double VariancesTest( int sampleSize1, double sampleVariance1,
-                      int sampleSize2, double sampleVariance2,
-                      double * pF = 0 );
+TTestResult MeansTest( int sampleSize1, double sampleMean1,
+                       double sampleVariance1,
+                       int sampleSize2, double sampleMean2,
+                       double sampleVariance2,
+                       bool equalVariances = false, int tails = 1 );
+FTestResult VariancesTest( int sampleSize1, double sampleVariance1,
+                           int sampleSize2, double sampleVariance2,
+                           int tails = 1 );
 double MediansTest( const std::vector< double > & sample1,
-                    const std::vector< double > & sample2 );
+                    const std::vector< double > & sample2, int tails = 1 );
 double KolmogorovSmirnovTest( std::vector< double > & sample1,
                               std::vector< double > & sample2,
                               bool sorted = false );
 
+//Correlation tests:
+CorrelationTestResult LinearCorrelationTest(
+    const std::vector< std::tr1::array< double, 2 > > & samples,
+    int tails = 1 );
+SimpleRegressionResult SimpleLinearRegression( int sampleSize,
+                                               double meanX, double meanY,
+                                               double varianceX,
+                                               double varianceY,
+                                               double pearsonsR );
+CorrelationTestResult SpearmansRankCorrelationTest(
+    const std::vector< std::tr1::array< double, 2 > > & samples,
+    int tails = 1 );
+KendallsTauTestResult KendallsTauTest(
+    const std::vector< std::tr1::array< double, 2 > > & samples,
+    int tails = 1 );
+
 //Contingency tables:
-double ChiSquareContingencyTableTest( const TwoDArray< int > & table,
-                                      double * pChiSquare = 0,
-                                      double * pCramersV = 0,
-                                      double * pPearsonsC = 0,
-                                      double * pTschuprovsT = 0,
-                                      double * pPhi2 = 0 );
-double ChiSquareContingencyTableTest(
-                               const std::vector< std::vector< int > > & table,
-                               double * pChiSquare = 0,
-                               double * pCramersV = 0, double * pPearsonsC = 0,
-                               double * pTschuprovsT = 0, double * pPhi2 = 0 );
+ContingencyTableResult ChiSquareContingencyTableTest(
+    const TwoDArray< int > & table, bool yatesCorrection = false );
+ContingencyTableResult ChiSquareContingencyTableTest(
+    const std::vector< std::vector< int > > & table,
+    bool yatesCorrection = false );
 template < typename C >
-double ChiSquareContingencyTableTest( const C & table,
-                                      int numRows, int numColumns,
-                                      double * pChiSquare,
-                                      double * pCramersV, double * pPearsonsC,
-                                      double * pTschuprovsT, double * pPhi2 );
+ContingencyTableResult ChiSquareContingencyTableTest(
+    const C & table, int numRows, int numColumns, bool yatesCorrection );
+template < unsigned long M, unsigned long N >
+ContingencyTableResult ChiSquareContingencyTableTest(
+    const std::tr1::array< std::tr1::array< int, M >, N > & table,
+    bool yatesCorrection = false );
 double FishersExactTest(
     const std::tr1::array< std::tr1::array< int, 2 >, 2 > & table,
-    double * pKendallsQ = 0 );
-
-//Correlation tests:
-double LinearCorrelationTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    double * pPearsonsR = 0, double * pT = 0 );
-double SpearmansRankCorrelationTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    double * pSpearmansR = 0, double * pT = 0 );
-double KendallsTauTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    double * pKendallsTau = 0 );
+    int tails = 1 );
 
 #ifdef DEBUG
 bool TestStatisticalTests( );
@@ -155,11 +228,9 @@ KolmogorovSmirnovTest( std::vector< double > & sample, DistribFunc hypothDist,
 //=============================================================================
 
 template < typename C >
-double 
+ContingencyTableResult
 ChiSquareContingencyTableTest( const C & table, int numRows, int numColumns,
-                               double * pChiSquare,
-                               double * pCramersV, double * pPearsonsC,
-                               double * pTschuprovsT, double * pPhi2 )
+                               bool yatesCorrection )
 {
     Assert( numRows > 1 );
     Assert( numColumns > 1 );
@@ -180,6 +251,7 @@ ChiSquareContingencyTableTest( const C & table, int numRows, int numColumns,
     int nRows = numRows;
     int nCols = numColumns;
     double chiSquare = 0.;
+    double minExpectedCellFreq = sampleTotal;
     for ( int i = 0; i < numRows; ++i )
     {
         if ( rowTotals[i] == 0 )
@@ -193,7 +265,11 @@ ChiSquareContingencyTableTest( const C & table, int numRows, int numColumns,
                 continue;
             double expected = rowTotals[i] * columnTotals[j]
                     / static_cast< double >( sampleTotal );
+            if ( expected < minExpectedCellFreq )
+                minExpectedCellFreq = expected;
             double diff = table[i][j] - expected;
+            if ( yatesCorrection )
+                diff = std::fabs( diff ) - 0.5;
             if ( expected > 0. )
                 chiSquare += diff * diff / expected;
         }
@@ -201,24 +277,25 @@ ChiSquareContingencyTableTest( const C & table, int numRows, int numColumns,
     for ( int j = 0; j < numColumns; ++j )
         if ( columnTotals[j] == 0 )
             --nCols;
-    if ( pChiSquare )
-        *pChiSquare = chiSquare;
-    double phi2 = chiSquare / sampleTotal;
-    if ( pCramersV )
-        *pCramersV = std::sqrt( phi2
-                                / std::min( numRows - 1, numColumns - 1 ) );
-    if ( pPearsonsC )
-        *pPearsonsC = std::sqrt( chiSquare / (chiSquare + sampleTotal) );
-    if ( pTschuprovsT )
-        *pTschuprovsT = std::sqrt( phi2
-                              / std::sqrt( static_cast< double >( (numRows - 1)
-                                                      * (numColumns - 1) ) ) );
-    if ( pPhi2 )
-        *pPhi2 = phi2;
     Assert( nRows > 1 );
     Assert( nCols > 1 );
     int degreesOfFreedom = (nRows - 1) * (nCols - 1);
-    return 1. - ChiSquare_DF( chiSquare, degreesOfFreedom );
+    double prob = 1. - ChiSquare_DF( chiSquare, degreesOfFreedom );
+    ContingencyTableResult result = { { prob, chiSquare, degreesOfFreedom },
+                                      minExpectedCellFreq, sampleTotal };
+
+    return result;
+}
+
+//.............................................................................
+
+template < unsigned long M, unsigned long N >
+ContingencyTableResult
+ChiSquareContingencyTableTest(
+    const std::tr1::array< std::tr1::array< int, M >, N > & table,
+    bool yatesCorrection )
+{
+    return ChiSquareContingencyTableTest( table, M, N, yatesCorrection );
 }
 
 

@@ -16,7 +16,7 @@
   2. For details of most of the probability distributions,
      see ProbabilityDistributions.hpp.
   3. Bernoulli: boolean random variable, true with given probability.
-     UniformOnSphere: Random point on unit sphere.
+     UniformOnSphere: Random point on unit (hyper)sphere.
 */
 
 
@@ -52,14 +52,20 @@ public:
     double operator()( double minimum, double maximum );
     double Triangle( double minimum, double mode, double maximum );
     bool Bernoulli( double probability );
-    int Geometric( double probability );
     int Binomial( double probability, int trials );
+    int Geometric( double probability );
+//!!!    int Hypergeometric( int populationSize, int subsetSize, int sampleSize );
     int Poisson( double mean );
     double Exponential( double lambda = 1. );
     double Gamma( int n, double lambda = 1. );
     double Normal( double mean = 0., double standardDeviation = 1. );
     double LogNormal( double mean, double standardDeviation,
                       bool momentsOfLog = false );
+    double ChiSquare( int degreesOfFreedom );
+    double StudentsT( int degreesOfFreedom );
+    double F( int dof1, int dof2 );
+    double Cauchy( double a = 1. );
+    double Beta( double a, double b );
     Vector3D UniformOnSphere( );
     std::vector< double > UniformOnSphere( int dimension );
 
@@ -68,8 +74,6 @@ public:
 #endif
 
 private:
-    double Uni01( );    //operator()(0.,1.)
-
     std::tr1::shared_ptr< RandomNumberGeneratorImpl >   m_pImpl;
     int                                                 m_seed;
 };

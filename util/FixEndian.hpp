@@ -19,28 +19,7 @@
 
 #include "StdInt.hpp"
 #include "Assert.hpp"
-
-
-#if defined(__GNUC__)
-#   include <endian.h>
-#   if (__BYTE_ORDER == __BIG_ENDIAN)
-#       undef LITTLE_ENDIAN
-#       define BIG_ENDIAN __BIG_ENDIAN
-#   else
-#       undef BIG_ENDIAN
-#       define LITTLE_ENDIAN __LITTLE_ENDIAN
-#   endif
-
-#elif defined(_MSC_VER)
-#   if (defined(_M_IX86) || defined(_M_IA64))
-#       undef BIG_ENDIAN
-#       define LITTLE_ENDIAN 1234
-#   else
-#       undef LITTLE_ENDIAN
-#       define BIG_ENDIAN 4321
-#   endif
-
-#endif //compiler
+#include "Platform.hpp"
 
 
 namespace EpsilonDelta

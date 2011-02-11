@@ -9,6 +9,7 @@
 #include "StringUtil.hpp"
 #include "StdInt.hpp"
 #include "CodePointData.hpp"
+#include "StdLib.hpp"
 #include <cstring>
 #ifdef DEBUG
 #include "TestCheck.hpp"

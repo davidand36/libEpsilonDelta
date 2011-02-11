@@ -12,10 +12,10 @@
   3. Distributions:
       Uniform: any number in the range as likely as any other.
       Triangle: pdf is triangular, with a peak at mode.
-      Geometric: X = number of independent Bernoulli trials, each with
-          given probability, needed for success.
       Binomial: X = number of successes in given number of Bernoulli trials,
           each with given probability.
+      Geometric: X = number of independent Bernoulli trials, each with
+          given probability, needed for success.
       Hypergeometric: Given a total population size, the size of a
           subset, and a sample size (without replacement), X = number of
           samples from the subset.
@@ -60,10 +60,10 @@ double Uniform_PDF( double x, double minimum, double maximum );
 double Uniform_DF( double x, double minimum, double maximum );
 double Triangle_PDF( double x, double minimum, double mode, double maximum );
 double Triangle_DF( double x, double minimum, double mode, double maximum );
-double Geometric_PDF( int x, double probability );
-double Geometric_DF( int x, double probability );
 double Binomial_PDF( int x, double probability, int trials );
 double Binomial_DF( int x, double probability, int trials );
+double Geometric_PDF( int x, double probability );
+double Geometric_DF( int x, double probability );
 double Hypergeometric_PDF( int x, int populationSize, int subsetSize,
                            int sampleSize );
 double Hypergeometric_DF( int x, int populationSize, int subsetSize,

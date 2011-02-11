@@ -20,6 +20,7 @@
 */
 
 
+#include "StringUtil.hpp"
 #include <string>
 #include <vector>
 

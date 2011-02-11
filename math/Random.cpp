@@ -7,21 +7,24 @@
   Random object: Global object of RandomNumberGenerator class.
 */
 
-
 #include "Random.hpp"
 #include "Gamma.hpp"
-#if defined( USE_BOOST )
-#include <boost/random.hpp>
-#endif
+#include <tr1/random>
 #include <ctime>
+#include <cmath>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "ProbabilityDistributions.hpp"
 #include "StatisticalTests.hpp"
 #include <iostream>
+#include <algorithm>
+#include <numeric>
 #include <boost/bind.hpp>
+#include <tr1/array>
+#include <string>
 #endif
 using namespace std;
+using namespace std::tr1;
 #ifdef DEBUG
 using boost::bind;
 #endif
@@ -51,18 +54,19 @@ public:
     double operator()( double minimum, double maximum );
     double Triangle( double minimum, double mode, double maximum );
     bool Bernoulli( double probability );
+    int Binomial( double probability, int trials );
     int Geometric( double probability );
+    int Poisson( double mean );
     double Exponential( double lambda );
+    double Gamma( double n, double lambda );
     double Normal( double mean, double standardDeviation );
     double LogNormal( double mean, double standardDeviation );
     Vector3D UniformOnSphere( );
     std::vector< double > UniformOnSphere( int dimension );
 
 private:
-#if defined( USE_BOOST )
-    boost::mt19937  m_rng;
-    boost::uniform_01< boost::mt19937 > m_rng01;
-#endif
+    mt19937  m_rng;
+    variate_generator< mt19937 &, uniform_real<> >  m_rng01;
 };
 
 
@@ -73,7 +77,7 @@ RandomNumberGenerator::RandomNumberGenerator( )
     :   m_pImpl( new RandomNumberGeneratorImpl( ) )
 {
     time_t t = time( 0 );
-    m_seed = static_cast< int >( t );
+    m_seed = (int) t;
     m_pImpl->Reseed( m_seed );
 }
 
@@ -147,6 +151,16 @@ RandomNumberGenerator::Bernoulli( double probability )
 //-----------------------------------------------------------------------------
 
 int 
+RandomNumberGenerator::Binomial( double probability, int trials )
+{
+    Assert( (probability >= 0.) && (probability <= 1.) );
+    Assert( trials > 0 );
+    return m_pImpl->Binomial( probability, trials );
+}
+
+//-----------------------------------------------------------------------------
+
+int 
 RandomNumberGenerator::Geometric( double probability )
 {
     Assert( (probability > 0.) && (probability <= 1.) );
@@ -156,149 +170,10 @@ RandomNumberGenerator::Geometric( double probability )
 //-----------------------------------------------------------------------------
 
 int 
-RandomNumberGenerator::Binomial( double probability, int trials )
-{
-    //From Press, et al., "Numerical Recipes in C++", 2nd Ed., p. 299-300.
-    Assert( (probability >= 0.) && (probability <= 1.) );
-    Assert( trials > 0 );
-    if ( trials < 100 )
-    {
-        //directly count successes
-        int b = 0;
-        for ( int i = 0; i < trials; ++i )
-            if ( Uni01() < probability )
-                ++b;
-        return b;
-    }
-
-    bool countFailures = false;
-    if ( probability > 0.5 )
-    {
-        probability = 1. - probability;
-        countFailures = true;
-    }
-    double expected = probability * trials;
-    if ( expected < 0.1 )
-    {
-        //Poisson approximation
-        int b = 0;
-        double g = exp( - expected );
-        double t = 1.;
-        while ( b < trials )
-        {
-            t *= Uni01();
-            if ( t < g )
-                break;
-            ++b;
-        }
-        if ( countFailures )
-            b = trials - b;
-        return b;
-    }
-    //rejection method
-    static double t = -1.;
-    static double lgam;
-    if ( t != trials )
-    {
-        t = trials;
-        lgam = LogGamma( t + 1. );
-    }
-    static double p = -1.;
-    static double pf;
-    static double logp;
-    static double logpf;
-    if ( p != probability )
-    {
-        p = probability;
-        pf = 1. - p;
-        logp = log( p );
-        logpf = log( pf );
-    }
-    double bb;
-    double s = sqrt( 2. * expected * pf );
-    double rej;
-    do
-    {
-        double y;
-        do
-        {
-            double v1, v2;
-            do
-            {
-                v1 = Uni01();
-                v2 = 2. * Uni01() - 1.;
-            } while ( v1*v1 + v2*v2 > 1. );
-            y = v2 / v1; //equiv of y = tan( Uni01() * pi )
-            bb = floor( y * s  +  expected );
-        } while ( (bb < 0.) || (bb > t) );
-        rej = 1.2 * s * (1. + y*y)
-                * exp( lgam - LogGamma( bb + 1. )
-                       -  LogGamma( t - bb + 1. )
-                       +  bb * logp  +  ( t - bb ) * logpf );
-    } while ( Uni01() > rej );
-    int b = static_cast< int >( bb );
-    if ( countFailures )
-        b = trials - b;
-    return b;
-}
-
-//-----------------------------------------------------------------------------
-
-int 
 RandomNumberGenerator::Poisson( double mean )
 {
     Assert( mean >= 0. );
-    //From Press, et al., "Numerical Recipes in C++", 2nd Ed., p. 298-299.
-    static double m = -1.;
-    if ( mean < 12. )
-    {
-        //directly count successes
-        static double e;
-        if ( m != mean )
-        {
-            m = mean;
-            e = exp( -m );
-        }
-        int n = -1;
-        double t = 1.;
-        do
-        {
-            ++n;
-            t *= Uni01();
-        } while ( t > e );  //equiv to sum of -log(Uni01()) < m
-        return n;
-    }
-
-    //rejection method
-    static double s;
-    static double l;
-    static double g;
-    if ( m != mean )
-    {
-        m = mean;
-        s = sqrt( 2. * m );
-        l = log( m );
-        g = m * l - LogGamma( m + 1. );
-    }
-    double nn;
-    double rej;
-    do
-    {
-        double y;
-        do
-        {
-            double v1, v2;
-            do
-            {
-                v1 = Uni01();
-                v2 = 2. * Uni01() - 1.;
-            } while ( v1*v1 + v2*v2 > 1. );
-            y = v2 / v1; //equiv of y = tan( Uni01() * pi )
-            nn = floor( y * s  +  m );
-        } while ( nn < 0. );
-        rej = 0.9 * (1. + y*y) * exp( nn * l  -  LogGamma( nn + 1. ) - g );
-    } while ( Uni01() > rej );
-    return static_cast< int >( nn );
+    return m_pImpl->Poisson( mean );
 }
 
 //-----------------------------------------------------------------------------
@@ -317,40 +192,7 @@ RandomNumberGenerator::Gamma( int n, double lambda )
 {
     Assert( n > 0 );
     Assert( lambda > 0. );
-    //Algorithm from Donald Knuth, "The Art of Computer Programming", Vol 2,
-    // 2nd Ed., p. 129, and Press, et al., "Numerical Recipes in C++", 2nd Ed.,
-    // p 296-7.
-    if ( n < 6 )
-    {
-        //directly accumulate successes
-        double g = 1.;
-        for ( int i = 0; i < n; ++i )
-            g *= Uni01();
-        return - log( g ) / lambda;
-    }
-
-    //rejection method
-    double g;
-    const double s = sqrt( 2. * n  -  1. );
-    const double n1 = n - 1.;
-    double rej;
-    do
-    {
-        double y;
-        do
-        {
-            double v1, v2;
-            do
-            {
-                v1 = Uni01();
-                v2 = 2. * Uni01() - 1.;
-            } while ( v1*v1 + v2*v2 > 1. );
-            y = v2 / v1; //equiv of y = tan( Uni01() * pi )
-            g = s * y  +  n1;
-        } while ( g <= 0. );
-        rej = (1. + y * y) * exp( n1 * log( g / n1 ) - s * y );
-    } while ( Uni01() > rej );
-    return g / lambda;
+    return m_pImpl->Gamma( n, lambda );
 }
 
 //-----------------------------------------------------------------------------
@@ -364,6 +206,12 @@ RandomNumberGenerator::Normal( double mean, double standardDeviation )
 
 //-----------------------------------------------------------------------------
 
+//Defined in ProbabilityDistributions.cpp:
+void ConvertLogNormalMoments( double mean, double stdDev,
+                              double * meanOfLog, double * stdDevOfLog );
+
+//.............................................................................
+
 double 
 RandomNumberGenerator::LogNormal( double mean, double standardDeviation,
                                   bool momentsOfLog )
@@ -371,14 +219,71 @@ RandomNumberGenerator::LogNormal( double mean, double standardDeviation,
     Assert( standardDeviation > 0. );
     if ( momentsOfLog )
     {
-        double variance = standardDeviation * standardDeviation;
-        double m = exp( mean  +  variance / 2. );
-        double v = (exp( variance ) - 1.) * exp( 2. * mean  +  variance );
-        double s = sqrt( v );
-        return m_pImpl->LogNormal( m, s );
+        return m_pImpl->LogNormal( mean, standardDeviation );
     }
-    Assert( mean > 0. );
-    return m_pImpl->LogNormal( mean, standardDeviation );
+    else
+    {
+        Assert( mean > 0. );
+        double meanOfLog, stdDevOfLog;
+        ConvertLogNormalMoments( mean, standardDeviation,
+                                 &meanOfLog, &stdDevOfLog );
+        return m_pImpl->LogNormal( meanOfLog, stdDevOfLog );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGenerator::ChiSquare( int degreesOfFreedom )
+{
+    Assert( degreesOfFreedom > 0 );
+    return m_pImpl->Gamma( degreesOfFreedom * 0.5, 0.5 );
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGenerator::StudentsT( int degreesOfFreedom )
+{
+    Assert( degreesOfFreedom > 0 );
+    double x = Normal( 0., 1. );
+    double y = ChiSquare( degreesOfFreedom );
+    Assert( y > 0. );
+    return x / sqrt( y / degreesOfFreedom );
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGenerator::F( int dof1, int dof2 )
+{
+    Assert( (dof1 > 0) && (dof2 > 0) );
+    double x = ChiSquare( dof1 );
+    double y = ChiSquare( dof2 );
+    Assert( y > 0. );
+    return (x / dof1) / (y / dof2);
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGenerator::Cauchy( double a )
+{
+    const double halfPi = 3.14159265358979 * 0.5; //Must be slightly < π/2
+    double r = (*m_pImpl)( -halfPi, halfPi );
+    return a * tan( r );
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGenerator::Beta( double a, double b )
+{
+    Assert( (a > 0.) && (b > 0.) );
+    double y1 = Gamma( a, 1. );
+    double y2 = Gamma( b, 1. );
+    Assert( y1 + y2 > 0. );
+    return y1 / (y1 + y2);
 }
 
 //-----------------------------------------------------------------------------
@@ -398,24 +303,12 @@ RandomNumberGenerator::UniformOnSphere( int dimension )
     return m_pImpl->UniformOnSphere( dimension );
 }
 
-//=============================================================================
-
-double 
-RandomNumberGenerator::Uni01( )
-{
-    return (*m_pImpl)( 0., 1. );
-}
-
 
 //*****************************************************************************
 
 
-#if defined( USE_BOOST )
-
-//-----------------------------------------------------------------------------
-
 RandomNumberGeneratorImpl::RandomNumberGeneratorImpl( )
-    :   m_rng01( m_rng )
+    :   m_rng01( m_rng, uniform_real<>( 0., 1. ) )
 {
 }
 
@@ -424,7 +317,7 @@ RandomNumberGeneratorImpl::RandomNumberGeneratorImpl( )
 void 
 RandomNumberGeneratorImpl::Reseed( int seed )
 {
-    m_rng.seed( static_cast< uint32_t >( seed ) );
+    m_rng.seed( (uint32_t) seed );
 }
 
 //=============================================================================
@@ -432,7 +325,7 @@ RandomNumberGeneratorImpl::Reseed( int seed )
 int 
 RandomNumberGeneratorImpl::operator()( )
 {
-    return static_cast< int >( m_rng( ) );
+    return (int) m_rng( );
 }
 
 //-----------------------------------------------------------------------------
@@ -440,17 +333,8 @@ RandomNumberGeneratorImpl::operator()( )
 int 
 RandomNumberGeneratorImpl::operator()( int limit )
 {
-    const int smallIntLimit = 1000;
-    if ( limit < smallIntLimit )
-    {
-        boost::uniform_smallint<> distribution( 0, limit - 1 );
-        return distribution( m_rng );
-    }
-    else
-    {
-        boost::uniform_int<> distribution( 0, limit - 1 );
-        return distribution( m_rng );
-    }
+    uniform_int<> distribution( 0, limit - 1 );
+    return distribution( m_rng );
 }
 
 //-----------------------------------------------------------------------------
@@ -458,7 +342,7 @@ RandomNumberGeneratorImpl::operator()( int limit )
 double
 RandomNumberGeneratorImpl::operator()( double minimum, double maximum )
 {
-    boost::uniform_real<> distribution( minimum, maximum );
+    uniform_real<> distribution( minimum, maximum );
     return distribution( m_rng01 );
 }
 
@@ -468,8 +352,13 @@ double
 RandomNumberGeneratorImpl::Triangle( double minimum, double mode,
                                      double maximum )
 {
-    boost::triangle_distribution<> distribution( minimum, mode, maximum );
-    return distribution( m_rng01 );
+    double u = m_rng01( );
+    double d1 = mode - minimum;
+    double d2 = maximum - minimum;
+    if ( u < (d1 / d2) )
+        return minimum  +  sqrt( u * d1 * d2 );
+    else
+        return maximum  -  sqrt( (maximum - mode) * (u * d2 - d1) );
 }
 
 //-----------------------------------------------------------------------------
@@ -477,8 +366,17 @@ RandomNumberGeneratorImpl::Triangle( double minimum, double mode,
 bool 
 RandomNumberGeneratorImpl::Bernoulli( double probability )
 {
-    boost::bernoulli_distribution<> distribution( probability );
+    bernoulli_distribution distribution( probability );
     return distribution( m_rng );
+}
+
+//-----------------------------------------------------------------------------
+
+int
+RandomNumberGeneratorImpl::Binomial( double probability, int trials )
+{
+    binomial_distribution<> distribution( trials, probability );
+    return distribution( m_rng01 );
 }
 
 //-----------------------------------------------------------------------------
@@ -486,8 +384,17 @@ RandomNumberGeneratorImpl::Bernoulli( double probability )
 int 
 RandomNumberGeneratorImpl::Geometric( double probability )
 {
-    //boost interprets probability as that of failure, not success.
-    boost::geometric_distribution<> distribution( 1. - probability );
+    //TR1/Boost uses the opposite probability from us.
+    geometric_distribution<> distribution( 1. - probability );
+    return distribution( m_rng01 );
+}
+
+//-----------------------------------------------------------------------------
+
+int
+RandomNumberGeneratorImpl::Poisson( double mean )
+{
+    poisson_distribution<> distribution( mean );
     return distribution( m_rng01 );
 }
 
@@ -496,8 +403,17 @@ RandomNumberGeneratorImpl::Geometric( double probability )
 double 
 RandomNumberGeneratorImpl::Exponential( double lambda )
 {
-    boost::exponential_distribution<> distribution( lambda );
+    exponential_distribution<> distribution( lambda );
     return distribution( m_rng01 );
+}
+
+//-----------------------------------------------------------------------------
+
+double
+RandomNumberGeneratorImpl::Gamma( double n, double lambda )
+{
+    gamma_distribution<> distribution( n );
+    return distribution( m_rng01 ) / lambda;
 }
 
 //-----------------------------------------------------------------------------
@@ -505,7 +421,7 @@ RandomNumberGeneratorImpl::Exponential( double lambda )
 double 
 RandomNumberGeneratorImpl::Normal( double mean, double standardDeviation )
 {
-    boost::normal_distribution<> distribution( mean, standardDeviation );
+    normal_distribution<> distribution( mean, standardDeviation );
     return distribution( m_rng01 );
 }
 
@@ -514,8 +430,8 @@ RandomNumberGeneratorImpl::Normal( double mean, double standardDeviation )
 double 
 RandomNumberGeneratorImpl::LogNormal( double mean, double standardDeviation )
 {
-    boost::lognormal_distribution<> distribution( mean, standardDeviation );
-    return distribution( m_rng01 );
+    double r = Normal( mean, standardDeviation );
+    return exp( r );
 }
 
 //-----------------------------------------------------------------------------
@@ -532,13 +448,22 @@ RandomNumberGeneratorImpl::UniformOnSphere( )
 vector< double > 
 RandomNumberGeneratorImpl::UniformOnSphere( int dimension )
 {
-    boost::uniform_on_sphere<> distribution( dimension );
-    return distribution( m_rng01 );
+    vector< double > rslt( dimension );
+    double sqSum = 0.;
+    do
+    {
+        for ( int i = 0; i < dimension; ++i )
+        {
+            double r = Normal( 0., 1. );
+            rslt[ i ] = r;
+            sqSum += r * r;
+        }
+    } while ( sqSum == 0. );  //extremely unlikely, but...
+    double sqrtSum = sqrt( sqSum );
+    for ( int i = 0; i < dimension; ++i )
+        rslt[ i ] /= sqrtSum;
+    return rslt;
 }
-
-//-----------------------------------------------------------------------------
-
-#endif //USE_BOOST
 
 
 //*****************************************************************************
@@ -547,7 +472,7 @@ RandomNumberGeneratorImpl::UniformOnSphere( int dimension )
 QuickRandomNumberGenerator::QuickRandomNumberGenerator( )
 {
     time_t t = time( 0 );
-    m_seed = static_cast< uint32_t >( t );
+    m_seed = (uint32_t) t;
 }
 
 
@@ -555,6 +480,18 @@ QuickRandomNumberGenerator::QuickRandomNumberGenerator( )
 
 
 #ifdef DEBUG
+
+//-----------------------------------------------------------------------------
+
+namespace
+{
+
+void GraphSampleAndExpected( vector< int > & sample,
+                             vector< double > & expectedFreqs );
+template < typename DistribFunc >
+void GraphSampleAndDist( vector< double > & sample, DistribFunc hypothFunc );
+
+}
 
 //-----------------------------------------------------------------------------
 
@@ -577,9 +514,12 @@ RandomNumberGenerator::Test( )
         Assert( (r >= 0) && (r < 256) );
         ++sampleFreqs[ r ];
     }
-    double prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    ChiSquareTestResult chiSqrRslt
+            = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    double prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Random( 256 ) = " << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -589,6 +529,7 @@ RandomNumberGenerator::Test( )
     prob = KolmogorovSmirnovTest( sample, bind( Uniform_DF, _1, 1.5, 3.5 ) );
     cout << "KolmogorovSmirnovTest of Random( 1.5, 3.5 ) = " << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Uniform_DF, _1, 1.5, 3.5 ) );
     sample.clear();
 
     sample.resize( 100000 );
@@ -599,6 +540,7 @@ RandomNumberGenerator::Test( )
     cout << "KolmogorovSmirnovTest of Triangle( -3.5, -1., 0.5 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Triangle_DF, _1, -3.5, -1., 0.5 ) );
     sample.clear();
 
     sampleFreqs.resize( 2 );
@@ -612,34 +554,12 @@ RandomNumberGenerator::Test( )
         bool r = Random.Bernoulli( 0.75 );
         ++sampleFreqs[ r  ?  1  :  0 ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Bernoulli( 0.75 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
-    sampleFreqs.clear();
-    expectedFreqs.clear();
-
-    sampleFreqs.resize( 50 );
-    expectedFreqs.resize( 50 );
-    for ( int i = 0; i < 50; ++i )
-    {
-        sampleFreqs[i] = 0;
-        expectedFreqs[i] = Geometric_PDF( i, 0.1 );
-    }
-    expectedFreqs[ 49 ] = 1. - Geometric_DF( 48, 0.1 );
-    for ( int i = 0; i < 1000000; ++i )
-    {
-        int r = Random.Geometric( 0.1 );
-        Assert( r > 0 );
-        if ( r < 49 )
-            ++sampleFreqs[ r ];
-        else
-            ++sampleFreqs[ 49 ];
-    }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
-    cout << "ChiSquareGoodnessOfFitTest of Geometric( 0.1 ) = "
-         << prob << endl;
-    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -657,10 +577,12 @@ RandomNumberGenerator::Test( )
         Assert( r < 10 );
         ++sampleFreqs[ r ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Binomial( 0.2, 9 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
     
@@ -678,10 +600,12 @@ RandomNumberGenerator::Test( )
         Assert( r < 20 );
         ++sampleFreqs[ r ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Binomial( 0.8, 19 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
     
@@ -699,10 +623,12 @@ RandomNumberGenerator::Test( )
         Assert( r < 50 );
         ++sampleFreqs[ r ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Binomial( 0.002, 49 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
     
@@ -720,10 +646,12 @@ RandomNumberGenerator::Test( )
         Assert( r < 500 );
         ++sampleFreqs[ r ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Binomial( 0.0002, 499 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
     
@@ -741,13 +669,41 @@ RandomNumberGenerator::Test( )
         Assert( r < 500 );
         ++sampleFreqs[ r ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Binomial( 0.1, 499 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
     
+    sampleFreqs.resize( 50 );
+    expectedFreqs.resize( 50 );
+    for ( int i = 0; i < 50; ++i )
+    {
+        sampleFreqs[i] = 0;
+        expectedFreqs[i] = Geometric_PDF( i, 0.1 );
+    }
+    expectedFreqs[ 49 ] = 1. - Geometric_DF( 48, 0.1 );
+    for ( int i = 0; i < 1000000; ++i )
+    {
+        int r = Random.Geometric( 0.1 );
+        Assert( r > 0 );
+        if ( r < 49 )
+            ++sampleFreqs[ r ];
+        else
+            ++sampleFreqs[ 49 ];
+    }
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
+    cout << "ChiSquareGoodnessOfFitTest of Geometric( 0.1 ) = "
+         << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
+    sampleFreqs.clear();
+    expectedFreqs.clear();
+
     sampleFreqs.resize( 50 );
     expectedFreqs.resize( 50 );
     for ( int i = 0; i < 50; ++i )
@@ -765,10 +721,12 @@ RandomNumberGenerator::Test( )
         else
             ++sampleFreqs[ 49 ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Poisson( 10.5 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -789,10 +747,12 @@ RandomNumberGenerator::Test( )
         else
             ++sampleFreqs[ 49 ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of Poisson( 15.5 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -802,6 +762,7 @@ RandomNumberGenerator::Test( )
     prob = KolmogorovSmirnovTest( sample, bind( Exponential_DF, _1, 0.5 ) );
     cout << "KolmogorovSmirnovTest of Exponential( 0.5 ) = " << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Exponential_DF, _1, 0.5 ) );
     sample.clear();
 
     sample.resize( 100000 );
@@ -810,6 +771,7 @@ RandomNumberGenerator::Test( )
     prob = KolmogorovSmirnovTest( sample, bind( Gamma_DF, _1, 11, 0.5 ) );
     cout << "KolmogorovSmirnovTest of Gamma( 11, 0.5 ) = " << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Gamma_DF, _1, 11, 0.5 ) );
     sample.clear();
 
     sample.resize( 100000 );
@@ -818,6 +780,7 @@ RandomNumberGenerator::Test( )
     prob = KolmogorovSmirnovTest( sample, bind( Normal_DF, _1, -12.2, 4.4 ) );
     cout << "KolmogorovSmirnovTest of Normal( -12.2, 4.4 ) = " << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Normal_DF, _1, -12.2, 4.4 ) );
     sample.clear();
 
     sample.resize( 100000 );
@@ -828,6 +791,7 @@ RandomNumberGenerator::Test( )
     cout << "KolmogorovSmirnovTest of LogNormal( 2.2, 4.4 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( LogNormal_DF, _1, 2.2, 4.4, false ) );
     sample.clear();
 
     sample.resize( 100000 );
@@ -838,6 +802,52 @@ RandomNumberGenerator::Test( )
     cout << "KolmogorovSmirnovTest of LogNormal( -2.2, 1.4, true ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( LogNormal_DF, _1, 2.2, 4.4, true ) );
+    sample.clear();
+
+    sample.resize( 100000 );
+    for ( int i = 0; i < 100000; ++i )
+        sample[i] = Random.ChiSquare( 17 );
+    prob = KolmogorovSmirnovTest( sample, bind( ChiSquare_DF, _1, 17 ) );
+    cout << "KolmogorovSmirnovTest of ChiSquare( 17 ) = " << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( ChiSquare_DF, _1, 17 ) );
+    sample.clear();
+
+    sample.resize( 100000 );
+    for ( int i = 0; i < 100000; ++i )
+        sample[i] = Random.StudentsT( 23 );
+    prob = KolmogorovSmirnovTest( sample, bind( StudentsT_DF, _1, 23 ) );
+    cout << "KolmogorovSmirnovTest of StudentT( 23 ) = " << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( StudentsT_DF, _1, 23 ) );
+    sample.clear();
+
+    sample.resize( 100000 );
+    for ( int i = 0; i < 100000; ++i )
+        sample[i] = Random.F( 15, 9 );
+    prob = KolmogorovSmirnovTest( sample, bind( F_DF, _1, 15, 9 ) );
+    cout << "KolmogorovSmirnovTest of F( 15, 9 ) = " << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( F_DF, _1, 15, 9 ) );
+    sample.clear();
+
+    sample.resize( 100000 );
+    for ( int i = 0; i < 100000; ++i )
+        sample[i] = Random.Cauchy( 2.5 );
+    prob = KolmogorovSmirnovTest( sample, bind( Cauchy_DF, _1, 2.5 ) );
+    cout << "KolmogorovSmirnovTest of Cauchy( 2.5 ) = " << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Cauchy_DF, _1, 2.5 ) );
+    sample.clear();
+
+    sample.resize( 100000 );
+    for ( int i = 0; i < 100000; ++i )
+        sample[i] = Random.Beta( 15., 55. );
+    prob = KolmogorovSmirnovTest( sample, bind( Beta_DF, _1, 15., 55. ) );
+    cout << "KolmogorovSmirnovTest of Beta( 15., 55. ) = " << prob << endl;
+    TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Beta_DF, _1, 15., 55. ) );
     sample.clear();
 
     //Knuth's Serial test
@@ -854,10 +864,12 @@ RandomNumberGenerator::Test( )
         int r1 = Random( 64 );
         ++sampleFreqs[ r0  +  64 * r1 ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of consecutive pairs of Random(64) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -882,10 +894,12 @@ RandomNumberGenerator::Test( )
         else
             ++sampleFreqs[17];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of gaps in Random(64) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -909,10 +923,12 @@ RandomNumberGenerator::Test( )
         else
             ++sampleFreqs[17];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of gaps in Random(0.,1.) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -945,10 +961,13 @@ QuickRandomNumberGenerator::Test( )
         Assert( (r >= 0) && (r < 256) );
         ++sampleFreqs[ r ];
     }
-    double prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    ChiSquareTestResult chiSqrRslt
+            = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    double prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of QuickRandom( 256 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -959,6 +978,7 @@ QuickRandomNumberGenerator::Test( )
     cout << "KolmogorovSmirnovTest of QuickRandom( 1.5, 3.5 ) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndDist( sample, bind( Uniform_DF, _1, 1.5, 3.5 ) );
     sample.clear();
 
     //Knuth's Serial test
@@ -975,11 +995,13 @@ QuickRandomNumberGenerator::Test( )
         int r1 = QuickRandom( 64 );
         ++sampleFreqs[ r0  +  64 * r1 ];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of consecutive pairs of"
             " QuickRandom(64) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -1004,10 +1026,12 @@ QuickRandomNumberGenerator::Test( )
         else
             ++sampleFreqs[17];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of gaps in QuickRandom(64) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -1031,10 +1055,12 @@ QuickRandomNumberGenerator::Test( )
         else
             ++sampleFreqs[17];
     }
-    prob = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    chiSqrRslt = ChiSquareGoodnessOfFitTest( sampleFreqs, expectedFreqs );
+    prob = chiSqrRslt.probability;
     cout << "ChiSquareGoodnessOfFitTest of gaps in QuickRandom(0.,1.) = "
          << prob << endl;
     TESTCHECK( (prob > 0.01), true, &ok );
+    GraphSampleAndExpected( sampleFreqs, expectedFreqs );
     sampleFreqs.clear();
     expectedFreqs.clear();
 
@@ -1044,6 +1070,122 @@ QuickRandomNumberGenerator::Test( )
         cout << "QuickRandom FAILED." << endl << endl;
     return ok;
 }
+
+//=============================================================================
+
+namespace
+{                                                                   //namespace
+//-----------------------------------------------------------------------------
+
+const int height = 12;
+const int width = 60;
+
+void DrawGraph( array< double, width > sampleFreqs,
+                array< double, width > hypothFreqs );
+
+//-----------------------------------------------------------------------------
+
+void
+GraphSampleAndExpected( vector< int > & sample,
+                        vector< double > & expectedFreqs )
+{
+    int sampleSize = accumulate( sample.begin(), sample.end(), 0 );
+    if ( sampleSize <= 0 )
+        return;
+    int binSize = (int) ceil( ((double) sample.size()) / width );
+    Assert( binSize > 0 );
+    int numBins = sample.size() / binSize;
+    Assert( numBins <= width );
+    array< double, width > sampleFreqs;
+    array< double, width > hypothFreqs;
+    int i = 0;
+    for ( ; i < numBins; ++i )
+    {
+        sampleFreqs[ i ] = 0.;
+        hypothFreqs[ i ] = 0.;
+        for ( int j = 0; j < binSize; ++j )
+        {
+            int k = i * binSize  +  j;
+            sampleFreqs[ i ] += ((double) sample[ k ]) / sampleSize;
+            hypothFreqs[ i ] += expectedFreqs[ k ];
+        }
+    }
+    for ( ; i < width; ++i )
+    {
+        sampleFreqs[ i ] = 0.;
+        hypothFreqs[ i ] = 0.;
+    }
+    DrawGraph( sampleFreqs, hypothFreqs );
+    cout << endl;
+}
+
+//-----------------------------------------------------------------------------
+
+template < typename DistribFunc >
+void
+GraphSampleAndDist( vector< double > & sample, DistribFunc hypothFunc )
+{
+    const int height = 12;
+    double sampleMin = *(min_element( sample.begin(), sample.end() ));
+    double sampleMax = *(max_element( sample.begin(), sample.end() ));
+    double graphMin = sampleMin;
+    double graphMax = sampleMax;
+    double binSize = (graphMax - graphMin) / width;
+    array< int, width > binCounts;
+    for ( int i = 0; i < width; ++i )
+        binCounts[ i ] = 0;
+    for ( vector< double >::const_iterator p = sample.begin();
+          p != sample.end(); ++p )
+    {
+        int bin = (int) ((*p - graphMin) / binSize);
+        bin = max( 0, min( bin, (width - 1) ) );
+        ++binCounts[ bin ];
+    }
+    array< double, width > sampleFreqs;
+    for ( int i = 0; i < width; ++i )
+        sampleFreqs[ i ] = ((double) binCounts[ i ]) / sample.size();
+    array< double, width > hypothFreqs;
+    for ( int i = 0; i < width; ++i )
+    {
+        double binMin = graphMin  +  i * binSize;
+        hypothFreqs[ i ] = hypothFunc( binMin + binSize )
+                - hypothFunc( binMin );
+    }
+    DrawGraph( sampleFreqs, hypothFreqs );
+    cout << graphMin << " - " << graphMax << endl;
+    cout << endl;
+}
+
+//-----------------------------------------------------------------------------
+
+void
+DrawGraph( array< double, width > sampleFreqs,
+           array< double, width > hypothFreqs )
+{
+   double maxFreq
+            = max( *(max_element( sampleFreqs.begin(), sampleFreqs.end() )),
+                   *(max_element( hypothFreqs.begin(), hypothFreqs.end() )) );
+    array< string, height > graph;
+    for ( int i = 0; i < height; ++i )
+        graph[ i ].assign( width, ' ' );
+    for ( int i = 0; i < width; ++i )
+    {
+        //draw x-axis
+        graph[ 0 ][ i ] = '_';
+        //draw hypothetical pdf
+        int y = (int) ((hypothFreqs[ i ] / maxFreq) * (height - 1));
+        graph[ y ][ i ] = '-';
+        //draw sample pdf
+        y = (int) ((sampleFreqs[ i ] / maxFreq) * (height - 1));
+        graph[ y ][ i ] = '*';
+    }
+    cout << endl;
+    for ( int y = height - 1; y >= 0; --y )
+        cout << graph[ y ] << endl;
+ }
+
+//-----------------------------------------------------------------------------
+}                                                                   //namespace
 
 //-----------------------------------------------------------------------------
 

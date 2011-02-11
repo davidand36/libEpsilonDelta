@@ -5,18 +5,10 @@
   Copyright (C) 2007 David M. Anderson
 
   ARRAY_LENGTH macro for built-in arrays.
-  array template class: STL-compatible container using a built-in array.
   TwoDArray and ThreeDArray template classes: simple, heap-allocated
   arrays.
   NOTES:
-  1. array can be initialized almost like built-in arrays, albeit with an
-     extra set of braces to avoid warnings, e.g.,
-     array<int, 2> a = {{ 0, 1 }};
-  2. Because, in order to allow for array-style initialization, m_array is
-     public, these operators are automatically implicitly defined:
-     reference operator[]( size_t index );
-     const_reference operator[]( size_t index ) const;
-  3. The at() methods return the same results as operator[], but throw an
+  1. The at() methods return the same results as operator[], but throw an
      exception if the index is out of range.
 */
 

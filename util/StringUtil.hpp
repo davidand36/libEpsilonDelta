@@ -46,11 +46,19 @@
 
 
 #include "CharType.hpp"
+#include "Platform.hpp"
 #include "Assert.hpp"
 #include <string>
 #include <vector>
 #include <cctype>
 #include <cmath>
+
+#ifdef OS_ANDROID //Required until NDK improves
+namespace std
+{
+typedef basic_string< wchar_t >  wstring;
+}
+#endif
 
 
 namespace EpsilonDelta

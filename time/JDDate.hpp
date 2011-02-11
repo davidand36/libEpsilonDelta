@@ -13,6 +13,8 @@
   by Joseph Justus Scaliger in 1583 in his "De emendatione temporum".
 */
 
+#include "Platform.hpp"
+
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
@@ -35,7 +37,11 @@ public:
     static bool Test( );
 #endif
 
-    static const long INVALID = -10000000000000;
+#if (SIZEOF_LONG >= 8)    
+    static const long INVALID = -10000000000000;  //before Big Bang
+#else
+    static const long INVALID = -2000000000;  //circa divergence of human
+#endif                                        // lineage from chimpanzees
 
 protected:
     mutable long m_julianDay; /*allows for lazy evaluation in derived classes*/

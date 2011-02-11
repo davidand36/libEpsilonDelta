@@ -111,40 +111,6 @@ Triangle_DF( double x, double minimum, double mode, double maximum )
 //=============================================================================
 
 double 
-Geometric_PDF( int x, double probability )
-{
-    Assert( (probability >= 0.) && (probability <= 1.) );
-    if ( x <= 0 )
-        return 0.;
-    if ( probability == 0. )
-        return 0.;
-    if ( probability == 1. )
-        return ((x == 1)  ?  1.  :  0.);
-    return probability * pow( (1. - probability), (x - 1.) );
-}
-
-//-----------------------------------------------------------------------------
-
-double 
-Geometric_DF( int x, double probability )
-{
-    Assert( (probability >= 0.) && (probability <= 1.) );
-    if ( x <= 0 )
-        return 0.;
-    double failProb = 1. - probability;
-    double prob = probability;
-    double cumProb = probability;
-    for ( int i = 2; i <= x; ++i )
-    {
-        prob *= failProb;
-        cumProb += prob;
-    }
-    return cumProb;
-}
-
-//=============================================================================
-
-double 
 Binomial_PDF( int x, double probability, int trials )
 {
     Assert( (probability >= 0.) && (probability <= 1.) );
@@ -186,6 +152,40 @@ Binomial_DF( int x, double probability, int trials )
     {
         return 1. - IncompleteBeta( (x + 1), (trials - x), probability );
     }
+}
+
+//=============================================================================
+
+double 
+Geometric_PDF( int x, double probability )
+{
+    Assert( (probability >= 0.) && (probability <= 1.) );
+    if ( x <= 0 )
+        return 0.;
+    if ( probability == 0. )
+        return 0.;
+    if ( probability == 1. )
+        return ((x == 1)  ?  1.  :  0.);
+    return probability * pow( (1. - probability), (x - 1.) );
+}
+
+//-----------------------------------------------------------------------------
+
+double 
+Geometric_DF( int x, double probability )
+{
+    Assert( (probability >= 0.) && (probability <= 1.) );
+    if ( x <= 0 )
+        return 0.;
+    double failProb = 1. - probability;
+    double prob = probability;
+    double cumProb = probability;
+    for ( int i = 2; i <= x; ++i )
+    {
+        prob *= failProb;
+        cumProb += prob;
+    }
+    return cumProb;
 }
 
 //=============================================================================
@@ -340,6 +340,12 @@ Normal_DF( double x, double mean, double standardDeviation )
 
 //=============================================================================
 
+//This is also used in Random.cpp, so don't make it private.
+void ConvertLogNormalMoments( double mean, double stdDev,
+                              double * meanOfLog, double * stdDevOfLog );
+
+//-----------------------------------------------------------------------------
+
 double 
 LogNormal_PDF( double x, double mean, double standardDeviation,
                bool momentsOfLog )
@@ -347,17 +353,18 @@ LogNormal_PDF( double x, double mean, double standardDeviation,
     Assert( standardDeviation > 0. );
     if ( x <= 0. )
         return 0.;
-    if ( ! momentsOfLog )
+    if ( momentsOfLog )
+    {
+        return Normal_PDF( log( x ), mean, standardDeviation );
+    }
+    else
     {
         Assert( mean > 0. );
-        double meanSqr = mean * mean;
-        double variance = standardDeviation * standardDeviation;
-        double m = 2. * log( mean ) - 0.5 * log( meanSqr + variance );
-        double v = log( 1.  +  variance / meanSqr );
-        double s = sqrt( v );
-        return Normal_PDF( log( x ), m, s );
+        double meanOfLog, stdDevOfLog;
+        ConvertLogNormalMoments( mean, standardDeviation,
+                                 &meanOfLog, &stdDevOfLog );
+        return Normal_PDF( log( x ), meanOfLog, stdDevOfLog );
     }
-    return Normal_PDF( log( x ), mean, standardDeviation );
 }
 
 //-----------------------------------------------------------------------------
@@ -370,17 +377,33 @@ LogNormal_DF( double x, double mean, double standardDeviation,
     if ( x <= 0. )
         return 0.;
 
-    if ( ! momentsOfLog )
+    if ( momentsOfLog )
+    {
+        return Normal_DF( log( x ), mean, standardDeviation );
+    }
+    else
     {
         Assert( mean > 0. );
-        double meanSqr = mean * mean;
-        double variance = standardDeviation * standardDeviation;
-        double m = 2. * log( mean ) - 0.5 * log( meanSqr + variance );
-        double v = log( 1.  +  variance / meanSqr );
-        double s = sqrt( v );
-        return Normal_DF( log( x ), m, s );
+        double meanOfLog, stdDevOfLog;
+        ConvertLogNormalMoments( mean, standardDeviation,
+                                 &meanOfLog, &stdDevOfLog );
+        return Normal_DF( log( x ), meanOfLog, stdDevOfLog );
     }
-    return Normal_DF( log( x ), mean, standardDeviation );
+}
+
+//-----------------------------------------------------------------------------
+
+void
+ConvertLogNormalMoments( double mean, double stdDev,
+                         double * meanOfLog, double * stdDevOfLog )
+{
+    double meanSqr = mean * mean;
+    double variance = stdDev * stdDev;
+    double v = log( 1.  +  variance / meanSqr );
+    if ( meanOfLog )
+        *meanOfLog = log( mean ) - 0.5 * v;
+    if ( stdDevOfLog )
+        *stdDevOfLog = sqrt( v );
 }
 
 //=============================================================================
@@ -600,8 +623,6 @@ TestProbabilityDistributions( )
     TESTCHECK( Triangle_DF( 3., 2., 3., 3. ), 1., &ok );
     TESTCHECK( Triangle_DF( 4., 2., 3., 3. ), 1., &ok );
 
-    //!!!Geometric
-
     TESTCHECK( Binomial_PDF( -3, 0.5, 10 ), 0., &ok );
     TESTCHECKFE( Binomial_PDF( 4, 0.25, 13 ), 0.2097, &ok, 0.0001 );
     TESTCHECKFE( Binomial_PDF( 9, 0.4, 19 ), 0.1464, &ok, 0.0002 );
@@ -616,6 +637,8 @@ TestProbabilityDistributions( )
     TESTCHECKFE( Binomial_DF( 8, 0.35, 19 ), 0.8145, &ok, 0.0001 );
     TESTCHECKF( Binomial_DF( 19, 0.35, 19 ), 1., &ok );
     TESTCHECK( Binomial_DF( 20, 0.35, 19 ), 1., &ok );
+
+    //!!!Geometric
 
     TESTCHECKF( Hypergeometric_PDF( 4, 50, 5, 10 ), 0.003964583, &ok );
     TESTCHECKF( Hypergeometric_PDF( 5, 50, 5, 10 ), 0.0001189375, &ok );

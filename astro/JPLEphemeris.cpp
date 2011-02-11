@@ -34,6 +34,7 @@
 #include "TestCheck.hpp"
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -43,18 +44,15 @@ namespace EpsilonDelta
 
 
 JPLEphemeris::JPLEphemeris( )
-    :   m_file( 0 ),
-        m_wrongEndian( false ),
+    :   m_wrongEndian( false ),
         m_curBlock( 0 )
 {
 }
 
 //.............................................................................
 
-
 JPLEphemeris::JPLEphemeris( const std::string & fileName, bool storeConstants )
-    :   m_file( 0 ),
-        m_wrongEndian( false ),
+    :   m_wrongEndian( false ),
         m_curBlock( 0 )
 {
     Init( fileName, storeConstants );
@@ -65,7 +63,8 @@ JPLEphemeris::JPLEphemeris( const std::string & fileName, bool storeConstants )
 void 
 JPLEphemeris::Init( const std::string & fileName, bool storeConstants )
 {
-    bool openRslt = OpenBinaryFile( fileName );
+    m_pFile = shared_ptr< File >( new File( fileName ) );
+    bool openRslt = m_pFile->Open( File::ReadMode );
     if ( ! openRslt )
         throw Exception( "Unable to open JPL ephemeris file." );
 
@@ -82,31 +81,16 @@ JPLEphemeris::Init( const std::string & fileName, bool storeConstants )
 //.............................................................................
 
 bool 
-JPLEphemeris::OpenBinaryFile( const std::string & fileName )
-{
-    if ( m_file )
-        fclose( m_file );
-    m_file = fopen( fileName.c_str(), "rb" );
-    return ( m_file != 0 );
-}
-
-//.............................................................................
-
-bool 
 JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
 {                                                        //ReadBinaryFileHeader
-    const int TitleLen = 84;
-    const int MaxConstants = 400;
-    const int ConstNameLen = 6;
-
-    int bytesRead = 0;
+    bool readRslt = false;
 
     char title[ TitleLen + 1 ];
     title[ TitleLen ] = 0;
     for ( int i = 0; i < NumTitles; ++i )
     {
-        bytesRead = fread( title, 1, TitleLen, m_file );
-        if ( bytesRead != TitleLen )
+        readRslt = m_pFile->Read( title, TitleLen );
+        if ( ! readRslt )
             return false;
         if ( storeConstants )
         {
@@ -120,8 +104,8 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
     constName[ ConstNameLen ] = 0;
     for ( int i = 0; i < MaxConstants; ++i )
     {
-        bytesRead = fread( constName, 1, ConstNameLen, m_file );
-        if ( bytesRead != ConstNameLen )
+        readRslt = m_pFile->Read( constName, ConstNameLen );
+        if ( ! readRslt )
             return false;
         if ( storeConstants )
         {
@@ -136,27 +120,27 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
         }
     }
 
-    bytesRead = fread( &m_jdStart, 1, sizeof(m_jdStart), m_file );
-    if ( bytesRead != sizeof(m_jdStart) )
+    readRslt = m_pFile->Read( &m_jdStart );
+    if ( ! readRslt )
         return false;
-    bytesRead = fread( &m_jdEnd, 1, sizeof(m_jdEnd), m_file );
-    if ( bytesRead != sizeof(m_jdEnd) )
+    readRslt = m_pFile->Read( &m_jdEnd );
+    if ( ! readRslt )
         return false;
-    bytesRead = fread( &m_blockInterval, 1, sizeof(m_blockInterval), m_file );
-    if ( bytesRead != sizeof(m_blockInterval) )
+    readRslt = m_pFile->Read( &m_blockInterval );
+    if ( ! readRslt )
         return false;
 
     uint32_t numConstants;
-    bytesRead = fread( &numConstants, 1, sizeof(numConstants), m_file );
-    if ( bytesRead != sizeof(numConstants) )
+    readRslt = m_pFile->Read( &numConstants );
+    if ( ! readRslt )
         return false;
 
-    bytesRead = fread( &m_astronomicalUnit, 1, sizeof(m_astronomicalUnit), m_file );
-    if ( bytesRead != sizeof(m_astronomicalUnit) )
+    readRslt = m_pFile->Read( &m_astronomicalUnit );
+    if ( ! readRslt )
         return false;
     
-    bytesRead = fread( &m_earthMoonRatio, 1, sizeof(m_earthMoonRatio), m_file );
-    if ( bytesRead != sizeof(m_earthMoonRatio) )
+    readRslt = m_pFile->Read( &m_earthMoonRatio );
+    if ( ! readRslt )
         return false;
 
     for ( int i = 0; i < Lib; ++i )
@@ -164,21 +148,21 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
         for ( int j = 0; j < 3; ++j )
         {
             uint32_t ui;
-            bytesRead = fread( &ui, 1, sizeof(ui), m_file );
-            if ( bytesRead != sizeof(ui) )
+            readRslt = m_pFile->Read( &ui );
+            if ( ! readRslt )
                 return false;
             if ( j == 0 )
-                m_coeffLayouts[i].m_offset = static_cast<int>( ui );
+                m_coeffLayouts[i].m_offset = (int) ui;
             else if ( j == 1 )
-                m_coeffLayouts[i].m_numCoeffs = static_cast<int>( ui );
+                m_coeffLayouts[i].m_numCoeffs = (int) ui;
             else
-                m_coeffLayouts[i].m_numSubIntervals = static_cast<int>( ui );
+                m_coeffLayouts[i].m_numSubIntervals = (int) ui;
         }
     }
 
     uint32_t ver;
-    bytesRead = fread( &ver, 1, sizeof(ver), m_file );
-    if ( bytesRead != sizeof(ver) )
+    readRslt = m_pFile->Read( &ver );
+    if ( ! readRslt )
         return false;
     m_version = ver;
 
@@ -186,15 +170,15 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
     for ( int j = 0; j < 3; ++j )
     {
         uint32_t ui;
-        bytesRead = fread( &ui, 1, sizeof(ui), m_file );
-        if ( bytesRead != sizeof(ui) )
+        readRslt = m_pFile->Read( &ui );
+        if ( ! readRslt )
             return false;
         if ( j == 0 )
-            m_coeffLayouts[ Lib ].m_offset = static_cast<int>( ui );
+            m_coeffLayouts[ Lib ].m_offset = (int) ui;
         else if ( j == 1 )
-            m_coeffLayouts[ Lib ].m_numCoeffs = static_cast<int>( ui );
+            m_coeffLayouts[ Lib ].m_numCoeffs = (int) ui;
         else
-            m_coeffLayouts[ Lib ].m_numSubIntervals = static_cast<int>( ui );
+            m_coeffLayouts[ Lib ].m_numSubIntervals = (int) ui;
     }
 
     for ( int i = 0; i < NumTargets; ++i )
@@ -210,16 +194,6 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
     if ( storeConstants && (numConstants != m_constants.size()) )
         return false;
 
-    for ( int i = 0; i < MaxConstants; ++i )
-    {
-        double val;
-        bytesRead = fread( &val, 1, sizeof(val), m_file );
-        if ( bytesRead != sizeof(val) )
-            return false;
-        if ( (i < static_cast<int>(numConstants)) && storeConstants )
-            m_constants[i].m_value = val;
-    }
-
     if ( m_wrongEndian )
     {
         SwapEndian( &m_jdStart );
@@ -234,9 +208,6 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
             SwapEndian( &m_coeffLayouts[i].m_numSubIntervals );
         }
         SwapEndian( &m_version );
-        if ( storeConstants )
-            for ( int i = 0; i < static_cast<int>(numConstants); ++i )
-                SwapEndian( &m_constants[i].m_value );
     }
 
     int maxOffset = 0;
@@ -250,14 +221,33 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
             maxIndex = i;
         }
         //If this assertion fails, probably need to increase MaxCoeffs.
-        Assert( m_coeffLayouts[ Lib ].m_numCoeffs <= MaxCoeffs );
+        Assert( m_coeffLayouts[i].m_numCoeffs <= MaxCoeffs );
     }
     m_coeffsPerBlock = m_coeffLayouts[ maxIndex ].m_offset
             +  m_coeffLayouts[ maxIndex ].m_numCoeffs
             * m_coeffLayouts[ maxIndex ].m_numComponents
             * m_coeffLayouts[ maxIndex ].m_numSubIntervals;
-    m_dataOffset = 2 * m_coeffsPerBlock * sizeof( double );
+    int blockSize = m_coeffsPerBlock * sizeof( double );
+    m_dataOffset = 2 * blockSize;
 
+    //Constants themselves are in second "block"
+    m_pFile->Seek( blockSize );
+    for ( int i = 0; i < MaxConstants; ++i )
+    {
+        double val;
+        readRslt = m_pFile->Read( &val );
+        if ( ! readRslt )
+            return false;
+        if ( (i < (int) numConstants) && storeConstants )
+            m_constants[i].m_value = val;
+    }
+    if ( m_wrongEndian )
+    {
+        if ( storeConstants )
+            for ( int i = 0; i < (int) numConstants; ++i )
+                SwapEndian( &m_constants[i].m_value );
+    }
+    
     return true;
 }                                                        //ReadBinaryFileHeader
 
@@ -265,8 +255,6 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
 
 JPLEphemeris::~JPLEphemeris( )
 {
-    if ( m_file )
-        fclose( m_file );
 }
 
 //=============================================================================
@@ -751,7 +739,52 @@ JPLEphemeris::Constants( ) const
     return m_constants;
 }
 
+//-----------------------------------------------------------------------------
+
+const JPLEphemeris::CoefficientLayout &
+JPLEphemeris::CoeffLayout( int target ) const
+{
+    Assert( (target >= 0) && (target < NumTargets) );
+    return m_coeffLayouts[ target ];
+}
+
 //=============================================================================
+
+void
+JPLEphemeris::ReadCoeffBlock( double julianDay0, double julianDay1,
+                              double * coeffBlock )
+{
+    double ephemDiff = julianDay0 - m_jdStart;
+    ephemDiff += julianDay1;
+    if ( (ephemDiff < 0.0) || (m_jdStart + ephemDiff > m_jdEnd) )
+    {
+        throw Exception( "Date out of range of JPL ephemeris." );
+        //return -1;
+    }
+    int blockNumber = (int)( ephemDiff / m_blockInterval );
+    if ( m_jdStart + ephemDiff == m_jdEnd )
+        --blockNumber;  //Special case at end of ephemeris.
+    int blockSize = m_coeffsPerBlock * sizeof( double );
+    int blockOffset = m_dataOffset + (blockNumber * blockSize);
+    Assert( m_pFile );
+    if ( ! m_pFile )
+        throw Exception( "JPLEphemeris: File not open." );
+    int seekRslt = m_pFile->Seek( blockOffset );
+    if ( seekRslt < 0 )
+        throw Exception( "JPLEphemeris: Seek failed." );
+    bool readRslt = m_pFile->Read( reinterpret_cast< char * >( coeffBlock ),
+                                   blockSize );
+    if ( ! readRslt )
+        throw Exception( "JPLEphemeris: Read failed." );
+    if ( m_wrongEndian )
+    {
+        double * pCoeff = coeffBlock;
+        for ( int i = 0; i < m_coeffsPerBlock; ++i, ++pCoeff )
+            SwapEndian( pCoeff );
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 bool 
 JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
@@ -791,39 +824,7 @@ JPLEphemeris::LoadCoeffBlock( double julianDay0, double julianDay1 )
             }
         }
     }
-    double ephemDiff = julianDay0 - m_jdStart;
-    ephemDiff += julianDay1;
-    if ( (ephemDiff < 0.0) || (m_jdStart + ephemDiff > m_jdEnd) )
-    {
-        throw Exception( "Date out of range of JPL ephemeris." );
-        //return false;
-    }
-    int blockNumber = static_cast<int>( ephemDiff / m_blockInterval );
-    if ( m_jdStart + ephemDiff == m_jdEnd )
-        --blockNumber;  //Special case at end of ephemeris.
-    int blockSize = m_coeffsPerBlock * sizeof( double );
-    Assert( m_file != 0 );
-    if ( m_file == 0 )
-        return false;
-    int fileOffset = m_dataOffset + (blockNumber * blockSize);
-    int seekRslt = fseek( m_file, fileOffset, SEEK_SET );
-    if ( seekRslt != 0 )
-    {
-        throw Exception( "Seek failed." );
-        //return false;
-    }
-    int bytesRead = fread( block, 1, blockSize, m_file );
-    if ( bytesRead != blockSize )
-    {
-        throw Exception( "Read failed." );
-        //return false;
-    }
-    if ( m_wrongEndian )
-    {
-        double * pCoeff = block;
-        for ( int i = 0; i < m_coeffsPerBlock; ++i, ++pCoeff )
-            SwapEndian( pCoeff );
-    }
+    ReadCoeffBlock( julianDay0, julianDay1, block );
     return true;
 }
 
@@ -838,12 +839,10 @@ JPLEphemeris::GetTargetCoefficients( double julianDay0, double julianDay1,
     double blockDiff = julianDay0 - coeffBlock[0];
     blockDiff += julianDay1;
     double blockFrac = blockDiff / m_blockInterval;
-    double numSubIntervals = static_cast< double >(
-        m_coeffLayouts[ target ].m_numSubIntervals );
-    double bf1 = static_cast< double >( static_cast< int >( blockFrac ) );
+    double numSubIntervals = (double)m_coeffLayouts[ target ].m_numSubIntervals;
+    double bf1 = (double)((int) blockFrac);
     //use bf1 to catch the special case blockFrac==1.0.
-    int subIntervalIndex = static_cast< int >(
-        blockFrac * numSubIntervals  -  bf1 );
+    int subIntervalIndex = (int)( blockFrac * numSubIntervals  -  bf1 );
     int offset = subIntervalIndex * m_coeffLayouts[ target ].m_numCoeffs
             * m_coeffLayouts[ target ].m_numComponents;
     m_targetCoeffs += offset;
@@ -962,7 +961,7 @@ JPLEphemeris::RegisterEphemeris( JPLEphemeris & ephem )
 JPLEphemeris * 
 JPLEphemeris::GetEphemeris( double jd )
 {
-    for ( int i = 0; i < static_cast<int>(s_ephemerides.size()); ++i )
+    for ( int i = 0; i < (int) s_ephemerides.size(); ++i )
     {
         if ( (s_ephemerides[i]->firstJulianDay() <= jd)
              && (jd <= s_ephemerides[i]->lastJulianDay()) )
@@ -1101,8 +1100,8 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1,
 
 #ifdef DEBUG
 
-bool 
-JPLEphemeris::Test( const std::string & testFileName, bool verbose )
+bool
+JPLEphemeris::Test( )
 {
     bool ok = true;
     cout << "Testing JPLEphemeris" << endl;
@@ -1129,6 +1128,21 @@ JPLEphemeris::Test( const std::string & testFileName, bool verbose )
     TESTCHECK( JPLToSolarSystemBody( Uranus ), SolarSystem::Uranus, &ok );
     TESTCHECK( JPLToSolarSystemBody( Neptune ), SolarSystem::Neptune, &ok );
     TESTCHECK( JPLToSolarSystemBody( Pluto ), SolarSystem::Pluto, &ok );
+
+    if ( ok )
+        cout << "JPLEphemeris PASSED." << endl << endl;
+    else
+        cout << "JPLEphemeris FAILED." << endl << endl;
+    return ok;
+}
+
+//-----------------------------------------------------------------------------
+
+bool 
+JPLEphemeris::Test( const std::string & testFileName, bool verbose )
+{
+    bool ok = true;
+    cout << "Testing JPLEphemeris" << endl;
 
     char testLine[ 102 ];
     int lineNum = 0;

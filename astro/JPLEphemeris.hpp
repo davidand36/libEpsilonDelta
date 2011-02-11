@@ -75,6 +75,7 @@
 #include "Angle.hpp"
 #include "Nutation.hpp"
 #include "SolarSystem.hpp"
+#include "File.hpp"
 #include <vector>
 #include <string>
 #include <cstdio>
@@ -146,6 +147,7 @@ public:
     double EarthMoonRatio( ) const;
 
     static const int NumTitles = 3;
+    static const int TitleLen = 84;
     std::string Title( int index ) const;
     int Version( ) const;
 
@@ -154,22 +156,37 @@ public:
         std::string m_name;
         double m_value;
     };
+    static const int MaxConstants = 400;
+    static const int ConstNameLen = 6;
     const std::vector< Constant > & Constants( ) const;
 
     static void RegisterEphemeris( JPLEphemeris & ephem );
     static JPLEphemeris * GetEphemeris( double jd );
 
+    //For internal use and with tools:
+    enum ETarget { Mer, Ven, EMBary, Mar, Jup, Sat, Ura, Nep, Plu,
+                   MoonGeo, Sol, Nut, Lib, NumTargets };
+    struct CoefficientLayout
+    {
+        int m_offset;
+        int m_numCoeffs;
+        int m_numComponents;
+        int m_numSubIntervals;
+    };
+    const CoefficientLayout & CoeffLayout( int target ) const;
+    double BlockInterval( ) const;
+    int CoeffsPerBlock( ) const;
+    void ReadCoeffBlock( double julianDay0, double julianDay1,
+                         double * coeffBlock );
+    
 #ifdef DEBUG
+    static bool Test( );
     bool Test( const std::string & testFileName, bool verbose = false );
 #endif
 
 //.............................................................................
 
 private:
-    enum ETarget { Mer, Ven, EMBary, Mar, Jup, Sat, Ura, Nep, Plu,
-                   MoonGeo, Sol, Nut, Lib, NumTargets };
-
-    bool OpenBinaryFile( const std::string & fileName );
     bool ReadBinaryFileHeader( bool storeConstants = false );
     bool LoadCoeffBlock( double julianDay0, double julianDay1 );
     bool GetTargetCoefficients( double julianDay0, double julianDay1, 
@@ -182,15 +199,7 @@ private:
                             Vector3D * pComponents, 
                             Vector3D * pDerivatives = 0 );
 
-    struct CoefficientLayout
-    {
-        int m_offset;
-        int m_numCoeffs;
-        int m_numComponents;
-        int m_numSubIntervals;
-    };
-
-    std::FILE * m_file;
+    std::tr1::shared_ptr< File > m_pFile;
 
     //data from header
     double m_jdStart;
@@ -200,7 +209,6 @@ private:
     std::string m_titles[ NumTitles ];
     std::vector< Constant > m_constants;
     int m_version;  //e.g. 405 for the DE405 ephemeris
-
     double m_blockInterval;
     bool m_wrongEndian;
     CoefficientLayout m_coeffLayouts[ NumTargets ];
@@ -281,6 +289,24 @@ double
 JPLEphemeris::EarthMoonRatio( ) const
 {
     return m_earthMoonRatio;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+double
+JPLEphemeris::BlockInterval( ) const
+{
+    return m_blockInterval;
+}
+
+//-----------------------------------------------------------------------------
+
+inline
+int
+JPLEphemeris::CoeffsPerBlock( ) const
+{
+    return m_coeffsPerBlock;
 }
 
 

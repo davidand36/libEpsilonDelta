@@ -55,7 +55,7 @@ set( sources
    )
 
 set( EpsilonDeltaLibs
-     astro time math util
+     astro file time math util
    )
 foreach( lib ${EpsilonDeltaLibs} )
     include_directories( "${CMAKE_SOURCE_DIR}/${lib}" )

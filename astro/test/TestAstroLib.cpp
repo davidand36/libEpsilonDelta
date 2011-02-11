@@ -82,30 +82,43 @@ int Main( int /*argc*/, char ** argv )
     libBasePath += "../";
 #endif
 
-    JPLEphemeris de200( libBasePath + "astrodata/JPL_DE200.be", true );
-    if ( ! de200.Test( libBasePath + "astro/test/testpo.200" ) )
-        ok = false;
-    JPLEphemeris de405( libBasePath + "astrodata/JPL_DE405.be", true );
-    if ( ! de405.Test( libBasePath + "astro/test/testpo.405" ) )
-        ok = false;
-    JPLEphemeris de406( libBasePath + "astrodata/JPL_DE406.be", true );
-    if ( ! de406.Test( libBasePath + "astro/test/testpo.406" ) )
+    if ( ! JPLEphemeris::Test( ) )
         ok = false;
 
-    JPLEphemeris::RegisterEphemeris( de405 );
-    JPLEphemeris::RegisterEphemeris( de406 );
+    JPLEphemeris de200be( libBasePath + "astrodata/JPL_DE200.be", true );
+    if ( ! de200be.Test( libBasePath + "astro/test/testpo.200" ) )
+        ok = false;
+    JPLEphemeris de405be( libBasePath + "astrodata/JPL_DE405.be", true );
+    if ( ! de405be.Test( libBasePath + "astro/test/testpo.405" ) )
+        ok = false;
+    JPLEphemeris de406be( libBasePath + "astrodata/JPL_DE406.be", true );
+    if ( ! de406be.Test( libBasePath + "astro/test/testpo.406" ) )
+        ok = false;
+    JPLEphemeris de405le( libBasePath + "astrodata/JPL_DE405.le", true );
+    if ( ! de405le.Test( libBasePath + "astro/test/testpo.405" ) )
+        ok = false;
+    JPLEphemeris de406le( libBasePath + "astrodata/JPL_DE406.le", true );
+    if ( ! de406le.Test( libBasePath + "astro/test/testpo.406" ) )
+        ok = false;
+    JPLEphemeris de405_2011_2040le( libBasePath
+                                   + "astrodata/JPL_DE405_2011_2040.le", true );
+    if ( ! de405le.Test( libBasePath + "astro/test/testpo.405_2011_2040" ) )
+        ok = false;
 
-    if ( ! TestSiderealTime( de405 ) )
+    JPLEphemeris::RegisterEphemeris( de405le );
+    JPLEphemeris::RegisterEphemeris( de406be );
+
+    if ( ! TestSiderealTime( de405le ) )
         ok = false;
     if ( ! Precession::Test( ) )
         ok = false;
-    if ( ! TestObliquity( de405 ) )
+    if ( ! TestObliquity( de405le ) )
         ok = false;
-    if ( ! Nutation::Test( de405 ) )
+    if ( ! Nutation::Test( de405le ) )
         ok = false;
-    if ( ! TestCoordinateReduction( de200, de405 ) )
+    if ( ! TestCoordinateReduction( de200be, de405le ) )
         ok = false;
-    if ( ! TestApparentEphemeris( de200, de405 ) )
+    if ( ! TestApparentEphemeris( de200be, de405le ) )
         ok = false;
     if ( ! TestAstroPhenomena( ) )
         ok = false;

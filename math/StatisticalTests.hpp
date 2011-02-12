@@ -11,7 +11,8 @@
   2. Median() modifies the sample data only to the extent that it reorders
      the elements.
   3. Hypothesis tests return the probability of the observed result, given
-     the (null) hypothesis. So a smaller value suggests rejection.
+     the null hypothesis. So a smaller value suggests rejection of the null
+     hypothesis and acceptance of the alternative.
   4. MeanTest() tests the hypothesis that the population mean is equal to the
      hypothetical mean. It is valid for a normal distribution or a large
      sample size. Likewise for VarianceTest().
@@ -21,20 +22,36 @@
   6. ChiSquareGoodnessOfFitTest() tests whether binned or categorized data
      comes from a distribution with the hypothesized frequencies. If, as is
      commonly the case, the hypothesis specifies probabilities, leave
-     probabilities = true. If, however, the expected frequencies are directly
-     known, set probabilities=false. If other parameters of the expected
-     distribution were determined from the data, constraints should be set
-     to the number of such free parameters have been fitted.
+     probabilities = true. If, however, the expected frequencies (counts) are
+     directly known, set probabilities=false. If other parameters of the
+     expected distribution were determined from the data, constraints should
+     be set to the number of such free parameters that have been fitted.
   7. MeansTest() tests the hypothesis that the means of two populations are
      the same. It is valid for normal distributions or large sample sizes.
      Set equalVariances = true if the variances of both distributions are
-     believed to be the same; false if they are significantly different.
+     believed to be the same; false if they may be significantly different.
      VariancesTest() can be used to decide this.
   8. MediansTest() tests the hypothesis that the medians of two populations
      are equal.
   9. The second form of KolmogorovSmirnovTest() tests the hypothesis that
      two samples are drawn from populations with the same distribution.
-  10. ContingencyTableTest() 
+  10. LinearCorrelationTest() tests whether two continuous variables are
+     linearly dependent. It is valid for jointly normal distributions, or
+     reasonable approximations thereof.
+  11. SimpleLinearRegression() estimates the coefficients of the equation
+     Y = α + ßX + ε (where ε is a residual “error” term with a mean of zero)
+     that best fit the data.
+  12. SpearmansRankCorrelationTest() and KendallsTauTest() both test whether
+     two continuous variables are dependent. Both are based on the order,
+     rather than the numeric value, of the data, so they are non-parametric.
+  13. ChiSquareContingencyTableTest() tests for independence of two
+     categorical variables. Each variable has a small number of possible
+     values and the table contains the counts, i.e. the observed frequency of
+     each combination of values of the variables.
+  14. FishersExactTest() also tests a contingency table for independence, but
+     only for 2x2 tables. This test is most appropriate when the margins (row
+     and column totals) are considered fixed, but may be too conservative
+     otherwise.
 */
 
 

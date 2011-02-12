@@ -60,6 +60,15 @@ double Median( std::vector< double > & sample );
 
 //=============================================================================
 
+enum Tail
+{
+    LOWER_TAIL,     //H₀ is ≥, H₁ is <
+    UPPER_TAIL,     //H₀ is ≤, H₁ is >
+    BOTH_TAILS      //H₀ is =, H₁ is ≠
+};
+
+//-----------------------------------------------------------------------------
+
 //Test return types:
 struct TTestResult
 {
@@ -131,9 +140,9 @@ struct SimpleRegressionResult
 
 //One-sample tests:
 TTestResult MeanTest( int sampleSize, double sampleMean, double sampleVariance,
-                      double hypothMean = 0., int tails = 1 );
+                      double hypothMean, Tail tail );
 ChiSquareTestResult VarianceTest( int sampleSize, double sampleVariance,
-                                  double hypothVariance, int tails = 1 );
+                                  double hypothVariance, Tail tail );
 template < typename DistribFunc >
 double KolmogorovSmirnovTest( std::vector< double > & sample,
                               DistribFunc hypothFunc, bool sorted = false );
@@ -148,31 +157,28 @@ TTestResult MeansTest( int sampleSize1, double sampleMean1,
                        double sampleVariance1,
                        int sampleSize2, double sampleMean2,
                        double sampleVariance2,
-                       bool equalVariances = false, int tails = 1 );
+                       bool equalVariances, Tail tail );
 FTestResult VariancesTest( int sampleSize1, double sampleVariance1,
                            int sampleSize2, double sampleVariance2,
-                           int tails = 1 );
+                           Tail tail );
 double MediansTest( const std::vector< double > & sample1,
-                    const std::vector< double > & sample2, int tails = 1 );
+                    const std::vector< double > & sample2, Tail tail );
 double KolmogorovSmirnovTest( std::vector< double > & sample1,
                               std::vector< double > & sample2,
                               bool sorted = false );
 
 //Correlation tests:
 CorrelationTestResult LinearCorrelationTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    int tails = 1 );
+    const std::vector< std::tr1::array< double, 2 > > & samples, Tail tail );
 SimpleRegressionResult SimpleLinearRegression( int sampleSize,
                                                double meanX, double meanY,
                                                double varianceX,
                                                double varianceY,
                                                double pearsonsR );
 CorrelationTestResult SpearmansRankCorrelationTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    int tails = 1 );
+    const std::vector< std::tr1::array< double, 2 > > & samples, Tail tail );
 KendallsTauTestResult KendallsTauTest(
-    const std::vector< std::tr1::array< double, 2 > > & samples,
-    int tails = 1 );
+    const std::vector< std::tr1::array< double, 2 > > & samples, Tail tail );
 
 //Contingency tables:
 ContingencyTableResult ChiSquareContingencyTableTest(
@@ -188,8 +194,7 @@ ContingencyTableResult ChiSquareContingencyTableTest(
     const std::tr1::array< std::tr1::array< int, M >, N > & table,
     bool yatesCorrection = false );
 double FishersExactTest(
-    const std::tr1::array< std::tr1::array< int, 2 >, 2 > & table,
-    int tails = 1 );
+    const std::tr1::array< std::tr1::array< int, 2 >, 2 > & table, int tails );
 
 #ifdef DEBUG
 bool TestStatisticalTests( );

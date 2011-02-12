@@ -78,19 +78,37 @@ Median( vector< double > & sample )
 
 TTestResult
 MeanTest( int sampleSize, double sampleMean, double sampleVariance,
-          double hypothMean, int tails )
+          double hypothMean, Tail tail )
 {
     Assert( sampleSize > 1 );
-    Assert( sampleVariance > 0. );
-    double t = (sampleMean - hypothMean)
-            * sqrt( static_cast< double >( sampleSize ) )
-            / sqrt( sampleVariance );
-    double prob = StudentsT_DF( t, sampleSize - 1 );
-    if ( t > 0 )
-        prob = 1. - prob;
-    if ( tails == 2 )
-        prob *= 2.;
-    TTestResult tResult = { prob, t, sampleSize - 1 };
+    Assert( sampleVariance >= 0. );
+    double prob = 0.;
+    double t = 0.;
+    int degreesOfFreedom = sampleSize - 1;
+    if ( sampleVariance == 0. )
+    {
+        if ( (sampleMean == hypothMean)
+             || ( (tail == LOWER_TAIL) && (sampleMean >= hypothMean) )
+             || ( (tail == UPPER_TAIL) && (sampleMean <= hypothMean) ) )
+            prob = 1.;
+        else
+            prob = 0.;
+        t = (sampleMean == hypothMean)  ?  0.
+                :  (sampleMean < hypothMean)
+                ?  - numeric_limits< double >::infinity()
+                :  numeric_limits< double >::infinity();
+    }
+    else
+    {
+        t = (sampleMean - hypothMean) * sqrt( (double) sampleSize )
+                / sqrt( sampleVariance );
+        prob = StudentsT_DF( t, degreesOfFreedom );
+        if ( tail == UPPER_TAIL )
+            prob = 1. - prob;
+        else if ( tail == BOTH_TAILS )
+            prob = 2. * min( prob, 1. - prob );
+    }
+    TTestResult tResult = { prob, t, degreesOfFreedom };
     return tResult;
 }
 
@@ -98,18 +116,31 @@ MeanTest( int sampleSize, double sampleMean, double sampleVariance,
 
 ChiSquareTestResult 
 VarianceTest( int sampleSize, double sampleVariance, double hypothVariance,
-              int tails )
+              Tail tail )
 {
     Assert( sampleSize > 1 );
-    Assert( sampleVariance > 0. );
-    Assert( hypothVariance > 0. );
-    double chiSquare = sampleVariance * (sampleSize - 1.) / hypothVariance;
-    double prob = ChiSquare_DF( chiSquare, sampleSize - 1 );
-    if ( sampleVariance > hypothVariance )
+    Assert( sampleVariance >= 0. );
+    Assert( hypothVariance >= 0. );
+    double prob = 0.;
+    double chiSquare = 0.;
+    int degreesOfFreedom = sampleSize - 1;
+    if ( hypothVariance == 0. )
+    {
+        prob = (sampleVariance == 0.)  ?  1.  :  0.;
+        chiSquare = (sampleVariance == 0.)  ?  0.
+                :  numeric_limits< double >::infinity();
+    }
+    else
+    {
+        chiSquare = sampleVariance * (sampleSize - 1.) / hypothVariance;
+        prob = ChiSquare_DF( chiSquare, degreesOfFreedom );
+    }
+    if ( tail == UPPER_TAIL )
         prob = 1. - prob;
-    if ( tails == 2 )
-        prob *= 2.;
-    ChiSquareTestResult chiSquareResult = { prob, chiSquare, sampleSize - 1 };
+    else if ( tail == BOTH_TAILS )
+        prob = 2. * min( prob, 1. - prob );
+    ChiSquareTestResult chiSquareResult
+            = { prob, chiSquare, degreesOfFreedom };
     return chiSquareResult;
 }
 
@@ -159,12 +190,12 @@ ChiSquareGoodnessOfFitTest( const vector< int > & sampleFreqs,
 TTestResult
 MeansTest( int sampleSize1, double sampleMean1, double sampleVariance1,
            int sampleSize2, double sampleMean2, double sampleVariance2,
-           bool equalVariances, int tails )
+           bool equalVariances, Tail tail )
 {
     Assert( sampleSize1 > 1. );
     Assert( sampleSize2 > 1. );
-    Assert( sampleVariance1 > 0. );
-    Assert( sampleVariance2 > 0. );
+    Assert( sampleVariance1 >= 0. );
+    Assert( sampleVariance2 >= 0. );
     double pooledVariance;
     int degreesOfFreedom;
     if ( equalVariances )
@@ -183,14 +214,33 @@ MeansTest( int sampleSize1, double sampleMean1, double sampleVariance1,
         double dof = ( ((vn1 + vn2) * (vn1 + vn2))
                 / ((vn1 * vn1 / (sampleSize1 - 1.))
                    +  (vn2 * vn2 / (sampleSize2 - 1.))) );
-        degreesOfFreedom = static_cast< int >( dof );
+        degreesOfFreedom = (int) dof;
     }
-    double t = (sampleMean1 - sampleMean2) / sqrt( pooledVariance );
-    double prob = StudentsT_DF( t, degreesOfFreedom );
-    if ( t > 0 )
-        prob = 1. - prob;
-    if ( tails == 2 )
-        prob *= 2.;
+    double prob = 0.;
+    double t = 0.;
+    Assert( pooledVariance >= 0. );
+    if ( pooledVariance == 0. )
+    {
+        if ( (sampleMean1 == sampleMean2)
+             || ( (tail == LOWER_TAIL) && (sampleMean1 >= sampleMean2) )
+             || ( (tail == UPPER_TAIL) && (sampleMean1 <= sampleMean2) ) )
+            prob = 1.;
+        else
+            prob = 0.;
+        t = (sampleMean1 == sampleMean2)  ?  0.
+                :  (sampleMean1 < sampleMean2)
+                ?  - numeric_limits< double >::infinity()
+                :  numeric_limits< double >::infinity();
+    }
+    else
+    {
+        t = (sampleMean1 - sampleMean2) / sqrt( pooledVariance );
+        prob = StudentsT_DF( t, degreesOfFreedom );
+        if ( tail == UPPER_TAIL )
+            prob = 1. - prob;
+        else if ( tail == BOTH_TAILS )
+            prob = 2. * min( prob, 1. - prob );
+    }
     TTestResult tResult = { prob, t, degreesOfFreedom };
     return tResult;
 }
@@ -200,19 +250,32 @@ MeansTest( int sampleSize1, double sampleMean1, double sampleVariance1,
 FTestResult
 VariancesTest( int sampleSize1, double sampleVariance1,
                int sampleSize2, double sampleVariance2,
-               int tails )
+               Tail tail )
 {
     Assert( sampleSize1 > 1 );
     Assert( sampleSize2 > 1 );
-    Assert( sampleVariance1 > 0. );
-    Assert( sampleVariance2 > 0. );
-    double f = sampleVariance1 / sampleVariance2;
-    double prob = F_DF( f, (sampleSize1 - 1), (sampleSize2 - 1) );
-    if ( f > 1. )
-        prob = 1. - prob;
-    if ( tails == 2 )
-        prob *= 2.;
-    FTestResult fResult = { prob, f, (sampleSize1 - 1), (sampleSize2 - 1) };
+    Assert( sampleVariance1 >= 0. );
+    Assert( sampleVariance2 >= 0. );
+    double prob = 0.;
+    double f = 0.;
+    int dof1 = (sampleSize1 - 1);
+    int dof2 = (sampleSize2 - 1);
+    if ( sampleVariance2 == 0. )
+    {
+        prob = (sampleVariance1 == 0.) ? 1. : 0.;
+        f = (sampleVariance1 == 0.)  ?  0.
+                :  numeric_limits< double >::infinity();
+    }
+    else
+    {
+        f = sampleVariance1 / sampleVariance2;
+        prob = F_DF( f, dof1, dof2 );
+        if ( tail == UPPER_TAIL )
+            prob = 1. - prob;
+        else if ( tail == BOTH_TAILS )
+            prob = 2. * min( prob, 1. - prob );
+    }
+    FTestResult fResult = { prob, f, dof1, dof2 };
     return fResult;
 }
 
@@ -220,7 +283,7 @@ VariancesTest( int sampleSize1, double sampleVariance1,
 
 double 
 MediansTest( const vector< double > & sample1,
-             const vector< double > & sample2, int tails )
+             const vector< double > & sample2, Tail tail )
 {
     vector< double > grandSample = sample1;
     grandSample.insert( grandSample.end(), sample2.begin(), sample2.end() );
@@ -237,11 +300,17 @@ MediansTest( const vector< double > & sample1,
     }
     int grandSize = grandSample.size();
     int sampleSize1 = sample1.size();
-    int x = min( numBelowMedian, numAboveMedian );
+    int x = 0;
+    if ( tail == LOWER_TAIL )
+        x = numAboveMedian;
+    else if ( tail == UPPER_TAIL )
+        x = numBelowMedian;
+    else //BOTH_TAILS
+        x = min( numBelowMedian, numAboveMedian );
     double prob = Hypergeometric_DF( x, grandSize, grandSize / 2,
                                      sampleSize1 );
-    if ( tails == 2 )
-        prob *= 2.;
+    if ( tail == BOTH_TAILS )
+        prob = 2. * min( prob, 1. - prob );
     return prob;
 }
 
@@ -292,7 +361,7 @@ KolmogorovSmirnovTest( vector< double > & sample1, vector< double > & sample2,
 //=============================================================================
 
 CorrelationTestResult
-LinearCorrelationTest( const vector< array< double, 2 > > & samples, int tails )
+LinearCorrelationTest( const vector< array< double, 2 > > & samples, Tail tail )
 {
     int sampleSize = samples.size();
     Assert( sampleSize > 3 );
@@ -338,22 +407,22 @@ LinearCorrelationTest( const vector< array< double, 2 > > & samples, int tails )
         r = covariance / denom;
     if ( r <= -1. )
     {
-        t = - numeric_limits< double >::max();
+        t = - numeric_limits< double >::infinity();
         prob = 0.;
     }
     else if ( r >= 1. )
     {
-        t = numeric_limits< double >::min();
+        t = numeric_limits< double >::infinity();
         prob = 0.;
     }
     else
     {
         t = r * sqrt( (sampleSize - 2.) / (1. - r * r) );
         prob = StudentsT_DF( t, sampleSize - 2 );
-        if ( t > 0. )
+        if ( tail == UPPER_TAIL )
             prob = 1. - prob;
-        if ( tails == 2 )
-            prob *= 2.;
+        else if ( tail == BOTH_TAILS )
+            prob = 2. * min( prob, 1. - prob );
     }
 
     CorrelationTestResult result = { { prob, t, sampleSize - 2 }, r,
@@ -414,7 +483,7 @@ private:
 
 CorrelationTestResult
 SpearmansRankCorrelationTest( const vector< array< double, 2 > > & samples,
-                              int tails )
+                              Tail tail )
 {
     int sampleSize = samples.size();
     Assert( sampleSize > 3 );
@@ -445,14 +514,13 @@ SpearmansRankCorrelationTest( const vector< array< double, 2 > > & samples,
         if ( j == sampleSize )
             ranks[ j - 1 ][ i ] = j;
     }
-    return LinearCorrelationTest( ranks, tails );
+    return LinearCorrelationTest( ranks, tail );
 }
 
 //-----------------------------------------------------------------------------
 
 KendallsTauTestResult
-KendallsTauTest( const std::vector< array< double, 2 > > & samples,
-                 int tails )
+KendallsTauTest( const std::vector< array< double, 2 > > & samples, Tail tail )
 {
     int sampleSize = samples.size();
     Assert( sampleSize > 1 );
@@ -491,10 +559,10 @@ KendallsTauTest( const std::vector< array< double, 2 > > & samples,
     double var = (4. * sampleSize  +  10.)
             / (9. * sampleSize * (sampleSize - 1.));
     double prob = Normal_DF( tau, 0., var );
-    if ( tau > 0 )
+    if ( tail == UPPER_TAIL )
         prob = 1. - prob;
-    if ( tails == 2 )
-        prob *= 2.;
+    else if ( tail == BOTH_TAILS )
+        prob = 2. * min( prob, 1. - prob );
     KendallsTauTestResult result = { prob, tau };
     return result;
 }
@@ -580,19 +648,19 @@ TestStatisticalTests( )
     TESTCHECKF( Mean( estsSample ), 15.85, &ok );
     TESTCHECKF( Variance( estsSample, 15.85 ), 19.923684, &ok );
     TESTCHECK( Median( estsSample ), 16., &ok );
-    cout << "MeanTest( 5, 767., 81225., 1000. )" << endl;
-    TTestResult tResult = MeanTest( 5, 767., 81225., 1000. );
+    cout << "MeanTest( 5, 767., 81225., 1000., LOWER_TAIL )" << endl;
+    TTestResult tResult = MeanTest( 5, 767., 81225., 1000., LOWER_TAIL );
     TESTCHECKFE( tResult.probability, 0.071, &ok, 0.001 );
     TESTCHECKFE( tResult.t, -1.83, &ok, 0.01 );
     TESTCHECK( tResult.degreesOfFreedom, 4, &ok );
-    cout << "MeanTest( 15, 442.2, 1936., 420., 2 )" << endl;
-    tResult = MeanTest( 15, 442.2, 1936., 420., 2 );
+    cout << "MeanTest( 15, 442.2, 1936., 420., BOTH_TAILS )" << endl;
+    tResult = MeanTest( 15, 442.2, 1936., 420., BOTH_TAILS );
     TESTCHECKFE( tResult.probability, 0.070, &ok, 0.001 );
     TESTCHECKFE( tResult.t, 1.95, &ok, 0.01 );
     TESTCHECK( tResult.degreesOfFreedom, 14, &ok );
-    cout << "VarianceTest( 13, 51.84, 225., 2 )" << endl;
+    cout << "VarianceTest( 13, 51.84, 225., BOTH_TAILS )" << endl;
     ChiSquareTestResult chiSquareResult
-            = VarianceTest( 13, 51.84, 225., 2 );
+            = VarianceTest( 13, 51.84, 225., BOTH_TAILS );
     TESTCHECKFE( chiSquareResult.probability, 0.0060, &ok, 0.0001 );
     TESTCHECKFE( chiSquareResult.chiSquare, 2.765, &ok, 0.001 );
     TESTCHECK( chiSquareResult.degreesOfFreedom, 12, &ok );
@@ -617,14 +685,16 @@ TestStatisticalTests( )
     TESTCHECKFE( chiSquareResult.probability, 0., &ok, 0.0001 );
     TESTCHECKF( chiSquareResult.chiSquare, 3650.251, &ok );
     TESTCHECK( chiSquareResult.degreesOfFreedom, 8, &ok );
-    cout << "MeansTest( 70, 418.5, 2070.25, 73, 403.7, 936.36 )" << endl;
+    cout << "MeansTest( 70, 418.5, 2070.25, 73, 403.7, 936.36, "
+            "false, UPPER_TAIL )" << endl;
     tResult = MeansTest( 70, 418.5, 2070.25,   //McGwire's 1998 HR distances
                          73, 403.7, 936.36,    //Bonds's 2001 HR distances
-                         false );
+                         false, UPPER_TAIL );
     TESTCHECKFE( tResult.probability, 0.0124, &ok, 0.0001 );
     TESTCHECKFE( tResult.t, 2.273, &ok, 0.0001 );
-    cout << "VariancesTest( 25, 47.01983, 16, 18.1489 )" << endl;
-    FTestResult fResult = VariancesTest( 25, 47.01983, 16, 18.1489, 2 );
+    cout << "VariancesTest( 25, 47.01983, 16, 18.1489, BOTH_TAILS )" << endl;
+    FTestResult fResult = VariancesTest( 25, 47.01983, 16, 18.1489,
+                                         BOTH_TAILS );
     TESTCHECKFE( fResult.probability, 0.059856, &ok, 0.000002 );
     TESTCHECKF( fResult.F, 2.590782, &ok );
     TESTCHECK( fResult.degreesOfFreedom1, 24, &ok );
@@ -639,8 +709,9 @@ TestStatisticalTests( )
     vector< array< double, 2 > > corrVec;
     for ( int i = 0; i < ARRAY_LENGTH( corrSampleArr ); ++i )
         corrVec.push_back( corrSampleArr[i] );
-    cout << "LinearCorrelationTest( corrVec )" << endl;
-    CorrelationTestResult corrRslt = LinearCorrelationTest( corrVec, 2 );
+    cout << "LinearCorrelationTest( corrVec, BOTH_TAILS )" << endl;
+    CorrelationTestResult corrRslt
+            = LinearCorrelationTest( corrVec, BOTH_TAILS );
     TESTCHECKFE( corrRslt.tResult.probability, 0., &ok, 0.001 );
     TESTCHECKFE( corrRslt.r, 0.922, &ok, 0.001 );
     TESTCHECKFE( corrRslt.tResult.t, 6.712, &ok, 0.0001 );
@@ -653,7 +724,7 @@ TestStatisticalTests( )
     vector< array< double, 2 > > regressionVec;
     for ( int i = 0; i < ARRAY_LENGTH( regressionSampleArr ); ++i )
         regressionVec.push_back( regressionSampleArr[i] );
-    corrRslt = LinearCorrelationTest( regressionVec );
+    corrRslt = LinearCorrelationTest( regressionVec, BOTH_TAILS );
     SimpleRegressionResult regressionRslt
             = SimpleLinearRegression( (int)regressionVec.size(),
                                       corrRslt.mean0, corrRslt.mean1,
@@ -672,7 +743,7 @@ TestStatisticalTests( )
     for ( int i = 0; i < ARRAY_LENGTH( rankCorrSampleArr ); ++i )
         rankCorrVec.push_back( rankCorrSampleArr[i] );
     cout << "SpearmansRankCorrelationTest( rankCorrVec )" << endl;
-    corrRslt = SpearmansRankCorrelationTest( rankCorrVec, 2 );
+    corrRslt = SpearmansRankCorrelationTest( rankCorrVec, BOTH_TAILS );
     //!!!prob
     TESTCHECKFE( corrRslt.r, 0.557, &ok, 0.001 );
     //!!!t
@@ -707,7 +778,7 @@ TestStatisticalTests( )
     array< array< int, 2 >, 2 > fisherTable
             = {{ {{ 7, 2 }}, {{ 1, 4 }} }};
     cout << " (one tail)" << endl;
-    double prob = FishersExactTest( fisherTable );
+    double prob = FishersExactTest( fisherTable, 1 );
     TESTCHECKFE( prob, 0.063, &ok, 0.001 );
     cout << " (two tail)" << endl;
     prob = FishersExactTest( fisherTable, 2 );

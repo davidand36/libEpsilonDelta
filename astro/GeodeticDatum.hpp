@@ -6,6 +6,9 @@
 
   GeodeticDatum class, representing a specific regional geodetic datum or
   global reference system.
+  NOTES:
+  1. The Global Positioning System (GPS) uses the World Geodetic System 1984
+     (WGS84) datum.
 */
 
 

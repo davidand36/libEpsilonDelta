@@ -273,6 +273,13 @@ RiseSet::Test( )
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 20, March, 1988, 2, 55 ).JulianDay( ), &ok,
                  2e-10 );
+    cout << "FindNext( mar20_1988, SolarSystem::Venus, Transit, boston )"
+         << endl;
+    result = FindNext( mar20_1988, SolarSystem::Venus, Transit, boston );
+    TESTCHECK( result.m_status, OK, &ok );
+    TESTCHECKFE( result.m_julianDay,
+                 DateTime( 20, March, 1988, 19, 41 ).JulianDay( ), &ok,
+                 2e-10 );
     double jan13_2006 = DateTime( 13, January, 2006, 0, 0 ).JulianDay( );
     GeodeticLocation istanbul( Angle( 30., Angle::Degree ),
                                Angle( 40., Angle::Degree ) );

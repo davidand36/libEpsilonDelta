@@ -30,7 +30,7 @@ namespace RiseSet
 
 
 enum EEvent
-    { Rise, Set };
+    { Rise, Set, Transit };
 enum ETwilight
     { Civil, Nautical, Astronomical };
 enum EBodyType
@@ -86,7 +86,8 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
     double correction = 0.;
     Angle oldRA = 0.;
     int counter = 0;
-
+    Angle targetHourAngle = 0.;
+    
     do
     {
         Equatorial bodyEquatPos = bodyEquatFunc( jd );
@@ -94,22 +95,25 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
         Angle bodyDec = bodyEquatPos.Declination();
         localSidereal += Angle( correction * 1.0027379, Angle::Cycle );
         Angle bodyHourAngle = localSidereal - bodyRA;
-        double cosTargetHourAngle
-                = ( sinTargetAlt  -  sinLat * bodyDec.Sin( ) )
-                / ( cosLat * bodyDec.Cos( ) );
-        if ( cosTargetHourAngle > 1. )
+        if ( event != Transit )
         {
-            result.m_status = AlwaysAbove;
-            return result;
+            double cosTargetHourAngle
+                    = ( sinTargetAlt  -  sinLat * bodyDec.Sin( ) )
+                    / ( cosLat * bodyDec.Cos( ) );
+            if ( cosTargetHourAngle > 1. )
+            {
+                result.m_status = AlwaysAbove;
+                return result;
+            }
+            else if ( cosTargetHourAngle < -1. )
+            {
+                result.m_status = AlwaysBelow;
+                return result;
+            }
+            targetHourAngle = ArcCos( cosTargetHourAngle );
+            if ( event == Rise )
+                targetHourAngle = - targetHourAngle;
         }
-        else if ( cosTargetHourAngle < -1. )
-        {
-            result.m_status = AlwaysBelow;
-            return result;
-        }
-        Angle targetHourAngle = ArcCos( cosTargetHourAngle );
-        if ( event == Rise )
-            targetHourAngle = - targetHourAngle;
         double haVariation = 1.;
         if ( firstStep )
         {
@@ -179,6 +183,7 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
         if ( ++counter > 1000 )
             throw Exception( "RiseSet::FindNext() never converged" );
     } while ( fabs( correction ) > 0.0003 );
+
     result.m_julianDay = jd;
     return  result;
 }

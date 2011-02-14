@@ -1,13 +1,12 @@
 /*
-  NullVectorException.cpp
+  UnicodeException.cpp
   Copyright (C) 2007 David M. Anderson
 
-  NullVectorException class:  Exception class for attempts to invert,
-    etc., a singular matrix.
+  UnicodeException class: exception parsing Unicode string.
 */
 
 
-#include "NullVectorException.hpp"
+#include "UnicodeException.hpp"
 
 
 namespace EpsilonDelta
@@ -16,8 +15,8 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-NullVectorException::NullVectorException( )
-    :   LogicError( "Vector is null." )
+UnicodeException::UnicodeException( const std::string & description )
+    :   RuntimeError( description )
 {
 }
 

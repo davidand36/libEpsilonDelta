@@ -71,17 +71,16 @@ EulerAngles::Test( )
     TESTCHECK( euler0.At( 0 ).Radians(), a0, &ok );
     TESTCHECK( euler0.At( 1 ).Radians(), a1, &ok );
     TESTCHECK( euler0.At( 2 ).Radians(), a2, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( euler0.At( -1 ).Radians(), 0., &ok );
         cout << "At( -1 ) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "Exception here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     try
     {
@@ -89,12 +88,11 @@ EulerAngles::Test( )
         cout << "At( 3 ) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "Exception here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     Angle angles[3] = { -2.3, 1.2, -0.1 };
     cout << "EulerAngles( { " << angles[0].Radians() << ", "
          << angles[1].Radians() << ", " << angles[2].Radians()

@@ -17,7 +17,7 @@ namespace EpsilonDelta
 
 
 SingularMatrixException::SingularMatrixException( )
-    :   Exception( "Matrix is singular." )
+    :   LogicError( "Matrix is singular." )
 {
 }
 

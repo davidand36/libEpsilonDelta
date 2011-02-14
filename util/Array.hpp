@@ -188,7 +188,7 @@ TwoDArray<T>::at( int row, int column ) const
 {
     if ( (row < 0) || (row >= m_numRows)
          || (column < 0) || (column >= m_numColumns) )
-        throw  std::out_of_range( "TwoDArray" );
+        throw  std::out_of_range( "TwoDArray: out_of_range error" );
     return m_elements[ row ][ column ];
 }
 
@@ -200,7 +200,7 @@ TwoDArray<T>::at( int row, int column )
 {
     if ( (row < 0) || (row >= m_numRows)
          || (column < 0) || (column >= m_numColumns) )
-        throw  std::out_of_range( "TwoDArray" );
+        throw  std::out_of_range( "TwoDArray: out_of_range error" );
     return m_elements[ row ][ column ];
 }
 
@@ -310,7 +310,7 @@ ThreeDArray<T>::at( int slice, int row, int column ) const
     if ( (slice < 0) || (slice >= m_numSlices)
          || (row < 0) || (row >= m_numRows)
          || (column < 0) || (column >= m_numColumns) )
-        throw  std::out_of_range( "ThreeDArray" );
+        throw  std::out_of_range( "ThreeDArray: out_of_range error" );
     return m_elements[ slice ][ row ][ column ];
 }
 
@@ -323,7 +323,7 @@ ThreeDArray<T>::at( int slice, int row, int column )
     if ( (slice < 0) || (slice >= m_numSlices)
          || (row < 0) || (row >= m_numRows)
          || (column < 0) || (column >= m_numColumns) )
-        throw  std::out_of_range( "ThreeDArray" );
+        throw  std::out_of_range( "ThreeDArray: out_of_range error" );
     return m_elements[ slice ][ row ][ column ];
 }
 

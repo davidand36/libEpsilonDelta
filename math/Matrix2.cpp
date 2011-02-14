@@ -39,34 +39,30 @@ TestMatrix2( )
     TESTCHECK( mat0(1,1), 0.f, &ok );
     TESTCHECK( mat0.Element(0,0), 0.f, &ok );
     TESTCHECK( mat0.Element(0,1), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat0.Element(0,2), 0.f, &ok );
         cout << "Element(0,2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat0.Element(1,0), 0.f, &ok );
     TESTCHECK( mat0.Element(1,1), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat0.Element(2,0), 0.f, &ok );
         cout << "Element(0,2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     Vector2F v0 = mat0.Row(0);
     TESTCHECK( v0[0], 0.f, &ok );
@@ -99,34 +95,30 @@ TestMatrix2( )
     TESTCHECK( mat1(1,1), f, &ok );
     TESTCHECK( mat1.Element(0,0), 1.f, &ok );
     TESTCHECK( mat1.Element(0,1), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat1.Element(0,2), 0.f, &ok );
         cout << "Element(0,2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat1.Element(1,0), 0.f, &ok );
     TESTCHECK( mat1.Element(1,1), 1.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat1.Element(2,0), 0.f, &ok );
         cout << "Element(2,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     v0 = mat1.Row(0);
     TESTCHECK( v0[0], 1.f, &ok );
@@ -186,34 +178,30 @@ TestMatrix2( )
     TESTCHECK( mat2(1,1), e11, &ok );
     TESTCHECK( mat2.Element(0,0), e00, &ok );
     TESTCHECK( mat2.Element(0,1), e01, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat2.Element(0,2), 0.f, &ok );
         cout << "Element(0,2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat2.Element(1,0), e10, &ok );
     TESTCHECK( mat2.Element(1,1), e11, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat2.Element(2,0), 0.f, &ok );
         cout << "Element(2,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     v0 = mat2.Row(0);
     TESTCHECK( v0[0], e00, &ok );
@@ -440,7 +428,6 @@ TestMatrix2( )
     TESTCHECK( mat9(1,0), mat4(1,0), &ok );
     TESTCHECK( mat9(1,1), mat4(1,1), &ok );
     TESTCHECK( (mat9 == mat4), true, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         cout << "mat9.Element(0,2) = " << f << endl;
@@ -448,12 +435,11 @@ TestMatrix2( )
         cout << "Element(0,2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "mat9(1,0) = " << f << endl;
     mat9(1,0) = f;
     TESTCHECK( mat9(0,0), mat4(0,0), &ok );
@@ -482,7 +468,6 @@ TestMatrix2( )
     TESTCHECK( mat9(1,0), mat4(1,0), &ok );
     TESTCHECK( mat9(1,1), mat4(1,1), &ok );
     TESTCHECK( (mat9 == mat4), true, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         cout << "mat9.Element(2,0) = " << f << endl;
@@ -490,12 +475,11 @@ TestMatrix2( )
         cout << "Element(2,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "+= mat2" << endl;
     mat9 += mat2;
     TESTCHECK( mat9(0,0), -14.f, &ok );

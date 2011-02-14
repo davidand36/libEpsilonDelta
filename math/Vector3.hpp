@@ -10,7 +10,8 @@
      rather than by reference, makes sense. It is also assumed that T values
      can be assigned simply via memcpy().
   2. operator[] provides unchecked access.
-     At() asserts that index is in the proper range.
+     At() checks that index is in the proper range and throws out_of_range
+     otherwise.
   3. The Array() methods provide direct access to the internal representation,
      primarily for efficient interaction with other libraries.
   4. v *= M, where M is a Matrix2, performs left multiplication, i.e.,
@@ -298,7 +299,8 @@ template <typename T>
 const T &
 Vector3<T>::At( int index ) const
 {
-    Assert( (0 <= index) && (index < 3) );
+    if ( (index < 0) || (index >= 3) )
+        throw  std::out_of_range( "Vector3: out_of_range error" );
     return m_coords[index];
 }
 
@@ -308,7 +310,8 @@ template <typename T>
 T &
 Vector3<T>::At( int index )
 {
-    Assert( (0 <= index) && (index < 3) );
+    if ( (index < 0) || (index >= 3) )
+        throw  std::out_of_range( "Vector3: out_of_range error" );
     return m_coords[index];
 }
 

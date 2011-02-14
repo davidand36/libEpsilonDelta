@@ -16,7 +16,7 @@ namespace EpsilonDelta
 
 
 JSONException::JSONException( const std::string & description )
-    :   Exception( description )
+    :   RuntimeError( description )
 {
 }
 

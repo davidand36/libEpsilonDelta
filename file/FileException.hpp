@@ -18,18 +18,17 @@ namespace EpsilonDelta
 
 
 class FileException
-    :    public Exception
+    :    public RuntimeError
 {
 public:
     explicit FileException( const std::string & description );
-    virtual ~FileException( ) { }
 };
 
 //#############################################################################
 
 inline
 FileException::FileException( const std::string & description )
-    :    Exception( description )
+    :    RuntimeError( description )
 { 
 }
 

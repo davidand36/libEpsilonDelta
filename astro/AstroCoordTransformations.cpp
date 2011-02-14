@@ -12,6 +12,7 @@
 
 
 #include "AstroCoordTransformations.hpp"
+#include <limits>
 #ifdef DEBUG
 #include <iostream>
 #include "TestCheck.hpp"
@@ -26,6 +27,14 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
+namespace
+{                                                                   //namespace
+
+double infinity = numeric_limits< double >::infinity();
+
+}                                                                   //namespace
+
+//=============================================================================
 
 Equatorial 
 EclipticalToEquatorial( const Ecliptical & ecliptical, Angle obliquity )
@@ -34,7 +43,7 @@ EclipticalToEquatorial( const Ecliptical & ecliptical, Angle obliquity )
     double cosLong = ecliptical.Longitude().Cos( );
     double sinLat = ecliptical.Latitude().Sin( );
     double cosLat = ecliptical.Latitude().Cos( );
-    double tanLat = (cosLat == 0.)  ?  Angle::bazillion  :  sinLat / cosLat;
+    double tanLat = (cosLat == 0.)  ?  infinity  :  sinLat / cosLat;
     double sinObl = obliquity.Sin( );
     double cosObl = obliquity.Cos( );
     Angle ra = ArcTan( sinLong * cosObl  -  tanLat * sinObl,  cosLong );
@@ -52,7 +61,7 @@ EquatorialToEcliptical( const Equatorial & equatorial, Angle obliquity )
     double cosRA = equatorial.RightAscension().Cos( );
     double sinDec = equatorial.Declination().Sin( );
     double cosDec = equatorial.Declination().Cos( );
-    double tanDec = (cosDec == 0.)  ?  Angle::bazillion  :  sinDec / cosDec;
+    double tanDec = (cosDec == 0.)  ?  infinity  :  sinDec / cosDec;
     double sinObl = obliquity.Sin( );
     double cosObl = obliquity.Cos( );
     Angle lng = ArcTan( sinRA * cosObl  +  tanDec * sinObl,  cosRA );
@@ -72,7 +81,7 @@ EquatorialToHorizontal( const Equatorial & equatorial,
     double cosHA = hourAngle.Cos( );
     double sinDec = equatorial.Declination().Sin( );
     double cosDec = equatorial.Declination().Cos( );
-    double tanDec = (cosDec == 0.)  ?  Angle::bazillion  :  sinDec / cosDec;
+    double tanDec = (cosDec == 0.)  ?  infinity  :  sinDec / cosDec;
     double sinLat = geographicLatitude.Sin( );
     double cosLat = geographicLatitude.Cos( );
     Angle az = ArcTan( sinHA,  cosHA * sinLat  -  tanDec * cosLat );
@@ -104,7 +113,7 @@ HorizontalToEquatorial( const Horizontal & horizontal,
     double cosAz = az.Cos( );
     double sinAlt = horizontal.Altitude().Sin( );
     double cosAlt = horizontal.Altitude().Cos( );
-    double tanAlt = (cosAlt == 0.)  ?  Angle::bazillion  :  sinAlt / cosAlt;
+    double tanAlt = (cosAlt == 0.)  ?  infinity  :  sinAlt / cosAlt;
     double sinLat = geographicLatitude.Sin( );
     double cosLat = geographicLatitude.Cos( );
     // (Meeus has an error here, which I've corrected.)
@@ -139,7 +148,7 @@ EquatorialToGalactic( const Equatorial & equatorial )
     double cosAdjRA = adjRA.Cos( );
     double sinDec = equatorial.Declination().Sin( );
     double cosDec = equatorial.Declination().Cos( );
-    double tanDec = (cosDec == 0.)  ?  Angle::bazillion  :  sinDec / cosDec;
+    double tanDec = (cosDec == 0.)  ?  infinity  :  sinDec / cosDec;
     double sinNDec = galNorthDec.Sin( );
     double cosNDec = galNorthDec.Cos( );
     Angle x = ArcTan( sinAdjRA,  cosAdjRA * sinNDec  -  tanDec * cosNDec );
@@ -162,7 +171,7 @@ GalacticToEquatorial( const Galactic & galactic )
     double cosAdjLong = adjLong.Cos( );
     double sinLat = galactic.Latitude().Sin( );
     double cosLat = galactic.Latitude().Cos( );
-    double tanLat = (cosLat == 0.)  ?  Angle::bazillion  :  sinLat / cosLat;
+    double tanLat = (cosLat == 0.)  ?  infinity  :  sinLat / cosLat;
     double sinNDec = galNorthDec.Sin( );
     double cosNDec = galNorthDec.Cos( );
     Angle y = ArcTan( sinAdjLong,  cosAdjLong * sinNDec  -  tanLat * cosNDec );

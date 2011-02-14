@@ -9,7 +9,7 @@
 #include "UnicodeUtil.hpp"
 #include "StringUtil.hpp"
 #include "FixEndian.hpp"
-#include "Exception.hpp"
+#include "UnicodeException.hpp"
 #include "Assert.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -36,35 +36,35 @@ DecodeUTF8( const string & utf8 )
         if ( *p & (1 << 7) )    //byte begins with 1: lead byte of 
         {                       // multibyte sequence
             if ( (*p & (1 << 6)) == 0 ) //lead bytes don't begin with 10
-                throw Exception( "Invalid UTF-8 string" );
+                throw UnicodeException( "Invalid UTF-8 string" );
             if ( *p & (1 << 5) )    //byte begins with 111
             {
                 if ( *p & (1 << 4) )    //byte begins with 1111
                 {
                     if ( *p & (1 << 3) )    //byte can't begin 11111
-                        throw Exception( "Invalid UTF-8 string" );
+                        throw UnicodeException( "Invalid UTF-8 string" );
                     uni = (*p++ & 0x07) << 6;
                     if ( p == utf8.end() )
-                        throw Exception( "Invalid UTF-8 string" );
+                        throw UnicodeException( "Invalid UTF-8 string" );
                     uni |= (*p++ & 0x3F);
                     if ( p == utf8.end() )
-                        throw Exception( "Invalid UTF-8 string" );
+                        throw UnicodeException( "Invalid UTF-8 string" );
                 }
                 else    //byte begins with 1110
                 {
                     uni = (*p++ & 0x0F);
                     if ( p == utf8.end() )
-                        throw Exception( "Invalid UTF-8 string" );
+                        throw UnicodeException( "Invalid UTF-8 string" );
                 }
                 uni = (uni << 6) | (*p++ & 0x3F);
                 if ( p == utf8.end() )
-                    throw Exception( "Invalid UTF-8 string" );
+                    throw UnicodeException( "Invalid UTF-8 string" );
             }
             else    //byte begins with 110
             {
                 uni = (*p++ & 0x1F);
                 if ( p == utf8.end() )
-                    throw Exception( "Invalid UTF-8 string" );
+                    throw UnicodeException( "Invalid UTF-8 string" );
             }
             uni = (uni << 6) | (*p & 0x3F);
         }
@@ -105,12 +105,12 @@ EncodeUTF8( const wstring & unicode )
         if ( (*p >= 0xD800) && (*p <= 0xDFFF) ) //UTF-16 multibyte
         {
             if ( *p >= 0xDC00 )
-                throw Exception( "Invalid UTF-16 string" );
+                throw UnicodeException( "Invalid UTF-16 string" );
             uni = (*p++ & 0x3FF) << 10;
             if ( p == unicode.end() )
-                throw Exception( "Invalid UTF-16 string" );
+                throw UnicodeException( "Invalid UTF-16 string" );
             if ( (*p < 0xDC00) || (*p > 0xDFFF) )
-                throw Exception( "Invalid UTF-16 string" );
+                throw UnicodeException( "Invalid UTF-16 string" );
             uni |= (*p & 0x3FF);
             uni += 0x10000;
         }
@@ -249,7 +249,7 @@ DecodeUnicodeWithBOM( const std::vector< char > encodedBuffer )
                  && (u16 >= 0xD800) && (u16 <= 0xDFFF) ) //UTF-16 multibyte
             {
                 if ( u16 >= 0xDC00 )
-                    throw Exception( "Invalid UTF-16 string" );
+                    throw UnicodeException( "Invalid UTF-16 string" );
                 uint32_t uni = (u16++ & 0x3FF) << 10;
                 u16 = *pU16++;
                 if ( bigEndian )
@@ -257,9 +257,9 @@ DecodeUnicodeWithBOM( const std::vector< char > encodedBuffer )
                 else
                     FixLittleEndian( &u16 );
                 if ( ++i >= numWChars )
-                    throw Exception( "Invalid UTF-16 string" );
+                    throw UnicodeException( "Invalid UTF-16 string" );
                 if ( (u16 < 0xDC00) || (u16 > 0xDFFF) )
-                    throw Exception( "Invalid UTF-16 string" );
+                    throw UnicodeException( "Invalid UTF-16 string" );
                 uni |= (u16 & 0x3FF);
                 uni += 0x10000;
                 unicode += static_cast< wchar_t >( uni );

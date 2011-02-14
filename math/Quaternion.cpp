@@ -51,19 +51,17 @@ TestQuaternion( )
     TESTCHECK( quat0.At( 1 ), x, &ok );
     TESTCHECK( quat0.At( 2 ), y, &ok );
     TESTCHECK( quat0.At( 3 ), z, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( quat0.At(4), 0.f, &ok );
         cout << "At(4) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "Exception here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "quat0.Array()" << endl;
     const float * pF = quat0.Array();
     TESTCHECK( pF[0], w, &ok );

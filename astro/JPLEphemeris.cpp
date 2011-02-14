@@ -24,8 +24,9 @@
 
 
 #include "JPLEphemeris.hpp"
-#include "Exception.hpp"
 #include "Assert.hpp"
+#include "Exception.hpp"
+#include "FileException.hpp"
 #include "Vector3.hpp"
 #include "StringUtil.hpp"
 #include "FixEndian.hpp"
@@ -66,11 +67,11 @@ JPLEphemeris::Init( const std::string & fileName, bool storeConstants )
     m_pFile = shared_ptr< File >( new File( fileName ) );
     bool openRslt = m_pFile->Open( File::ReadMode );
     if ( ! openRslt )
-        throw Exception( "Unable to open JPL ephemeris file." );
+        throw FileException( "Unable to open JPL ephemeris file." );
 
     bool headerRslt = ReadBinaryFileHeader( storeConstants );
     if ( ! headerRslt )
-        throw Exception( "Unable to read JPL ephemeris file header." );
+        throw FileException( "Unable to read JPL ephemeris file header." );
 
     m_chebyVals[0] = 1.0;
     m_chebyVals[1] = -1000.0;
@@ -757,10 +758,7 @@ JPLEphemeris::ReadCoeffBlock( double julianDay0, double julianDay1,
     double ephemDiff = julianDay0 - m_jdStart;
     ephemDiff += julianDay1;
     if ( (ephemDiff < 0.0) || (m_jdStart + ephemDiff > m_jdEnd) )
-    {
-        throw Exception( "Date out of range of JPL ephemeris." );
-        //return -1;
-    }
+        throw LogicError( "Date out of range of JPL ephemeris." );
     int blockNumber = (int)( ephemDiff / m_blockInterval );
     if ( m_jdStart + ephemDiff == m_jdEnd )
         --blockNumber;  //Special case at end of ephemeris.
@@ -768,14 +766,14 @@ JPLEphemeris::ReadCoeffBlock( double julianDay0, double julianDay1,
     int blockOffset = m_dataOffset + (blockNumber * blockSize);
     Assert( m_pFile );
     if ( ! m_pFile )
-        throw Exception( "JPLEphemeris: File not open." );
+        throw LogicError( "JPLEphemeris: File not open." );
     int seekRslt = m_pFile->Seek( blockOffset );
     if ( seekRslt < 0 )
-        throw Exception( "JPLEphemeris: Seek failed." );
+        throw FileException( "JPLEphemeris: Seek failed." );
     bool readRslt = m_pFile->Read( reinterpret_cast< char * >( coeffBlock ),
                                    blockSize );
     if ( ! readRslt )
-        throw Exception( "JPLEphemeris: Read failed." );
+        throw FileException( "JPLEphemeris: Read failed." );
     if ( m_wrongEndian )
     {
         double * pCoeff = coeffBlock;
@@ -983,7 +981,7 @@ JPLBarycentricEphemeris::operator()( double julianDay )
                                           JPLEphemeris::SolarSystemBarycenter,
                                           &bodyPos );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
     return bodyPos;
 }
 
@@ -998,7 +996,7 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1 )
                                           JPLEphemeris::SolarSystemBarycenter,
                                           &bodyPos );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
     return bodyPos;
 }
 
@@ -1014,7 +1012,7 @@ JPLBarycentricEphemeris::operator()( double julianDay,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           pPosition, pVelocity );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1029,7 +1027,7 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           pPosition, pVelocity );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
 
 
@@ -1045,7 +1043,7 @@ JPLGeocentricEphemeris::operator()( double julianDay )
                                              JPLEphemeris::Earth, 
                                              &bodyPos );
     if ( ! posRslt )
-        throw Exception( "JPLGeocentricEphemeris failed." );
+        throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
 }
 
@@ -1060,7 +1058,7 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1 )
                                              JPLEphemeris::Earth, 
                                              &bodyPos );
     if ( ! posRslt )
-        throw Exception( "JPLGeocentricEphemeris failed." );
+        throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
 }
 
@@ -1076,7 +1074,7 @@ JPLGeocentricEphemeris::operator()( double julianDay,
                                              JPLEphemeris::Earth,
                                              pPosition, pVelocity );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1091,7 +1089,7 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1,
                                              JPLEphemeris::Earth,
                                              pPosition, pVelocity );
     if ( ! posRslt )
-        throw Exception( "JPLBarycentricEphemeris failed." );
+        throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
 
 

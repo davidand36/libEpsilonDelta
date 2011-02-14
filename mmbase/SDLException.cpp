@@ -21,7 +21,7 @@ namespace EpsilonDelta
 
 
 SDLException::SDLException( const std::string & sdlFunction )
-    :   Exception( "Error: " + sdlFunction )
+    :   RuntimeError( "Error: " + sdlFunction )
 {
     const char * error = ::SDL_GetError( );
     if ( error )

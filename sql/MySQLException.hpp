@@ -25,7 +25,6 @@ class MySQLException
 {
 public:
     MySQLException( const std::string & errorMessage );
-    virtual ~MySQLException( ) { }
 };
 
 

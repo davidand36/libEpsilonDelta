@@ -38,19 +38,17 @@ TestVector2( )
     TESTCHECK( vs0[1], 0, &ok );
     TESTCHECK( vs0.At(0), 0, &ok );
     TESTCHECK( vs0.At(1), 0, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vs0.At(2), 0, &ok );
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( vs0.Array()[0], 0, &ok );
     TESTCHECK( vs0.Array()[1], 0, &ok );
     TESTCHECK( (vs0 == vs0), true, &ok );
@@ -106,19 +104,17 @@ TestVector2( )
     TESTCHECK( vs0[1], ys, &ok );
     TESTCHECK( vs0.At(0), xs, &ok );
     TESTCHECK( vs0.At(1), ys, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         vs0.At(2) = 22;
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "ps = vs0.Array()" << endl;
     short * ps = vs0.Array();
     TESTCHECK( ps[0], xs, &ok );
@@ -148,7 +144,8 @@ TestVector2( )
     TESTCHECK( vs0.At(1), 0, &ok );
     xs = -11;
     ys = 4;
-    cout << "Vector2<short>( " << xs << ", " << ys << " ) [x,y constructor]" << endl;
+    cout << "Vector2<short>( " << xs << ", " << ys << " ) [x,y constructor]"
+         << endl;
     Vector2<short> vs1( xs, ys );
     TESTCHECK( vs1.X(), xs, &ok );
     TESTCHECK( vs1.Y(), ys, &ok );
@@ -159,7 +156,8 @@ TestVector2( )
     TESTCHECK( (vs1 == vs1), true, &ok );
     TESTCHECK( (vs0 == vs1), false, &ok );
     const short sArr0[] = { 21, -55 };
-    cout << "Vector2<short>( { " << sArr0[0] << ", " << sArr0[1] << " } ) [array constructor]" << endl;
+    cout << "Vector2<short>( { " << sArr0[0] << ", " << sArr0[1]
+         << " } ) [array constructor]" << endl;
     Vector2<short> vs2( sArr0 );
     TESTCHECK( vs2.X(), sArr0[0], &ok );
     TESTCHECK( vs2.Y(), sArr0[1], &ok );
@@ -167,19 +165,17 @@ TestVector2( )
     TESTCHECK( vs2[1], sArr0[1], &ok );
     TESTCHECK( vs2.At(0), sArr0[0], &ok );
     TESTCHECK( vs2.At(1), sArr0[1], &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vs2.At(2), 0, &ok );
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     const short sArr1[] = { -12, 1955 };
     cout << "Set( { " << sArr1[0] << ", " << sArr1[1] << " } )" << endl;
     vs2.Set( sArr1 );
@@ -260,19 +256,17 @@ TestVector2( )
     TESTCHECK( vf0[1], 0.f, &ok );
     TESTCHECK( vf0.At(0), 0.f, &ok );
     TESTCHECK( vf0.At(1), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vf0.At(2), 0.f, &ok );
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( (vf0 == vf0), true, &ok );
     float xf = 37.f;
     float yf = -17.f;
@@ -325,19 +319,17 @@ TestVector2( )
     TESTCHECK( vf0[1], yf, &ok );
     TESTCHECK( vf0.At(0), xf, &ok );
     TESTCHECK( vf0.At(1), yf, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         vf0.At(2) = 22.f;
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "pf = vf0.Array()" << endl;
     float * pf = vf0.Array();
     TESTCHECK( pf[0], xf, &ok );
@@ -387,7 +379,8 @@ TestVector2( )
     }
     xf = -11.f;
     yf = 4.f;
-    cout << "Vector2<float>( " << xf << ", " << yf << " ) [x,y constructor]" << endl;
+    cout << "Vector2<float>( " << xf << ", " << yf << " ) [x,y constructor]"
+         << endl;
     Vector2<float> vf1( xf, yf );
     TESTCHECK( vf1.X(), xf, &ok );
     TESTCHECK( vf1.Y(), yf, &ok );
@@ -398,7 +391,8 @@ TestVector2( )
     TESTCHECK( (vf1 == vf1), true, &ok );
     TESTCHECK( (vf0 == vf1), false, &ok );
     const float fArr0[] = { 21.f, -55.f };
-    cout << "Vector2<float>( { " << fArr0[0] << ", " << fArr0[1] << " } ) [array constructor]" << endl;
+    cout << "Vector2<float>( { " << fArr0[0] << ", " << fArr0[1]
+         << " } ) [array constructor]" << endl;
     Vector2<float> vf2( fArr0 );
     TESTCHECK( vf2.X(), fArr0[0], &ok );
     TESTCHECK( vf2.Y(), fArr0[1], &ok );
@@ -406,19 +400,17 @@ TestVector2( )
     TESTCHECK( vf2[1], fArr0[1], &ok );
     TESTCHECK( vf2.At(0), fArr0[0], &ok );
     TESTCHECK( vf2.At(1), fArr0[1], &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vf2.At(2), 0.f, &ok );
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     const float fArr1[] = { -12.f, 1955.f };
     cout << "Set( { " << fArr1[0] << ", " << fArr1[1] << " } )" << endl;
     vf2.Set( fArr1 );
@@ -493,7 +485,8 @@ TestVector2( )
     float m01 = 1.f;
     float m10 = -2.f;
     float m11 = 3.f;
-    cout << "Matrix2F( " << m00 << ", " << m01 << ", " << m10 << ", " << m11 << " )" << endl;
+    cout << "Matrix2F( " << m00 << ", " << m01 << ", " << m10 << ", " << m11
+         << " )" << endl;
     Matrix2F mat( m00, m01, m10, m11 );
     cout << "*= mat" << endl;
     vf3 *= mat;

@@ -19,7 +19,7 @@ namespace EpsilonDelta
 
 
 class NullVectorException
-    : public Exception
+    : public LogicError
 {
 public:
     NullVectorException( );

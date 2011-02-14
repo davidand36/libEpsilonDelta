@@ -1,13 +1,15 @@
+#ifndef CONVERGENCEEXCEPTION_HPP
+#define CONVERGENCEEXCEPTION_HPP
 /*
-  NullVectorException.cpp
+  ConvergenceException.hpp
   Copyright (C) 2007 David M. Anderson
 
-  NullVectorException class:  Exception class for attempts to invert,
-    etc., a singular matrix.
+  ConvergenceException class:  Exception class for attempts to normalize, etc.,
+    a null vector.
 */
 
 
-#include "NullVectorException.hpp"
+#include "Exception.hpp"
 
 
 namespace EpsilonDelta
@@ -16,12 +18,16 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-NullVectorException::NullVectorException( )
-    :   LogicError( "Vector is null." )
+class ConvergenceException
+    : public RuntimeError
 {
-}
+public:
+    ConvergenceException( const std::string & description );
+};
 
 
 //*****************************************************************************
 
 }                                                      //namespace EpsilonDelta
+
+#endif //CONVERGENCEEXCEPTION_HPP

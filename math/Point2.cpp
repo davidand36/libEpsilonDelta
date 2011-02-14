@@ -38,19 +38,17 @@ TestPoint2( )
     TESTCHECK( pt1[1], y, &ok );
     TESTCHECK( pt1.At( 0 ), x, &ok );
     TESTCHECK( pt1.At( 1 ), y, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( pt1.At( 2 ), 0, &ok );
         cout << "At(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "Exception here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( pt1.Array()[ 0 ], x, &ok );
     TESTCHECK( pt1.Array()[ 1 ], y, &ok );
     int ints[] = { 20, 40, 80 };

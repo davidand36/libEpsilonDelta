@@ -5,6 +5,8 @@
   Copyright (C) 2007 David M. Anderson
 
   Exception class:  Base exception class for my library.
+  LogicError class: Programmer errors.
+  RuntimeError class: Exceptions due to bad data, I/O problems, etc.
   NOTES:
   1. Applications may want to catch specific subclasses close to the source,
      and also catch everything with something like:
@@ -33,6 +35,8 @@
                  cerr << exc.Description( ) << endl;
              }
          }
+  2. These classes are derived from std::exception, std::logic_error,
+     and std::runtime_error.
 */
 
 
@@ -47,16 +51,41 @@ namespace EpsilonDelta
 
 
 class Exception
+    :   public virtual std::exception
 {
 public:
     explicit Exception( const std::string & description );
-    explicit Exception( const char * description );
     explicit Exception( const std::exception & exceptn );
-    virtual ~Exception( );
+    virtual ~Exception( ) throw ();
     virtual std::string Description( ) const;
+    virtual const char* what() const throw ();
 
 protected:
     std::string m_description;
+};
+
+
+//*****************************************************************************
+
+
+class LogicError
+    :   public Exception,
+        public std::logic_error
+{
+public:
+    explicit LogicError( const std::string & description );
+};
+
+
+//*****************************************************************************
+
+
+class RuntimeError
+    :   public Exception,
+        public std::runtime_error
+{
+public:
+    explicit RuntimeError( const std::string & description );
 };
 
 

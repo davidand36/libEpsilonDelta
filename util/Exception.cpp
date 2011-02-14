@@ -22,14 +22,7 @@ Exception::Exception( const string & description )
 {
 }
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-Exception::Exception( const char * description )
-    :   m_description( string( description ) )
-{
-}
-
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//.............................................................................
 
 Exception::Exception( const exception & exceptn )
     :   m_description( exceptn.what( ) )
@@ -38,7 +31,7 @@ Exception::Exception( const exception & exceptn )
 
 //-----------------------------------------------------------------------------
 
-Exception::~Exception( )
+Exception::~Exception( ) throw ()
 {
 }
 
@@ -48,6 +41,34 @@ string
 Exception::Description( ) const
 {
     return m_description;
+}
+
+//-----------------------------------------------------------------------------
+
+const char*
+Exception::what() const throw()
+{
+    return m_description.c_str();
+}
+
+
+//*****************************************************************************
+
+
+LogicError::LogicError( const std::string & description )
+    :   Exception( description ),
+        std::logic_error( description )
+{
+}
+
+
+//*****************************************************************************
+
+
+RuntimeError::RuntimeError( const std::string & description )
+    :   Exception( description ),
+        std::runtime_error( description )
+{
 }
 
 

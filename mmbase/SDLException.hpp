@@ -22,7 +22,7 @@ namespace EpsilonDelta
 
 
 class SDLException
-    : public Exception
+    : public RuntimeError
 {
 public:
     SDLException( const std::string & sdlFunction );

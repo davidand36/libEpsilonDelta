@@ -48,10 +48,10 @@ TestPolynomial( )
         cout << "Coefficient(1) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "Exception here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( polyLD0( 5.L ), 0.L, &ok );
     long double valLD;
@@ -76,10 +76,10 @@ TestPolynomial( )
         cout << "Coefficient(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( polyF1( 5.f ), 52.5f, &ok );
     TESTCHECK( ToJSON( polyF1 ), string( "[ +2.50000e+00, +1.00000e+01 ]" ),
@@ -109,10 +109,10 @@ TestPolynomial( )
         cout << "Coefficient(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( polyF3( 5.f ), 377.5f, &ok );
     ostringstream ost;
@@ -157,10 +157,10 @@ TestPolynomial( )
         cout << "Coefficient(3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     cout << "vld.push_back( " << c3 << " )" << endl;
     vld.push_back( c3 );
@@ -193,10 +193,10 @@ TestPolynomial( )
         cout << "Coefficient(3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( (polyLDdup == polyLD2), true, &ok );
     TESTCHECK( (polyLDdup == polyLD3), false, &ok );
@@ -379,10 +379,10 @@ TestPolynomial( )
         cout << "Coefficient(1) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( real( polyCLD0( ComplexLD( 5.L, -3.L ) ) ), 0.L, &ok );
     ComplexLD valCLD;
@@ -412,10 +412,10 @@ TestPolynomial( )
         cout << "Coefficient(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( real( polyCF1( 5.f ) ), 52.5f, &ok );
     TESTCHECK( imag( polyCF1( 5.f ) ), 9.f, &ok );
@@ -444,10 +444,10 @@ TestPolynomial( )
         cout << "Coefficient(2) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( real( polyCF3( 5.f ) ), 377.5f, &ok );
     cout << "polyCF3( 5.f, &val, &deriv )" << endl;
@@ -479,10 +479,10 @@ TestPolynomial( )
         cout << "Coefficient(3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     cout << "cvld.push_back( " << cc3 << " )" << endl;
     cvld.push_back( cc3 );
@@ -515,10 +515,10 @@ TestPolynomial( )
         cout << "Coefficient(3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << exceptn.what() << endl;
     }
     TESTCHECK( (polyCLDdup == polyCLD2), true, &ok );
     TESTCHECK( (polyCLDdup == polyCLD3), false, &ok );

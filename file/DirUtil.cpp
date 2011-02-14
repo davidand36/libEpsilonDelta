@@ -272,9 +272,9 @@ TestDirUtil( )
                 cout << "Remove() should have thrown an exception." << endl;
                 ok = false;
             }
-            catch ( Exception & except )
+            catch ( FileException & except )
             {
-                cout << "Assertion here is OK" << endl;
+                cout << "Excepttion here is OK" << endl;
                 cout << except.Description( ) << endl;
             }
             fileSpec = newDir + "Mine";
@@ -291,9 +291,9 @@ TestDirUtil( )
                 cout << "Remove() should have thrown an exception." << endl;
                 ok = false;
             }
-            catch ( Exception & except )
+            catch ( FileException & except )
             {
-                cout << "Assertion here is OK" << endl;
+                cout << "Exception here is OK" << endl;
                 cout << except.Description( ) << endl;
             }
             dir = newDir;

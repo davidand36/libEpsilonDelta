@@ -108,7 +108,7 @@ DataBuffer::Read( int dataSize )
     }
     else
     {
-        throw Exception( "Read past end of DataBuffer" );
+        throw RuntimeError( "Read past end of DataBuffer" );
     }
 }
 
@@ -127,7 +127,7 @@ DataBuffer::Read( )
     }
     else
     {
-        throw Exception( "Read past end of DataBuffer" );
+        throw RuntimeError( "Read past end of DataBuffer" );
     }
 }
 

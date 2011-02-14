@@ -34,7 +34,8 @@
      [][]. Note that the arguments are (row, column), regardless of the
      internal representation.
   5. operator() provides unchecked access.
-     Element() asserts that the indices are in the proper range.
+     Element() checks that the indices are in the proper range and throws
+     out_of_range otherwise.
   6. The Array() methods provide direct access to the internal representation,
      primarily for efficient interaction with other libraries.
   7. If you already have the determinant, you may pass it to Inverse(), to
@@ -303,8 +304,9 @@ inline
 const T & 
 Matrix2<T>::Element( int row, int column ) const
 {
-    Assert( (0 <= row) && (row < 2) );
-    Assert( (0 <= column) && (column < 2) );
+    if ( (row < 0) || (row >= 2)
+         || (column < 0) || (column >= 2) )
+        throw  std::out_of_range( "Matrix2: out_of_range error" );
     return m_elements[column][row];
 }
 
@@ -315,8 +317,9 @@ inline
 T & 
 Matrix2<T>::Element( int row, int column )
 {
-    Assert( (0 <= row) && (row < 2) );
-    Assert( (0 <= column) && (column < 2) );
+    if ( (row < 0) || (row >= 2)
+         || (column < 0) || (column >= 2) )
+        throw  std::out_of_range( "Matrix2: out_of_range error" );
     return m_elements[column][row];
 }
 

@@ -11,6 +11,7 @@
 #include "AngleHMS.hpp"
 #include "JSON.hpp"
 #include "Assert.hpp"
+#include <limits>
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include <sstream>
@@ -24,9 +25,16 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-const double Angle::bazillion = 1.E+16;
 bool Angle::ms_operatorsNormalized = true;
 
+//-----------------------------------------------------------------------------
+
+namespace
+{                                                                   //namespace
+
+double infinity = numeric_limits< double >::infinity();
+
+}                                                                   //namespace
 
 //=============================================================================
 
@@ -66,11 +74,12 @@ Angle::Tan( ) const
 {
     Angle a = *this;
     a.Normalize( );
-    Assert( (a.m_radians != - M_PI / 2.) && (a.m_radians != M_PI / 2.) ); //???
+    if( (a.m_radians == - M_PI / 2.) || (a.m_radians == M_PI / 2.) )
+        throw LogicError( "Tan error: pi/2" );
     if ( a.m_radians == - M_PI / 2. )
-        return -bazillion;
+        return - infinity;
     if ( a.m_radians == M_PI / 2. )
-        return bazillion;
+        return infinity;
     return tan( a.m_radians );
 }
 
@@ -107,7 +116,7 @@ ArcCos( double c )
 Angle 
 ArcTan( double num, double den )
 {
-    Assert( (num != 0.) || (den != 0.) );   //???
+    Assert( (num != 0.) || (den != 0.) );
     if ( (num == 0.) && (den == 0.) )
         return Angle( M_PI / 2.);
     return Angle( atan2( num, den ) );
@@ -237,19 +246,17 @@ Angle::Test( )
     TESTCHECKF( angle90.Cycles(), 1.25, &ok );
     TESTCHECKF( angle90.Sin(), 1., &ok );
     TESTCHECKF( angle90.Cos(), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( angle90.Tan(), bazillion, &ok );
+        TESTCHECKF( angle90.Tan(), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( angle90.Hav(), 0.5, &ok );
     cout << "Normalize()" << endl;
     angle90.Normalize();
@@ -259,19 +266,17 @@ Angle::Test( )
     TESTCHECKF( angle90.Cycles(), 0.25, &ok );
     TESTCHECKF( angle90.Sin(), 1., &ok );
     TESTCHECKF( angle90.Cos(), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( angle90.Tan(), bazillion, &ok );
+        TESTCHECKF( angle90.Tan(), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( angle90.Hav(), 0.5, &ok );
     cout << "NormalizePositive()" << endl;
     angle90.NormalizePositive();
@@ -281,19 +286,17 @@ Angle::Test( )
     TESTCHECKF( angle90.Cycles(), 0.25, &ok );
     TESTCHECKF( angle90.Sin(), 1., &ok );
     TESTCHECKF( angle90.Cos(), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( angle90.Tan(), bazillion, &ok );
+        TESTCHECKF( angle90.Tan(), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( angle90.Hav(), 0.5, &ok );
     double grads = 250.;
     cout << "Angle( " << grads << ", Grad ) [grads constructor]" << endl;
@@ -403,19 +406,17 @@ Angle::Test( )
     TESTCHECKF( angle90.Cycles(), 0.25, &ok );
     TESTCHECKF( angle90.Sin(), 1., &ok );
     TESTCHECKF( angle90.Cos(), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( angle90.Tan(), bazillion, &ok );
+        TESTCHECKF( angle90.Tan(), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( angle90.Hav(), 0.5, &ok );
     TESTCHECKF( EpsilonDelta::Sin( angle90 / 2. ), sqrt( 0.5 ), &ok );
     TESTCHECKF( EpsilonDelta::Cos( angle90 / 2 ), sqrt( 0.5 ), &ok );
@@ -433,19 +434,17 @@ Angle::Test( )
     TESTCHECKF( EpsilonDelta::Hav( angle45 ), 0.1464466, &ok );
     TESTCHECKF( EpsilonDelta::Sin( angle45 * 2.), 1., &ok );
     TESTCHECKF( EpsilonDelta::Cos( 2. * angle45 ), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( EpsilonDelta::Tan( angle45 * 2. ), bazillion, &ok );
+        TESTCHECKF( EpsilonDelta::Tan( angle45 * 2. ), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( EpsilonDelta::Hav( 2. * angle45 ), 0.5, &ok );
     double ss = 0.5;
     cout << "ArcSin( " << ss << " )" << endl;
@@ -502,19 +501,17 @@ Angle::Test( )
     TESTCHECKF( angle270.Cycles(), -0.25, &ok );
     TESTCHECKF( angle270.Sin(), -1., &ok );
     TESTCHECKF( angle270.Cos(), 0., &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
-        TESTCHECKF( angle270.Tan(), bazillion, &ok );
+        TESTCHECKF( angle270.Tan(), infinity, &ok );
         cout << "Tan() should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( LogicError & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
-#endif
     TESTCHECKF( angle270.Hav(), 0.5, &ok );
     double hh = 0.5;;
     cout << "ArcHav( " << hh << " )" << endl;

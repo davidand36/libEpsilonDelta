@@ -26,7 +26,6 @@ class PostgreSQLException
 {
 public:
     explicit PostgreSQLException( const std::string & errorMessage );
-    virtual ~PostgreSQLException( ) { }
 };
 
 

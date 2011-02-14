@@ -11,7 +11,6 @@
 #include "Array.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
-#include "Exception.hpp"
 #include <tr1/array>
 #include <iostream>
 #include <cstring>
@@ -137,26 +136,24 @@ bool TestArray( )
     try
     {
         TESTCHECK( array0.at(-1).I(), -1, &ok );  //int->size_t warning OK
-        cout << "at(-1) should have thrown an exception." << endl;
+        cout << "at(-1) should have thrown an out_of_range exception." << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         TESTCHECK( array0.at(3).I(), 3, &ok );
-        cout << "at(3) should have thrown an exception." << endl;
+        cout << "at(3) should have thrown an out_of_range exception." << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     cout << "array0[0] = TestClass( 100, 100., \"nil\" )" << endl;
     array0[0] = TestClass( 100, 100., "nil" );
@@ -230,50 +227,48 @@ bool TestTwoDArray( )
     try
     {
         tcArray.at( -1, 1 );
-        cout << "at(-1,1) should have thrown an exception." << endl;
+        cout << "at(-1,1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, -1 );
-        cout << "at(1,-1) should have thrown an exception." << endl;
+        cout << "at(1,-1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 3, 1 );
-        cout << "at(3,1) should have thrown an exception." << endl;
+        cout << "at(3,1) should have thrown an out_of_range exception." << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, 2 );
-        cout << "at(1,) should have thrown an exception." << endl;
+        cout << "at(1,) should have thrown an out_of_range exception." << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     for ( int i = 0; i < 3; ++i )
         for ( int j = 0; j < 2; ++j )
@@ -337,74 +332,73 @@ bool TestThreeDArray( )
     try
     {
         tcArray.at( -1, 1, 1 );
-        cout << "at(-1,1,1) should have thrown an exception." << endl;
+        cout << "at(-1,1,1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, -1, 1 );
-        cout << "at(1,-1,1) should have thrown an exception." << endl;
+        cout << "at(1,-1,1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, 1, -1 );
-        cout << "at(1,1,-1) should have thrown an exception." << endl;
+        cout << "at(1,1,-1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 4, 1, 1 );
-        cout << "at(4,1) should have thrown an exception." << endl;
+        cout << "at(4,1) should have thrown an out_of_range exception." << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, 3, 1 );
-        cout << "at(1,3,1) should have thrown an exception." << endl;
+        cout << "at(1,3,1) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     try
     {
         tcArray.at( 1, 1, 2 );
-        cout << "at(1,1,2) should have thrown an exception." << endl;
+        cout << "at(1,1,2) should have thrown an out_of_range exception."
+             << endl;
         ok = false;
     }
-    catch ( exception & except )
+    catch ( out_of_range & except )
     {
-        cout << "Assertion here is OK" << endl;
-        Exception exc( except );
-        cout << exc.Description( ) << endl;
+        cout << "out_of_range here is OK" << endl;
+        cout << except.what( ) << endl;
     }
     for ( int s = 0; s < 4; ++s )
         for ( int i = 0; i < 3; ++i )

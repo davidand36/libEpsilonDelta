@@ -22,7 +22,8 @@
   3. Trim removes high-order coefficients that are zero, so that the Degree()
      of the resulting polynomial is its true degree.
   4. operator[] provides unchecked access.
-     Coefficient() asserts that the power (index) is in the proper range.
+     Coefficient() checks that the power (index) is in the proper range and
+     throws out_of_range otherwise.
   5. operator()( arg ) evaluates the polynomial at x=arg and returns the
      result.
      operator()( arg, pValue, pDerivative ) evaluates the polynomial and its
@@ -296,7 +297,8 @@ template <typename T>
 T 
 Polynomial<T>::Coefficient( int power ) const
 {
-    Assert( (0 <= power) && (power <= Degree()) );
+    if ( (power < 0) || (power > Degree() ) )
+        throw  std::out_of_range( "Polynomial: out_of_range error" );
     return m_coeffs[ power ];
 }
 

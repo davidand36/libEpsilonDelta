@@ -19,7 +19,7 @@ namespace EpsilonDelta
 
 
 class SingularMatrixException
-    : public Exception
+    : public LogicError
 {
 public:
     SingularMatrixException( );

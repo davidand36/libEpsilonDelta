@@ -18,7 +18,7 @@ namespace EpsilonDelta
 
 
 class JSONException
-        :   public Exception
+    :   public RuntimeError
 {
 public:
     JSONException( const std::string & description );

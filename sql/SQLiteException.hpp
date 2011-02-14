@@ -25,7 +25,6 @@ class SQLiteException
 {
 public:
     explicit SQLiteException( const std::string & errorMessage );
-    virtual ~SQLiteException( ) { }
 };
 
 

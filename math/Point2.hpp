@@ -10,7 +10,8 @@
      rather than by reference, makes sense. It is also assumed that T values
      can be assigned simply via memcpy().
   2. operator[] provides unchecked access.
-     At() asserts that index is in the proper range.
+     At() checks that index is in the proper range and throws out_of_range
+     otherwise.
   3. The Array() methods provide direct access to the internal representation,
      primarily for efficient interaction with other libraries.
   4. The distinction between points and vectors, while useful for physics
@@ -283,7 +284,8 @@ template <typename T>
 const T &
 Point2<T>::At( int index ) const
 {
-    Assert( (0 <= index) && (index < 2) );
+    if ( (index < 0) || (index >= 2) )
+        throw  std::out_of_range( "Point2: out_of_range error" );
     return m_coords[index];
 }
 
@@ -293,7 +295,8 @@ template <typename T>
 T &
 Point2<T>::At( int index )
 {
-    Assert( (0 <= index) && (index < 2) );
+    if ( (index < 0) || (index >= 2) )
+        throw  std::out_of_range( "Point2: out_of_range error" );
     return m_coords[index];
 }
 

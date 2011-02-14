@@ -46,38 +46,34 @@ TestMatrix3( )
     TESTCHECK( mat0.Element(0,0), 0.f, &ok );
     TESTCHECK( mat0.Element(0,1), 0.f, &ok );
     TESTCHECK( mat0(0,2), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat0.Element(0,3), 0.f, &ok );
         cout << "Element(0,3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat0.Element(1,0), 0.f, &ok );
     TESTCHECK( mat0.Element(1,1), 0.f, &ok );
     TESTCHECK( mat0.Element(1,2), 0.f, &ok );
     TESTCHECK( mat0.Element(2,0), 0.f, &ok );
     TESTCHECK( mat0.Element(2,1), 0.f, &ok );
     TESTCHECK( mat0.Element(2,2), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat0.Element(3,0), 0.f, &ok );
         cout << "Element(3,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     Vector3F v0 = mat0.Row(0);
     TESTCHECK( v0[0], 0.f, &ok );
@@ -135,38 +131,34 @@ TestMatrix3( )
     TESTCHECK( mat1.Element(0,0), 1.f, &ok );
     TESTCHECK( mat1.Element(0,1), 0.f, &ok );
     TESTCHECK( mat1.Element(0,2), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat1.Element(0,3), 0.f, &ok );
         cout << "Element(0,3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat1.Element(1,0), 0.f, &ok );
     TESTCHECK( mat1.Element(1,1), 1.f, &ok );
     TESTCHECK( mat1.Element(1,2), 0.f, &ok );
     TESTCHECK( mat1.Element(2,0), 0.f, &ok );
     TESTCHECK( mat1.Element(2,1), 0.f, &ok );
     TESTCHECK( mat1.Element(2,2), 1.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat1.Element(3,0), 0.f, &ok );
         cout << "Element(3,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     v0 = mat1.Row(0);
     TESTCHECK( v0[0], 1.f, &ok );
@@ -258,7 +250,9 @@ TestMatrix3( )
     float e20 = -274.f;
     float e21 = -939.f;
     float e22 = -940.f;
-    cout << "Matrix3F( " << e00 << ", " << e01 << ", " << e02 << ", " << e10 << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", " << e22 << " ) [element-by-element constructor]" << endl;
+    cout << "Matrix3F( " << e00 << ", " << e01 << ", " << e02 << ", " << e10
+         << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", "
+         << e22 << " ) [element-by-element constructor]" << endl;
     Matrix3F mat2( e00, e01, e02, e10, e11, e12, e20, e21, e22 );
     TESTCHECK( mat2(0,0), e00, &ok );
     TESTCHECK( mat2(0,1), e01, &ok );
@@ -272,38 +266,34 @@ TestMatrix3( )
     TESTCHECK( mat2.Element(0,0), e00, &ok );
     TESTCHECK( mat2.Element(0,1), e01, &ok );
     TESTCHECK( mat2.Element(0,2), e02, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat2.Element(0,3), 0.f, &ok );
         cout << "Element(0,3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( mat2.Element(1,0), e10, &ok );
     TESTCHECK( mat2.Element(1,1), e11, &ok );
     TESTCHECK( mat2.Element(1,2), e12, &ok );
     TESTCHECK( mat2.Element(2,0), e20, &ok );
     TESTCHECK( mat2.Element(2,1), e21, &ok );
     TESTCHECK( mat2.Element(2,2), e22, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( mat2.Element(3,0), 0.f, &ok );
         cout << "Element(3,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "Row(0)" << endl;
     v0 = mat2.Row(0);
     TESTCHECK( v0[0], e00, &ok );
@@ -376,7 +366,9 @@ TestMatrix3( )
     e20 = 4.f;
     e21 = -3.f;
     e22 = 2.f;
-    cout << "Set( " << e00 << ", " << e01 << ", " << e02 << ", " << e10 << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", " << e22 << " )" << endl;
+    cout << "Set( " << e00 << ", " << e01 << ", " << e02 << ", " << e10
+         << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", "
+         << e22 << " )" << endl;
     mat2.Set( e00, e01, e02, e10, e11, e12, e20, e21, e22 );
     TESTCHECK( mat2(0,0), e00, &ok );
     TESTCHECK( mat2(0,1), e01, &ok );
@@ -387,7 +379,10 @@ TestMatrix3( )
     TESTCHECK( mat2(2,0), e20, &ok );
     TESTCHECK( mat2(2,1), e21, &ok );
     TESTCHECK( mat2(2,2), e22, &ok );
-    cout << "Matrix3F( " << e00 << ", " << e01 << ", " << e02 << ", " << e10 << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", " << e22 << ", true ) [element-by-element constructor, column-major]" << endl;
+    cout << "Matrix3F( " << e00 << ", " << e01 << ", " << e02 << ", " << e10
+         << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", "
+         << e22 << ", true ) [element-by-element constructor, column-major]"
+         << endl;
     Matrix3F mat3( e00, e01, e02, e10, e11, e12, e20, e21, e22, true );
     TESTCHECK( mat3(0,0), e00, &ok );
     TESTCHECK( mat3(0,1), e10, &ok );
@@ -407,7 +402,9 @@ TestMatrix3( )
     e20 = 3.f;
     e21 = 30.f;
     e22 = 300.f;
-    cout << "Set( " << e00 << ", " << e01 << ", " << e02 << ", " << e10 << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", " << e22 << ", true )" << endl;
+    cout << "Set( " << e00 << ", " << e01 << ", " << e02 << ", " << e10
+         << ", " << e11 << ", " << e12 << ", " << e20 << ", " << e21 << ", "
+         << e22 << ", true )" << endl;
     mat3.Set( e00, e01, e02, e10, e11, e12, e20, e21, e22, true );
     TESTCHECK( mat3(0,0), e00, &ok );
     TESTCHECK( mat3(0,1), e10, &ok );
@@ -419,7 +416,10 @@ TestMatrix3( )
     TESTCHECK( mat3(2,1), e12, &ok );
     TESTCHECK( mat3(2,2), e22, &ok );
     float arr1[] = { 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 17.f, 18.f };
-    cout << "Matrix3F( { " << arr1[0] << ", " << arr1[1] << ", " << arr1[2] << ", " << arr1[3] << ", " << arr1[4] << ", " << arr1[5] << ", " << arr1[6] << ", " << arr1[7] << ", " << arr1[8] << " } ) [array constructor]" << endl;
+    cout << "Matrix3F( { " << arr1[0] << ", " << arr1[1] << ", " << arr1[2]
+         << ", " << arr1[3] << ", " << arr1[4] << ", " << arr1[5] << ", "
+         << arr1[6] << ", " << arr1[7] << ", " << arr1[8]
+         << " } ) [array constructor]" << endl;
     Matrix3F mat4( arr1 );
     TESTCHECK( mat4(0,0), arr1[0], &ok );
     TESTCHECK( mat4(0,1), arr1[3], &ok );
@@ -430,7 +430,9 @@ TestMatrix3( )
     TESTCHECK( mat4(2,0), arr1[2], &ok );
     TESTCHECK( mat4(2,1), arr1[5], &ok );
     TESTCHECK( mat4(2,2), arr1[8], &ok );
-    cout << "Set( { " << arr0[0] << ", " << arr0[1] << ", " << arr0[2] << ", " << arr0[3] << ", " << arr1[4] << ", " << arr1[5] << ", " << arr1[6] << ", " << arr1[7] << ", " << arr1[8] << " } )" << endl;
+    cout << "Set( { " << arr0[0] << ", " << arr0[1] << ", " << arr0[2] << ", "
+         << arr0[3] << ", " << arr1[4] << ", " << arr1[5] << ", " << arr1[6]
+         << ", " << arr1[7] << ", " << arr1[8] << " } )" << endl;
     mat4.Set( arr0 );
     TESTCHECK( mat4(0,0), mat2(0,0), &ok );
     TESTCHECK( mat4(0,1), mat2(0,1), &ok );
@@ -442,7 +444,10 @@ TestMatrix3( )
     TESTCHECK( mat4(2,1), mat2(2,1), &ok );
     TESTCHECK( mat4(2,2), mat2(2,2), &ok );
     TESTCHECK( (mat4 == mat2), true, &ok );
-    cout << "Matrix3F( { " << arr1[0] << ", " << arr1[1] << ", " << arr1[2] << ", " << arr1[3] << ", " << arr1[4] << ", " << arr1[5] << ", " << arr1[6] << ", " << arr1[7] << ", " << arr1[8] << " }, false ) [array constructor, row-major]" << endl;
+    cout << "Matrix3F( { " << arr1[0] << ", " << arr1[1] << ", " << arr1[2]
+         << ", " << arr1[3] << ", " << arr1[4] << ", " << arr1[5] << ", "
+         << arr1[6] << ", " << arr1[7] << ", " << arr1[8]
+         << " }, false ) [array constructor, row-major]" << endl;
     Matrix3F mat5( arr1, false );
     TESTCHECK( mat5(0,0), arr1[0], &ok );
     TESTCHECK( mat5(0,1), arr1[1], &ok );
@@ -453,7 +458,10 @@ TestMatrix3( )
     TESTCHECK( mat5(2,0), arr1[6], &ok );
     TESTCHECK( mat5(2,1), arr1[7], &ok );
     TESTCHECK( mat5(2,2), arr1[8], &ok );
-    cout << "Set( { " << arr0[0] << ", " << arr0[1] << ", " << arr0[2] << ", " << arr0[3] << ", " << arr1[4] << ", " << arr1[5] << ", " << arr1[6] << ", " << arr1[7] << ", " << arr1[8] << " }, false )" << endl;
+    cout << "Set( { " << arr0[0] << ", " << arr0[1] << ", " << arr0[2]
+         << ", " << arr0[3] << ", " << arr1[4] << ", " << arr1[5] << ", "
+         << arr1[6] << ", " << arr1[7] << ", " << arr1[8] << " }, false )"
+         << endl;
     mat5.Set( arr0, false );
     TESTCHECK( mat5(0,0), mat2(0,0), &ok );
     TESTCHECK( mat5(0,1), mat2(1,0), &ok );
@@ -607,7 +615,8 @@ TestMatrix3( )
     v2.Set( 0.f, 0.f, 1.f );
     double a = M_PI / 2;
     Angle angle( a );
-    cout << "Matrix3F( AxisAngleF( v0, Angle( " << a << " ) ) ) [rotation constructor]" << endl;
+    cout << "Matrix3F( AxisAngleF( v0, Angle( " << a
+         << " ) ) ) [rotation constructor]" << endl;
     Matrix3F mat8( AxisAngleF( v0, angle ) );
     TESTCHECKF( (mat8 * v0).X(), v0.X(), &ok );
     TESTCHECKF( (mat8 * v0).Y(), v0.Y(), &ok );
@@ -619,7 +628,8 @@ TestMatrix3( )
     TESTCHECKF( (mat8 * v2).Y(), -v1.Y(), &ok );
     TESTCHECKF( (mat8 * v2).Z(), -v1.Z(), &ok );
     int i = 0;
-    cout << "Matrix3F( " << i << ", Angle( " << a << " ) ) [coord axis rotation constructor]" << endl;
+    cout << "Matrix3F( " << i << ", Angle( " << a
+         << " ) ) [coord axis rotation constructor]" << endl;
     Matrix3F mat10( i, angle );
     TESTCHECKF( (mat10 * v0).X(), v0.X(), &ok );
     TESTCHECKF( (mat10 * v0).Y(), v0.Y(), &ok );
@@ -759,7 +769,6 @@ TestMatrix3( )
     TESTCHECK( mat9(2,1), mat4(2,1), &ok );
     TESTCHECK( mat9(2,2), mat4(2,2), &ok );
     TESTCHECK( (mat9 == mat4), true, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         cout << "mat9.Element(0,3) = " << f << endl;
@@ -767,12 +776,11 @@ TestMatrix3( )
         cout << "Element(0,3) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "mat9(2,0) = " << f << endl;
     mat9(2,0) = f;
     TESTCHECK( mat9(0,0), mat4(0,0), &ok );
@@ -821,7 +829,6 @@ TestMatrix3( )
     TESTCHECK( mat9(2,1), mat4(2,1), &ok );
     TESTCHECK( mat9(2,2), mat4(2,2), &ok );
     TESTCHECK( (mat9 == mat4), true, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         cout << "mat9.Element(3,0) = " << f << endl;
@@ -829,12 +836,11 @@ TestMatrix3( )
         cout << "Element(3,0) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "+= mat2" << endl;
     mat9 += mat2;
     TESTCHECK( mat9(0,0), 20.f, &ok );

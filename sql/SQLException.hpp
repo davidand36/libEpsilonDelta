@@ -18,18 +18,17 @@ namespace EpsilonDelta
 
 
 class SQLException
-    :    public Exception
+    :    public RuntimeError
 {
 public:
     explicit SQLException( const std::string & description );
-    virtual ~SQLException( ) { }
 };
 
 //#############################################################################
 
 inline
 SQLException::SQLException( const std::string & description )
-    :    Exception( description )
+    :    RuntimeError( description )
 { 
 }
 

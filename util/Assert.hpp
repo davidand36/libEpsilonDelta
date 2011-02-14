@@ -30,7 +30,7 @@ namespace EpsilonDelta
 //.............................................................................
 
 class AssertException
-    : public Exception
+    : public LogicError
 {
 public:
     AssertException( const std::string & description,

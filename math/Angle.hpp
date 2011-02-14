@@ -50,7 +50,6 @@ class Angle
 {
 public:
     enum Unit { Radian, Degree, ArcSecond, Grad, Cycle };
-    static const double bazillion;
 
     Angle( );
     Angle( double value, Unit unit = Radian );

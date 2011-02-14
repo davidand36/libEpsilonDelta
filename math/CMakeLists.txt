@@ -7,6 +7,9 @@
 #
 
 set( sources
+     ConvergenceException.cpp
+     NullVectorException.cpp
+     SingularMatrixException.cpp
      DivMod.cpp
      Shift.cpp
      FixedPoint.cpp
@@ -15,8 +18,6 @@ set( sources
      Angle.cpp
      AngleDMS.cpp
      AngleHMS.cpp
-     NullVectorException.cpp
-     SingularMatrixException.cpp
      Point2.cpp
      Vector.cpp
      Vector2.cpp

@@ -41,7 +41,8 @@
      [][]. Note that the arguments are (row, column), regardless of the
      internal representation.
   5. operator() provides unchecked access.
-     Element() asserts that the indices are in the proper range.
+     Element() checks that the indices are in the proper range and throws
+     out_of_range otherwise.
   6. The Array() methods provide direct access to the internal representation,
      primarily for efficient interaction with other libraries.
   7. If you already have the determinant, you may pass it to Inverse(), to
@@ -346,7 +347,8 @@ template <typename T>
 void 
 Matrix3<T>::Set( int axis, const Angle & angle )
 {
-    Assert( (0 <= axis) && (axis < 3) );
+    if ( (axis < 0) || (axis >= 3) )
+        throw  std::out_of_range( "Matrix3: out_of_range error" );
     static const int indices[3][3]
             = { { 0, 1, 2 }, { 1, 2, 0 }, { 2, 0, 1 } };
     const int i0 = indices[ axis ][ 0 ];
@@ -368,7 +370,8 @@ template <typename T>
 void 
 Matrix3<T>::Set( const EulerAngles & eulerAngles, EulerAngles::EOrder order )
 {
-    Assert( order <= EulerAngles::YXZ );
+    if ( (order < 0) || (order > EulerAngles::YXZ) )
+        throw  std::out_of_range( "Matrix3: out_of_range error" );
     static const int indices[6][3]
             = { { 0, 1, 2 }, { 1, 2, 0 }, { 2, 0, 1 },
                 { 0, 2, 1 }, { 2, 1, 0 }, { 1, 0, 2 } };
@@ -435,8 +438,9 @@ template <typename T>
 const T & 
 Matrix3<T>::Element( int row, int column ) const
 {
-    Assert( (0 <= row) && (row < 3) );
-    Assert( (0 <= column) && (column < 3) );
+    if ( (row < 0) || (row >= 3)
+         || (column < 0) || (column >= 3) )
+        throw  std::out_of_range( "Matrix3: out_of_range error" );
     return m_elements[column][row];
 }
 
@@ -446,8 +450,9 @@ template <typename T>
 T & 
 Matrix3<T>::Element( int row, int column )
 {
-    Assert( (0 <= row) && (row < 3) );
-    Assert( (0 <= column) && (column < 3) );
+    if ( (row < 0) || (row >= 3)
+         || (column < 0) || (column >= 3) )
+        throw  std::out_of_range( "Matrix3: out_of_range error" );
     return m_elements[column][row];
 }
 

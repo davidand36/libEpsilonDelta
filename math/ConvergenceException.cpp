@@ -1,13 +1,13 @@
 /*
-  NullVectorException.cpp
+  ConvergenceException.cpp
   Copyright (C) 2007 David M. Anderson
 
-  NullVectorException class:  Exception class for attempts to invert,
+  ConvergenceException class:  Exception class for attempts to invert,
     etc., a singular matrix.
 */
 
 
-#include "NullVectorException.hpp"
+#include "ConvergenceException.hpp"
 
 
 namespace EpsilonDelta
@@ -16,8 +16,8 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-NullVectorException::NullVectorException( )
-    :   LogicError( "Vector is null." )
+ConvergenceException::ConvergenceException( const std::string & description )
+    :   RuntimeError( description )
 {
 }
 

@@ -18,6 +18,7 @@
 #include "SolarSystem.hpp"
 #include "SiderealTime.hpp"
 #include "Equatorial.hpp"
+#include "ConvergenceException.hpp"
 
 
 namespace EpsilonDelta
@@ -181,7 +182,7 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
         oldRA = bodyRA;
 
         if ( ++counter > 1000 )
-            throw Exception( "RiseSet::FindNext() never converged" );
+            throw ConvergenceException( "RiseSet::FindNext() never converged" );
     } while ( fabs( correction ) > 0.0003 );
 
     result.m_julianDay = jd;

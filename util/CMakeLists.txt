@@ -16,6 +16,7 @@ set( sources
      CodePointData.cpp
      StringUtil.cpp
      UnicodeUtil.cpp
+     UnicodeException.cpp
      CSV.cpp
      JSON.cpp
      JSONException.cpp

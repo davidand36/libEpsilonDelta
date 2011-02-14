@@ -24,7 +24,7 @@ namespace EpsilonDelta
 
 AssertException::AssertException( const string & description,
 				    const string & sourceFile, int sourceLine )
-    :   Exception( "Assertion failure: " + description )
+    :   LogicError( "Assertion failure: " + description )
 {
     if ( sourceFile.length() > 0 )
     {

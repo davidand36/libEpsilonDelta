@@ -95,7 +95,7 @@ CGIInput::ReadRawInput( int maxInputLength )
         length = atoi( contentLength );
         Assert( length >= 0 );
         if ( length > maxInputLength )
-            throw Exception( "CGI input exceeds maximum allowed size." );
+            throw RuntimeError( "CGI input exceeds maximum allowed size." );
         vector< char > inputBuff( length + 1 );
 #ifdef OS_WINDOWS
         _setmode( _fileno( stdin ), _O_BINARY );
@@ -115,7 +115,7 @@ CGIInput::ReadRawInput( int maxInputLength )
     if ( length > 0 )
     {
         if ( length > maxInputLength )
-            throw Exception( "CGI input exceeds maximum allowed size." );
+            throw RuntimeError( "CGI input exceeds maximum allowed size." );
         if ( m_rawInput.length( ) > 0 )
             m_rawInput.append( "&" );
         m_rawInput.append( queryString, length );

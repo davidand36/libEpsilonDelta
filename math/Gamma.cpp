@@ -9,7 +9,7 @@
 #include "Gamma.hpp"
 #include "Polynomial.hpp"
 #include "Assert.hpp"
-#include "Exception.hpp"
+#include "ConvergenceException.hpp"
 #include <cmath>
 #ifdef DEBUG
 #include "TestCheck.hpp"
@@ -77,7 +77,8 @@ IncompleteGamma( double a, double x )
                  < fabs( sum ) * epsilon )
                 return sum * exp( -x  +  a * log( x )  -  LogGamma( a ) );
         }
-        throw Exception( "IncompleteGamma series failed to converge." );
+        throw ConvergenceException( "IncompleteGamma series "
+                                    "failed to converge." );
     }
     else //x >= a + 1.
     {
@@ -106,8 +107,8 @@ IncompleteGamma( double a, double x )
             if ( fabs( delta - 1. ) < epsilon )
                 return 1.  -  f * exp( -x  +  a * log( x )  -  LogGamma( a ) );
         }
-        throw Exception( "IncompleteGamma continued fraction"
-                         " failed to converge." );
+        throw ConvergenceException( "IncompleteGamma continued fraction"
+                                    " failed to converge." );
     }
 }
 
@@ -176,7 +177,8 @@ IncompleteBeta( double a, double b, double x )
             return f / a * exp( a * log( x )  +  b * log( 1. - x )
                         + LogGamma( a + b ) - LogGamma( a ) - LogGamma( b ) );
     }
-    throw Exception( "IncompleteBeta continued fraction failed to converge." );
+    throw ConvergenceException( "IncompleteBeta continued fraction"
+                                " failed to converge." );
 }
 
 //=============================================================================

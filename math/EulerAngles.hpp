@@ -21,7 +21,8 @@
      applying yaw (heading), pitch, and roll corresponds to kZXY, and
      EulerAngles( roll, pitch, yaw ).
   3. operator[] provides unchecked access.
-     At() asserts that index is in the proper range.
+     At() checks that index is in the proper range and throws out_of_range
+     otherwise.
 */
 
 
@@ -145,7 +146,8 @@ inline
 const Angle & 
 EulerAngles::At( int index ) const
 {
-    Assert( (index >= 0) && (index < 3) );
+    if ( (index < 0) || (index >= 3) )
+        throw  std::out_of_range( "EulerAngles: out_of_range error" );
     return  m_angles[ index ];
 }
 
@@ -155,7 +157,8 @@ inline
 Angle & 
 EulerAngles::At( int index )
 {
-    Assert( (index >= 0) && (index < 3) );
+    if ( (index < 0) || (index >= 3) )
+        throw  std::out_of_range( "EulerAngles: out_of_range error" );
     return  m_angles[ index ];
 }
 

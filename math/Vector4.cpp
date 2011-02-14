@@ -44,26 +44,25 @@ TestVector4( )
     TESTCHECK( vf0.At(1), 0.f, &ok );
     TESTCHECK( vf0.At(2), 0.f, &ok );
     TESTCHECK( vf0.At(3), 0.f, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vf0.At(4), 0.f, &ok );
         cout << "At(4) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assert here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     TESTCHECK( (vf0 == vf0), true, &ok );
     TESTCHECK( (vf0 == Vector4F::Zero), true, &ok );
     float xf = 37.f;
     float yf = -17.f;
     float zf = -3.f;
     float wf = 13.f;
-    cout << "Set( " << xf << ", " << yf << ", " << zf << ", " << wf << " ) :" << endl;
+    cout << "Set( " << xf << ", " << yf << ", " << zf << ", " << wf << " ) :"
+         << endl;
     vf0.Set( xf, yf, zf, wf );
     TESTCHECK( vf0.X(), xf, &ok );
     TESTCHECK( vf0.Y(), yf, &ok );
@@ -198,19 +197,17 @@ TestVector4( )
     TESTCHECK( vf0.At(1), yf, &ok );
     TESTCHECK( vf0.At(2), zf, &ok );
     TESTCHECK( vf0.At(3), wf, &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         vf0.At(4) = 33.f;
         cout << "At(4) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     cout << "pf = vf0.Array()" << endl;
     float * pf = vf0.Array();
     TESTCHECK( pf[0], xf, &ok );
@@ -282,7 +279,8 @@ TestVector4( )
     yf = 4.f;
     zf = 7.f;
     wf = 100.f;
-    cout << "Vector4<float>( " << xf << ", " << yf << ", " << zf << ", " << wf << " ) [x,y,z,w constructor]" << endl;
+    cout << "Vector4<float>( " << xf << ", " << yf << ", " << zf << ", " << wf
+         << " ) [x,y,z,w constructor]" << endl;
     Vector4<float> vf1( xf, yf, zf, wf );
     TESTCHECK( vf1.X(), xf, &ok );
     TESTCHECK( vf1.Y(), yf, &ok );
@@ -299,7 +297,8 @@ TestVector4( )
     TESTCHECK( (vf1 == vf1), true, &ok );
     TESTCHECK( (vf0 == vf1), false, &ok );
     const float fArr0[] = { 21.f, -55.f, -1000.f, -123.f };
-    cout << "Vector4<float>( { " << fArr0[0] << ", " << fArr0[1] << ", " << fArr0[2] << ", " << fArr0[3] << " } ) [array constructor]" << endl;
+    cout << "Vector4<float>( { " << fArr0[0] << ", " << fArr0[1] << ", "
+         << fArr0[2] << ", " << fArr0[3] << " } ) [array constructor]" << endl;
     Vector4<float> vf2( fArr0 );
     TESTCHECK( vf2.X(), fArr0[0], &ok );
     TESTCHECK( vf2.Y(), fArr0[1], &ok );
@@ -313,21 +312,20 @@ TestVector4( )
     TESTCHECK( vf2.At(1), fArr0[1], &ok );
     TESTCHECK( vf2.At(2), fArr0[2], &ok );
     TESTCHECK( vf2.At(3), fArr0[3], &ok );
-#ifdef ASSERT_IS_EXCEPTION
     try
     {
         TESTCHECK( vf2.At(4), 0.f, &ok );
         cout << "At(4) should have thrown an exception." << endl;
         ok = false;
     }
-    catch( AssertException & exceptn )
+    catch( out_of_range & exceptn )
     {
         cout << "Assertion here is OK" << endl;
-        cout << exceptn.Description() << endl;
+        cout << exceptn.what() << endl;
     }
-#endif
     const float fArr1[] = { -12.f, 1955.f, 1729.f, -.125f };
-    cout << "Set( { " << fArr1[0] << ", " << fArr1[1] << ", " << fArr1[2] << " } )" << endl;
+    cout << "Set( { " << fArr1[0] << ", " << fArr1[1] << ", " << fArr1[2]
+         << " } )" << endl;
     vf2.Set( fArr1 );
     TESTCHECK( vf2.X(), fArr1[0], &ok );
     TESTCHECK( vf2.Y(), fArr1[1], &ok );
@@ -450,7 +448,8 @@ TestVector4( )
     yf = -17.f;
     zf = -3.f;
     wf = 13.f;
-    cout << "Set( " << xf << ", " << yf << ", " << zf << ", " << wf << " ) :" << endl;
+    cout << "Set( " << xf << ", " << yf << ", " << zf << ", " << wf << " ) :"
+         << endl;
     vf4.Set( xf, yf, zf, wf );
     TESTCHECK( vf4.X(), xf, &ok );
     TESTCHECK( vf4.Y(), yf, &ok );

@@ -81,10 +81,10 @@
 #endif
 
 
-#undef LITTLE_ENDIAN
-#undef BIG_ENDIAN
 #if defined(COMPILER_GNU)
 #   include <endian.h>
+#   undef LITTLE_ENDIAN
+#   undef BIG_ENDIAN
 #   if (__BYTE_ORDER == __BIG_ENDIAN)
 #       define BIG_ENDIAN __BIG_ENDIAN
 #   else
@@ -92,6 +92,8 @@
 #   endif
 
 #elif defined(COMPILER_MSC)
+#   undef LITTLE_ENDIAN
+#   undef BIG_ENDIAN
 #   if defined(CPU_X86)
 #       define LITTLE_ENDIAN 1234
 #   else

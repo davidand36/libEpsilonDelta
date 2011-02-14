@@ -10,6 +10,7 @@
 #include "AngleDMS.hpp"
 #include "AngleHMS.hpp"
 #include "JSON.hpp"
+#include "Exception.hpp"
 #include "Assert.hpp"
 #include <limits>
 #ifdef DEBUG

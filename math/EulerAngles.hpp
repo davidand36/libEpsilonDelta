@@ -27,6 +27,7 @@
 
 
 #include "Angle.hpp"
+#include "Exception.hpp"
 #include "Assert.hpp"
 #include "JSON.hpp"
 #include <tr1/array>

@@ -6,6 +6,9 @@
 
   GeodeticLocation class: A terrestrial location expressed in geodetic
   coordinates.
+  NOTES:
+  1. Longitude is positive east of Greenwich; negative, west.
+     Latitude is positive north of the equator; negative, south.
 */
 
 

@@ -17,7 +17,7 @@
 #include "Platform.hpp"
 #include <string>
 #include <tr1/memory>
-#if defined(OS_UNIX) || defined(OS_WINDOWS)
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
 #define USE_CSTD_FILE
 #endif
 #ifdef USE_CSTD_FILE

@@ -39,7 +39,7 @@ namespace EpsilonDelta
 void 
 MakeDirectory( const std::string & dirName, int mode )
 {
-#if defined(OS_UNIX)
+#if defined(OS_UNIX) || defined(OS_ANDROID)
     string dir = Replace( dirName, "\\", "/" );
     bool absolute = (dir[0] == '/');
     vector< string > dirs = Split( dir, '/' );
@@ -100,7 +100,7 @@ MakeDirectory( const std::string & dirName, int mode )
 void 
 RemoveDirectory( const std::string & dirName )
 {
-#if defined(OS_UNIX)
+#if defined(OS_UNIX) || defined(OS_ANDROID)
     int rmRslt = rmdir( dirName.c_str() );
 #elif defined(OS_WINDOWS)
     int rmRslt = _rmdir( dirName.c_str() );
@@ -118,7 +118,7 @@ ListFiles( const string & dirName )
 {
     vector< string > files;
 
-#if defined(OS_UNIX)
+#if defined(OS_UNIX) || defined(OS_ANDROID)
     ::DIR * pDirStrm = ::opendir( dirName.c_str() );
     if ( pDirStrm == 0 )
         throw FileException( "Unable to read " + dirName );
@@ -166,7 +166,7 @@ ListSubdirectories( const string & dirName )
 {
     vector< string > subdirs;
 
-#if defined(OS_UNIX) 
+#if defined(OS_UNIX) || defined(OS_ANDROID)
     ::DIR * pDirStrm = opendir( dirName.c_str() );
     if ( pDirStrm == 0 )
         throw FileException( "Unable to read " + dirName );
@@ -219,7 +219,7 @@ TestDirUtil( )
 
     try
     {
-#if defined( OS_UNIX )
+#if defined( OS_UNIX ) || defined(OS_ANDROID) //???
         string baseDirs[2] = { "", "/tmp/" };
 #elif defined( OS_WINDOWS )
         string baseDirs[2] = { "", "C:/Windows/Temp/" };

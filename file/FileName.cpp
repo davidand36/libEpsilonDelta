@@ -30,7 +30,7 @@ namespace FileName
 namespace
 {                                                                   //namespace
 
-#if defined(OS_UNIX) || defined(OS_WINDOWS)
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
 char pathSeparator = '/';
 char extensionSeparator = '.';
 #endif

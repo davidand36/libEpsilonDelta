@@ -61,7 +61,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     TESTCHECK( mat0.Element(1,0), 0.f, &ok );
@@ -76,7 +76,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "Row(0)" << endl;
@@ -177,7 +177,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     TESTCHECK( mat1.Element(1,0), 0.f, &ok );
@@ -192,7 +192,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "Row(0)" << endl;
@@ -382,7 +382,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     TESTCHECK( mat2.Element(1,0), e10, &ok );
@@ -405,7 +405,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "Row(0)" << endl;
@@ -1015,7 +1015,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "mat9(1,0) = " << f << endl;
@@ -1055,7 +1055,7 @@ TestMatrix4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "+= mat2" << endl;

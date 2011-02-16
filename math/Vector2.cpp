@@ -46,7 +46,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     TESTCHECK( vs0.Array()[0], 0, &ok );
@@ -112,7 +112,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "ps = vs0.Array()" << endl;
@@ -173,7 +173,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     const short sArr1[] = { -12, 1955 };
@@ -264,7 +264,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     TESTCHECK( (vf0 == vf0), true, &ok );
@@ -327,7 +327,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "pf = vf0.Array()" << endl;
@@ -408,7 +408,7 @@ TestVector2( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     const float fArr1[] = { -12.f, 1955.f };

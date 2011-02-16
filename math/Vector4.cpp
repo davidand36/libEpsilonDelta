@@ -205,7 +205,7 @@ TestVector4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     cout << "pf = vf0.Array()" << endl;
@@ -272,7 +272,7 @@ TestVector4( )
     }
     catch( NullVectorException & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.Description() << endl;
     }
     xf = -11.f;
@@ -320,7 +320,7 @@ TestVector4( )
     }
     catch( out_of_range & exceptn )
     {
-        cout << "Assertion here is OK" << endl;
+        cout << "Exception here is OK" << endl;
         cout << exceptn.what() << endl;
     }
     const float fArr1[] = { -12.f, 1955.f, 1729.f, -.125f };

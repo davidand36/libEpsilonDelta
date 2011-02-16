@@ -26,6 +26,7 @@ public:
     FileReader( const std::string & fileName, Type type = File::Binary );
     virtual ~FileReader( ) { }
 
+    using Reader::Read;
     virtual void Read( char * buffer, int bufferSize );
 };
 

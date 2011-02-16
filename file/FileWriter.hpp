@@ -26,6 +26,7 @@ public:
     FileWriter( const std::string & fileName, Type type = File::Binary );
     virtual ~FileWriter( ) { }
 
+    using Writer::Write;
     virtual void Write( const char * buffer, int bufferSize );
 };
 

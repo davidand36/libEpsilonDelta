@@ -10,6 +10,7 @@
 #include "TestCheck.hpp"
 #include "DataBuffer.hpp"
 #include "File.hpp"
+#include "NestedReader.hpp"
 #include "FileName.hpp"
 #include "DirUtil.hpp"
 #include "ConfigFile.hpp"
@@ -58,6 +59,8 @@ int Main( int /*argc*/, char ** /*argv*/ )
     if ( ! DataBuffer::Test( ) )
         ok = false;
     if ( ! File::Test( ) )
+        ok = false;
+    if ( ! NestedReader::Test( ) )
         ok = false;
     if ( ! FileName::Test( ) )
         ok = false;

@@ -16,6 +16,7 @@ set( sources
      File.cpp
      FileReader.cpp
      FileWriter.cpp
+     NestedReader.cpp
      FileName.cpp
      DirUtil.cpp
      ConfigFile.cpp

@@ -15,6 +15,7 @@
 #include "PostgreSQLResult.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "FileReader.hpp"
 #include "ConfigFile.hpp"
 #include "Array.hpp"
 #include "StringUtil.hpp"
@@ -217,7 +218,8 @@ PostgreSQLDatabase::Test( const string & configFileName )
     bool ok = true;
     cout << "Testing PostgreSQLDatabase" << endl;
 
-    ConfigFile config( configFileName );
+    FileReader reader( configFileName );
+    ConfigFile config( reader );
     string host = config.Value( "host" );
     string database = config.Value( "database" );
     string user = config.Value( "user" );

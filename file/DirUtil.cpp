@@ -12,18 +12,22 @@
 #include "StringUtil.hpp"
 #include <vector>
 #include <errno.h>
-#if defined(OS_UNIX)
+#if defined(OS_UNIX) || defined(OS_ANDROID)
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <ctime>
 #elif defined(OS_WINDOWS)
 #include <direct.h>
+#include <sys/stat.h>
+#include <ctime>
 #include <windows.h>
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "File.hpp"
+#include "FileWriter.hpp"
 #include <iostream>
 #include <algorithm>
 #endif
@@ -55,7 +59,7 @@ MakeDirectory( const std::string & dirName, int mode )
         if ( mkRslt != 0 )
         {
             if ( errno != EEXIST )
-                throw FileException( "Unable to create " + dir );
+                throw MkdirException( dir );
         }
         dir += "/";
     }
@@ -87,7 +91,7 @@ MakeDirectory( const std::string & dirName, int mode )
         if ( mkRslt != 0 )
         {
             if ( errno != EEXIST )
-                throw FileException( "Unable to create " + dir );
+                throw MkdirException( dir );
         }
         dir += "/";
     }
@@ -107,7 +111,7 @@ RemoveDirectory( const std::string & dirName )
 #endif
     if ( rmRslt != 0 )
     {
-        throw FileException( "Unable to remove " + dirName );
+        throw RmdirException( dirName );
     }
 }
 
@@ -121,7 +125,7 @@ ListFiles( const string & dirName )
 #if defined(OS_UNIX) || defined(OS_ANDROID)
     ::DIR * pDirStrm = ::opendir( dirName.c_str() );
     if ( pDirStrm == 0 )
-        throw FileException( "Unable to read " + dirName );
+        throw ReadDirException( dirName );
     ::dirent * pDirEnt;
     while ( (pDirEnt = ::readdir( pDirStrm )) != 0 )
     {
@@ -132,7 +136,7 @@ ListFiles( const string & dirName )
         struct ::stat entryStatus;
         int statRslt = ::stat( entrySpec.c_str(), &entryStatus );
         if ( statRslt != 0 )
-            throw FileException( "stat failed on " + entrySpec );
+            throw FileStatusException( entrySpec );
         if ( S_ISREG( entryStatus.st_mode ) )
             files.push_back( entryName );
     }
@@ -169,7 +173,7 @@ ListSubdirectories( const string & dirName )
 #if defined(OS_UNIX) || defined(OS_ANDROID)
     ::DIR * pDirStrm = opendir( dirName.c_str() );
     if ( pDirStrm == 0 )
-        throw FileException( "Unable to read " + dirName );
+        throw ReadDirException( dirName );
     ::dirent * pDirEnt;
     while ( (pDirEnt = ::readdir( pDirStrm )) != 0 )
     {
@@ -180,7 +184,7 @@ ListSubdirectories( const string & dirName )
         struct ::stat entryStatus;
         int statRslt = ::stat( entrySpec.c_str(), &entryStatus );
         if ( statRslt != 0 )
-            throw FileException( "stat failed on " + entrySpec );
+            throw FileStatusException( entrySpec );
         if ( S_ISDIR( entryStatus.st_mode ) )
             subdirs.push_back( entryName );
     }
@@ -209,6 +213,65 @@ ListSubdirectories( const string & dirName )
 
 //=============================================================================
 
+bool
+FileExists( const string & fileName )
+{
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
+    FILE * file = fopen( fileName.c_str(), "r" );
+    if ( file != 0 )
+    {
+        fclose( file );
+        return true;
+    }
+    return false;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
+int
+FileSize( const string & fileName )
+{
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
+    struct ::stat fileStatus;
+    int statRslt = ::stat( fileName.c_str(), &fileStatus );
+    if ( statRslt != 0 )
+        throw FileStatusException( fileName );
+    return static_cast< int >( fileStatus.st_size );
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
+DateTime
+FileModDate( const string & fileName )
+{
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
+    struct ::stat fileStatus;
+    int statRslt = ::stat( fileName.c_str(), &fileStatus );
+    if ( statRslt != 0 )
+        throw FileStatusException( fileName );
+    std::time_t modDate = fileStatus.st_mtime;
+    return DateTime( modDate );
+#endif
+}
+
+//=============================================================================
+
+void
+DeleteFile( const string & fileName )
+{
+    if ( ! FileExists( fileName ) )
+        return;
+#if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
+    int removeRslt = remove( fileName.c_str() );
+    if (removeRslt != 0)
+        throw FileDeleteException( fileName );
+#endif
+}
+
+//=============================================================================
+
 #ifdef DEBUG
 
 bool 
@@ -233,13 +296,17 @@ TestDirUtil( )
             vector< char > chars( 1000 );
             DataBuffer buff;
             buff.Add( &chars[0], 1000 );
-            bool saveRslt = File::Save( fileSpec, buff );
-            Assert( saveRslt );
+            {
+                FileWriter writer( fileSpec );
+                writer.Save( buff );
+            }
             fileSpec = newDir + "Dave";
             buff.Clear();
             buff.Add( &chars[0], 100 );
-            saveRslt = File::Save( fileSpec, buff );
-            Assert( saveRslt );
+            {
+                FileWriter writer( fileSpec );
+                writer.Save( buff );
+            }
             string dir = baseDirs[i] + "DirUtilTest1";
             cout << "ListFiles( " << dir << " )" << endl;
             vector< string > files = ListFiles( dir );
@@ -259,8 +326,7 @@ TestDirUtil( )
             dirs = ListSubdirectories( dir );
             TESTCHECK( dirs.size(), 0, &ok );
             fileSpec = newDir + "Dave";
-            bool delRslt = File::Delete( fileSpec );
-            Assert( delRslt );
+            DeleteFile( fileSpec );
             cout << "ListFiles( " << dir << " )" << endl;
             files = ListFiles( dir );
             TESTCHECK( files.size(), 1, &ok );
@@ -278,8 +344,7 @@ TestDirUtil( )
                 cout << except.Description( ) << endl;
             }
             fileSpec = newDir + "Mine";
-            delRslt = File::Delete( fileSpec );
-            Assert( delRslt );
+            DeleteFile( fileSpec );
             cout << "ListFiles( " << dir << " )" << endl;
             files = ListFiles( dir );
             TESTCHECK( files.size(), 0, &ok );

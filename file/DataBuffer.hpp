@@ -51,8 +51,12 @@ public:
 #endif
 
 private:
+    std::vector< char > & GetBuffer( );
+
     std::vector< char > m_buffer;
     size_t              m_offset;
+
+    friend class Reader;
 };
 
 
@@ -136,6 +140,15 @@ DataBuffer::Read( )
 inline
 const std::vector< char > & 
 DataBuffer::Buffer( ) const
+{
+    return m_buffer;
+}
+
+//.............................................................................
+
+inline
+std::vector< char > & 
+DataBuffer::GetBuffer( )
 {
     return m_buffer;
 }

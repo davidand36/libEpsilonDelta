@@ -27,7 +27,7 @@
 #endif //USE_FREETYPE
 #ifdef DEBUG
 #include "TestCheck.hpp"
-#include "File.hpp"
+#include "FileReader.hpp"
 #include "Array.hpp"
 #endif
 using namespace std;
@@ -316,13 +316,15 @@ FontManager::TestLoad( const ::string & directory,
             string const & fileName1 = testFileNames[ i + 1 ];
             int fontSetID = -1;
             shared_ptr< DataBuffer > pBuff0( new DataBuffer );
-            if ( ! File::Load( directory + fileName0, pBuff0.get() ) )
-                throw Exception( "File::Load() failed: " + fileName0 );
+            {
+                FileReader reader( directory + fileName0 );
+                reader.Load( pBuff0.get() );
+            }
             if ( fileName1.size() > 0 )
             {
                 shared_ptr< DataBuffer > pBuff1( new DataBuffer );
-                if ( ! File::Load( directory + fileName1, pBuff1.get() ) )
-                    throw Exception( "File::Load() failed: " + fileName1 );
+                FileReader reader( directory + fileName1 );
+                reader.Load( pBuff1.get() );
                 fontSetID = fontManager.AddFontSet( pBuff0, pBuff1 );
             }
             else

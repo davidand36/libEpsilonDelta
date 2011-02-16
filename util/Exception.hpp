@@ -57,6 +57,7 @@ public:
     explicit Exception( const std::string & description );
     explicit Exception( const std::exception & exceptn );
     virtual ~Exception( ) throw ();
+    virtual void SetDescription( const std::string & description );
     virtual std::string Description( ) const;
     virtual const char* what() const throw ();
 

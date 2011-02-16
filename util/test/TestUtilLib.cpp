@@ -20,7 +20,7 @@
 #include "VMap.hpp"
 #include "IndexedVector.hpp"
 #include "Algorithms.hpp"
-#include "File.hpp"
+#include "FileReader.hpp"
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -98,8 +98,8 @@ int Main( int /*argc*/, char ** argv )
         //The Unicode.org test file, edited slightly:
         string fileSpec = testDirectory + "LineBreakTest.txt";
         string fileText;
-        bool loadRslt = File::Load( fileSpec, &fileText );
-        Assert( loadRslt );
+        FileReader file( fileSpec, File::Text );
+        file.Load( &fileText );
         if ( ! TestLineBreakOpportunities( fileText ) )
             ok = false;
     }

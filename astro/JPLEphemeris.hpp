@@ -75,7 +75,8 @@
 #include "Angle.hpp"
 #include "Nutation.hpp"
 #include "SolarSystem.hpp"
-#include "File.hpp"
+#include "Reader.hpp"
+#include <tr1/memory>
 #include <vector>
 #include <string>
 #include <cstdio>
@@ -91,10 +92,12 @@ class JPLEphemeris
 {
 public:
     JPLEphemeris( );
-    JPLEphemeris( const std::string & fileName, bool storeConstants = false );
+    JPLEphemeris( std::tr1::shared_ptr< Reader > reader,
+                  bool storeConstants = false );
     ~JPLEphemeris( );
 
-    void Init( const std::string & fileName, bool storeConstants = false );
+    void Init( std::tr1::shared_ptr< Reader > reader,
+               bool storeConstants = false );
 
     enum EBody { SolarSystemBarycenter, Sun, Mercury, Venus,
                  Earth, Moon, EarthMoonBarycenter, 
@@ -187,9 +190,9 @@ public:
 //.............................................................................
 
 private:
-    bool ReadBinaryFileHeader( bool storeConstants = false );
-    bool LoadCoeffBlock( double julianDay0, double julianDay1 );
-    bool GetTargetCoefficients( double julianDay0, double julianDay1, 
+    void ReadBinaryFileHeader( bool storeConstants = false );
+    void LoadCoeffBlock( double julianDay0, double julianDay1 );
+    void GetTargetCoefficients( double julianDay0, double julianDay1, 
                                 ETarget target );
     double EvalChebyshev( const double * coeffs, int numCoeffs,
                           double timeFrac,
@@ -199,7 +202,7 @@ private:
                             Vector3D * pComponents, 
                             Vector3D * pDerivatives = 0 );
 
-    std::tr1::shared_ptr< File > m_pFile;
+    std::tr1::shared_ptr< Reader > m_pReader;
 
     //data from header
     double m_jdStart;

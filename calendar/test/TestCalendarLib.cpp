@@ -6,8 +6,6 @@
 */
 
 
-#include <cstdio>
-#include <iostream>
 #include "Assert.hpp"
 #include "TestCheck.hpp"
 #include "GregorianDate.hpp"
@@ -33,6 +31,10 @@
 #include "MayanTzolkinCalendar.hpp"
 #include "FrenchRevolutionaryDate.hpp"
 #include "Platform.hpp"
+#include "FileReader.hpp"
+#include <cstdio>
+#include <iostream>
+#include <tr1/memory>
 using namespace std;
 using namespace std::tr1;
 using namespace EpsilonDelta;
@@ -87,8 +89,11 @@ int Main( int /*argc*/, char ** argv )
 #ifdef COMPILER_MSC
     libBasePath += "../";
 #endif
-    JPLEphemeris de405( libBasePath + "astrodata/JPL_DE405.be", false );
-    JPLEphemeris de406( libBasePath + "astrodata/JPL_DE406.be", false );
+    shared_ptr< Reader > spReader(
+        new FileReader( libBasePath + "astrodata/JPL_DE405.le" ) );
+    JPLEphemeris de405( spReader, false );
+    spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.le" ) );
+    JPLEphemeris de406( spReader, false );
     JPLEphemeris::RegisterEphemeris( de405 );
     JPLEphemeris::RegisterEphemeris( de406 );
 

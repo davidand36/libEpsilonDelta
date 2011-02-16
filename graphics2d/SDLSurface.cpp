@@ -16,7 +16,7 @@
 #include <SDL_image.h>
 #if defined(USE_PNG) || defined(USE_JPEG)
 #include <cstdio>
-#include "File.hpp"
+#include "FileWriter.hpp"
 #include "FileException.hpp"
 #endif
 #ifdef USE_PNG
@@ -29,7 +29,7 @@
 #endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
-#include "File.hpp"
+#include "FileReader.hpp"
 #include "Array.hpp"
 #include "Circle.hpp"
 #endif
@@ -425,11 +425,7 @@ Surface::SavePng( const std::string & fileSpec )
 {
     if ( (m_pixelType == PixelTypeRGB) || (m_pixelType == PixelTypeARGB) )
     {
-        File file( fileSpec );
-        bool openRslt = file.Open( File::WriteMode );
-        if ( ! openRslt )
-            throw FileException( "Unable to open " + fileSpec
-                                 + " for writing." );
+        FileWriter file( fileSpec );
         ::png_struct * pPng = ::png_create_write_struct( PNG_LIBPNG_VER_STRING,
                                                          0, 0, 0 );
         Assert( pPng != 0 );
@@ -514,11 +510,7 @@ Surface::SaveJpeg( const std::string & fileSpec, int quality )
 {
     if ( m_pixelType == PixelTypeRGB )
     {
-        File file( fileSpec );
-        bool openRslt = file.Open( File::WriteMode );
-        if ( ! openRslt )
-            throw FileException( "Unable to open " + fileSpec
-                                 + " for writing." );
+        FileWriter file( fileSpec );
         ::jpeg_compress_struct jpegCompress;
         ::jpeg_error_mgr jpegErrorMgr;
         jpegCompress.err = ::jpeg_std_error( &jpegErrorMgr );
@@ -754,8 +746,8 @@ Surface::TestLoad( const std::string & testFileSpec )
     try
     {
         DataBuffer dataBuff;
-        if ( ! File::Load( testFileSpec, &dataBuff ) )
-            throw Exception( "File::Load() failed" );
+        FileReader reader( testFileSpec );
+        reader.Load( &dataBuff );
         cout << "Surface( DataBuffer )" << endl;
         s_spSurfacePlain.reset( new Surface( dataBuff ) );
         cout << "Surface( \"" << testFileSpec << "\" )" << endl;

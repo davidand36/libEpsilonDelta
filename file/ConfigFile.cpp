@@ -14,6 +14,10 @@
 #include <tr1/memory>
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "FileWriter.hpp"
+#include "FileReader.hpp"
+#include "DirUtil.hpp"
+#include "FileException.hpp"
 #include "Platform.hpp"
 #ifndef OS_WINDOWS
 #include <unistd.h>
@@ -30,11 +34,10 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-ConfigFile::ConfigFile( const string & fileName )
-    :    m_fileName( fileName )
+ConfigFile::ConfigFile( Reader & reader )
 {
     string rawInput;
-    File::Load( fileName, &rawInput );
+    reader.Load( &rawInput );
     ParseInput( rawInput );
 }
 
@@ -120,39 +123,51 @@ ConfigFile::Test( )
     bool ok = true;
     cout << "Testing ConfigFile" << endl;
 
-    const char confFileName[] = "TestConfig.cfg";
-    char testContents[ ]
-            = "SingleKey =Single Value\n"
-            "MultiKey = Multi Value 1\n"
-            "#Comment=just a comment\n"
-            "Equal Key=a=b\n"
-            "EmptyKey\n"
-            "\n"
-            "MultiKey=Multi Value 2 \n"
-            ;
-    cout << confFileName << " contents:" << endl << "--------" << endl
-         << testContents << endl << "--------" << endl;
-    DataBuffer buff;
-    buff.Add( testContents, sizeof( testContents ) );
-    File::Save( confFileName, buff );
+    try
+    {
+        const char confFileName[] = "TestConfig.cfg";
+        char testContents[ ]
+                = "SingleKey =Single Value\n"
+                "MultiKey = Multi Value 1\n"
+                "#Comment=just a comment\n"
+                "Equal Key=a=b\n"
+                "EmptyKey\n"
+                "\n"
+                "MultiKey=Multi Value 2 \n"
+                ;
+        cout << confFileName << " contents:" << endl << "--------" << endl
+             << testContents << endl << "--------" << endl;
+        DataBuffer buff;
+        buff.Add( testContents, sizeof( testContents ) );
+        {
+            FileWriter writer( confFileName );
+            writer.Save( buff );
+        }
 
-    ConfigFile confFile( confFileName );
-    TESTCHECK( confFile.Value( "SingleKey" ), string( "Single Value" ), &ok );
-    vector< string > multiValues = confFile.Values( "MultiKey" );
-    cout << "Values( \"MultiKey\" )" << endl;
-    TESTCHECK( multiValues.size(), 2, &ok );
-    TESTCHECK( multiValues[0], string( " Multi Value 1" ), &ok );
-    TESTCHECK( multiValues[1], string( "Multi Value 2 " ), &ok );
-    TESTCHECK( confFile.Value( "Equal Key" ), string( "a=b" ), &ok );
-    TESTCHECK( confFile.Value( "EmptyKey" ), string( "" ), &ok );
-    TESTCHECK( confFile.Values( "EmptyKey" ).size(), 1, &ok );
-    TESTCHECK( confFile.Value( "#Comment" ), string( "" ), &ok );
-    TESTCHECK( confFile.Values( "#Comment" ).size(), 0, &ok );
-    TESTCHECK( confFile.Value( "NoKey" ), string( "" ), &ok );
-    TESTCHECK( confFile.Values( "NoKey" ).size(), 0, &ok );
+        FileReader reader( confFileName );
+        ConfigFile confFile( reader );
+        TESTCHECK( confFile.Value( "SingleKey" ), string( "Single Value" ),
+                   &ok );
+        vector< string > multiValues = confFile.Values( "MultiKey" );
+        cout << "Values( \"MultiKey\" )" << endl;
+        TESTCHECK( multiValues.size(), 2, &ok );
+        TESTCHECK( multiValues[0], string( " Multi Value 1" ), &ok );
+        TESTCHECK( multiValues[1], string( "Multi Value 2 " ), &ok );
+        TESTCHECK( confFile.Value( "Equal Key" ), string( "a=b" ), &ok );
+        TESTCHECK( confFile.Value( "EmptyKey" ), string( "" ), &ok );
+        TESTCHECK( confFile.Values( "EmptyKey" ).size(), 1, &ok );
+        TESTCHECK( confFile.Value( "#Comment" ), string( "" ), &ok );
+        TESTCHECK( confFile.Values( "#Comment" ).size(), 0, &ok );
+        TESTCHECK( confFile.Value( "NoKey" ), string( "" ), &ok );
+        TESTCHECK( confFile.Values( "NoKey" ).size(), 0, &ok );
 
-    bool delRslt = File::Delete( confFileName );
-    Assert( delRslt );
+        DeleteFile( confFileName );
+    }
+    catch ( FileException & except )
+    {
+        cout << except.Description() << endl;
+        ok = false;
+    }
 
     if ( ok )
         cout << "ConfigFile PASSED." << endl << endl;

@@ -8,6 +8,7 @@
 */
 
 
+#include "Reader.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -22,7 +23,7 @@ namespace EpsilonDelta
 class ConfigFile
 {
 public:
-    explicit ConfigFile( const std::string & fileName );
+    explicit ConfigFile( Reader & reader );
     std::vector< std::string > Values( const std::string & name ) const;
     std::string Value( const std::string & name ) const;
     const std::multimap< std::string, std::string > & Pairs( );
@@ -33,7 +34,6 @@ public:
 private:
     void ParseInput( const std::string & rawInput  );
 
-    std::string m_fileName;
     std::multimap< std::string, std::string > m_pairs;
 };
 

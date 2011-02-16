@@ -74,7 +74,6 @@ TestSmartPtr( )
         cout << "FooListPtr( new FooList )" << endl;
         FooListPtr spList( new FooList );
         //Can't do this:
-//        cout << "push_back( new Foo( 1 ) )" << endl;
 //        spList->push_back( new Foo( 1 ) );
         //Do this instead:
         cout << "push_back( FooPtr( new Foo( 1 ) ) )" << endl;
@@ -82,7 +81,6 @@ TestSmartPtr( )
         //Not good style, just for testing:
         Foo * pFoo2 = new Foo( 2 );
         //Again, can't do this:
-//        cout << "push_back( pFoo2 )" << endl;
 //        spList->push_back( pFoo2 );
         //Do this instead:
         cout << "push_back( FooPtr( pFoo2 ) )" << endl;
@@ -96,7 +94,6 @@ TestSmartPtr( )
         cout << "push_back( spFoo4 )" << endl;
         spList->push_back( spFoo4 );
         //Again, can't do this:
-//        cout << "push_back( new Foo( 5 ) )" << endl;
 //        spList->push_back( new Foo( 5 ) );
         //Do this instead:
         cout << "push_back( FooPtr( new Foo( 5 ) ) )" << endl;

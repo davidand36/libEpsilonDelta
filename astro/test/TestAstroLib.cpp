@@ -6,8 +6,6 @@
 */
 
 
-#include <cstdio>
-#include <iostream>
 #include "Assert.hpp"
 #include "TestCheck.hpp"
 #include "AstroCoordTransformations.hpp"
@@ -26,7 +24,12 @@
 #include "EquationOfTime.hpp"
 #include "GeodeticLocation.hpp"
 #include "Platform.hpp"
+#include "FileReader.hpp"
+#include <cstdio>
+#include <iostream>
+#include <tr1/memory>
 using namespace std;
+using namespace std::tr1;
 using namespace EpsilonDelta;
 
 
@@ -85,23 +88,30 @@ int Main( int /*argc*/, char ** argv )
     if ( ! JPLEphemeris::Test( ) )
         ok = false;
 
-    JPLEphemeris de200be( libBasePath + "astrodata/JPL_DE200.be", true );
+    shared_ptr< Reader > spReader(
+        new FileReader( libBasePath + "astrodata/JPL_DE200.be" ) );
+    JPLEphemeris de200be( spReader, true );
     if ( ! de200be.Test( libBasePath + "astro/test/testpo.200" ) )
         ok = false;
-    JPLEphemeris de405be( libBasePath + "astrodata/JPL_DE405.be", true );
+    spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE405.be" ) );
+    JPLEphemeris de405be( spReader, true );
     if ( ! de405be.Test( libBasePath + "astro/test/testpo.405" ) )
         ok = false;
-    JPLEphemeris de406be( libBasePath + "astrodata/JPL_DE406.be", true );
+    spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.be" ) );
+    JPLEphemeris de406be( spReader, true );
     if ( ! de406be.Test( libBasePath + "astro/test/testpo.406" ) )
         ok = false;
-    JPLEphemeris de405le( libBasePath + "astrodata/JPL_DE405.le", true );
+    spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE405.le" ) );
+    JPLEphemeris de405le( spReader, true );
     if ( ! de405le.Test( libBasePath + "astro/test/testpo.405" ) )
         ok = false;
-    JPLEphemeris de406le( libBasePath + "astrodata/JPL_DE406.le", true );
+    spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.le" ) );
+    JPLEphemeris de406le( spReader, true );
     if ( ! de406le.Test( libBasePath + "astro/test/testpo.406" ) )
         ok = false;
-    JPLEphemeris de405_2011_2040le( libBasePath
-                                   + "astrodata/JPL_DE405_2011_2040.le", true );
+    spReader.reset( new FileReader( libBasePath
+                                    + "astrodata/JPL_DE405_2011_2040.le" ) );
+    JPLEphemeris de405_2011_2040le( spReader, true );
     if ( ! de405le.Test( libBasePath + "astro/test/testpo.405_2011_2040" ) )
         ok = false;
 

@@ -2,21 +2,20 @@
 #define FILE_HPP
 /*
   File.hpp
-  Copyright (C) 2009 David M. Anderson
+  Copyright (C) 2011 David M. Anderson
 
-  File class: Basic file operations, wrapped for platform-independence.
+  File class representing a file, wrapped for platform independence.
+  Provides the basic operations of opening and closing through construction and
+  destruction, as well as random access.
   NOTES:
-  1. Seek() combines the standard seek() and tell() operations, in that it
-     returns the resulting file position. It returns -1 on failure.
+  1. This is intended primarily as a base class for FileReader and FileWriter.
 */
 
 
-#include "DataBuffer.hpp"
-#include "DateTime.hpp"
-#include "Logger.hpp"
+#include "RandomAccess.hpp"
 #include "Platform.hpp"
+#include "Logger.hpp"
 #include <string>
-#include <tr1/memory>
 #if defined(OS_UNIX) || defined(OS_ANDROID) || defined(OS_WINDOWS)
 #define USE_CSTD_FILE
 #endif
@@ -31,74 +30,36 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-class FileImpl;
-
-
-//*****************************************************************************
-
-
 class File
+    :   public virtual RandomAccess
 {
 public:
     enum Mode { ReadMode, WriteMode };
     enum Type { Binary, Text };
-    enum Origin { Beginning, Current, End };
 
-    File( const std::string & fileName );
+    File( const std::string & fileName, Mode mode, Type type = Binary );
     virtual ~File( );
-    virtual bool Open( Mode mode, Type type = Binary );
-    virtual bool Read( char * buffer, int bufferSize, int * pBytesRead = 0 );
-    template < typename T >
-    bool Read( T * pT );
-    virtual bool Write( const char * buffer, int bufferSize );
-    template <typename T>
-    bool Write( const T & t );
+
     virtual int Seek( int offset, Origin origin = Beginning );
-    virtual void Close( );
 
-    static bool Exists( const std::string & fileName );
-    static bool Delete( const std::string & fileName );
-    static int Size( const std::string & fileName );
-    static DateTime ModDate( const std::string & fileName );
-    static bool Save( const std::string & fileName, const DataBuffer & buffer );
-    static bool Save( const std::string & fileName, const std::string & text );
-    static bool Load( const std::string & fileName, DataBuffer * pBuffer );
-    static bool Load( const std::string & fileName, std::string * pText );
-
-    static Logger & Log( );
-#ifdef DEBUG
-    static bool Test( );
-#endif
+    const std::string & FileName( ) const;
 #ifdef USE_CSTD_FILE
     std::FILE * Handle( );
 #endif
+    static Logger & Log( );
 
+#ifdef DEBUG
+    static bool Test( );
+#endif
+    
 private:
-    std::string                         m_fileName;
-    std::tr1::shared_ptr< FileImpl >    m_pImpl;
-
-    static Logger                       ms_log;
+    std::string     m_fileName;
+#ifdef USE_CSTD_FILE
+    std::FILE *     m_file;
+#endif
+    
+    static Logger   ms_log;
 };
-
-
-//*****************************************************************************
-
-
-template < typename T >
-bool 
-File::Read( T * pT )
-{
-    return Read( reinterpret_cast< char * >( pT ), (int)sizeof( T ) );
-}
-
-//=============================================================================
-
-template <typename T>
-bool 
-File::Write( const T & t )
-{
-    return Write( reinterpret_cast< const char * >( &t ), (int)sizeof( T ) );
-}
 
 
 //*****************************************************************************

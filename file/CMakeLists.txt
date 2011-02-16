@@ -8,7 +8,14 @@
 
 set( sources
      DataBuffer.cpp
+     Saver.cpp
+     Loader.cpp
+     Reader.cpp
+     Writer.cpp
+     FileException.cpp
      File.cpp
+     FileReader.cpp
+     FileWriter.cpp
      FileName.cpp
      DirUtil.cpp
      ConfigFile.cpp

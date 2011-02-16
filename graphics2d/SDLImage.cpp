@@ -14,7 +14,7 @@
 #include <SDL_image.h>
 #ifdef DEBUG
 #include "TestCheck.hpp"
-#include "File.hpp"
+#include "FileReader.hpp"
 #include <tr1/memory>
 using namespace std;
 using namespace std::tr1;
@@ -172,8 +172,8 @@ Image::TestLoad( const std::string & testFileSpec )
         cout << "Image( \"" << testFileSpec << "\" )" << endl;
         s_spImagePlain.reset( new Image( testFileSpec ) );
         DataBuffer dataBuff;
-        if ( ! File::Load( testFileSpec, &dataBuff ) )
-            throw Exception( "File::Load() failed" );
+        FileReader file( testFileSpec );
+        file.Load( &dataBuff );
         cout << "Image( DataBuffer, Color3B )" << endl;
         s_spImageColorKeyed.reset( new Image( dataBuff, 
                                               Color3B( 0xFF, 0, 0xFF ) ) );

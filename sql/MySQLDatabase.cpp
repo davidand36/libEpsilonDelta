@@ -16,6 +16,7 @@
 #include "Assert.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "FileReader.hpp"
 #include "ConfigFile.hpp"
 #include "StringUtil.hpp"
 #include <iostream>
@@ -154,8 +155,8 @@ MySQLDatabase::Test( const string & configFileName )
     bool ok = true;
     cout << "Testing MySQLDatabase" << endl;
 
-    ConfigFile config( configFileName );
-
+    FileReader reader( configFileName );
+    ConfigFile config( reader );
 #ifdef USE_EMBEDDEDMYSQL
     string database = config.Value( "database" );
     vector< string > options;

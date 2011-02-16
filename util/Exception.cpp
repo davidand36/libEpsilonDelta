@@ -37,6 +37,14 @@ Exception::~Exception( ) throw ()
 
 //=============================================================================
 
+void
+Exception::SetDescription( const std::string & description )
+{
+    m_description = description;
+}
+
+//-----------------------------------------------------------------------------
+
 string 
 Exception::Description( ) const
 {

@@ -6,6 +6,8 @@
 
   NestedReader class: a "file" that is embedded inside another "file" at some
   specified offset.
+  NOTES:
+  1. The optional name is used only for diagnostic messages.
 */
 
 #include "Reader.hpp"

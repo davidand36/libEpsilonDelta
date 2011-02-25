@@ -37,7 +37,7 @@ enum ETwilight
 enum EBodyType
     { Sun, Moon, Planet, Star };
 enum EStatus
-    { OK, AlwaysAbove, AlwaysBelow };
+    { OK, AlwaysUp, AlwaysDown };
 struct Result
 {
     EStatus m_status;
@@ -103,12 +103,12 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
                     / ( cosLat * bodyDec.Cos( ) );
             if ( cosTargetHourAngle > 1. )
             {
-                result.m_status = AlwaysAbove;
+                result.m_status = AlwaysUp;
                 return result;
             }
             else if ( cosTargetHourAngle < -1. )
             {
-                result.m_status = AlwaysBelow;
+                result.m_status = AlwaysDown;
                 return result;
             }
             targetHourAngle = ArcCos( cosTargetHourAngle );

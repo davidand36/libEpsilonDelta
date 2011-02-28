@@ -110,9 +110,10 @@ int Main( int /*argc*/, char ** argv )
     if ( ! de406le.Test( libBasePath + "astro/test/testpo.406" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath
-                                    + "astrodata/JPL_DE405_2011_2040.le" ) );
-    JPLEphemeris de405_2011_2040le( spReader, true );
-    if ( ! de405le.Test( libBasePath + "astro/test/testpo.405_2011_2040" ) )
+                                    + "astrodata/JPL_DE405_2011_2020.le" ) );
+    JPLEphemeris de405_2011_2020le( spReader, true );
+    if ( ! de405_2011_2020le.Test( libBasePath
+                                   + "astro/test/testpo.405_2011_2020" ) )
         ok = false;
 
     JPLEphemeris::RegisterEphemeris( de405le );

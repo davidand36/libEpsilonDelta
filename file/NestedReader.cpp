@@ -8,6 +8,7 @@
 
 #include "NestedReader.hpp"
 #include "FileException.hpp"
+#include "Assert.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "FileReader.hpp"

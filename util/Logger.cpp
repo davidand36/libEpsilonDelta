@@ -8,7 +8,11 @@
 
 #include "Logger.hpp"
 #include "Assert.hpp"
+#include "Platform.hpp"
 #include <cstdio>
+#if defined(OS_ANDROID)
+#include <android/log.h>
+#endif
 #ifdef DEBUG
 #include "TestCheck.hpp"
 #include "StringUtil.hpp"
@@ -24,6 +28,28 @@ namespace EpsilonDelta
 
 //*****************************************************************************
 
+
+namespace
+{                                                                   //namespace
+//-----------------------------------------------------------------------------
+
+#if defined(OS_ANDROID)
+
+class OutputToAndroidLog
+    :   public Logger::OutputFunc
+{
+public:
+    virtual void operator()( const std::string & domain, int level,
+                             const std::string & message );
+};
+
+#endif //OS_ANDROID
+
+//-----------------------------------------------------------------------------
+}                                                                   //namespace
+
+
+//*****************************************************************************
 
 Logger::Logger( const string & domain, shared_ptr< OutputFunc > func )
     :   m_domain( domain ),
@@ -121,7 +147,11 @@ Logger::SetOutputFunc( shared_ptr< OutputFunc > func )
     if ( func )
         m_pOutputFunc = func;
     else
+#if defined(OS_ANDROID)
+        m_pOutputFunc.reset( new OutputToAndroidLog );
+#else        
         m_pOutputFunc.reset( new OutputToStream );
+#endif    
     Assert( m_pOutputFunc );
 }
 
@@ -178,6 +208,34 @@ Logger::OutputToStream::SetOutputStream( std::ostream & dest, int level )
             m_destinations[ i ] = &dest;
     }
 }
+
+
+//*****************************************************************************
+
+
+namespace
+{                                                                   //namespace
+//-----------------------------------------------------------------------------
+
+#if defined(OS_ANDROID)
+
+void
+OutputToAndroidLog::operator()( const std::string & domain, int level,
+                                const std::string & message )
+{
+    android_LogPriority androidPriorities[ Logger::NumLevels ]
+            = { ANDROID_LOG_FATAL, ANDROID_LOG_FATAL, ANDROID_LOG_ERROR,
+                ANDROID_LOG_ERROR, ANDROID_LOG_WARN, ANDROID_LOG_INFO,
+                ANDROID_LOG_INFO, ANDROID_LOG_DEBUG, ANDROID_LOG_VERBOSE,
+                ANDROID_LOG_VERBOSE };
+    ::__android_log_write( androidPriorities[ level ], domain.c_str(),
+                           message.c_str() );
+}
+    
+#endif //OS_ANDROID
+
+//-----------------------------------------------------------------------------
+}                                                                   //namespace
 
 
 //*****************************************************************************

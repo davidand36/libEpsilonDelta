@@ -58,6 +58,9 @@ namespace std
 {
 typedef basic_string< wchar_t >  wstring;
 }
+#define WCOUT_AVAILABLE 0
+#else
+#define WCOUT_AVAILABLE 1
 #endif
 
 

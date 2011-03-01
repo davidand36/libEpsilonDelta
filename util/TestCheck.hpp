@@ -10,6 +10,7 @@
 
 
 #include "Platform.hpp"
+#include "StringUtil.hpp"
 #include <iostream>
 #include <string>
 #include <cmath>

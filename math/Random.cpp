@@ -16,17 +16,27 @@
 #include "TestCheck.hpp"
 #include "ProbabilityDistributions.hpp"
 #include "StatisticalTests.hpp"
+#include "Platform.hpp"
 #include <iostream>
 #include <algorithm>
 #include <numeric>
+#if defined(OS_ANDROID)
+#define BOOST_AVAILABLE 0
+#else
+#define BOOST_AVAILABLE 1
+#endif
+#if BOOST_AVAILABLE
 #include <boost/bind.hpp>
+#endif
 #include <tr1/array>
 #include <string>
 #endif
 using namespace std;
 using namespace std::tr1;
 #ifdef DEBUG
+#if BOOST_AVAILABLE
 using boost::bind;
+#endif
 #endif
 
 
@@ -523,6 +533,7 @@ RandomNumberGenerator::Test( )
     sampleFreqs.clear();
     expectedFreqs.clear();
 
+#if BOOST_AVAILABLE
     vector< double > sample( 100000 );
     for ( int i = 0; i < 100000; ++i )
         sample[i] = Random( 1.5, 3.5 );
@@ -542,7 +553,8 @@ RandomNumberGenerator::Test( )
     TESTCHECK( (prob > 0.01), true, &ok );
     GraphSampleAndDist( sample, bind( Triangle_DF, _1, -3.5, -1., 0.5 ) );
     sample.clear();
-
+#endif //BOOST
+    
     sampleFreqs.resize( 2 );
     expectedFreqs.resize( 2 );
     sampleFreqs[ 0 ] = 0;
@@ -756,6 +768,7 @@ RandomNumberGenerator::Test( )
     sampleFreqs.clear();
     expectedFreqs.clear();
 
+#if BOOST_AVAILABLE
     sample.resize( 100000 );
     for ( int i = 0; i < 100000; ++i )
         sample[i] = Random.Exponential( 0.5 );
@@ -849,6 +862,7 @@ RandomNumberGenerator::Test( )
     TESTCHECK( (prob > 0.01), true, &ok );
     GraphSampleAndDist( sample, bind( Beta_DF, _1, 15., 55. ) );
     sample.clear();
+#endif //BOOST
 
     //Knuth's Serial test
     sampleFreqs.resize( 64 * 64 );
@@ -971,6 +985,7 @@ QuickRandomNumberGenerator::Test( )
     sampleFreqs.clear();
     expectedFreqs.clear();
 
+#if BOOST_AVAILABLE
     vector< double > sample( 100000 );
     for ( int i = 0; i < 100000; ++i )
         sample[i] = QuickRandom( 1.5, 3.5 );
@@ -980,6 +995,7 @@ QuickRandomNumberGenerator::Test( )
     TESTCHECK( (prob > 0.01), true, &ok );
     GraphSampleAndDist( sample, bind( Uniform_DF, _1, 1.5, 3.5 ) );
     sample.clear();
+#endif //BOOST
 
     //Knuth's Serial test
     sampleFreqs.resize( 64 * 64 );

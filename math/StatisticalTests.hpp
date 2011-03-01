@@ -206,7 +206,7 @@ ContingencyTableResult ChiSquareContingencyTableTest(
 template < typename C >
 ContingencyTableResult ChiSquareContingencyTableTest(
     const C & table, int numRows, int numColumns, bool yatesCorrection );
-template < unsigned long M, unsigned long N >
+template < std::size_t M, std::size_t N >
 ContingencyTableResult ChiSquareContingencyTableTest(
     const std::tr1::array< std::tr1::array< int, M >, N > & table,
     bool yatesCorrection = false );
@@ -311,7 +311,7 @@ ChiSquareContingencyTableTest( const C & table, int numRows, int numColumns,
 
 //.............................................................................
 
-template < unsigned long M, unsigned long N >
+template < std::size_t M, std::size_t N >
 ContingencyTableResult
 ChiSquareContingencyTableTest(
     const std::tr1::array< std::tr1::array< int, M >, N > & table,

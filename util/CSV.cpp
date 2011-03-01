@@ -10,6 +10,7 @@
 #include "CSV.hpp"
 #ifdef DEBUG
 #include "TestCheck.hpp"
+#include "Platform.hpp"
 #include <iostream>
 #endif
 using namespace std;
@@ -67,9 +68,11 @@ TestCSV( )
             L"1999,Chevy,\"Venture \"\"Extended Edition\"\"\",,\t4900.00\n"
             L"1996,Jeep,Grand Cherokee , \"MUST SELL!\n"
             L"air, moon roof, loaded\", 4799.00 ";
+#if WCOUT_AVAILABLE
     wcout << L"csvText=\"" << csvWText1 << L"\"" << endl;
 
     wcout << L"SplitCSV( csvWText1 )" << endl;
+#endif
     vector< vector< wstring > > tableW1 = SplitCSV( csvWText1 );
     TESTCHECK( tableW1.size(), 3, &ok );
     TESTCHECK( tableW1[0].size(), 5, &ok );
@@ -84,7 +87,9 @@ TestCSV( )
                wstring( L"MUST SELL!\nair, moon roof, loaded" ), &ok );
     TESTCHECK( tableW1[2][4], wstring( L"4799.00" ), &ok );
 
+#if WCOUT_AVAILABLE
     wcout << L"SplitCSV( csvWText1, true )" << endl;
+#endif
     vector< vector< wstring > > tableW2 = SplitCSV( csvWText1, true );
     TESTCHECK( tableW2.size(), 3, &ok );
     TESTCHECK( tableW2[0].size(), 5, &ok );
@@ -117,7 +122,9 @@ TestCSV( )
         for ( int j = 0; j < 5; ++j )
             TESTCHECK( table3[i][j], table1[i][j], &ok );
 
+#if WCOUT_AVAILABLE
     wcout << L"CreateCSV( tableW1 )" << endl;
+#endif
     wstring csvWText2 = CreateCSV( tableW1 );
     wstring csvWText3 = L"\"1997\",\"Ford\",\"E350\",\" ac, abs, moon \",\"3000.00\"\n"
             L"\"1999\",\"Chevy\",\"Venture \"\"Extended Edition\"\"\",\"\",\"4900.00\"\n"
@@ -125,7 +132,9 @@ TestCSV( )
             L"air, moon roof, loaded\",\"4799.00\"";
     TESTCHECK( csvWText2, csvWText3, &ok );
 
+#if WCOUT_AVAILABLE
     wcout << L"SplitCSV( csvWText2 )" << endl;
+#endif
     vector< vector< wstring > > tableW3 = SplitCSV( csvWText2 );
     TESTCHECK( tableW3.size(), 3, &ok );
     TESTCHECK( tableW3[0].size(), 5, &ok );

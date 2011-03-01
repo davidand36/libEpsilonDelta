@@ -62,7 +62,11 @@ TestCheckImpl< wstring >::Check( wstring value,
         if ( details >= TestCheck::PrintAll )
         {
             cout << valStr << "==";
+#if WCOUT_AVAILABLE
             wcout << L"\"" << value << L"\"" << L"\tOK" << endl;
+#else
+            cout << "(wcout not available) \tOK" << endl;
+#endif
         }
         return true;
     }
@@ -71,8 +75,12 @@ TestCheckImpl< wstring >::Check( wstring value,
         if ( details >= TestCheck::PrintFailure )
         {
             cout << valStr << "==";
+#if WCOUT_AVAILABLE
             wcout << L"\"" << value << L"\"" << L" should be \"" << expected
                   << L"\"\tFAILED" << endl;
+#else
+            cout << "(wcout not available) \tFAILED" << endl;
+#endif
         }
         if ( pOK )
             *pOK = false;

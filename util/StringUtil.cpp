@@ -313,19 +313,25 @@ TestStringUtil( )
     TESTCHECK( ToLower( cString1 ), string( "xyz\xFC xyz\xFC 789 &*(" ), &ok );
 
     wchar_t testPWChar[ 100 ] = L"ABC\xC7\x11E abc\xE7\x11F 123 !@#";
+#if WCOUT_AVAILABLE
     wcout << L"testPWChar=\"" << testPWChar << L"\"" << endl;
+#endif    
     TESTCHECK( ToUpper( testPWChar ),
                   L"ABC\xC7\x11E ABC\xC7\x11E 123 !@#", &ok );
     TESTCHECK( ToLower( testPWChar ),
                   L"abc\xE7\x11F abc\xE7\x11F 123 !@#", &ok );
     wstring testWString = L"xyz\xFC\x15F XYZ\xDC\x15E 789 &*(";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
+#endif
     TESTCHECK( *ToUpper( &testWString ),
                 wstring( L"XYZ\xDC\x15E XYZ\xDC\x15E 789 &*(" ), &ok );
     TESTCHECK( *ToLower( &testWString ),
                 wstring( L"xyz\xFC\x15F xyz\xFC\x15F 789 &*(" ), &ok );
     const wstring cWString1 = L"xyz\xFC\x15F XYZ\xDC\x15E 789 &*(";
+#if WCOUT_AVAILABLE
     wcout << L"cWString1=\"" << cWString1 << L"\"" << endl;
+#endif
     TESTCHECK( ToUpper( cWString1 ),
                 wstring( L"XYZ\xDC\x15E XYZ\xDC\x15E 789 &*(" ), &ok );
     TESTCHECK( ToLower( cWString1 ),
@@ -371,14 +377,20 @@ TestStringUtil( )
     TESTCHECK( Trim( testPChar ), "", &ok );
 
     wcscpy( testPWChar, L"  \tabcd \t  " );
+#if WCOUT_AVAILABLE
     wcout << L"testPChar=\"" << testPWChar << L"\"" << endl;
+#endif
     TESTCHECK( TrimLeading( testPWChar ), L"abcd \t  ", &ok );
     TESTCHECK( TrimTrailing( testPWChar ), L"abcd", &ok );
     wcscpy( testPWChar, L"  \tabcd \t  " );
+#if WCOUT_AVAILABLE
     wcout << L"testPChar=\"" << testPWChar << L"\"" << endl;
+#endif
     TESTCHECK( Trim( testPWChar ), L"abcd", &ok );
     wcscpy( testPWChar, L"" );
+#if WCOUT_AVAILABLE
     wcout << L"testPChar=\"" << testPWChar << L"\"" << endl;
+#endif
     TESTCHECK( TrimLeading( testPWChar ), L"", &ok );
     TESTCHECK( TrimTrailing( testPWChar ), L"", &ok );
     TESTCHECK( Trim( testPWChar ), L"", &ok );
@@ -407,21 +419,31 @@ TestStringUtil( )
     TESTCHECK( Trim( cString3 ), string( "" ), &ok );
 
     testWString = L"  \twxyz \t  ";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
+#endif
     const wstring cWString2 = testWString;
+#if WCOUT_AVAILABLE
     wcout << L"cWString2=\"" << cWString2 << L"\"" << endl;
+#endif
     TESTCHECK( *TrimLeading( &testWString ), wstring( L"wxyz \t  " ), &ok );
     TESTCHECK( TrimLeading( cWString2 ), wstring( L"wxyz \t  " ), &ok );
     TESTCHECK( *TrimTrailing( &testWString ), wstring( L"wxyz" ), &ok );
     TESTCHECK( TrimTrailing( cWString2 ), wstring( L"  \twxyz" ), &ok );
     testWString = L"  \twxyz \t  ";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
+#endif
     TESTCHECK( *Trim( &testWString ), wstring( L"wxyz" ), &ok );
     TESTCHECK( Trim( cWString2 ), wstring( L"wxyz" ), &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
+#endif
     const wstring cWString3 = testWString;
+#if WCOUT_AVAILABLE
     wcout << L"cWString3=\"" << cWString3 << L"\"" << endl;
+#endif
     TESTCHECK( *TrimLeading( &testWString ), wstring( L"" ), &ok );
     TESTCHECK( TrimLeading( cWString3 ), wstring( L"" ), &ok );
     TESTCHECK( *TrimTrailing( &testWString ), wstring( L"" ), &ok );
@@ -452,15 +474,21 @@ TestStringUtil( )
 
     const wstring quoteTestW = L"He said, 'It/'s '', not \".'";
     testWString = quoteTestW;
+#if WCOUT_AVAILABLE
     wcout << L"testString=\"" << testWString << L"\"" << endl;
+#endif
     const wstring cWString4 = testWString;
+#if WCOUT_AVAILABLE
     wcout << L"cWString4=\"" << cWString4 << L"\"" << endl;
+#endif
     TESTCHECK( *AddQuotes( &testWString, L'\'' ),
                wstring( L"'He said, ''It/''s '''', not \".'''" ), &ok );
     TESTCHECK( AddQuotes( cWString4, L'\'' ),
                wstring( L"'He said, ''It/''s '''', not \".'''" ), &ok );
     const wstring cWString5 = testWString;
+#if WCOUT_AVAILABLE
     wcout << L"cWString5=\"" << cWString5 << L"\"" << endl;
+#endif
     TESTCHECK( *RemoveQuotes( &testWString, L'\'' ), quoteTestW, &ok );
     TESTCHECK( RemoveQuotes( cWString5, L'\'' ), quoteTestW, &ok );
     testWString = quoteTestW;
@@ -485,9 +513,13 @@ TestStringUtil( )
                string( "to be or not to be" ), &ok );
 
     testWString = L"to be or not to be";
+#if WCOUT_AVAILABLE
     wcout << L"testString=\"" << testWString << L"\"" << endl;
+#endif
     const wstring cWString6 = testWString;
+#if WCOUT_AVAILABLE
     wcout << L"cWString6=\"" << cWString6 << L"\"" << endl;
+#endif
     TESTCHECK( *Replace( &testWString, L"to be", L"to be or not to be" ),
                wstring( L"to be or not to be or not to be or not to be" ),
                &ok );
@@ -520,20 +552,26 @@ TestStringUtil( )
     TESTCHECK( parts[0], string( "" ), &ok );
 
     testWString = L":abc : def:";
+#if WCOUT_AVAILABLE
     wcout << L"testString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':' )" << endl;
+#endif
     vector< wstring > partsW = Split( testWString, L':' );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" def" ), &ok );
     TESTCHECK( partsW[3], wstring( L"" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',' )" << endl;
+#endif
     partsW = Split( testWString, L',' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':' )" << endl;
+#endif
     partsW = Split( testWString, L':' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
@@ -601,63 +639,83 @@ TestStringUtil( )
     TESTCHECK( parts[0], string( "" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'' );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc/ : def/" ), &ok );
     TESTCHECK( partsW[2], wstring( L"ghi/" ), &ok );
     TESTCHECK( partsW[3], wstring( L"'" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"' );
     TESTCHECK( partsW.size(), 5, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def/" ), &ok );
     TESTCHECK( partsW[3], wstring( L"ghi/''" ), &ok );
     TESTCHECK( partsW[4], wstring( L"''''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'' )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc/ : def/:ghi/:'" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"' )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc/' : 'def/" ), &ok );
     TESTCHECK( partsW[2], wstring( L"ghi/''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"', true );
     TESTCHECK( partsW.size(), 5, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def/" ), &ok );
     TESTCHECK( partsW[3], wstring( L"ghi/''" ), &ok );
     TESTCHECK( partsW[4], wstring( L"''''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'', true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"', true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
@@ -798,134 +856,178 @@ TestStringUtil( )
     TESTCHECK( parts[2], string( "" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/' );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc' " ), &ok );
     TESTCHECK( partsW[2], wstring( L" def:ghi'" ), &ok );
     TESTCHECK( partsW[3], wstring( L"" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"', L'/' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"', L'/' );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def:ghi''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'', L'/' )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'', L'/' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc' : def:ghi':" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"', L'/' )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"', L'/' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc' : 'def:ghi'':''" ), &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/' )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/' );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc' " ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def:ghi''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"', L'/', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"', L'/', true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def:ghi''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'', L'/', true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'', L'/', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc' : 'def:ghi'':''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"', L'/', true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"', L'/', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc' : 'def:ghi'':''" ), &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', false, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', false, true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc/' " ), &ok );
     TESTCHECK( partsW[2], wstring( L" def/:ghi/'" ), &ok );
     TESTCHECK( partsW[3], wstring( L"" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"', L'/', false, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"', L'/', false, true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def/:ghi/''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'', L'/', false, true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'', L'/', false, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc/' : def/:ghi/':" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"', L'/', false, true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"', L'/', false, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L":abc/' : 'def/:ghi/'':''" ), &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', false, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', false, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
 
     testWString = L":abc/' : 'def/:ghi/'':''";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', true, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', true, true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[1], wstring( L"abc/' " ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def/:ghi/''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L':', L'\"', L'/', true, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\"', L'/', true, true );
     TESTCHECK( partsW.size(), 4, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
     TESTCHECK( partsW[2], wstring( L" 'def/:ghi/''" ), &ok );
     TESTCHECK( partsW[3], wstring( L"''" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\'', L'/', true, true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\'', L'/', true, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testWString, L',', L'\"', L'/', true, true )" << endl;
+#endif
     partsW = Split( testWString, L',', L'\"', L'/', true, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], testWString, &ok );
     testWString = L"";
+#if WCOUT_AVAILABLE
     wcout << L"testWString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, L':', L'\'', L'/', true, true )" << endl;
+#endif
     partsW = Split( testWString, L':', L'\'', L'/', true, true );
     TESTCHECK( partsW.size(), 1, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );
 
     testWString = L"abc123def123abc";
+#if WCOUT_AVAILABLE
     wcout << L"testString=\"" << testWString << L"\"" << endl;
     wcout << L"Split( testWString, wstring(L\"123\") )" << endl;
+#endif
     partsW = Split( testWString, wstring( L"123" ) );
     TESTCHECK( partsW.size(), 3, &ok );
     TESTCHECK( partsW[0], wstring( L"abc" ), &ok );
     TESTCHECK( partsW[1], wstring( L"def" ), &ok );
     TESTCHECK( partsW[2], wstring( L"abc" ), &ok );
+#if WCOUT_AVAILABLE
     wcout << L"Split( testString, wstring(L\"abc\") )" << endl;
+#endif
     partsW = Split( testWString, wstring( L"abc" ) );
     TESTCHECK( partsW.size(), 3, &ok );
     TESTCHECK( partsW[0], wstring( L"" ), &ok );

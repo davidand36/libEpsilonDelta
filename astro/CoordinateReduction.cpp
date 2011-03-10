@@ -21,6 +21,7 @@
 #include "AngleDMS.hpp"
 #include "AstroConst.hpp"
 using namespace std;
+using namespace std::tr1;
 #endif
 
 
@@ -200,7 +201,8 @@ CorrectForNutationAndPrecession( const Point3D & bodyGeocentric,
 #ifdef DEBUG
 
 bool 
-TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
+TestCoordinateReduction( shared_ptr< JPLEphemeris > de200,
+                         shared_ptr< JPLEphemeris > de405 )
 {
     bool ok = true;
     cout << "Testing Coordinate Reduction" << endl;
@@ -221,27 +223,27 @@ TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
     //Paul J. Heafner, "Fundamental Ephemeris Computations", p. 183
     //Test case uses DE200.
     //Distance results don't seem sufficiently accurate.
-    JPLBarycentricEphemeris sunEphem200( &de200, JPLEphemeris::Sun );
-    JPLBarycentricEphemeris mercuryEphem200( &de200, JPLEphemeris::Mercury );
-    JPLBarycentricEphemeris venusEphem200( &de200, JPLEphemeris::Venus );
-    JPLBarycentricEphemeris marsEphem200( &de200, JPLEphemeris::Mars );
-    JPLBarycentricEphemeris jupiterEphem200( &de200, JPLEphemeris::Jupiter );
-    JPLBarycentricEphemeris saturnEphem200( &de200, JPLEphemeris::Saturn );
-    JPLBarycentricEphemeris uranusEphem200( &de200, JPLEphemeris::Uranus );
-    JPLBarycentricEphemeris neptuneEphem200( &de200, JPLEphemeris::Neptune );
-    JPLBarycentricEphemeris plutoEphem200( &de200, JPLEphemeris::Pluto );
-    JPLGeocentricEphemeris moonEphem200( &de200, JPLEphemeris::Moon );
+    JPLBarycentricEphemeris sunEphem200( de200, JPLEphemeris::Sun );
+    JPLBarycentricEphemeris mercuryEphem200( de200, JPLEphemeris::Mercury );
+    JPLBarycentricEphemeris venusEphem200( de200, JPLEphemeris::Venus );
+    JPLBarycentricEphemeris marsEphem200( de200, JPLEphemeris::Mars );
+    JPLBarycentricEphemeris jupiterEphem200( de200, JPLEphemeris::Jupiter );
+    JPLBarycentricEphemeris saturnEphem200( de200, JPLEphemeris::Saturn );
+    JPLBarycentricEphemeris uranusEphem200( de200, JPLEphemeris::Uranus );
+    JPLBarycentricEphemeris neptuneEphem200( de200, JPLEphemeris::Neptune );
+    JPLBarycentricEphemeris plutoEphem200( de200, JPLEphemeris::Pluto );
+    JPLGeocentricEphemeris moonEphem200( de200, JPLEphemeris::Moon );
     double jd = 2450100.5;
     cout << "JD: " << jd << endl;
-    bool ephRslt = de200.GetBodyPosition( jd, JPLEphemeris::Earth,
-                                          JPLEphemeris::SolarSystemBarycenter,
-                                          &earthBarycentric, 
-                                          &earthBarycentricVelocity );
+    bool ephRslt = de200->GetBodyPosition( jd, JPLEphemeris::Earth,
+                                            JPLEphemeris::SolarSystemBarycenter,
+                                            &earthBarycentric, 
+                                            &earthBarycentricVelocity );
     Assert( ephRslt );
     sunBarycentric = sunEphem200( jd );
     earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     precessionMatrix = Precession( jd ).Matrix( );
-    ephRslt = de200.GetNutation( jd, &nutation );
+    ephRslt = de200->GetNutation( jd, &nutation );
     Assert( ephRslt );
     nutationMatrix = nutation.Matrix( MeanObliquity( jd ) );
     nutAndPrecMatrix = nutationMatrix * precessionMatrix;
@@ -361,19 +363,19 @@ TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 )
     //"The Astronomical Almanac for the Year 2003", p. B37.
     //Uses DE405.
     //The agreement, as indicated by the TESTCHECKFE tolerances, is very good.
-    JPLBarycentricEphemeris sunEphem405( &de405, JPLEphemeris::Sun );
-    JPLBarycentricEphemeris venusEphem405( &de405, JPLEphemeris::Venus );
+    JPLBarycentricEphemeris sunEphem405( de405, JPLEphemeris::Sun );
+    JPLBarycentricEphemeris venusEphem405( de405, JPLEphemeris::Venus );
     jd = 2452707.5;
     cout << "JD: " << jd << endl;
-    ephRslt = de405.GetBodyPosition( jd, JPLEphemeris::Earth,
-                                     JPLEphemeris::SolarSystemBarycenter,
-                                     &earthBarycentric, 
-                                     &earthBarycentricVelocity );
+    ephRslt = de405->GetBodyPosition( jd, JPLEphemeris::Earth,
+                                      JPLEphemeris::SolarSystemBarycenter,
+                                      &earthBarycentric, 
+                                      &earthBarycentricVelocity );
     Assert( ephRslt );
     sunBarycentric = sunEphem405( jd );
     earthHeliocentric = Translate( earthBarycentric, sunBarycentric );
     precessionMatrix = Precession( jd ).Matrix( );
-    ephRslt = de405.GetNutation( jd, &nutation );
+    ephRslt = de405->GetNutation( jd, &nutation );
     Assert( ephRslt );
     nutationMatrix = nutation.Matrix( MeanObliquity( jd ) );
     nutAndPrecMatrix = nutationMatrix * precessionMatrix;

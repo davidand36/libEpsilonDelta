@@ -13,6 +13,7 @@
 
 
 #include "Angle.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -34,7 +35,7 @@ Angle GreenwichApparentSiderealTime( double julianDay,
                                      Angle meanObliquity );
 
 #ifdef DEBUG
-bool TestSiderealTime( JPLEphemeris & ephem );
+bool TestSiderealTime( std::tr1::shared_ptr< JPLEphemeris > spEphem );
 #endif
 
 

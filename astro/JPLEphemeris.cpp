@@ -44,6 +44,10 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
+Logger JPLEphemeris::ms_log( "JPLEphemeris" );
+
+//=============================================================================
+
 JPLEphemeris::JPLEphemeris( )
     :   m_wrongEndian( false ),
         m_curBlock( 0 )
@@ -52,7 +56,7 @@ JPLEphemeris::JPLEphemeris( )
 
 //.............................................................................
 
-JPLEphemeris::JPLEphemeris( std::tr1::shared_ptr< Reader > reader,
+JPLEphemeris::JPLEphemeris( shared_ptr< Reader > reader,
                             bool storeConstants )
     :   m_wrongEndian( false ),
         m_curBlock( 0 )
@@ -63,7 +67,7 @@ JPLEphemeris::JPLEphemeris( std::tr1::shared_ptr< Reader > reader,
 //.............................................................................
 
 void 
-JPLEphemeris::Init( std::tr1::shared_ptr< Reader > reader, bool storeConstants )
+JPLEphemeris::Init( shared_ptr< Reader > reader, bool storeConstants )
 {
     m_pReader = reader;
 
@@ -73,6 +77,13 @@ JPLEphemeris::Init( std::tr1::shared_ptr< Reader > reader, bool storeConstants )
     m_chebyVals[1] = -1000.0;
     m_chebyDerivs[0] = 0.0;
     m_chebyDerivs[1] = 1.0;
+
+    ms_log( Logger::Info, "Init complete" );
+    if ( storeConstants )
+    {
+        for ( int i = 0; i < NumTitles; ++i )
+            ms_log( Logger::Info, Title( i ) );
+    }
 }
 
 //.............................................................................
@@ -89,6 +100,7 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
     for ( int i = 0; i < NumTitles; ++i )
     {
         m_pReader->Read( title, TitleLen );
+        ms_log( Logger::Debug1, "Title %d: %s", i, title );
         if ( storeConstants )
         {
             TrimTrailing( title );
@@ -167,6 +179,8 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
         throw FileException( "Unable to read JPL ephemeris file header." );
     if ( storeConstants && (numConstants != m_constants.size()) )
         throw FileException( "Unable to read JPL ephemeris file header." );
+    ms_log( Logger::Debug1, "%s  Num constants: %d",
+            (m_wrongEndian ? "Wrong endian." : "Right endian."), numConstants );
 
     if ( m_wrongEndian )
     {
@@ -203,6 +217,8 @@ JPLEphemeris::ReadBinaryFileHeader( bool storeConstants )
             * m_coeffLayouts[ maxIndex ].m_numSubIntervals;
     int blockSize = m_coeffsPerBlock * sizeof( double );
     m_dataOffset = 2 * blockSize;
+
+    ms_log( Logger::Debug1, "Block size: %d", blockSize );
 
     //Constants themselves are in second "block"
     m_pReader->Seek( blockSize );
@@ -274,6 +290,9 @@ JPLEphemeris::GetBodyPosition( double julianDay0, double julianDay1,
 {                                                           /*GetBodyPosition*/
     Assert( pPosition != 0 );
 
+    ms_log( Logger::Debug1, "GetBodyPosition JD=%11.2f body=%d origin=%d",
+            (julianDay0 + julianDay1), body, origin );
+            
     if ( body == origin )
     {
         pPosition->Set( 0., 0., 0. );
@@ -537,6 +556,8 @@ bool
 JPLEphemeris::GetNutation( double julianDay0, double julianDay1,
                            Nutation * pNutation, Nutation * pDerivative )
 {
+    ms_log( Logger::Debug1, "GetNutation JD=%11.2f", (julianDay0+julianDay1) );
+            
     if ( ! NutationAvailable() )
         return false;
     Assert( pNutation != 0 );
@@ -577,6 +598,8 @@ JPLEphemeris::GetLibration( double julianDay0, double julianDay1,
                             Vector3< Angle > * pComponents,
                             Vector3< Angle > * pVelocity )
 {
+    ms_log( Logger::Debug1, "GetLibration JD=%11.2f", (julianDay0+julianDay1) );
+
     if ( ! LibrationAvailable() )
         return false;
     Vector3D comp;
@@ -686,7 +709,7 @@ JPLEphemeris::LibrationAvailable( ) const
 
 //=============================================================================
 
-std::string 
+string 
 JPLEphemeris::Title( int index ) const
 {
     Assert( index < NumTitles );
@@ -703,7 +726,7 @@ JPLEphemeris::Version( ) const
 
 //-----------------------------------------------------------------------------
 
-const std::vector< JPLEphemeris::Constant > & 
+const vector< JPLEphemeris::Constant > & 
 JPLEphemeris::Constants( ) const
 {
     return m_constants;
@@ -875,6 +898,10 @@ JPLEphemeris::ComputeComponents( double julianDay0, double julianDay1,
                                  Vector3D * pComponents,
                                  Vector3D * pDerivatives )
 {
+    ms_log( Logger::Debug1, "ComputeComponents JD="
+            + RealToString( julianDay0 + julianDay1, 10, 1 )
+            + " target=" + IntToString( target ) );
+
     Assert( pComponents != 0 );
     LoadCoeffBlock( julianDay0, julianDay1 );
     GetTargetCoefficients( julianDay0, julianDay1, target );
@@ -901,29 +928,45 @@ JPLEphemeris::ComputeComponents( double julianDay0, double julianDay1,
 
 namespace
 {
-std::vector< JPLEphemeris * > s_ephemerides;
+
+vector< shared_ptr< JPLEphemeris > > s_ephemerides;
+
 } //namespace
 
 //-----------------------------------------------------------------------------
 
 void 
-JPLEphemeris::RegisterEphemeris( JPLEphemeris & ephem )
+JPLEphemeris::RegisterEphemeris( shared_ptr< JPLEphemeris > spEphem )
 {
-    s_ephemerides.push_back( &ephem );
+    s_ephemerides.push_back( spEphem );
 }
 
 //-----------------------------------------------------------------------------
 
-JPLEphemeris * 
+shared_ptr< JPLEphemeris >
 JPLEphemeris::GetEphemeris( double jd )
 {
+    ms_log( Logger::Debug1, "GetEphemeris JD=%11.2f ephems.size=%d",
+            jd, (int) s_ephemerides.size() );
     for ( int i = 0; i < (int) s_ephemerides.size(); ++i )
     {
+        ms_log( Logger::Debug2, " %d: ephem=%p  firstJD=%11.2f  lastJD=%11.2f",
+                i, s_ephemerides[i].get(),
+                s_ephemerides[i]->firstJulianDay(),
+                s_ephemerides[i]->lastJulianDay() );
         if ( (s_ephemerides[i]->firstJulianDay() <= jd)
              && (jd <= s_ephemerides[i]->lastJulianDay()) )
             return s_ephemerides[i];
     }
-    return 0;
+    return shared_ptr< JPLEphemeris >();
+}
+
+//=============================================================================
+
+Logger &
+JPLEphemeris::Log( )
+{
+    return ms_log;
 }
 
 
@@ -935,7 +978,7 @@ JPLBarycentricEphemeris::operator()( double julianDay )
 {
     Point3D bodyPos;
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay, m_body,
+            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           &bodyPos );
     if ( ! posRslt )
@@ -950,7 +993,7 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
     Point3D bodyPos;
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           &bodyPos );
     if ( ! posRslt )
@@ -966,7 +1009,7 @@ JPLBarycentricEphemeris::operator()( double julianDay,
                                      Vector3D * pVelocity )
 {
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay, m_body,
+            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           pPosition, pVelocity );
     if ( ! posRslt )
@@ -981,7 +1024,7 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1,
                                      Vector3D * pVelocity )
 {
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
                                           JPLEphemeris::SolarSystemBarycenter,
                                           pPosition, pVelocity );
     if ( ! posRslt )
@@ -997,9 +1040,9 @@ JPLGeocentricEphemeris::operator()( double julianDay )
 {
     Point3D bodyPos;
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay, m_body,
-                                             JPLEphemeris::Earth, 
-                                             &bodyPos );
+            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
+                                              JPLEphemeris::Earth, 
+                                              &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
@@ -1012,9 +1055,9 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
     Point3D bodyPos;
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                             JPLEphemeris::Earth, 
-                                             &bodyPos );
+            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                              JPLEphemeris::Earth, 
+                                              &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
@@ -1028,9 +1071,9 @@ JPLGeocentricEphemeris::operator()( double julianDay,
                                     Vector3D * pVelocity )
 {
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay, m_body,
-                                             JPLEphemeris::Earth,
-                                             pPosition, pVelocity );
+            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
+                                              JPLEphemeris::Earth,
+                                              pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
@@ -1043,9 +1086,9 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1,
                                     Vector3D * pVelocity )
 {
     bool posRslt
-            = m_pEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                             JPLEphemeris::Earth,
-                                             pPosition, pVelocity );
+            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                              JPLEphemeris::Earth,
+                                              pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
@@ -1095,7 +1138,7 @@ JPLEphemeris::Test( )
 //-----------------------------------------------------------------------------
 
 bool 
-JPLEphemeris::Test( const std::string & testFileName, bool verbose )
+JPLEphemeris::Test( const string & testFileName, bool verbose )
 {
     bool ok = true;
     cout << "Testing JPLEphemeris" << endl;

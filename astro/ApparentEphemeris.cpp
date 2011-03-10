@@ -20,6 +20,7 @@
 #include "AngleDMS.hpp"
 #include "AstroConst.hpp"
 using namespace std;
+using namespace std::tr1;
 #endif
 
 
@@ -32,7 +33,8 @@ namespace EpsilonDelta
 #ifdef DEBUG
 
 bool 
-TestApparentEphemeris( JPLEphemeris & de200, JPLEphemeris & de405 )
+TestApparentEphemeris( std::tr1::shared_ptr< JPLEphemeris > de200,
+                       std::tr1::shared_ptr< JPLEphemeris > de405 )
 {
     bool ok = true;
     cout << "Testing ApparentEphemeris" << endl;
@@ -48,21 +50,21 @@ TestApparentEphemeris( JPLEphemeris & de200, JPLEphemeris & de405 )
     //Paul J. Heafner, "Fundamental Ephemeris Computations", p. 183
     //Test case uses DE200.
     //Distance results don't seem sufficiently accurate.
-    JPLBarycentricEphemeris sunEphem200( &de200, JPLEphemeris::Sun );
-    JPLBarycentricEphemeris mercuryEphem200( &de200, JPLEphemeris::Mercury );
-    JPLBarycentricEphemeris venusEphem200( &de200, JPLEphemeris::Venus );
-    JPLBarycentricEphemeris earthEphem200( &de200, JPLEphemeris::Earth );
-    JPLBarycentricEphemeris marsEphem200( &de200, JPLEphemeris::Mars );
-    JPLBarycentricEphemeris jupiterEphem200( &de200, JPLEphemeris::Jupiter );
-    JPLBarycentricEphemeris saturnEphem200( &de200, JPLEphemeris::Saturn );
-    JPLBarycentricEphemeris uranusEphem200( &de200, JPLEphemeris::Uranus );
-    JPLBarycentricEphemeris neptuneEphem200( &de200, JPLEphemeris::Neptune );
-    JPLBarycentricEphemeris plutoEphem200( &de200, JPLEphemeris::Pluto );
-    JPLGeocentricEphemeris moonEphem200( &de200, JPLEphemeris::Moon );
+    JPLBarycentricEphemeris sunEphem200( de200, JPLEphemeris::Sun );
+    JPLBarycentricEphemeris mercuryEphem200( de200, JPLEphemeris::Mercury );
+    JPLBarycentricEphemeris venusEphem200( de200, JPLEphemeris::Venus );
+    JPLBarycentricEphemeris earthEphem200( de200, JPLEphemeris::Earth );
+    JPLBarycentricEphemeris marsEphem200( de200, JPLEphemeris::Mars );
+    JPLBarycentricEphemeris jupiterEphem200( de200, JPLEphemeris::Jupiter );
+    JPLBarycentricEphemeris saturnEphem200( de200, JPLEphemeris::Saturn );
+    JPLBarycentricEphemeris uranusEphem200( de200, JPLEphemeris::Uranus );
+    JPLBarycentricEphemeris neptuneEphem200( de200, JPLEphemeris::Neptune );
+    JPLBarycentricEphemeris plutoEphem200( de200, JPLEphemeris::Pluto );
+    JPLGeocentricEphemeris moonEphem200( de200, JPLEphemeris::Moon );
     double jd = 2450100.5;
     cout << "JD: " << jd << endl;
     precessionMatrix = Precession( jd ).Matrix( );
-    bool ephRslt = de200.GetNutation( jd, &nutation );
+    bool ephRslt = de200->GetNutation( jd, &nutation );
     Assert( ephRslt );
     nutationMatrix = nutation.Matrix( MeanObliquity( jd ) );
     nutAndPrecMatrix = nutationMatrix * precessionMatrix;
@@ -186,13 +188,13 @@ TestApparentEphemeris( JPLEphemeris & de200, JPLEphemeris & de405 )
     //"The Astronomical Almanac for the Year 2003", p. B37.
     //Uses DE405.
     //The agreement, as indicated by the TESTCHECKFE tolerances, is very good.
-    JPLBarycentricEphemeris sunEphem405( &de405, JPLEphemeris::Sun );
-    JPLBarycentricEphemeris venusEphem405( &de405, JPLEphemeris::Venus );
-    JPLBarycentricEphemeris earthEphem405( &de405, JPLEphemeris::Earth );
+    JPLBarycentricEphemeris sunEphem405( de405, JPLEphemeris::Sun );
+    JPLBarycentricEphemeris venusEphem405( de405, JPLEphemeris::Venus );
+    JPLBarycentricEphemeris earthEphem405( de405, JPLEphemeris::Earth );
     jd = 2452707.5;
     cout << "JD: " << jd << endl;
     precessionMatrix = Precession( jd ).Matrix( );
-    ephRslt = de405.GetNutation( jd, &nutation );
+    ephRslt = de405->GetNutation( jd, &nutation );
     Assert( ephRslt );
     nutationMatrix = nutation.Matrix( MeanObliquity( jd ) );
     nutAndPrecMatrix = nutationMatrix * precessionMatrix;

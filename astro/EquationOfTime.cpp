@@ -20,6 +20,7 @@
 #include "TestCheck.hpp"
 #include <iostream>
 using namespace std;
+using namespace std::tr1;
 #endif
 
 
@@ -32,8 +33,9 @@ namespace EpsilonDelta
 TimeIncrement 
 EquationOfTime( double julianDay )
 {
-    JPLEphemeris * ephem = JPLEphemeris::GetEphemeris( julianDay );
-    if ( ephem == 0 )
+    shared_ptr< JPLEphemeris > spEphem
+            = JPLEphemeris::GetEphemeris( julianDay );
+    if ( ! spEphem )
         return TimeIncrement( 0 );
     Angle meanSolarLong = MeanSolarLongitude( julianDay );
     Point3D earthBarycentric;
@@ -42,23 +44,23 @@ EquationOfTime( double julianDay )
     bool earthRslt =
 #endif
             GetEarthBarycentric( julianDay, &earthBarycentric,
-                                 &earthBarycentricVelocity, ephem );
+                                 &earthBarycentricVelocity, spEphem );
     Assert( earthRslt );
     Matrix3D precessionMatrix = Precession( julianDay ).Matrix( );
     Nutation nutation( 0., 0. );
-    if ( ephem->NutationAvailable() )
+    if ( spEphem->NutationAvailable() )
     {
 #ifdef DEBUG
         bool nutRslt =
 #endif
-                ephem->GetNutation( julianDay, &nutation );
+                spEphem->GetNutation( julianDay, &nutation );
         Assert( nutRslt );
     }
     Angle meanObliquity = MeanObliquity( julianDay );
     Angle trueObliquity = TrueObliquity( meanObliquity, nutation );
     Matrix3D nutAndPrecMatrix = nutation.Matrix( meanObliquity )
             * precessionMatrix;
-    JPLBarycentricEphemeris sunEphem( ephem, JPLEphemeris::Sun );
+    JPLBarycentricEphemeris sunEphem( spEphem, JPLEphemeris::Sun );
     Point3D sunPos = GetSunApparentPlace( julianDay, sunEphem,
                                           earthBarycentric,
                                           earthBarycentricVelocity,

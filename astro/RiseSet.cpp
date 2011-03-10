@@ -15,12 +15,23 @@
 #include "TestCheck.hpp"
 #include <iostream>
 #include "DateTime.hpp"
-using namespace std;
 #endif
+using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
 {                                                      //namespace EpsilonDelta
+
+//*****************************************************************************
+
+namespace
+{                                                                   //namespace
+
+Logger s_log( "RiseSet" );
+
+}                                                                   //namespace
+
 
 //*****************************************************************************
 
@@ -29,7 +40,7 @@ class BodyEquatorialPos
 {
 public:
     BodyEquatorialPos( SolarSystem::EBody body,
-                       JPLEphemeris * pEphemeris,
+                       shared_ptr< JPLEphemeris > spEphemeris,
                        const Matrix3D & nutAndPrecMatrix );
 
     Equatorial operator()( double julianDay );
@@ -38,9 +49,9 @@ private:
     //Undefined, to avoid warning:
     BodyEquatorialPos & operator=( const BodyEquatorialPos & );
 
-    SolarSystem::EBody  m_body;
-    JPLEphemeris *      m_pEphemeris;
-    const Matrix3D &    m_nutAndPrecMatrix;
+    SolarSystem::EBody          m_body;
+    shared_ptr< JPLEphemeris >  m_spEphemeris;
+    const Matrix3D &            m_nutAndPrecMatrix;
 };
 
 
@@ -48,14 +59,14 @@ private:
 
 
 BodyEquatorialPos::BodyEquatorialPos( SolarSystem::EBody body,
-                                      JPLEphemeris * pEphemeris,
+                                      shared_ptr< JPLEphemeris > spEphemeris,
                                       const Matrix3D & nutAndPrecMatrix )
     :   m_body( body ),
-        m_pEphemeris( pEphemeris ),
+        m_spEphemeris( spEphemeris ),
         m_nutAndPrecMatrix( nutAndPrecMatrix )
 {
     Assert( body != SolarSystem::Earth );
-    Assert( pEphemeris );
+    Assert( spEphemeris );
 }
 
 //=============================================================================
@@ -73,16 +84,16 @@ BodyEquatorialPos::operator()( double julianDay )
         bool earthRslt =
 #endif
                 GetEarthBarycentric( julianDay, &earthBarycentric,
-                                     &earthBarycentricVelocity, m_pEphemeris );
+                                     &earthBarycentricVelocity, m_spEphemeris );
         Assert( earthRslt );
         return  SolarEquatorialPosition( julianDay, earthBarycentric,
                                          earthBarycentricVelocity,
-                                         m_nutAndPrecMatrix, m_pEphemeris );
+                                         m_nutAndPrecMatrix, m_spEphemeris );
     }
     case SolarSystem::Moon:
     {
         return  LunarEquatorialPosition( julianDay, m_nutAndPrecMatrix,
-                                         m_pEphemeris );
+                                         m_spEphemeris );
     }
     default:
     {
@@ -92,13 +103,13 @@ BodyEquatorialPos::operator()( double julianDay )
         bool earthRslt =
 #endif
                 GetEarthBarycentric( julianDay, &earthBarycentric,
-                                     &earthBarycentricVelocity, m_pEphemeris );
+                                     &earthBarycentricVelocity, m_spEphemeris );
         Assert( earthRslt );
         Point3D sunBarycentric;
 #ifdef DEBUG
         bool sunRslt =
 #endif
-                m_pEphemeris->GetBodyPosition( julianDay, JPLEphemeris::Sun,
+                m_spEphemeris->GetBodyPosition( julianDay, JPLEphemeris::Sun,
                                            JPLEphemeris::SolarSystemBarycenter,
                                            &sunBarycentric );
         Assert( sunRslt );
@@ -108,7 +119,7 @@ BodyEquatorialPos::operator()( double julianDay )
                                           earthBarycentric,
                                           earthHeliocentric,
                                           earthBarycentricVelocity,
-                                          m_nutAndPrecMatrix, m_pEphemeris );
+                                          m_nutAndPrecMatrix, m_spEphemeris );
     }
     }
 }
@@ -159,6 +170,8 @@ RiseSet::FindNext( double julianDay, SolarSystem::EBody body,
                    EEvent event, Angle targetAltitude,
                    const GeodeticLocation & location )
 {
+    s_log( Logger::Debug, "FindNext JD=%11.2f body=%d event=%d alt=%4.2f",
+           julianDay, body, event, targetAltitude.Degrees() );
     EBodyType bodyType;
     switch ( body )
     {
@@ -172,16 +185,17 @@ RiseSet::FindNext( double julianDay, SolarSystem::EBody body,
         bodyType = Planet;
         break;
     }
-    JPLEphemeris * pEphemeris = JPLEphemeris::GetEphemeris( julianDay );
-    Assert( pEphemeris );
+    shared_ptr< JPLEphemeris > spEphemeris
+            = JPLEphemeris::GetEphemeris( julianDay );
+    Assert( spEphemeris );
     Matrix3D nutAndPrecMatrix;
 #ifdef DEBUG
     bool nutPrecRslt =
 #endif
             GetNutPrecAndObliquity( julianDay, &nutAndPrecMatrix,
-                                    0, pEphemeris );
+                                    0, spEphemeris );
     Assert( nutPrecRslt );
-    BodyEquatorialPos bodyEquatorialPos( body, pEphemeris, nutAndPrecMatrix );
+    BodyEquatorialPos bodyEquatorialPos( body, spEphemeris, nutAndPrecMatrix );
     return  FindNext( julianDay, event, targetAltitude, bodyEquatorialPos,
                       bodyType, location );
 }
@@ -245,6 +259,14 @@ RiseSet::FindNextTwilight( double julianDay, EEvent event, ETwilight twilight,
     }
     return FindNext( julianDay, SolarSystem::Sun, event, targetAltitude,
                      location );
+}
+
+//=============================================================================
+
+Logger &
+RiseSet::Log( )
+{
+    return s_log;
 }
 
 //=============================================================================

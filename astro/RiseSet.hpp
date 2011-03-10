@@ -14,11 +14,14 @@
 
 
 #include "Angle.hpp"
+#include "AngleHMS.hpp"
+#include "AngleDMS.hpp"
 #include "GeodeticLocation.hpp"
 #include "SolarSystem.hpp"
 #include "SiderealTime.hpp"
 #include "Equatorial.hpp"
 #include "ConvergenceException.hpp"
+#include "Logger.hpp"
 
 
 namespace EpsilonDelta
@@ -59,6 +62,8 @@ Result FindNext( double julianDay, const Equatorial & fixedPos, EEvent event,
                  const GeodeticLocation & location );
 Result FindNextTwilight( double julianDay, EEvent event, ETwilight twilight,
                          const GeodeticLocation & location );
+
+Logger & Log( );
 
 #ifdef DEBUG
 bool Test( );

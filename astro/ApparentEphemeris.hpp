@@ -27,6 +27,7 @@
 
 #include "CoordinateReduction.hpp"
 #include "JPLEphemeris.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -119,7 +120,8 @@ typedef ApparentEphemeris< JPLBarycentricEphemeris, JPLBarycentricEphemeris,
 
 
 #ifdef DEBUG
-bool TestApparentEphemeris( JPLEphemeris & de200, JPLEphemeris & de405 );
+bool TestApparentEphemeris( std::tr1::shared_ptr< JPLEphemeris > de200,
+                            std::tr1::shared_ptr< JPLEphemeris > de405 );
 #endif
 
 

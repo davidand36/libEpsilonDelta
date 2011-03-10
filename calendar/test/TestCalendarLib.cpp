@@ -91,9 +91,9 @@ int Main( int /*argc*/, char ** argv )
 #endif
     shared_ptr< Reader > spReader(
         new FileReader( libBasePath + "astrodata/JPL_DE405.le" ) );
-    JPLEphemeris de405( spReader, false );
+    shared_ptr< JPLEphemeris > de405( new JPLEphemeris( spReader, false ) );
     spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.le" ) );
-    JPLEphemeris de406( spReader, false );
+    shared_ptr< JPLEphemeris > de406( new JPLEphemeris( spReader, false ) );
     JPLEphemeris::RegisterEphemeris( de405 );
     JPLEphemeris::RegisterEphemeris( de406 );
 

@@ -16,6 +16,7 @@
 #include "JPLEphemeris.hpp"
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -69,7 +70,7 @@ TrueObliquity( double julianDay, const Nutation & nutation )
 #ifdef DEBUG
 
 bool 
-TestObliquity( JPLEphemeris & ephem )
+TestObliquity( shared_ptr< JPLEphemeris > spEphem )
 {
     bool ok = true;
     cout << "Testing Obliquity" << endl;
@@ -83,7 +84,7 @@ TestObliquity( JPLEphemeris & ephem )
     TESTCHECK( meanObliqDMS.Minutes(), 26, &ok );
     TESTCHECKFE( meanObliqDMS.Seconds(), 27.407, &ok, 4.e-5 );
     Nutation nutation;
-    bool ephRslt = ephem.GetNutation( jd, &nutation );
+    bool ephRslt = spEphem->GetNutation( jd, &nutation );
     Assert( ephRslt );
     Angle trueObliq = TrueObliquity( jd, nutation );
     AngleDMS trueObliqDMS( trueObliq );

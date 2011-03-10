@@ -10,6 +10,7 @@
 
 #include "Angle.hpp"
 #include "Nutation.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -30,7 +31,7 @@ Angle TrueObliquity( Angle meanObliquity, Angle nutObliquity );
 Angle TrueObliquity( Angle meanObliquity, const Nutation & nutation );
 
 #ifdef DEBUG
-bool TestObliquity( JPLEphemeris & ephem );
+bool TestObliquity( std::tr1::shared_ptr< JPLEphemeris > spEphem );
 #endif
 
 

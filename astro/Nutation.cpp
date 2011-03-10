@@ -16,6 +16,7 @@
 #include "Obliquity.hpp"
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -57,7 +58,7 @@ Nutation::Matrix( Angle meanObliquity, bool inverse ) const
 #ifdef DEBUG
 
 bool 
-Nutation::Test( JPLEphemeris & ephem )
+Nutation::Test( shared_ptr< JPLEphemeris > spEphem )
 {
     bool ok = true;
     cout << "Testing Nutation" << endl;
@@ -66,7 +67,7 @@ Nutation::Test( JPLEphemeris & ephem )
     double jd = 2447160.5;
     cout << "JD: " << jd << endl;
     Nutation nutation;
-    bool ephRslt = ephem.GetNutation( jd, &nutation );
+    bool ephRslt = spEphem->GetNutation( jd, &nutation );
     Assert( ephRslt );
     Angle meanObliquity = MeanObliquity( jd );
     Matrix3D nutMat = nutation.Matrix( meanObliquity );

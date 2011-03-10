@@ -90,30 +90,31 @@ int Main( int /*argc*/, char ** argv )
 
     shared_ptr< Reader > spReader(
         new FileReader( libBasePath + "astrodata/JPL_DE200.be" ) );
-    JPLEphemeris de200be( spReader, true );
-    if ( ! de200be.Test( libBasePath + "astro/test/testpo.200" ) )
+    shared_ptr< JPLEphemeris > de200be( new JPLEphemeris( spReader, true ) );
+    if ( ! de200be->Test( libBasePath + "astro/test/testpo.200" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE405.be" ) );
-    JPLEphemeris de405be( spReader, true );
-    if ( ! de405be.Test( libBasePath + "astro/test/testpo.405" ) )
+    shared_ptr< JPLEphemeris > de405be( new JPLEphemeris( spReader, true ) );
+    if ( ! de405be->Test( libBasePath + "astro/test/testpo.405" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.be" ) );
-    JPLEphemeris de406be( spReader, true );
-    if ( ! de406be.Test( libBasePath + "astro/test/testpo.406" ) )
+    shared_ptr< JPLEphemeris > de406be( new JPLEphemeris( spReader, true ) );
+    if ( ! de406be->Test( libBasePath + "astro/test/testpo.406" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE405.le" ) );
-    JPLEphemeris de405le( spReader, true );
-    if ( ! de405le.Test( libBasePath + "astro/test/testpo.405" ) )
+    shared_ptr< JPLEphemeris > de405le( new JPLEphemeris( spReader, true ) );
+    if ( ! de405le->Test( libBasePath + "astro/test/testpo.405" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath + "astrodata/JPL_DE406.le" ) );
-    JPLEphemeris de406le( spReader, true );
-    if ( ! de406le.Test( libBasePath + "astro/test/testpo.406" ) )
+    shared_ptr< JPLEphemeris > de406le( new JPLEphemeris( spReader, true ) );
+    if ( ! de406le->Test( libBasePath + "astro/test/testpo.406" ) )
         ok = false;
     spReader.reset( new FileReader( libBasePath
                                     + "astrodata/JPL_DE405_2011_2020.le" ) );
-    JPLEphemeris de405_2011_2020le( spReader, true );
-    if ( ! de405_2011_2020le.Test( libBasePath
-                                   + "astro/test/testpo.405_2011_2020" ) )
+    shared_ptr< JPLEphemeris > de405_2011_2020le(
+        new JPLEphemeris( spReader, true ) );
+    if ( ! de405_2011_2020le->Test( libBasePath
+                                    + "astro/test/testpo.405_2011_2020" ) )
         ok = false;
 
     JPLEphemeris::RegisterEphemeris( de405le );

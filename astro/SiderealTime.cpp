@@ -17,6 +17,7 @@
 #include "Obliquity.hpp"
 #endif
 using namespace std;
+using namespace std::tr1;
 
 
 namespace EpsilonDelta
@@ -65,7 +66,7 @@ GreenwichApparentSiderealTime( double julianDay,
 #ifdef DEBUG
 
 bool 
-TestSiderealTime( JPLEphemeris & ephem )
+TestSiderealTime( shared_ptr< JPLEphemeris > spEphem )
 {
     bool ok = true;
     cout << "Testing Sidereal Time" << endl;
@@ -80,7 +81,7 @@ TestSiderealTime( JPLEphemeris & ephem )
     TESTCHECKF( stHMS.Seconds(), 46.3668, &ok );
     cout << "GreenwichApparentSiderealTime" << endl;
     Nutation nutation;
-    bool ephRslt = ephem.GetNutation( jd, &nutation );
+    bool ephRslt = spEphem->GetNutation( jd, &nutation );
     Assert( ephRslt );
     Angle meanObliquity = MeanObliquity( jd );
     stAngle = GreenwichApparentSiderealTime( jd, nutation, meanObliquity );
@@ -106,7 +107,7 @@ TestSiderealTime( JPLEphemeris & ephem )
     TESTCHECK( stHMS.Minutes(), 17, &ok );
     TESTCHECKF( stHMS.Seconds(), 50.2719, &ok );
     cout << "GreenwichApparentSiderealTime" << endl;
-    ephRslt = ephem.GetNutation( jd, &nutation );
+    ephRslt = spEphem->GetNutation( jd, &nutation );
     Assert( ephRslt );
     meanObliquity = MeanObliquity( jd );
     stAngle = GreenwichApparentSiderealTime( jd, nutation, meanObliquity );

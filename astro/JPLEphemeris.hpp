@@ -76,6 +76,7 @@
 #include "Nutation.hpp"
 #include "SolarSystem.hpp"
 #include "Reader.hpp"
+#include "Logger.hpp"
 #include <tr1/memory>
 #include <vector>
 #include <string>
@@ -163,8 +164,8 @@ public:
     static const int ConstNameLen = 6;
     const std::vector< Constant > & Constants( ) const;
 
-    static void RegisterEphemeris( JPLEphemeris & ephem );
-    static JPLEphemeris * GetEphemeris( double jd );
+    static void RegisterEphemeris( std::tr1::shared_ptr<JPLEphemeris> spEphem );
+    static std::tr1::shared_ptr< JPLEphemeris > GetEphemeris( double jd );
 
     //For internal use and with tools:
     enum ETarget { Mer, Ven, EMBary, Mar, Jup, Sat, Ura, Nep, Plu,
@@ -182,6 +183,7 @@ public:
     void ReadCoeffBlock( double julianDay0, double julianDay1,
                          double * coeffBlock );
     
+    static Logger & Log( );
 #ifdef DEBUG
     static bool Test( );
     bool Test( const std::string & testFileName, bool verbose = false );
@@ -230,6 +232,8 @@ private:
     int m_numChebys;
     int m_numDerivs;
     double m_t2;
+
+    static Logger ms_log;
 };
 
 
@@ -239,7 +243,7 @@ private:
 class JPLBarycentricEphemeris
 {
 public:
-    JPLBarycentricEphemeris( JPLEphemeris * pEphemeris,
+    JPLBarycentricEphemeris( std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
                              JPLEphemeris::EBody body );
     Point3D operator()( double julianDay );
     Point3D operator()( double julianDay0, double julianDay1 );
@@ -249,7 +253,7 @@ public:
                      Point3D * pPosition, Vector3D * pVelocity );
 
 private:
-    JPLEphemeris * m_pEphemeris;
+    std::tr1::shared_ptr< JPLEphemeris > m_spEphemeris;
     JPLEphemeris::EBody m_body;
 };
 
@@ -260,7 +264,7 @@ private:
 class JPLGeocentricEphemeris
 {
 public:
-    JPLGeocentricEphemeris( JPLEphemeris * pEphemeris,
+    JPLGeocentricEphemeris( std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
                             JPLEphemeris::EBody body );
     Point3D operator()( double julianDay );
     Point3D operator()( double julianDay0, double julianDay1 );
@@ -270,7 +274,7 @@ public:
                      Point3D * pPosition, Vector3D * pVelocity );
 
 private:
-    JPLEphemeris * m_pEphemeris;
+    std::tr1::shared_ptr< JPLEphemeris > m_spEphemeris;
     JPLEphemeris::EBody m_body;
 };
 
@@ -317,9 +321,10 @@ JPLEphemeris::CoeffsPerBlock( ) const
 
 
 inline 
-JPLBarycentricEphemeris::JPLBarycentricEphemeris( JPLEphemeris * pEphemeris,
-                                                  JPLEphemeris::EBody body )
-    :   m_pEphemeris( pEphemeris ),
+JPLBarycentricEphemeris::JPLBarycentricEphemeris(
+    std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
+    JPLEphemeris::EBody body )
+    :   m_spEphemeris( spEphemeris ),
         m_body( body )
 {
 }
@@ -329,9 +334,10 @@ JPLBarycentricEphemeris::JPLBarycentricEphemeris( JPLEphemeris * pEphemeris,
 
 
 inline 
-JPLGeocentricEphemeris::JPLGeocentricEphemeris( JPLEphemeris * pEphemeris,
-                                                JPLEphemeris::EBody body )
-    :   m_pEphemeris( pEphemeris ),
+JPLGeocentricEphemeris::JPLGeocentricEphemeris(
+    std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
+    JPLEphemeris::EBody body )
+    :   m_spEphemeris( spEphemeris ),
         m_body( body )
 {
 }

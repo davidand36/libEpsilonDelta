@@ -73,6 +73,7 @@
 #include "Matrix3.hpp"
 #include "AstroConst.hpp"
 #include "Epoch.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -213,7 +214,8 @@ Point3D CorrectForNutationAndPrecession( const Point3D & bodyGeocentric,
                                          const Matrix3D & nutAndPrecMatrix );
 
 #ifdef DEBUG
-bool TestCoordinateReduction( JPLEphemeris & de200, JPLEphemeris & de405 );
+bool TestCoordinateReduction( std::tr1::shared_ptr< JPLEphemeris > de200,
+                              std::tr1::shared_ptr< JPLEphemeris > de405 );
 #endif
 
 

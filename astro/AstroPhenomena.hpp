@@ -14,6 +14,8 @@
 #include "Matrix3.hpp"
 #include "Equatorial.hpp"
 #include "SolarSystem.hpp"
+#include "Logger.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -31,31 +33,31 @@ class JPLEphemeris;
 bool GetEarthBarycentric( double julianDay,
                           Point3D * pEarthBarycentric,
                           Vector3D * pEarthBarycentricVelocity,
-                          JPLEphemeris * pEphemeris );
+                          std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 bool GetNutPrecAndObliquity( double julianDay,
                              Matrix3D * pNutAndPrecMatrix,
                              Angle * pTrueObliquity, 
-                             JPLEphemeris * pEphemeris );
+                             std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 
 Equatorial SolarEquatorialPosition( double julianDay,
-                                    const Point3D & earthBarycentric,
-                                    const Vector3D & earthBarycentricVelocity,
-                                    const Matrix3D & nutAndPrecMatrix,
-                                    JPLEphemeris * pEphemeris );
+                             const Point3D & earthBarycentric,
+                             const Vector3D & earthBarycentricVelocity,
+                             const Matrix3D & nutAndPrecMatrix,
+                             std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 Equatorial SolarEquatorialPosition( double julianDay );
                                     
 Equatorial LunarEquatorialPosition( double julianDay,
-                                    const Matrix3D & nutAndPrecMatrix,
-                                    JPLEphemeris * pEphemeris );
+                             const Matrix3D & nutAndPrecMatrix,
+                             std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 Equatorial LunarEquatorialPosition( double julianDay );
 
 Equatorial PlanetEquatorialPosition( double julianDay,
-                                     SolarSystem::EBody body,
-                                     const Point3D & earthBarycentric,
-                                     const Point3D & earthHeliocentric,
-                                     const Vector3D & earthBarycentricVelocity,
-                                     const Matrix3D & nutAndPrecMatrix,
-                                     JPLEphemeris * pEphemeris );
+                             SolarSystem::EBody body,
+                             const Point3D & earthBarycentric,
+                             const Point3D & earthHeliocentric,
+                             const Vector3D & earthBarycentricVelocity,
+                             const Matrix3D & nutAndPrecMatrix,
+                             std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 Equatorial PlanetEquatorialPosition( double julianDay,
                                      SolarSystem::EBody body );
                                      
@@ -64,16 +66,18 @@ Angle SolarLongitude( double julianDay,
                       const Vector3D & earthBarycentricVelocity,
                       const Matrix3D & nutAndPrecMatrix,
                       Angle obliquity, 
-                      JPLEphemeris * pEphemeris );
+                      std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 Angle SolarLongitude( double julianDay );
 Angle MeanSolarLongitude( double julianDay );
 
 Angle LunarLongitude( double julianDay, 
                       const Matrix3D & nutAndPrecMatrix,
                       Angle obliquity, 
-                      JPLEphemeris * pEphemeris );
+                      std::tr1::shared_ptr< JPLEphemeris > spEphemeris );
 Angle LunarPhase( double julianDay );
 Angle LunarArcOfLight( double julianDay );
+
+Logger & AstroPhenomenaLog( );
 
 #ifdef DEBUG
 bool TestAstroPhenomena( );

@@ -15,6 +15,7 @@
 
 #include "Angle.hpp"
 #include "Matrix3.hpp"
+#include <tr1/memory>
 
 
 namespace EpsilonDelta
@@ -38,7 +39,7 @@ public:
     Matrix3D Matrix( Angle meanObliquity, bool inverse = false ) const;
 
 #ifdef DEBUG
-    static bool Test( JPLEphemeris & ephem );
+    static bool Test( std::tr1::shared_ptr< JPLEphemeris > spEphem );
 #endif
 
 

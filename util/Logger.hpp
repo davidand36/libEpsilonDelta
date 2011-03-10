@@ -20,9 +20,10 @@
      Output function, which can be set by the user.
   6. By default, the Output function sends a string with the domain, the
      level as a string, and the message to a std::ostream.
-  6. By default, the destination of messages is std::cerr for levels up through
+  7. By default, the destination of messages is std::cerr for levels up through
      Warning, and std::cout for higher levels.
-  7. SetDestination() sets the destination for all levels if level < 0.
+  8. SetDestination() sets the destination for all levels if level < 0.
+  9. On Android, the default is to pass through to the native log facility.
 */
 
 

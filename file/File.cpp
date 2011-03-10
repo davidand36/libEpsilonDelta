@@ -60,7 +60,7 @@ File::~File( )
 {
 #ifdef USE_CSTD_FILE
     fclose( m_file );
-    ms_log( Logger::Debug, "Closed %s", m_fileName.c_str() );
+    ms_log( Logger::Info, "Closed %s", m_fileName.c_str() );
 #endif
 }
 
@@ -77,7 +77,7 @@ File::Seek( int offset, Origin origin )
     if ( seekRslt == 0 )
     {
         int location = (int) ftell( m_file );
-        ms_log( Logger::Info, "Seeked to %d (%d from %s) in %s",
+        ms_log( Logger::Debug, "Seeked to %d (%d from %s) in %s",
                 location, offset, originNames[ origin ], m_fileName.c_str() );
         return location;
     }

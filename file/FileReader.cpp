@@ -31,7 +31,7 @@ FileReader::Read( char * buffer, int bufferSize )
     size_t bytesRead = fread( buffer, 1, (size_t) bufferSize, Handle() );
     if ( (ferror( Handle() ) == 0) && (bytesRead == (size_t) bufferSize) )
     {
-        Log()( Logger::Info, "Read %d bytes from %s",
+        Log()( Logger::Debug, "Read %d bytes from %s",
                bufferSize, FileName().c_str() );
     }
     else

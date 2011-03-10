@@ -31,7 +31,7 @@ FileWriter::Write( const char * buffer, int bufferSize )
     size_t bytesWritten = fwrite( buffer, 1, (size_t) bufferSize, Handle() );
     if ( bytesWritten == (size_t) bufferSize )
     {
-        Log()( Logger::Info, "Wrote %d bytes to %s",
+        Log()( Logger::Debug, "Wrote %d bytes to %s",
                bufferSize, FileName().c_str() );
     }
     else

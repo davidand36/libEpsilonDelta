@@ -48,8 +48,8 @@
       GPS satellites. Matched UTC in 1980, but does not incorporate leap
       seconds, thus maintaining a constant offset from TAI (19 seconds).
   NOTES:
-  1. These functions are named XXX_YYY, where XXX and YYY are the two standards
-     and the functions return the difference (XXX - YYY) as a TimeIncrement.
+  1. These functions are named X_Y, where X and Y are the two standards
+     and the functions return the difference (X - Y) as a TimeIncrement.
   2. (i) TT - TAI is a constant, but nonnegligible, 32.184 s.
      (ii) TAI - UT1 was 0 on 1 Jan 1958, but is subject to significant
      fluctuations, both periodic and chaotic, in the Earth's rate of rotation,

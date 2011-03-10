@@ -1,5 +1,5 @@
 #ifndef ANGLEDMS_HPP
-#define ANDLEDMS_HPP
+#define ANGLEDMS_HPP
 /*
   AngleDMS.hpp
   Copyright (C) 2007 David M. Anderson

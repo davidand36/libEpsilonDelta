@@ -10,6 +10,12 @@
   1. The BodyEquatorialFunc allows for the use of a function or a function
      object. It should be of the form
      Equatorial bodyEquatFunc( double julianDay );
+  2. The default accuracies are generally much finer than is realistically
+     needed, particularly for rise and set times, where variations in
+     atmospheric refraction and the topography of the horizon have large
+     effects, and twilight, since the darkening of the night sky is a gradual
+     process. There should be no harm, however, since the algorithms typically
+     converge quite rapidly.
 */
 
 
@@ -51,17 +57,18 @@ struct Result
 template < typename BodyEquatorialFunc >
 Result FindNext( double julianDay, EEvent event, Angle targetAltitude,
                  BodyEquatorialFunc bodyEquatFunc, EBodyType bodyType,
-                 const GeodeticLocation & location );
+                 const GeodeticLocation & location, double accuracySecs );
 
 Result FindNext( double julianDay, SolarSystem::EBody body,
                  EEvent event, Angle targetAltitude,
-                 const GeodeticLocation & location );
+                 const GeodeticLocation & location, double accuracySecs = 1.0 );
 Result FindNext( double julianDay, SolarSystem::EBody body, EEvent event,
-                 const GeodeticLocation & location );
+                 const GeodeticLocation & location, double accuracySecs = 1.0 );
 Result FindNext( double julianDay, const Equatorial & fixedPos, EEvent event,
-                 const GeodeticLocation & location );
+                 const GeodeticLocation & location, double accuracySecs = 1.0 );
 Result FindNextTwilight( double julianDay, EEvent event, ETwilight twilight,
-                         const GeodeticLocation & location );
+                         const GeodeticLocation & location,
+                         double accuracySecs = 30.0 );
 
 Logger & Log( );
 
@@ -78,9 +85,10 @@ template < typename BodyEquatorialFunc >
 Result 
 FindNext( double julianDay, EEvent event, Angle targetAltitude,
           BodyEquatorialFunc bodyEquatFunc, EBodyType bodyType,
-          const GeodeticLocation & location )
+          const GeodeticLocation & location, double accuracySecs )
 {
     Result result = { OK, 0. };
+    double accuracyDays = accuracySecs / (24. * 60. * 60.);
     double sinTargetAlt = targetAltitude.Sin( );
     double sinLat = location.Latitude().Sin( );
     double cosLat = location.Latitude().Cos( );
@@ -188,7 +196,9 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
 
         if ( ++counter > 1000 )
             throw ConvergenceException( "RiseSet::FindNext() never converged" );
-    } while ( fabs( correction ) > 0.0003 );
+    } while ( fabs( correction ) > accuracyDays );
+    Log().Log( Logger::Debug, "Converged after %d iterations (accuracy=%fs)",
+               counter, accuracySecs );
 
     result.m_julianDay = jd;
     return  result;

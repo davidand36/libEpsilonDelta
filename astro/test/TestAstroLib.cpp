@@ -71,6 +71,10 @@ int Main( int /*argc*/, char ** argv )
     bool ok = true;
 
 #ifdef DEBUG
+    JPLEphemeris::Log().SetVerbosity( Logger::Info );
+    RiseSet::Log().SetVerbosity( Logger::Info );
+    AstroPhenomenaLog().SetVerbosity( Logger::Info );
+
     if ( ! TestAstroCoordTransformations( ) )
         ok = false;
 

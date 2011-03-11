@@ -168,7 +168,7 @@ FixedEquatorialPos::operator()( double /*julianDay*/ )
 RiseSet::Result 
 RiseSet::FindNext( double julianDay, SolarSystem::EBody body,
                    EEvent event, Angle targetAltitude,
-                   const GeodeticLocation & location )
+                   const GeodeticLocation & location, double accuracySecs )
 {
     s_log( Logger::Debug, "FindNext JD=%11.2f body=%d event=%d alt=%4.2f",
            julianDay, body, event, targetAltitude.Degrees() );
@@ -197,14 +197,14 @@ RiseSet::FindNext( double julianDay, SolarSystem::EBody body,
     Assert( nutPrecRslt );
     BodyEquatorialPos bodyEquatorialPos( body, spEphemeris, nutAndPrecMatrix );
     return  FindNext( julianDay, event, targetAltitude, bodyEquatorialPos,
-                      bodyType, location );
+                      bodyType, location, accuracySecs );
 }
 
 //=============================================================================
 
 RiseSet::Result 
 RiseSet::FindNext( double julianDay, SolarSystem::EBody body, EEvent event,
-                   const GeodeticLocation & location )
+                   const GeodeticLocation & location, double accuracySecs )
 {
     Angle targetAltitude( 0. );
     switch ( body )
@@ -223,26 +223,28 @@ RiseSet::FindNext( double julianDay, SolarSystem::EBody body, EEvent event,
     if ( location.Height() > 0. )
         targetAltitude -= Angle( AngleDMS( 0.0353
                                           * std::sqrt( location.Height() ) ) );
-    return FindNext( julianDay, body, event, targetAltitude, location );
+    return FindNext( julianDay, body, event, targetAltitude, location,
+                     accuracySecs );
 }
 
 //=============================================================================
 
 RiseSet::Result 
 RiseSet::FindNext( double julianDay, const Equatorial & fixedPos, EEvent event,
-                   const GeodeticLocation & location )
+                   const GeodeticLocation & location, double accuracySecs )
 {
     Angle targetAltitude( AngleDMS( 0, -34 ) );
     FixedEquatorialPos fixedEquatorialPos( fixedPos );
     return  FindNext( julianDay, event, targetAltitude, fixedEquatorialPos,
-                      Star, location );
+                      Star, location, accuracySecs );
 }
 
 //=============================================================================
 
 RiseSet::Result 
 RiseSet::FindNextTwilight( double julianDay, EEvent event, ETwilight twilight,
-                           const GeodeticLocation & location )
+                           const GeodeticLocation & location,
+                           double accuracySecs )
 {
     Angle targetAltitude( 0. );
     switch ( twilight )
@@ -258,7 +260,7 @@ RiseSet::FindNextTwilight( double julianDay, EEvent event, ETwilight twilight,
         break;
     }
     return FindNext( julianDay, SolarSystem::Sun, event, targetAltitude,
-                     location );
+                     location, accuracySecs );
 }
 
 //=============================================================================

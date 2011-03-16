@@ -285,19 +285,19 @@ RiseSet::Test( )
     double mar20_1988 = DateTime( 20, March, 1988, 0, 0 ).JulianDay( );
     GeodeticLocation boston( Angle( -71.0833, Angle::Degree ),
                              Angle( 42.3333, Angle::Degree ) );
-    cout << "FindNext( mar20_1988, SolarSystem::Venus, Rise, boston )" << endl;
+    cout << "FindNext( mar20_1988, Venus, Rise, boston )" << endl;
     Result result = FindNext( mar20_1988, SolarSystem::Venus, Rise, boston );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 20, March, 1988, 12, 25 ).JulianDay( ), &ok,
                  2e-10 );
-    cout << "FindNext( mar20_1988, SolarSystem::Venus, Set, boston )" << endl;
+    cout << "FindNext( mar20_1988, Venus, Set, boston )" << endl;
     result = FindNext( mar20_1988, SolarSystem::Venus, Set, boston );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 20, March, 1988, 2, 55 ).JulianDay( ), &ok,
                  2e-10 );
-    cout << "FindNext( mar20_1988, SolarSystem::Venus, Transit, boston )"
+    cout << "FindNext( mar20_1988, Venus, Transit, boston )"
          << endl;
     result = FindNext( mar20_1988, SolarSystem::Venus, Transit, boston );
     TESTCHECK( result.m_status, OK, &ok );
@@ -307,13 +307,13 @@ RiseSet::Test( )
     double jan13_2006 = DateTime( 13, January, 2006, 0, 0 ).JulianDay( );
     GeodeticLocation istanbul( Angle( 30., Angle::Degree ),
                                Angle( 40., Angle::Degree ) );
-    cout << "FindNext( jan13_2006, SolarSystem::Sun, Rise, istanbul )" << endl;
+    cout << "FindNext( jan13_2006, Sun, Rise, istanbul )" << endl;
     result = FindNext( jan13_2006, SolarSystem::Sun, Rise, istanbul );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 13, January, 2006, 5, 21 ).JulianDay( ), &ok,
                  2e-10 );
-    cout << "FindNext( jan13_2006, SolarSystem::Sun, Set, istanbul )" << endl;
+    cout << "FindNext( jan13_2006, Sun, Set, istanbul )" << endl;
     result = FindNext( jan13_2006, SolarSystem::Sun, Set, istanbul );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
@@ -322,19 +322,28 @@ RiseSet::Test( )
     double aug12_2006 = DateTime( 12, August, 2006, 0, 0 ).JulianDay( );
     GeodeticLocation greenwich( Angle( 0. ),
                                 Angle( 50., Angle::Degree ) );
-    cout << "FindNext( aug12_2006, SolarSystem::Moon, Rise, greenwich )" << endl;
+    cout << "FindNext( aug12_2006, Moon, Rise, greenwich )" << endl;
     result = FindNext( aug12_2006, SolarSystem::Moon, Rise, greenwich );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 12, August, 2006, 20, 43 ).JulianDay( ), &ok,
                  2e-10 );
-    cout << "FindNext( aug12_2006, SolarSystem::Moon, Set, greenwich )" << endl;
+    cout << "FindNext( aug12_2006, Moon, Set, greenwich )" << endl;
     result = FindNext( aug12_2006, SolarSystem::Moon, Set, greenwich );
     TESTCHECK( result.m_status, OK, &ok );
     TESTCHECKFE( result.m_julianDay,
                  DateTime( 12, August, 2006, 8, 38 ).JulianDay( ), &ok,
                  2e-10 );
 
+    GeodeticLocation longyearbyen( Angle( 15.55, Angle::Degree ),
+                                   Angle( 78.217, Angle::Degree ) );
+    cout << "FindNext( jan13_2006, Sun, Rise, longyearbyen )" << endl;
+    result = FindNext( jan13_2006, SolarSystem::Sun, Rise, longyearbyen );
+    TESTCHECK( result.m_status, AlwaysDown, &ok );
+    cout << "FindNext( aug12_2006, Sun, Set, longyearbyen )" << endl;
+    result = FindNext( aug12_2006, SolarSystem::Sun, Set, longyearbyen );
+    TESTCHECK( result.m_status, AlwaysUp, &ok );
+    
     if ( ok )
         cout << "RiseSet PASSED." << endl << endl;
     else

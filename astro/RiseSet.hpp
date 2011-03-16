@@ -116,12 +116,12 @@ FindNext( double julianDay, EEvent event, Angle targetAltitude,
                     / ( cosLat * bodyDec.Cos( ) );
             if ( cosTargetHourAngle > 1. )
             {
-                result.m_status = AlwaysUp;
+                result.m_status = AlwaysDown;
                 return result;
             }
             else if ( cosTargetHourAngle < -1. )
             {
-                result.m_status = AlwaysDown;
+                result.m_status = AlwaysUp;
                 return result;
             }
             targetHourAngle = ArcCos( cosTargetHourAngle );

@@ -67,7 +67,7 @@
      introduced, which is not easily predicted. 
      (See http://www.boulder.nist.gov/timefreq/pubs/bulletin/leapsecond.htm.)
      Over this limited range, however, TAI_UTC() and TT_UTC() are precise.
-  4. The routine UT1_TT() uses formulas derived from empirical data and are
+  4. The routine TT_UT1() uses formulas derived from empirical data and are
      approximate and valid from 390 B.C. to "the present". (The formulas were
      published in the mid-1980's.) For more precise or current values, tables
      such as those in "Astronomical Algorithms" or the "Astronomical Almanac"

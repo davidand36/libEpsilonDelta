@@ -16,6 +16,7 @@
      effects, and twilight, since the darkening of the night sky is a gradual
      process. There should be no harm, however, since the algorithms typically
      converge quite rapidly.
+  3. Times are ephemeris time, i.e. TDB.
 */
 
 

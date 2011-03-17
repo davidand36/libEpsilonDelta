@@ -249,6 +249,15 @@ OrdinalToString( long i, int width = 0, char comma = 0 );
 std::wstring 
 OrdinalToWString( long i, int width = 0, char comma = 0 );
 
+int
+StringToInt( std::string str, int pos = 0, int len = -1 );
+
+long
+StringToLong( std::string str, int pos = 0, int len = -1 );
+
+double
+StringToReal( std::string str, int pos = 0, int len = -1 );
+
 enum LineBreakAction
 {
     LBA_Prohibited,

@@ -108,6 +108,35 @@ OrdinalToWString( long i, int width, char comma )
     }
 }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+int
+StringToInt( std::string str, int pos, int len )
+{
+    string::size_type p = (string::size_type) pos;
+    string::size_type n
+            = (len >= 0)  ?  (string::size_type) len  :  string::npos;
+    return atoi( str.substr( p, n ).c_str() );
+}
+
+long
+StringToLong( std::string str, int pos, int len )
+{
+    string::size_type p = (string::size_type) pos;
+    string::size_type n
+            = (len >= 0)  ?  (string::size_type) len  :  string::npos;
+    return atol( str.substr( p, n ).c_str() );
+}
+
+double
+StringToReal( std::string str, int pos, int len )
+{
+    string::size_type p = (string::size_type) pos;
+    string::size_type n
+            = (len >= 0)  ?  (string::size_type) len  :  string::npos;
+    return atof( str.substr( p, n ).c_str() );
+}
+
 //=============================================================================
 
 namespace
@@ -1516,6 +1545,23 @@ TestNumbersToString( )
     TESTCHECK( OrdinalToWString( 2000194, 0, ',' ), wstring( L"2,000,194th" ),
                &ok );
 
+    string line = " 1234567890-23.567  ";
+    TESTCHECK( StringToInt( line, 0, 4 ), 123, &ok );
+    TESTCHECK( StringToInt( line, 10 ), 0, &ok );
+    TESTCHECK( StringToInt( line, 11 ), -23, &ok );
+    TESTCHECK( StringToInt( line, 14 ), 0, &ok );
+    TESTCHECK( StringToInt( line, 15 ), 567, &ok );
+    TESTCHECK( StringToLong( line, 0, 10 ), 123456789L, &ok );
+    TESTCHECK( StringToLong( line, 10 ), 0L, &ok );
+    TESTCHECK( StringToLong( line, 11 ), -23L, &ok );
+    TESTCHECK( StringToLong( line, 14 ), 0L, &ok );
+    TESTCHECK( StringToLong( line, 15 ), 567L, &ok );
+    TESTCHECK( StringToReal( line, 0, 4 ), 123., &ok );
+    TESTCHECK( StringToReal( line, 10 ), 0., &ok );
+    TESTCHECK( StringToReal( line, 11 ), -23.567, &ok );
+    TESTCHECK( StringToReal( line, 14 ), 0.567, &ok );
+    TESTCHECK( StringToReal( line, 15 ), 567., &ok );
+    
     return ok;
 }
 

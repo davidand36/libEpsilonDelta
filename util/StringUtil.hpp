@@ -250,13 +250,13 @@ std::wstring
 OrdinalToWString( long i, int width = 0, char comma = 0 );
 
 int
-StringToInt( std::string str, int pos = 0, int len = -1 );
+StringToInt( std::string str, int def = 0, int pos = 0, int len = -1 );
 
 long
-StringToLong( std::string str, int pos = 0, int len = -1 );
+StringToLong( std::string str, long def = 0L, int pos = 0, int len = -1 );
 
 double
-StringToReal( std::string str, int pos = 0, int len = -1 );
+StringToReal( std::string str, double def = 0., int pos = 0, int len = -1 );
 
 enum LineBreakAction
 {

@@ -111,30 +111,45 @@ OrdinalToWString( long i, int width, char comma )
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 int
-StringToInt( std::string str, int pos, int len )
+StringToInt( std::string str, int def, int pos, int len )
 {
     string::size_type p = (string::size_type) pos;
     string::size_type n
             = (len >= 0)  ?  (string::size_type) len  :  string::npos;
-    return atoi( str.substr( p, n ).c_str() );
+    const char * cstr = str.substr( p, n ).c_str();
+    char * end;
+    int rslt = (int) strtol( cstr, &end, 0 );
+    if ( end == cstr )
+        return def;
+    return rslt;
 }
 
 long
-StringToLong( std::string str, int pos, int len )
+StringToLong( std::string str, long def, int pos, int len )
 {
     string::size_type p = (string::size_type) pos;
     string::size_type n
             = (len >= 0)  ?  (string::size_type) len  :  string::npos;
-    return atol( str.substr( p, n ).c_str() );
+    const char * cstr = str.substr( p, n ).c_str();
+    char * end;
+    long rslt = strtol( cstr, &end, 0 );
+    if ( end == cstr )
+        return def;
+    return rslt;
 }
 
 double
-StringToReal( std::string str, int pos, int len )
+StringToReal( std::string str, double def, int pos, int len )
 {
     string::size_type p = (string::size_type) pos;
     string::size_type n
             = (len >= 0)  ?  (string::size_type) len  :  string::npos;
-    return atof( str.substr( p, n ).c_str() );
+    const char * cstr = str.substr( p, n ).c_str();
+    char * end;
+    double rslt = strtod( cstr, &end );
+    if ( end == cstr )
+        return def;
+    return rslt;
 }
 
 //=============================================================================
@@ -1546,21 +1561,31 @@ TestNumbersToString( )
                &ok );
 
     string line = " 1234567890-23.567  ";
-    TESTCHECK( StringToInt( line, 0, 4 ), 123, &ok );
-    TESTCHECK( StringToInt( line, 10 ), 0, &ok );
-    TESTCHECK( StringToInt( line, 11 ), -23, &ok );
-    TESTCHECK( StringToInt( line, 14 ), 0, &ok );
-    TESTCHECK( StringToInt( line, 15 ), 567, &ok );
-    TESTCHECK( StringToLong( line, 0, 10 ), 123456789L, &ok );
-    TESTCHECK( StringToLong( line, 10 ), 0L, &ok );
-    TESTCHECK( StringToLong( line, 11 ), -23L, &ok );
-    TESTCHECK( StringToLong( line, 14 ), 0L, &ok );
-    TESTCHECK( StringToLong( line, 15 ), 567L, &ok );
-    TESTCHECK( StringToReal( line, 0, 4 ), 123., &ok );
-    TESTCHECK( StringToReal( line, 10 ), 0., &ok );
-    TESTCHECK( StringToReal( line, 11 ), -23.567, &ok );
-    TESTCHECK( StringToReal( line, 14 ), 0.567, &ok );
-    TESTCHECK( StringToReal( line, 15 ), 567., &ok );
+    TESTCHECK( StringToInt( line ), 1234567890, &ok );
+    TESTCHECK( StringToInt( line, -99 ), 1234567890, &ok );
+    TESTCHECK( StringToInt( line, -99, 0 ), 1234567890, &ok );
+    TESTCHECK( StringToInt( line, -99, 0, 4 ), 123, &ok );
+    TESTCHECK( StringToInt( line, -99, 10 ), 0, &ok );
+    TESTCHECK( StringToInt( line, -99, 11 ), -23, &ok );
+    TESTCHECK( StringToInt( line, -99, 14 ), -99, &ok );
+    TESTCHECK( StringToInt( line, -99, 15 ), 567, &ok );
+    TESTCHECK( StringToLong( line ), 1234567890L, &ok );
+    TESTCHECK( StringToLong( line, -99 ), 1234567890L, &ok );
+    TESTCHECK( StringToLong( line, -99, 0 ), 1234567890L, &ok );
+    TESTCHECK( StringToLong( line, -99, 0, 4 ), 123L, &ok );
+    TESTCHECK( StringToLong( line, -99, 0, 10 ), 123456789L, &ok );
+    TESTCHECK( StringToLong( line, -99, 10 ), 0L, &ok );
+    TESTCHECK( StringToLong( line, -99, 11 ), -23L, &ok );
+    TESTCHECK( StringToLong( line, -99, 14 ), -99L, &ok );
+    TESTCHECK( StringToLong( line, -99, 15 ), 567L, &ok );
+    TESTCHECK( StringToReal( line ), 1234567890., &ok );
+    TESTCHECK( StringToReal( line, -99. ), 1234567890., &ok );
+    TESTCHECK( StringToReal( line, -99., 0 ), 1234567890., &ok );
+    TESTCHECK( StringToReal( line, -99., 0, 4 ), 123., &ok );
+    TESTCHECK( StringToReal( line, -99., 10 ), 0., &ok );
+    TESTCHECK( StringToReal( line, -99., 11 ), -23.567, &ok );
+    TESTCHECK( StringToReal( line, -99., 14 ), 0.567, &ok );
+    TESTCHECK( StringToReal( line, -99., 15 ), 567., &ok );
     
     return ok;
 }

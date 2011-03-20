@@ -976,11 +976,12 @@ JPLEphemeris::Log( )
 Point3D 
 JPLBarycentricEphemeris::operator()( double julianDay )
 {
+    shared_ptr< JPLEphemeris > spEphemeris = GetEphemeris( julianDay );
     Point3D bodyPos;
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
-                                          JPLEphemeris::SolarSystemBarycenter,
-                                          &bodyPos );
+            = spEphemeris->GetBodyPosition( julianDay, m_body,
+                                            JPLEphemeris::SolarSystemBarycenter,
+                                            &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
     return bodyPos;
@@ -991,11 +992,13 @@ JPLBarycentricEphemeris::operator()( double julianDay )
 Point3D 
 JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
+    shared_ptr< JPLEphemeris > spEphemeris
+            = GetEphemeris( julianDay0 + julianDay1 );
     Point3D bodyPos;
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                          JPLEphemeris::SolarSystemBarycenter,
-                                          &bodyPos );
+            = spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                            JPLEphemeris::SolarSystemBarycenter,
+                                            &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
     return bodyPos;
@@ -1008,10 +1011,11 @@ JPLBarycentricEphemeris::operator()( double julianDay,
                                      Point3D * pPosition,
                                      Vector3D * pVelocity )
 {
+    shared_ptr< JPLEphemeris > spEphemeris = GetEphemeris( julianDay );
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
-                                          JPLEphemeris::SolarSystemBarycenter,
-                                          pPosition, pVelocity );
+            = spEphemeris->GetBodyPosition( julianDay, m_body,
+                                            JPLEphemeris::SolarSystemBarycenter,
+                                            pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
@@ -1023,10 +1027,12 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1,
                                      Point3D * pPosition,
                                      Vector3D * pVelocity )
 {
+    shared_ptr< JPLEphemeris > spEphemeris
+            = GetEphemeris( julianDay0 + julianDay1 );
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                          JPLEphemeris::SolarSystemBarycenter,
-                                          pPosition, pVelocity );
+            = spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                            JPLEphemeris::SolarSystemBarycenter,
+                                            pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
@@ -1038,11 +1044,12 @@ JPLBarycentricEphemeris::operator()( double julianDay0, double julianDay1,
 Point3D 
 JPLGeocentricEphemeris::operator()( double julianDay )
 {
+    shared_ptr< JPLEphemeris > spEphemeris = GetEphemeris( julianDay );
     Point3D bodyPos;
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
-                                              JPLEphemeris::Earth, 
-                                              &bodyPos );
+            = spEphemeris->GetBodyPosition( julianDay, m_body,
+                                            JPLEphemeris::Earth, 
+                                            &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
@@ -1053,11 +1060,13 @@ JPLGeocentricEphemeris::operator()( double julianDay )
 Point3D 
 JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1 )
 {
+    shared_ptr< JPLEphemeris > spEphemeris
+            = GetEphemeris( julianDay0 + julianDay1 );
     Point3D bodyPos;
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                              JPLEphemeris::Earth, 
-                                              &bodyPos );
+            = spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                            JPLEphemeris::Earth, 
+                                            &bodyPos );
     if ( ! posRslt )
         throw RuntimeError( "JPLGeocentricEphemeris failed." );
     return bodyPos;
@@ -1070,10 +1079,11 @@ JPLGeocentricEphemeris::operator()( double julianDay,
                                     Point3D * pPosition,
                                     Vector3D * pVelocity )
 {
+    shared_ptr< JPLEphemeris > spEphemeris = GetEphemeris( julianDay );
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay, m_body,
-                                              JPLEphemeris::Earth,
-                                              pPosition, pVelocity );
+            = spEphemeris->GetBodyPosition( julianDay, m_body,
+                                            JPLEphemeris::Earth,
+                                            pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }
@@ -1085,10 +1095,12 @@ JPLGeocentricEphemeris::operator()( double julianDay0, double julianDay1,
                                     Point3D * pPosition,
                                     Vector3D * pVelocity )
 {
+    shared_ptr< JPLEphemeris > spEphemeris
+            = GetEphemeris( julianDay0 + julianDay1 );
     bool posRslt
-            = m_spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
-                                              JPLEphemeris::Earth,
-                                              pPosition, pVelocity );
+            = spEphemeris->GetBodyPosition( julianDay0, julianDay1, m_body,
+                                            JPLEphemeris::Earth,
+                                            pPosition, pVelocity );
     if ( ! posRslt )
         throw RuntimeError( "JPLBarycentricEphemeris failed." );
 }

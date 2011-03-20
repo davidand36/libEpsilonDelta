@@ -245,6 +245,7 @@ class JPLBarycentricEphemeris
 public:
     JPLBarycentricEphemeris( std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
                              JPLEphemeris::EBody body );
+    JPLBarycentricEphemeris( JPLEphemeris::EBody body );
     Point3D operator()( double julianDay );
     Point3D operator()( double julianDay0, double julianDay1 );
     void operator()( double julianDay,
@@ -253,6 +254,8 @@ public:
                      Point3D * pPosition, Vector3D * pVelocity );
 
 private:
+    std::tr1::shared_ptr< JPLEphemeris > GetEphemeris( double julianDay );
+    
     std::tr1::shared_ptr< JPLEphemeris > m_spEphemeris;
     JPLEphemeris::EBody m_body;
 };
@@ -266,6 +269,7 @@ class JPLGeocentricEphemeris
 public:
     JPLGeocentricEphemeris( std::tr1::shared_ptr< JPLEphemeris > spEphemeris,
                             JPLEphemeris::EBody body );
+    JPLGeocentricEphemeris( JPLEphemeris::EBody body );
     Point3D operator()( double julianDay );
     Point3D operator()( double julianDay0, double julianDay1 );
     void operator()( double julianDay,
@@ -274,6 +278,8 @@ public:
                      Point3D * pPosition, Vector3D * pVelocity );
 
 private:
+    std::tr1::shared_ptr< JPLEphemeris > GetEphemeris( double julianDay );
+
     std::tr1::shared_ptr< JPLEphemeris > m_spEphemeris;
     JPLEphemeris::EBody m_body;
 };
@@ -329,6 +335,23 @@ JPLBarycentricEphemeris::JPLBarycentricEphemeris(
 {
 }
 
+//.............................................................................
+
+inline 
+JPLBarycentricEphemeris::JPLBarycentricEphemeris( JPLEphemeris::EBody body )
+    :   m_body( body )
+{
+}
+
+//-----------------------------------------------------------------------------
+
+inline 
+std::tr1::shared_ptr< JPLEphemeris >
+JPLBarycentricEphemeris::GetEphemeris( double julianDay )
+{
+    return m_spEphemeris  ?  m_spEphemeris
+            :  JPLEphemeris::GetEphemeris( julianDay );
+}
 
 //*****************************************************************************
 
@@ -340,6 +363,24 @@ JPLGeocentricEphemeris::JPLGeocentricEphemeris(
     :   m_spEphemeris( spEphemeris ),
         m_body( body )
 {
+}
+
+//.............................................................................
+
+inline 
+JPLGeocentricEphemeris::JPLGeocentricEphemeris( JPLEphemeris::EBody body )
+    :   m_body( body )
+{
+}
+
+//-----------------------------------------------------------------------------
+
+inline 
+std::tr1::shared_ptr< JPLEphemeris >
+JPLGeocentricEphemeris::GetEphemeris( double julianDay )
+{
+    return m_spEphemeris  ?  m_spEphemeris
+            :  JPLEphemeris::GetEphemeris( julianDay );
 }
 
 

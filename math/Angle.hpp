@@ -71,6 +71,9 @@ public:
     double Hav( ) const;
     bool operator==( Angle rhs ) const;
     bool operator<( Angle rhs ) const;
+    bool operator<=( Angle rhs ) const;
+    bool operator>( Angle rhs ) const;
+    bool operator>=( Angle rhs ) const;
     Angle operator-( ) const;
     Angle & operator+=( Angle rhs );
     Angle & operator-=( Angle rhs );
@@ -280,6 +283,33 @@ bool
 Angle::operator<( Angle rhs ) const
 {
     return (m_radians < rhs.m_radians);
+}
+
+//-----------------------------------------------------------------------------
+
+inline 
+bool 
+Angle::operator<=( Angle rhs ) const
+{
+    return (m_radians <= rhs.m_radians);
+}
+
+//-----------------------------------------------------------------------------
+
+inline 
+bool 
+Angle::operator>( Angle rhs ) const
+{
+    return (m_radians > rhs.m_radians);
+}
+
+//-----------------------------------------------------------------------------
+
+inline 
+bool 
+Angle::operator>=( Angle rhs ) const
+{
+    return (m_radians >= rhs.m_radians);
 }
 
 //=============================================================================

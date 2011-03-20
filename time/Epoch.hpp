@@ -58,6 +58,7 @@ double Century2000( double julianDay );
 
 extern const double J2000;
 extern const double B1950;
+extern const double B1875;
 
 
 //*****************************************************************************

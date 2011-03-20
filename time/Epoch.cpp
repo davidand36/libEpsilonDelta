@@ -22,8 +22,9 @@ namespace EpsilonDelta
 //*****************************************************************************
 
 
-const double J2000 = Epoch( 2000., Epoch::Julian ).JulianDay( );
-const double B1950 = Epoch( 1950., Epoch::Besselian ).JulianDay( );
+const double J2000 = Epoch( 2000., Epoch::Julian ).JulianDay();
+const double B1950 = Epoch( 1950., Epoch::Besselian ).JulianDay();
+const double B1875 = Epoch( 1875., Epoch::Besselian ).JulianDay();
 
 
 //=============================================================================

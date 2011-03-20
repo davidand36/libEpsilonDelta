@@ -50,34 +50,78 @@ Precession::Precession( double julianDay, double epoch )
     m_zeta.Set( zetaSec, Angle::ArcSecond );
     m_z.Set(  zSec, Angle::ArcSecond );
     m_theta.Set( thetaSec, Angle::ArcSecond );
+    m_cosTheta = m_theta.Cos( );
+    m_sinTheta = m_theta.Sin( );
 }
 
 //=============================================================================
 
 Matrix3D 
-Precession::Matrix( bool inverse ) const
+Precession::Matrix( bool fromEpoch ) const
 {
     //Explanatory Supplement (3.21-8)
     double cosZeta = m_zeta.Cos( );
     double sinZeta = m_zeta.Sin( );
     double cosZ = m_z.Cos( );
     double sinZ = m_z.Sin( );
-    double cosTheta = m_theta.Cos( );
-    double sinTheta = m_theta.Sin( );
-    double p00 = cosZeta * cosZ * cosTheta  -  sinZeta * sinZ;
-    double p01 = - sinZeta * cosZ * cosTheta  -  cosZeta * sinZ;
-    double p02 = - cosZ * sinTheta;
-    double p10 = cosZeta * sinZ * cosTheta  +  sinZeta * cosZ;
-    double p11 = - sinZeta * sinZ * cosTheta  +  cosZeta * cosZ;
-    double p12 = - sinZ * sinTheta;
-    double p20 = cosZeta * sinTheta;
-    double p21 = - sinZeta * sinTheta;
-    double p22 = cosTheta;
-    if ( inverse )
-        //The matrix is orthogonal, so the inverse is the transpose.
-        return Matrix3D( p00, p10, p20,  p01, p11, p21,  p02, p12, p22 );
-    else
+    double p00 = cosZeta * cosZ * m_cosTheta  -  sinZeta * sinZ;
+    double p01 = - sinZeta * cosZ * m_cosTheta  -  cosZeta * sinZ;
+    double p02 = - cosZ * m_sinTheta;
+    double p10 = cosZeta * sinZ * m_cosTheta  +  sinZeta * cosZ;
+    double p11 = - sinZeta * sinZ * m_cosTheta  +  cosZeta * cosZ;
+    double p12 = - sinZ * m_sinTheta;
+    double p20 = cosZeta * m_sinTheta;
+    double p21 = - sinZeta * m_sinTheta;
+    double p22 = m_cosTheta;
+    if ( fromEpoch )
         return Matrix3D( p00, p01, p02,  p10, p11, p12,  p20, p21, p22 );
+    else //The matrix is orthogonal, so the inverse is the transpose.
+        return Matrix3D( p00, p10, p20,  p01, p11, p21,  p02, p12, p22 );
+}
+
+//-----------------------------------------------------------------------------
+
+Equatorial
+Precession::Reduce( Equatorial equatorial, bool fromEpoch ) const
+{
+    if ( fromEpoch )
+    {
+        double cosDec0 = equatorial.Declination().Cos( );
+        double sinDec0 = equatorial.Declination().Sin( );
+        Angle ra0PlusZeta = equatorial.RightAscension() + m_zeta;
+        double cosRa0PlusZeta = ra0PlusZeta.Cos( );
+        double sinRa0PlusZeta = ra0PlusZeta.Sin( );
+        double sinDec1 = cosRa0PlusZeta * m_sinTheta * cosDec0
+                +  m_cosTheta * sinDec0;
+        Angle dec1 = ArcSin( sinDec1 );
+        double cosDec1 = dec1.Cos( );
+        double s = sinRa0PlusZeta * cosDec0;
+        double c = cosRa0PlusZeta * m_cosTheta * cosDec0
+                -  m_sinTheta * sinDec0;
+        Angle ra1 = ArcTan( s, c ) + m_z;
+        Equatorial equat1( ra1, dec1, equatorial.Distance() );
+        equat1.Normalize( );
+        return equat1;
+    }
+    else
+    {
+        double cosDec1 = equatorial.Declination().Cos( );
+        double sinDec1 = equatorial.Declination().Sin( );
+        Angle ra1MinusZ = equatorial.RightAscension() - m_zeta;
+        double cosRa1MinusZ = ra1MinusZ.Cos( );
+        double sinRa1MinusZ = ra1MinusZ.Sin( );
+        double sinDec0 = - cosRa1MinusZ * m_sinTheta * cosDec1
+                +  m_cosTheta * sinDec1;
+        Angle dec0 = ArcSin( sinDec0 );
+        double cosDec0 = dec0.Cos( );
+        double s = sinRa1MinusZ * cosDec1;
+        double c = cosRa1MinusZ * m_cosTheta * cosDec1
+                +  m_sinTheta * sinDec1;
+        Angle ra0 = ArcTan( s, c ) - m_zeta;
+        Equatorial equat0( ra0, dec0, equatorial.Distance() );
+        equat0.Normalize( );
+        return equat0;
+    }
 }
 
 //=============================================================================

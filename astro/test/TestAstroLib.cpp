@@ -23,6 +23,7 @@
 #include "LunarVisibility.hpp"
 #include "EquationOfTime.hpp"
 #include "GeodeticLocation.hpp"
+#include "Constellations.hpp"
 #include "Platform.hpp"
 #include "FileReader.hpp"
 #include <cstdio>
@@ -149,6 +150,8 @@ int Main( int /*argc*/, char ** argv )
     if ( ! TestEquationOfTime( ) )
         ok = false;
     if ( ! TestGeodeticLocation( ) )
+        ok = false;
+    if ( ! TestConstellations( ) )
         ok = false;
 #endif //DEBUG
 

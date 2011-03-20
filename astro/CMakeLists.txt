@@ -26,6 +26,7 @@ set( sources
      RiseSet.cpp
      LunarVisibility.cpp
      EquationOfTime.cpp
+     Constellations.cpp
    )
 
 set( EpsilonDeltaLibs

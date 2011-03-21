@@ -11,8 +11,10 @@
 
 #include "Precession.hpp"
 #ifdef DEBUG
-#include <iostream>
 #include "TestCheck.hpp"
+#include "AngleHMS.hpp"
+#include "AngleDMS.hpp"
+#include <iostream>
 #endif
 using namespace std;
 
@@ -164,18 +166,64 @@ Precession::Test( )
     jd = 2462088.69;
     cout << "JD: " << jd << endl;
     precession = Precession( jd );
-    Equatorial equat2000( Angle( 41.054063, Angle::Degree ),
+    Equatorial thetaPer2000( Angle( 41.054063, Angle::Degree ),
                           Angle( 49.227750, Angle::Degree ) );
-    Equatorial equat2028( Angle( 41.547214, Angle::Degree ),
+    Equatorial thetaPer2028( Angle( 41.547214, Angle::Degree ),
                           Angle( 49.348483, Angle::Degree ) );
-    TESTCHECKF( precession.Reduce( equat2000 ).RightAscension().Radians(),
-                equat2028.RightAscension().Radians(), &ok );
-    TESTCHECKF( precession.Reduce( equat2000 ).Declination().Radians(),
-                equat2028.Declination().Radians(), &ok );
-    TESTCHECKF( precession.Reduce( equat2028, false ).RightAscension().Radians(),
-                equat2000.RightAscension().Radians(), &ok );
-    TESTCHECKF( precession.Reduce( equat2028, false ).Declination().Radians(),
-                equat2000.Declination().Radians(), &ok );
+    TESTCHECKF( precession.Reduce( thetaPer2000 ).RightAscension().Degrees(),
+                thetaPer2028.RightAscension().Degrees(), &ok );
+    TESTCHECKF( precession.Reduce( thetaPer2000 ).Declination().Degrees(),
+                thetaPer2028.Declination().Degrees(), &ok );
+    TESTCHECKF( precession.Reduce( thetaPer2028, false )
+                .RightAscension().Degrees(),
+                thetaPer2000.RightAscension().Degrees(), &ok );
+    TESTCHECKF( precession.Reduce( thetaPer2028, false )
+                .Declination().Degrees(),
+                thetaPer2000.Declination().Degrees(), &ok );
+    //Meeus, p. 136
+    Equatorial polaris2000J2000( Angle( AngleHMS( 2, 31, 48.704 ) ),
+                                 Angle( AngleDMS( 89, 15, 50.72 ) ) );
+    Angle raPropMotion = Angle( AngleHMS( 0, 0, 0.19877 ) );
+    Angle decPropMotion = Angle( -0.0152, Angle::ArcSecond );
+    double b1900 = Epoch( 1900, Epoch::Besselian ).JulianDay();
+    double jdDiff = (b1900 - J2000) / 365.25;
+    Angle ra1900J2000 = polaris2000J2000.RightAscension()
+            +  jdDiff * raPropMotion;
+    Angle dec1900J2000 = polaris2000J2000.Declination()
+            +  jdDiff * decPropMotion;
+    Equatorial polaris1900J2000( ra1900J2000, dec1900J2000 );
+    precession = Precession( b1900, J2000 );
+    Equatorial polaris1900B1900 = precession.Reduce( polaris1900J2000 );
+    TESTCHECKF( polaris1900B1900.RightAscension().Degrees(),
+                Angle( AngleHMS( 1, 22, 33.90 ) ).Degrees(), &ok );
+    TESTCHECKF( polaris1900B1900.Declination().Degrees(),
+                Angle( AngleDMS( 88, 46, 26.18 ) ).Degrees(), &ok );
+    double j2050 = Epoch( 2050, Epoch::Julian ).JulianDay();
+    jdDiff = (j2050 - J2000) / 365.25;
+    Angle ra2050J2000 = polaris2000J2000.RightAscension()
+            +  jdDiff * raPropMotion;
+    Angle dec2050J2000 = polaris2000J2000.Declination()
+            +  jdDiff * decPropMotion;
+    Equatorial polaris2050J2000( ra2050J2000, dec2050J2000 );
+    precession = Precession( j2050, J2000 );
+    Equatorial polaris2050J2050 = precession.Reduce( polaris2050J2000 );
+    TESTCHECKF( polaris2050J2050.RightAscension().Degrees(),
+                Angle( AngleHMS( 3, 48, 16.43 ) ).Degrees(), &ok );
+    TESTCHECKF( polaris2050J2050.Declination().Degrees(),
+                Angle( AngleDMS( 89, 27, 15.38 ) ).Degrees(), &ok );
+    double j2100 = Epoch( 2100, Epoch::Julian ).JulianDay();
+    jdDiff = (j2100 - J2000) / 365.25;
+    Angle ra2100J2000 = polaris2000J2000.RightAscension()
+            +  jdDiff * raPropMotion;
+    Angle dec2100J2000 = polaris2000J2000.Declination()
+            +  jdDiff * decPropMotion;
+    Equatorial polaris2100J2000( ra2100J2000, dec2100J2000 );
+    precession = Precession( j2100, J2000 );
+    Equatorial polaris2100J2100 = precession.Reduce( polaris2100J2000 );
+    TESTCHECKF( polaris2100J2100.RightAscension().Degrees(),
+                Angle( AngleHMS( 5, 53, 29.17 ) ).Degrees(), &ok );
+    TESTCHECKF( polaris2100J2100.Declination().Degrees(),
+                Angle( AngleDMS( 89, 32, 22.18 ) ).Degrees(), &ok );
     
     if ( ok )
         cout << "Precession PASSED." << endl << endl;

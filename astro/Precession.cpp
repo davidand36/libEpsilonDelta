@@ -84,6 +84,7 @@ Precession::Matrix( bool fromEpoch ) const
 Equatorial
 Precession::Reduce( Equatorial equatorial, bool fromEpoch ) const
 {
+    //Explanatory Supplement (3.212-2, 3.212-3), Meeus, p 134-35
     if ( fromEpoch )
     {
         double cosDec0 = equatorial.Declination().Cos( );
@@ -91,14 +92,19 @@ Precession::Reduce( Equatorial equatorial, bool fromEpoch ) const
         Angle ra0PlusZeta = equatorial.RightAscension() + m_zeta;
         double cosRa0PlusZeta = ra0PlusZeta.Cos( );
         double sinRa0PlusZeta = ra0PlusZeta.Sin( );
-        double sinDec1 = cosRa0PlusZeta * m_sinTheta * cosDec0
-                +  m_cosTheta * sinDec0;
-        Angle dec1 = ArcSin( sinDec1 );
-        double cosDec1 = dec1.Cos( );
-        double s = sinRa0PlusZeta * cosDec0;
-        double c = cosRa0PlusZeta * m_cosTheta * cosDec0
+        double a = cosDec0 * sinRa0PlusZeta;
+        double b = m_cosTheta * cosDec0 * cosRa0PlusZeta
                 -  m_sinTheta * sinDec0;
-        Angle ra1 = ArcTan( s, c ) + m_z;
+        double c = m_sinTheta * cosDec0 * cosRa0PlusZeta
+                +  m_cosTheta * sinDec0;
+        Angle dec1;
+        if ( c < -0.9 )
+            dec1 = - ArcCos( sqrt( a * a  +  b * b ) );
+        else if ( c <= 0.9 )
+            dec1 = ArcSin( c );
+        else
+            dec1 = ArcCos( sqrt( a * a  +  b * b ) );
+        Angle ra1 = ArcTan( a, b ) + m_z;
         Equatorial equat1( ra1, dec1, equatorial.Distance() );
         equat1.Normalize( );
         return equat1;
@@ -110,14 +116,19 @@ Precession::Reduce( Equatorial equatorial, bool fromEpoch ) const
         Angle ra1MinusZ = equatorial.RightAscension() - m_zeta;
         double cosRa1MinusZ = ra1MinusZ.Cos( );
         double sinRa1MinusZ = ra1MinusZ.Sin( );
-        double sinDec0 = - cosRa1MinusZ * m_sinTheta * cosDec1
-                +  m_cosTheta * sinDec1;
-        Angle dec0 = ArcSin( sinDec0 );
-        double cosDec0 = dec0.Cos( );
-        double s = sinRa1MinusZ * cosDec1;
-        double c = cosRa1MinusZ * m_cosTheta * cosDec1
+        double a = cosDec1 * sinRa1MinusZ;
+        double b = m_cosTheta * cosDec1 * cosRa1MinusZ
                 +  m_sinTheta * sinDec1;
-        Angle ra0 = ArcTan( s, c ) - m_zeta;
+        double c = - m_sinTheta * cosDec1 * cosRa1MinusZ
+                +  m_cosTheta * sinDec1;
+        Angle dec0;
+        if ( c < -0.9 )
+            dec0 = - ArcCos( sqrt( a * a  +  b * b ) );
+        else if ( c <= 0.9 )
+            dec0 = ArcSin( c );
+        else
+            dec0 = ArcCos( sqrt( a * a  +  b * b ) );
+        Angle ra0 = ArcTan( a, b ) - m_zeta;
         Equatorial equat0( ra0, dec0, equatorial.Distance() );
         equat0.Normalize( );
         return equat0;
@@ -149,6 +160,23 @@ Precession::Test( )
     TESTCHECKFE( precMat(2,1), -0.00000157, &ok, 6.e-3 );
     TESTCHECKF( precMat(2,2), 0.99999932, &ok );
 
+    //Meeus, p. 135
+    jd = 2462088.69;
+    cout << "JD: " << jd << endl;
+    precession = Precession( jd );
+    Equatorial equat2000( Angle( 41.054063, Angle::Degree ),
+                          Angle( 49.227750, Angle::Degree ) );
+    Equatorial equat2028( Angle( 41.547214, Angle::Degree ),
+                          Angle( 49.348483, Angle::Degree ) );
+    TESTCHECKF( precession.Reduce( equat2000 ).RightAscension().Radians(),
+                equat2028.RightAscension().Radians(), &ok );
+    TESTCHECKF( precession.Reduce( equat2000 ).Declination().Radians(),
+                equat2028.Declination().Radians(), &ok );
+    TESTCHECKF( precession.Reduce( equat2028, false ).RightAscension().Radians(),
+                equat2000.RightAscension().Radians(), &ok );
+    TESTCHECKF( precession.Reduce( equat2028, false ).Declination().Radians(),
+                equat2000.Declination().Radians(), &ok );
+    
     if ( ok )
         cout << "Precession PASSED." << endl << endl;
     else

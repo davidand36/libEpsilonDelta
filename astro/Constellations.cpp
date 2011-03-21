@@ -122,6 +122,11 @@ ConstellationInfo s_constellationInfo[ NumConstellations ]
 
 //=============================================================================
 
+/* The data and algorithm used here is based on:
+   Roman N. G., "Identification of a Constellation from a Position",
+   <Pub. Astron. Soc. Pac. 99, 695, (1987)> =1987PASP...99..695R
+*/
+
 struct BoundaryDatum
 {
     Angle raLower;

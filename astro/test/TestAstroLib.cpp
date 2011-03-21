@@ -125,6 +125,8 @@ int Main( int /*argc*/, char ** argv )
     JPLEphemeris::RegisterEphemeris( de405le );
     JPLEphemeris::RegisterEphemeris( de406be );
 
+    if ( ! TestGeodeticLocation( ) )
+        ok = false;
     if ( ! TestSiderealTime( de405le ) )
         ok = false;
     if ( ! Precession::Test( ) )
@@ -139,6 +141,8 @@ int Main( int /*argc*/, char ** argv )
         ok = false;
     if ( ! TestAstroPhenomena( ) )
         ok = false;
+    if ( ! TestEquationOfTime( ) )
+        ok = false;
     if ( ! Seasons::Test( ) )
         ok = false;
     if ( ! MoonPhases::Test( ) )
@@ -146,10 +150,6 @@ int Main( int /*argc*/, char ** argv )
     if ( ! RiseSet::Test( ) )
         ok = false;
     if ( ! LunarVisibility::Test( ) )
-        ok = false;
-    if ( ! TestEquationOfTime( ) )
-        ok = false;
-    if ( ! TestGeodeticLocation( ) )
         ok = false;
     if ( ! TestConstellations( ) )
         ok = false;

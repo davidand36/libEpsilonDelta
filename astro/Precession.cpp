@@ -186,11 +186,11 @@ Precession::Test( )
     Angle raPropMotion = Angle( AngleHMS( 0, 0, 0.19877 ) );
     Angle decPropMotion = Angle( -0.0152, Angle::ArcSecond );
     double b1900 = Epoch( 1900, Epoch::Besselian ).JulianDay();
-    double jdDiff = (b1900 - J2000) / 365.25;
+    double diffYrs = (b1900 - J2000) / 365.25;
     Angle ra1900J2000 = polaris2000J2000.RightAscension()
-            +  jdDiff * raPropMotion;
+            +  diffYrs * raPropMotion;
     Angle dec1900J2000 = polaris2000J2000.Declination()
-            +  jdDiff * decPropMotion;
+            +  diffYrs * decPropMotion;
     Equatorial polaris1900J2000( ra1900J2000, dec1900J2000 );
     precession = Precession( b1900, J2000 );
     Equatorial polaris1900B1900 = precession.Reduce( polaris1900J2000 );
@@ -199,11 +199,11 @@ Precession::Test( )
     TESTCHECKF( polaris1900B1900.Declination().Degrees(),
                 Angle( AngleDMS( 88, 46, 26.18 ) ).Degrees(), &ok );
     double j2050 = Epoch( 2050, Epoch::Julian ).JulianDay();
-    jdDiff = (j2050 - J2000) / 365.25;
+    diffYrs = (j2050 - J2000) / 365.25;
     Angle ra2050J2000 = polaris2000J2000.RightAscension()
-            +  jdDiff * raPropMotion;
+            +  diffYrs * raPropMotion;
     Angle dec2050J2000 = polaris2000J2000.Declination()
-            +  jdDiff * decPropMotion;
+            +  diffYrs * decPropMotion;
     Equatorial polaris2050J2000( ra2050J2000, dec2050J2000 );
     precession = Precession( j2050, J2000 );
     Equatorial polaris2050J2050 = precession.Reduce( polaris2050J2000 );
@@ -212,11 +212,11 @@ Precession::Test( )
     TESTCHECKF( polaris2050J2050.Declination().Degrees(),
                 Angle( AngleDMS( 89, 27, 15.38 ) ).Degrees(), &ok );
     double j2100 = Epoch( 2100, Epoch::Julian ).JulianDay();
-    jdDiff = (j2100 - J2000) / 365.25;
+    diffYrs = (j2100 - J2000) / 365.25;
     Angle ra2100J2000 = polaris2000J2000.RightAscension()
-            +  jdDiff * raPropMotion;
+            +  diffYrs * raPropMotion;
     Angle dec2100J2000 = polaris2000J2000.Declination()
-            +  jdDiff * decPropMotion;
+            +  diffYrs * decPropMotion;
     Equatorial polaris2100J2000( ra2100J2000, dec2100J2000 );
     precession = Precession( j2100, J2000 );
     Equatorial polaris2100J2100 = precession.Reduce( polaris2100J2000 );

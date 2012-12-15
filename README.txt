@@ -57,14 +57,16 @@ FastCGI (www.fastcgi.com, libfcgi-dev) -- Extension of CGI protocol.
     Use together with Apache mod_fcgid or whatever your HTTP server needs.
 
 Graphics & Input:
-SDL (www.libsdl.org) -- Simple Directmedia Layer, a cross-platform multimedia
-    library. Required for mmbase, input, and grpahics2d.
+SDL (www.libsdl.org, libsdl-dev, libsdl-image1.2-dev) -- Simple Directmedia
+    Layer, a cross-platform multimedia library. Required for mmbase, input,
+    and graphics2d.
     NOTE: For Windows, this needs to be built with statically-linked runtime
     library (Properties->C/C++->CodeGeneration->Runtime Library): /MT or /MTd.
 PNG (www.libpng.org, libpng-dev) and JPEG (www.ijg.org, libjpeg-dev)
     -- Optional. Used by graphics2d for creation of image files.
-Freetype (www.freetype.org) -- Optional. Used by graphics2d for rendering text.
-CWiiD (abstrakraft.org/cwiid, libcwiid) (Linux)
+Freetype (www.freetype.org, libfreetype6-dev) -- Optional. Used by graphics2d
+    for rendering text.
+CWiiD (abstrakraft.org/cwiid, libcwiid-dev) (Linux)
     or WiiYourself! (wiiyourself.gl.tter.org) (Windows) -- Optional. Used by
     input for support of Wii remote controller.
 

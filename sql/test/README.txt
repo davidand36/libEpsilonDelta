@@ -18,11 +18,12 @@ $ createdb -O testuser testdb
 MySQL:
 $ mysql -u root -p (and enter password set during installation)
 > GRANT ALL ON *.* TO <myid>@localhost IDENTIFIED BY '<mypw>' WITH GRANT OPTION;
-> quit
+> quit;
 $ mysql -p
 > CREATE DATABASE testdb;
-> GRANT CREATE,DROP,ALTER,INSERT,DELETE,UPDATE,SELECT,INDEX ON testdb TO testuser IDENTIFIED BY 'TestPW';
-> quit
+> GRANT ALL ON testdb.* TO testuser@localhost IDENTIFIED BY 'TestPW';
+> GRANT FILE ON *.* TO testuser@localhost IDENTIFIED BY 'TestPW';
+> quit;
 
 Now create sql/test/PostgreSQL.conf and/or sql/test/MySQL.config files:
 host=localhost

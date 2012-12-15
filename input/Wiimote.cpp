@@ -827,7 +827,9 @@ void
 WiimoteImpl::FindAll( vector< shared_ptr< WiimoteImpl > > * pImpls )
 {
     //Just the default wiimote for now
-    shared_ptr< WiimoteImpl > pImpl( new WiimoteImpl( *BDADDR_ANY ) );
+    //BDADDR_ANY in bluetooth.h results in error: address of temporary.
+    bdaddr_t bd_any = {{0, 0, 0, 0, 0, 0}};
+    shared_ptr< WiimoteImpl > pImpl( new WiimoteImpl( bd_any ) );
     pImpls->push_back( pImpl );
 }
 

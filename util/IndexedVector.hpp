@@ -83,7 +83,7 @@ public:
     typedef T  value_type;
     typedef T*  pointer;
     typedef T&  reference;
-    typedef ptrdiff_t  difference_type;
+    typedef std::ptrdiff_t  difference_type;
 
 private:
     CT & m_items;
